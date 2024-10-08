@@ -1,0 +1,3 @@
+- [ ] Tracks with multiple artists / fetures
+- [ ] Release date precision
+- [ ] Finding first released track version
