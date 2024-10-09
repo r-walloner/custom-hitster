@@ -1,2 +1,5 @@
 .venv/
-.spotipy
+.vscode/
+
+.auth_cache_*
+.env
