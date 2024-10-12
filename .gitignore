@@ -3,3 +3,4 @@
 
 .auth_cache_*
 .env
+playset*.json
