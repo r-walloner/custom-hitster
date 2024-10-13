@@ -44,9 +44,12 @@ def spotify():
     """Return an unauthenticated Spotify client."""
     environ = read_and_check_dotenv()
 
+    cache_handler = spotipy.CacheFileHandler(cache_path=".auth_cache_anonymous")
+
     auth_manager = spotipy.SpotifyClientCredentials(
         client_id=environ.get("SPOTIFY_CLIENT_ID"),
         client_secret=environ.get("SPOTIFY_CLIENT_SECRET"),
+        cache_handler=cache_handler,
     )
     return spotipy.Spotify(auth_manager=auth_manager)
 
