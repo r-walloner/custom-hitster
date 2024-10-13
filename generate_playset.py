@@ -86,6 +86,11 @@ print(len(playset), " songs remaining.")
 # ------
 def encode_track(track):
     """Encode a track object as a JSON serializable dictionary containing only the necessary information."""
+    known_by = []
+    for player in players.values():
+        if track["id"] in known_tracks[player["id"]]:
+            known_by.append(player["display_name"])
+    
     return dict(
         id=track["id"],
         uri=track["uri"],
@@ -111,7 +116,7 @@ def encode_track(track):
             )
             for artist in track["artists"]
         ],
-        known_by=None, # TODO
+        known_by=known_by,
         inclusion_reason=track["inclusion_reason"],
     )
 

@@ -5,7 +5,7 @@ from os import mkdir, path
 from random import shuffle
 from spotipy.exceptions import SpotifyException
 
-from common import authenticate_spotify, color, read_and_check_dotenv
+from common import authenticate_spotify, color, read_and_check_dotenv, text_join
 
 sp = authenticate_spotify(scope="user-modify-playback-state")
 
@@ -33,8 +33,10 @@ log.info(f"Loaded playset with {len(playset)} songs")
 # play the tracks
 # ---
 for track in playset:
-    artist_names = [artist["name"] for artist in track["artists"]]
-    log.info(f"Playing track {track['name']} by {", ".join(artist_names)} from {track['album']['release_date']}")
+    artist_names = text_join([artist["name"] for artist in track["artists"]])
+    log.info(
+        f"Playing track {track['name']} by {artist_names} from {track['album']['release_date']}"
+    )
     log.debug(dumps(track, indent=2))
 
     print(color.BOLD, "\n🎵 Playing a song... Take a guess!", color.END)
@@ -48,11 +50,14 @@ for track in playset:
             track["name"],
             color.END,
             color.ITALIC,
-            "\n   by ",
-            ", ".join(artist_names),
+            "\n   by",
+            artist_names,
             "\n  ",
             track["album"]["release_date"],
             color.END,
+            "\n\n  ",
+            text_join(track["known_by"]),
+            "know this song."
         )
 
     except SpotifyException as e:

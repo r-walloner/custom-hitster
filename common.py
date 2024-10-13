@@ -72,6 +72,17 @@ def for_all_items_in(response, callback, sp, progress=True):
         pbar.close()
 
 
+def text_join(list):
+    """Join a list of strings with commas and 'and'."""
+    if len(list) == 0:
+        return ""
+    if len(list) == 1:
+        return list[0]
+    if len(list) == 2:
+        return " and ".join(list)
+    return ", ".join(list[:-1]) + ", and " + list[-1]
+
+
 class color:
     """For pretty printing"""
 
