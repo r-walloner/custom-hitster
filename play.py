@@ -61,6 +61,7 @@ for track in playset:
         )
 
     except SpotifyException as e:
+        log.error("Error playing song")
         print("❌", color.RED, "Error playing song:\n", e.msg, color.END)
 
     input("\nPress ENTER to play the next song...")
