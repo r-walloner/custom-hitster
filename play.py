@@ -1,7 +1,5 @@
 from json import load
 from random import shuffle
-from dotenv import load_dotenv
-import spotipy
 
 from common import authenticate_spotify, read_and_check_dotenv
 

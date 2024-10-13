@@ -1,9 +1,6 @@
 from json import dump, load
 from math import floor
-from os import listdir, path, remove
-from dotenv import load_dotenv
-import spotipy
-from tqdm import tqdm
+from os import listdir, path
 
 from common import spotify
 
