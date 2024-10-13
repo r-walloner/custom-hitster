@@ -1,28 +1,47 @@
-from json import load
+from datetime import datetime
+from json import dumps, load
+import logging
+from os import mkdir, path
 from random import shuffle
-from sys import stdout
 from spotipy.exceptions import SpotifyException
 
 from common import authenticate_spotify, color, read_and_check_dotenv
 
 sp = authenticate_spotify(scope="user-modify-playback-state")
 
+# start logging
+# ---
+timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+log_path = path.abspath(f"game_logs/game_log_{timestamp}.log")
+if not path.isdir(path.dirname(log_path)):
+    mkdir(path.dirname(log_path))
+
+logging.basicConfig(filename=log_path, level=logging.DEBUG)
+log = logging.getLogger(__name__)
+log.info("Game started")
+
 # load the playset
 # ---
+playset_path = path.abspath("playset.json")
+log.info(f"Loading playset from {playset_path}")
 with open("playset.json") as f:
     playset = load(f)
 shuffle(playset)
-print(f"Loaded playset with {len(playset)} songs")
+log.info(f"Loaded playset with {len(playset)} songs")
+
 
 # play the tracks
 # ---
 for track in playset:
+    artist_names = [artist["name"] for artist in track["artists"]]
+    log.info(f"Playing track {track['name']} by {", ".join(artist_names)} from {track['album']['release_date']}")
+    log.debug(dumps(track, indent=2))
+
     print(color.BOLD, "\n🎵 Playing a song... Take a guess!", color.END)
     try:
         sp.start_playback(uris=[track["uri"]])
         input("   Press ENTER to reveal the solution...")
 
-        artist_names = [artist["name"] for artist in track["artists"]]
         print(
             color.BOLD,
             "\n  ",
