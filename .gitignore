@@ -1,6 +1,8 @@
 .venv/
+__pycache__/
 .vscode/
 
-.auth_cache_*
+.auth_cache*
 .env
 playset*.json
+libraries/*

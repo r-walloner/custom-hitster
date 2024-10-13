@@ -1,31 +1,14 @@
 from json import load
-from os import environ
 from random import shuffle
 from dotenv import load_dotenv
 import spotipy
 
-# load and check environment variables
-load_dotenv()
-if not (
-    environ.get("SPOTIFY_CLIENT_SECRET")
-    and environ.get("SPOTIFY_CLIENT_ID")
-    and environ.get("SPOTIFY_REDIRECT_URI")
-):
-    raise ValueError(
-        "Please set SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET, and SPOTIFY_REDIRECT_URI in the .env file or as environment variables."
-    )
+from common import authenticate_spotify, read_and_check_dotenv
+
+environ = read_and_check_dotenv()
 
 # authenticate with Spotify
-cache_handler = spotipy.CacheFileHandler(cache_path=".auth_cache_play")
-auth_manager = spotipy.SpotifyOAuth(
-    client_id=environ.get("SPOTIFY_CLIENT_ID"),
-    client_secret=environ.get("SPOTIFY_CLIENT_SECRET"),
-    redirect_uri=environ.get("SPOTIFY_REDIRECT_URI"),
-    scope="user-modify-playback-state",
-    show_dialog=True,
-    cache_handler=cache_handler,
-)
-sp = spotipy.Spotify(auth_manager=auth_manager)
+sp = authenticate_spotify(scope="user-modify-playback-state")
 
 current_user = sp.current_user()
 print("Logged in as: " + current_user["display_name"])

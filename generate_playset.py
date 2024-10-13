@@ -1,21 +1,11 @@
-from json import dump
+from json import dump, load
 from math import floor
-from os import environ, path, remove
+from os import listdir, path, remove
 from dotenv import load_dotenv
 import spotipy
 from tqdm import tqdm
 
-# Load and check environment variables
-# ------
-load_dotenv()
-if not (
-    environ.get("SPOTIFY_CLIENT_SECRET")
-    and environ.get("SPOTIFY_CLIENT_ID")
-    and environ.get("SPOTIFY_REDIRECT_URI")
-):
-    raise ValueError(
-        "Please set SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET, and SPOTIFY_REDIRECT_URI in the .env file or as environment variables."
-    )
+from common import spotify
 
 # Initialize data structures
 # ------
@@ -30,84 +20,35 @@ all_artists = set()
 # maps all players by their user id
 players = dict()
 
-# add players
-while True:
-    # Authenticate new user
-    # ------
-    print("Authenticating player ", len(players) + 1)
-    cache_handler = spotipy.CacheFileHandler(cache_path=".auth_cache_generate")
-    if path.isfile(cache_handler.cache_path):
-        remove(cache_handler.cache_path)
+sp = spotify()
 
-    auth_manager = spotipy.SpotifyOAuth(
-        client_id=environ.get("SPOTIFY_CLIENT_ID"),
-        client_secret=environ.get("SPOTIFY_CLIENT_SECRET"),
-        redirect_uri=environ.get("SPOTIFY_REDIRECT_URI"),
-        scope="user-library-read playlist-read-private",
-        show_dialog=True,
-        cache_handler=cache_handler,
-    )
-    sp = spotipy.Spotify(auth_manager=auth_manager)
+# load player libraries
+# ------
+print("Loading player libraries")
 
-    current_user = sp.current_user()
-    players[current_user["id"]] = current_user
-    print("Authenticated as: ", current_user["display_name"])
+for file in listdir("libraries"):
+    if not (file.startswith("player_") and file.endswith(".json")):
+        continue
 
-    # Get user's saved tracks and playlists
-    # ------
-    known_tracks[current_user["id"]] = set()
-    known_artists[current_user["id"]] = dict()
+    with open(path.join("libraries", file)) as file:
+        player, library = load(file).values()
 
-    def add_track_to_playset(item):
-        """Add a track to the playset and update the known tracks and artists."""
-        track = item["track"]
-        playset[track["id"]] = track
-        known_tracks[current_user["id"]].add(track["id"])
-        for artist in track["artists"]:
-            all_artists.add(artist["id"])
-            if not artist["id"] in known_artists[current_user["id"]]:
-                known_artists[current_user["id"]][artist["id"]] = 0
-            known_artists[current_user["id"]][artist["id"]] += 1
+        players[player["id"]] = player
+        print("\tLoaded ", player["display_name"])
 
-    def for_all_items_in(response, callback):
-        """Run a callback for all items in a paginated response."""
-        with tqdm(total=response["total"], position=2, leave=None) as pbar:
-            while response:
-                for item in response["items"]:
-                    callback(item)
-                    pbar.update()
-                if response["next"]:
-                    response = sp.next(response)
-                else:
-                    response = None
+        # Add players's library to playset
+        # ------
+        known_tracks[player["id"]] = set()
+        known_artists[player["id"]] = dict()
 
-    # get saved tracks
-    print("Reading library (this may take a while)")
-    print("\tReading saved tracks")
-    response = sp.current_user_saved_tracks(limit=50)
-    for_all_items_in(response, add_track_to_playset)
-
-    # get tracks from users playlists
-    print("\n\tReading playlists")
-    playlists = set()
-    response = sp.current_user_playlists(limit=50)
-    for_all_items_in(response, lambda item: playlists.add(item["id"]))
-    for playlist_id in tqdm(playlists, position=1, leave=None):
-        response = sp.playlist_tracks(playlist_id)
-        for_all_items_in(response, add_track_to_playset)
-
-    print("\nDone reading player library.")
-    print(
-        "Found ",
-        len(known_tracks[current_user["id"]]),
-        " tracks from ",
-        len(known_artists[current_user["id"]]),
-        " artists.",
-    )
-
-    # continue until all players are added
-    if input("\nAdd another player [y/N]? ").strip().lower() != "y":
-        break
+        for track in library:
+            playset[track["id"]] = track
+            known_tracks[player["id"]].add(track["id"])
+            for artist in track["artists"]:
+                all_artists.add(artist["id"])
+                if not artist["id"] in known_artists[player["id"]]:
+                    known_artists[player["id"]][artist["id"]] = 0
+                known_artists[player["id"]][artist["id"]] += 1
 
 # Filter and enrich playset
 # ------
