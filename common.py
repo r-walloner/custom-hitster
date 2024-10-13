@@ -15,11 +15,13 @@ def read_and_check_dotenv():
         raise ValueError(
             "Please set SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET, and SPOTIFY_REDIRECT_URI in the .env file or as environment variables."
         )
-    
+
     return environ
 
 
-def authenticate_spotify(scope, cache=True, cache_path=".auth_cache") -> spotipy.Spotify:
+def authenticate_spotify(
+    scope, cache=True, cache_path=".auth_cache"
+) -> spotipy.Spotify:
     """Authenticate with Spotify."""
     environ = read_and_check_dotenv()
 
@@ -33,7 +35,7 @@ def authenticate_spotify(scope, cache=True, cache_path=".auth_cache") -> spotipy
         redirect_uri=environ.get("SPOTIFY_REDIRECT_URI"),
         scope=scope,
         show_dialog=True,
-        cache_handler=cache_handler
+        cache_handler=cache_handler,
     )
     return spotipy.Spotify(auth_manager=auth_manager)
 
@@ -44,9 +46,10 @@ def spotify():
 
     auth_manager = spotipy.SpotifyClientCredentials(
         client_id=environ.get("SPOTIFY_CLIENT_ID"),
-        client_secret=environ.get("SPOTIFY_CLIENT_SECRET")
+        client_secret=environ.get("SPOTIFY_CLIENT_SECRET"),
     )
     return spotipy.Spotify(auth_manager=auth_manager)
+
 
 def for_all_items_in(response, callback, sp, progress=True):
     """Run a callback for all items in a paginated response."""
@@ -67,3 +70,19 @@ def for_all_items_in(response, callback, sp, progress=True):
 
     if pbar:
         pbar.close()
+
+
+class color:
+    """For pretty printing"""
+
+    PURPLE = "\033[95m"
+    CYAN = "\033[96m"
+    DARKCYAN = "\033[36m"
+    BLUE = "\033[94m"
+    GREEN = "\033[92m"
+    YELLOW = "\033[93m"
+    RED = "\033[91m"
+    BOLD = "\033[1m"
+    ITALIC = "\033[3m"
+    UNDERLINE = "\033[4m"
+    END = "\033[0m"

@@ -1,33 +1,42 @@
 from json import load
 from random import shuffle
+from sys import stdout
+from spotipy.exceptions import SpotifyException
 
-from common import authenticate_spotify, read_and_check_dotenv
+from common import authenticate_spotify, color, read_and_check_dotenv
 
-environ = read_and_check_dotenv()
-
-# authenticate with Spotify
 sp = authenticate_spotify(scope="user-modify-playback-state")
 
-current_user = sp.current_user()
-print("Logged in as: " + current_user["display_name"])
-
 # load the playset
-with open("playset_core.json") as f:
+# ---
+with open("playset.json") as f:
     playset = load(f)
 shuffle(playset)
-print(f"Playset loaded with {len(playset)} tracks.")
+print(f"Loaded playset with {len(playset)} songs")
 
 # play the tracks
+# ---
 for track in playset:
-    print("playing next song")
-    sp.start_playback(uris=[track["uri"]])
+    print(color.BOLD, "\n🎵 Playing a song... Take a guess!", color.END)
+    try:
+        sp.start_playback(uris=[track["uri"]])
+        input("   Press ENTER to reveal the solution...")
 
-    # wait for user input
-    input("Press Enter to reveal the solution...")
-    print()
-    print("Title: ", track["name"])
-    artist_names = [artist["name"] for artist in track["artists"]]
-    print("Artist(s): ", ", ".join(artist_names))
-    print("Album: ", track["album"]["name"])
-    print()
-    input("Press Enter to play the next song...")
+        artist_names = [artist["name"] for artist in track["artists"]]
+        print(
+            color.BOLD,
+            "\n  ",
+            track["name"],
+            color.END,
+            color.ITALIC,
+            "\n   by ",
+            ", ".join(artist_names),
+            "\n  ",
+            track["album"]["release_date"],
+            color.END,
+        )
+
+    except SpotifyException as e:
+        print("❌", color.RED, "Error playing song:\n", e.msg, color.END)
+
+    input("\nPress ENTER to play the next song...")
