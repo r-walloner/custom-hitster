@@ -53,17 +53,25 @@ print("\nInitial playset size: ", len(playset))
 
 # annotate reason for including each track
 for track in playset.values():
-    track["inclusion_reason"] = "player library"
+    track["inclusion_reason"] = "player-library"
+
+def add_for_reason(track, reason):
+    """Add a track to the playset and annotate the reason for including it."""
+    if track["id"] in playset:
+        playset[track["id"]]["inclusion_reason"] += " " + reason
+    else:
+        track["inclusion_reason"] = reason
+        playset[track["id"]] = track
 
 # filter out tracks known by too few players
 min_player_threshold = floor(len(players) / 2) + 1
-input = input(
-    "Minimum number of players to keep a song [default: "
-    + str(min_player_threshold)
-    + "]: "
-).strip()
-if input:
-    min_player_threshold = int(input)
+# input = input(
+#     "Minimum number of players to keep a song [default: "
+#     + str(min_player_threshold)
+#     + "]: "
+# ).strip()
+# if input:
+#     min_player_threshold = int(input)
 
 
 def track_known_by_enough_players(track):
@@ -75,11 +83,33 @@ def track_known_by_enough_players(track):
     return known_by >= min_player_threshold
 
 
-print("Filtering songs known by at least ", min_player_threshold, " players...")
+print("Filtering songs known by at least ", min_player_threshold, " players")
 playset = dict(
     (id, track) for id, track in playset.items() if track_known_by_enough_players(track)
 )
-print(len(playset), " songs remaining.")
+print(len(playset), " songs remaining")
+
+# enrich playset with top songs of artists known by many players
+num_before = len(playset)
+print("Enriching playset with top songs of common artists")
+min_player_threshold = floor(len(players) / 2) + 1
+min_per_artist_song_threshold = 5
+
+for artist_id in all_artists:
+    known_by = 0
+    for player_id in players.keys():
+        if (
+            artist_id in known_artists[player_id]
+            and known_artists[player_id][artist_id] >= min_per_artist_song_threshold
+        ):
+            known_by += 1
+    if known_by >= min_player_threshold:
+        response = sp.artist_top_tracks(artist_id, country="DE")
+        for track in response["tracks"]:
+            add_for_reason(track, "common-artist-top-track")
+        
+num_added = len(playset) - num_before
+print("Added ", num_added, " songs")
 
 
 # Output playset
@@ -90,8 +120,10 @@ def encode_track(track):
     for player in players.values():
         if track["id"] in known_tracks[player["id"]]:
             known_by.append(player["display_name"])
-    
+
     return dict(
+        inclusion_reason=track["inclusion_reason"],
+        known_by=known_by,
         id=track["id"],
         uri=track["uri"],
         url=track["external_urls"]["spotify"],
@@ -116,14 +148,12 @@ def encode_track(track):
             )
             for artist in track["artists"]
         ],
-        known_by=known_by,
-        inclusion_reason=track["inclusion_reason"],
     )
 
 
 output_path = path.abspath("playset.json")
 print("\nFinal playset size: ", len(playset))
-print("Writing playset to ", output_path, "...")
+print("Writing playset to ", output_path, "")
 
 with open(output_path, "w") as f:
     dump(list(encode_track(track) for id, track in playset.items()), f, indent=None)
