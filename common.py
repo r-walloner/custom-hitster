@@ -31,7 +31,7 @@ def authenticate_spotify(scope, cache=True, cache_path=".auth_cache") -> spotipy
         client_id=environ.get("SPOTIFY_CLIENT_ID"),
         client_secret=environ.get("SPOTIFY_CLIENT_SECRET"),
         redirect_uri=environ.get("SPOTIFY_REDIRECT_URI"),
-        scope="user-library-read playlist-read-private",
+        scope=scope,
         show_dialog=True,
         cache_handler=cache_handler
     )
