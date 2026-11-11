@@ -1,9 +1,15 @@
+# Secrets and local data
+.env
+data/
+
+# Python
 .venv/
 __pycache__/
-.vscode/
+.pytest_cache/
+.ruff_cache/
 
-.auth_cache*
-.env
-playset*.json
-game_logs/*
-libraries/*
+# Node
+node_modules/
+dist/
+
+.vscode/

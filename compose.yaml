@@ -1,0 +1,17 @@
+services:
+  jamster:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      # Fixed inside the container, whatever .env says.
+      JAMSTER_DATA_DIR: /data
+      JAMSTER_STATIC_DIR: /app/static
+    ports:
+      # Only reachable from this machine; the reverse proxy in front adds HTTPS.
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - jamster-data:/data
+
+volumes:
+  jamster-data:
