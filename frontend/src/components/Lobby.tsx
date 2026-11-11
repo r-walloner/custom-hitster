@@ -14,6 +14,7 @@ const CARDS_TO_WIN = [3, 5, 7, 10, 15]
 const STARTING_TOKENS = [0, 1, 2, 3, 4, 5]
 const DECK_SIZES = [20, 40, 60, 100, 150, 200]
 const CHALLENGE_SECONDS = [3, 5, 8, 10, 15, 20, 30]
+const NEXT_TURN_SECONDS = [0, 5, 10, 15, 20, 30, 45, 60]
 
 export function Lobby({ state, send, devicePicker }: Props) {
   const { room, you } = state
@@ -38,7 +39,12 @@ export function Lobby({ state, send, devicePicker }: Props) {
   // The clipboard API only exists on HTTPS and on 127.0.0.1.
   const copy = () => navigator.clipboard?.writeText(link).then(() => setCopied(true))
 
-  const select = (label: string, key: keyof RoomSettings, options: (number | string)[]) => (
+  const select = (
+    label: string,
+    key: keyof RoomSettings,
+    options: (number | string)[],
+    text: (option: number | string) => string = String,
+  ) => (
     <label>
       {label}
       <select
@@ -51,7 +57,9 @@ export function Lobby({ state, send, devicePicker }: Props) {
         }}
       >
         {options.map((option) => (
-          <option key={option}>{option}</option>
+          <option key={option} value={option}>
+            {text(option)}
+          </option>
         ))}
       </select>
     </label>
@@ -144,6 +152,9 @@ export function Lobby({ state, send, devicePicker }: Props) {
           {select('Starting tokens', 'starting_tokens', STARTING_TOKENS)}
           {select('Deck size', 'deck_size', DECK_SIZES)}
           {select('Seconds to challenge', 'challenge_seconds', CHALLENGE_SECONDS)}
+          {select('Next turn starts after', 'next_turn_seconds', NEXT_TURN_SECONDS, (seconds) =>
+            seconds === 0 ? 'never, by hand only' : `${seconds} seconds`,
+          )}
           {room.strategies.length > 1 && select('Deck strategy', 'strategy', room.strategies)}
         </div>
         {silent.length > 0 && (

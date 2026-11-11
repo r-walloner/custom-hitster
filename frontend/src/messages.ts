@@ -8,6 +8,7 @@ export interface RoomSettings {
   deck_size: number
   strategy: string
   challenge_seconds: number
+  next_turn_seconds: number // 0: no automatic next turn
 }
 
 export interface Library {
@@ -72,6 +73,7 @@ export interface GameView {
   winners: string[]
   drawing: boolean // the next card's year is being looked up; draws wait until it is done
   window_left_ms: number | null // while challenging: time left until the window closes
+  advance_left_ms: number | null // once revealed: time left until the next turn starts by itself
 }
 
 export interface RoomView {
@@ -114,7 +116,7 @@ export type ClientMessage =
   | { type: 'remove_player'; player_id: string }
   | { type: 'set_settings'; settings: RoomSettings }
   | { type: 'start_game' | 'end_game' }
-  | { type: 'get_devices' | 'test_playback' | 'retry_playback' | 'restart_playback' }
+  | { type: 'get_devices' | 'test_playback' | 'retry_playback' | 'restart_playback' | 'hold_turn' }
   | { type: 'set_device'; device_id: string | null; name: string | null }
   | ({ type: 'place' | 'pick_slot'; slot: number } & Acting)
   | ({ type: 'lock' | 'lock_pick' | 'skip' | 'buzz' | 'pass' | 'buy' } & Acting)

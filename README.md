@@ -50,6 +50,8 @@ Jamster is a private tool and cannot become a public one.
    A correct placement keeps the card.
    Otherwise the first challenger with a correct slot takes it, and if there is none the card is discarded.
 6. The host or the player on turn confirms whether that player named the title and artist aloud, which earns 1 token (5 at most).
+7. A second countdown, 15 seconds unless the host sets another time or turns it off in the lobby, starts the next turn by itself.
+   The host or the player on turn can start it at once with "Next turn", or stop the countdown with "Keep listening" and move on by hand.
 
 Any player can trade 3 tokens for a card.
 The first player to reach the target number of cards wins.

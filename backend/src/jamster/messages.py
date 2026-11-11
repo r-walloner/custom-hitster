@@ -15,6 +15,8 @@ class RoomSettings(BaseModel):
     strategy: str = "majority"
     # How long the others may challenge after the active player locked in.
     challenge_seconds: int = Field(default=5, ge=1, le=60)
+    # How long the revealed card stays before the next turn starts by itself; 0 turns it off.
+    next_turn_seconds: int = Field(default=15, ge=0, le=300)
 
 
 # --- client -> server ------------------------------------------------------------------------
@@ -74,6 +76,12 @@ class RetryPlayback(_Client):
     """Start the song again for the players whose playback failed, at the others' position."""
 
     type: Literal["retry_playback"]
+
+
+class HoldTurn(_Client):
+    """Stop the countdown to the next turn, to keep listening to the revealed song."""
+
+    type: Literal["hold_turn"]
 
 
 class RestartPlayback(_Client):
@@ -143,6 +151,7 @@ ClientMessage = Annotated[
     | TestPlayback
     | RetryPlayback
     | RestartPlayback
+    | HoldTurn
     | Place
     | LockIn
     | Skip
@@ -242,6 +251,7 @@ class GameView(BaseModel):
     winners: list[str]
     drawing: bool  # the next card's year is being looked up; draws wait until it is done
     window_left_ms: int | None  # while challenging: time left until the window closes
+    advance_left_ms: int | None  # once revealed: time left until the next turn starts by itself
 
 
 class RoomView(BaseModel):

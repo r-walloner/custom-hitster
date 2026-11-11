@@ -263,6 +263,7 @@ export function Game({ state, game, send, devicePicker }: Props) {
                   key={game.window_left_ms}
                   ms={game.window_left_ms}
                   total={room.settings.challenge_seconds * 1000}
+                  label="to challenge"
                 />
               )}
               {deciders.length === 0 && <p className="muted">Waiting for challenges.</p>}
@@ -330,6 +331,14 @@ export function Game({ state, game, send, devicePicker }: Props) {
             </>
           )}
 
+          {game.phase === 'revealed' && game.advance_left_ms !== null && !loading && (
+            <Countdown
+              key={game.advance_left_ms}
+              ms={game.advance_left_ms}
+              total={room.settings.next_turn_seconds * 1000}
+              label="until the next turn"
+            />
+          )}
           {game.phase === 'revealed' &&
             (referee ? (
               <div className="row wrap">
@@ -354,6 +363,9 @@ export function Game({ state, game, send, devicePicker }: Props) {
                 >
                   {loading ? <Loading /> : 'Next turn'}
                 </button>
+                {game.advance_left_ms !== null && !loading && (
+                  <button onClick={() => send({ type: 'hold_turn' })}>Keep listening</button>
+                )}
               </div>
             ) : (
               <p className="muted">{loading ? <Loading /> : 'Waiting for the next turn.'}</p>
@@ -413,7 +425,7 @@ function Loading() {
 }
 
 /** Counts down from `ms`; remount it (change its key) whenever the server sends a new value. */
-function Countdown({ ms, total }: { ms: number; total: number }) {
+function Countdown({ ms, total, label }: { ms: number; total: number; label: string }) {
   const [deadline] = useState(() => Date.now() + ms)
   const [now, setNow] = useState(() => Date.now())
   useEffect(() => {
@@ -425,7 +437,7 @@ function Countdown({ ms, total }: { ms: number; total: number }) {
     <div className="countdown" role="timer" aria-live="off">
       <progress value={left} max={total} />
       <strong>{Math.ceil(left / 1000)} s</strong>
-      <span className="muted">to challenge</span>
+      <span className="muted">{label}</span>
     </div>
   )
 }

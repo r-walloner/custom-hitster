@@ -102,6 +102,8 @@ class Room:
         self._drawing = asyncio.Lock()
         self._window = 0  # bumped whenever a challenge window opens, so stale timers do nothing
         self._window_ends = 0.0  # time.monotonic() when the open window closes
+        self._advance = 0  # bumped whenever the countdown to the next turn starts or stops
+        self._advance_ends: float | None = None  # time.monotonic() when the next turn starts
         self._play_started = 0.0
         self._sockets: dict[WebSocket, tuple[str, str | None]] = {}  # -> (client id, spotify id)
         self._sending = asyncio.Lock()
@@ -221,7 +223,11 @@ class Room:
             deck=self.deck_view,
             playback=self.playback,
             game=_game_view(
-                self.game, len(self._pending), self._drawing.locked(), self._window_left_ms()
+                self.game,
+                len(self._pending),
+                self._drawing.locked(),
+                self._window_left_ms(),
+                self._advance_left_ms(),
             )
             if self.game
             else None,
@@ -393,6 +399,13 @@ class Room:
                     )
                     self._start_playback(only=failed)
 
+            case m.HoldTurn():
+                self._referee_only(client_id)
+                if self._advance_left_ms() is not None:
+                    seat = self._seat_of(client_id)
+                    self.log.info("%s keeps listening", seat.name if seat else "the host")
+                    self._stop_advance()
+
             case m.RestartPlayback():
                 self._referee_only(client_id)
                 if self.game is None or self.game.phase == "finished":
@@ -454,6 +467,8 @@ class Room:
             self._start_playback()
         if game.phase == "challenging" and before.phase != "challenging":
             self._open_window()
+        if game.phase == "revealed" and before.phase != "revealed":
+            self._start_advance()
 
     # --- challenge window ----------------------------------------------------------------
 
@@ -470,6 +485,38 @@ class Room:
             return  # closed early, because everyone decided, or a later turn has its own window
         self._act(engine.CloseWindow())
         await self.broadcast()
+
+    # --- countdown to the next turn --------------------------------------------------------
+
+    def _start_advance(self) -> None:
+        self._stop_advance()
+        seconds = self.settings.next_turn_seconds
+        if seconds > 0:
+            self._advance_ends = time.monotonic() + seconds
+            self._spawn(self._advance_later(self._advance, seconds))
+
+    def _stop_advance(self) -> None:
+        self._advance += 1
+        self._advance_ends = None
+
+    async def _advance_later(self, advance: int, seconds: float) -> None:
+        await asyncio.sleep(seconds)
+        if advance != self._advance or self.game is None or self.game.phase != "revealed":
+            return  # held, or someone moved on already
+        self._advance_ends = None
+        self.log.info("time is up, on to the next turn")
+        try:
+            await self._prepare_draw()
+            if advance == self._advance and self.game is not None:
+                self._act(engine.NextTurn())
+        except (RoomError, engine.RuleError) as exc:
+            self.log.debug("the automatic next turn did not happen: %s", exc)
+        await self.broadcast()
+
+    def _advance_left_ms(self) -> int | None:
+        if self.game is None or self.game.phase != "revealed" or self._advance_ends is None:
+            return None
+        return max(0, int((self._advance_ends - time.monotonic()) * 1000))
 
     def _window_left_ms(self) -> int | None:
         if self.game is None or self.game.phase != "challenging":
@@ -730,7 +777,11 @@ def _card_view(card: Card) -> dict[str, Any]:
 
 
 def _game_view(
-    game: engine.Game, pending: int, drawing: bool, window_left_ms: int | None
+    game: engine.Game,
+    pending: int,
+    drawing: bool,
+    window_left_ms: int | None,
+    advance_left_ms: int | None,
 ) -> m.GameView:
     """What clients may see: the card in play stays hidden until it is revealed. `pending`
     counts the undrawn cards whose years have not been looked up yet."""
@@ -767,6 +818,7 @@ def _game_view(
         winners=game.winners,
         drawing=drawing,
         window_left_ms=window_left_ms,
+        advance_left_ms=advance_left_ms,
     )
 
 

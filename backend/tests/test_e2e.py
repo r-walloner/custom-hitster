@@ -401,3 +401,37 @@ def test_the_challenge_window_closes_when_time_is_up(client: TestClient, fake: F
         game = until(a, state_where(lambda r: r["game"]["phase"] == "revealed"))["room"]["game"]
         assert time.monotonic() - started > 0.5, "nobody challenged, so it waits for the timer"
         assert game["challenges"] == [] and game["window_left_ms"] is None
+
+
+def test_the_next_turn_starts_by_itself_unless_someone_keeps_listening(client: TestClient):
+    alice = Browser(client)
+    alice.login("alice")
+    assert alice.library()["status"] == "done"
+    code = alice.request("POST", "/api/rooms").json()["code"]
+
+    with alice.socket(code) as a:
+        a.send_json(settings(deck_size=10, next_turn_seconds=1))
+        a.send_json({"type": "start_game"})
+        until(a, state_where(lambda r: r["game"] is not None))
+
+        def reveal() -> State:
+            """Alone in the game, locking in reveals at once."""
+            a.send_json({"type": "place", "slot": 0})
+            a.send_json({"type": "lock"})
+            return until(a, state_where(lambda r: r["game"]["phase"] == "revealed"))["room"]
+
+        game = reveal()["game"]
+        assert 0 < game["advance_left_ms"] <= 1000
+        game = until(a, state_where(lambda r: r["game"]["turn_number"] == 2))["room"]["game"]
+        assert (game["phase"], game["advance_left_ms"]) == ("placing", None)
+
+        reveal()
+        a.send_json({"type": "hold_turn"})
+        held = until(a, state_where(lambda r: r["game"]["advance_left_ms"] is None))["room"]
+        assert held["game"]["phase"] == "revealed"
+        time.sleep(1.3)
+        a.send_json({"type": "set_named", "value": False})  # any request returns the state
+        room = until(a, state_where(lambda r: r["game"]["named"] is False))["room"]
+        assert room["game"]["turn_number"] == 2, "held: no automatic next turn"
+        a.send_json({"type": "next_turn"})
+        until(a, state_where(lambda r: r["game"]["turn_number"] == 3))
