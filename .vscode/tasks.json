@@ -1,0 +1,36 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Backend: launch (dev)",
+      "type": "shell",
+      "command": "uv run fastapi dev",
+      "options": { "cwd": "${workspaceFolder}/backend" },
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Frontend: launch (dev)",
+      "type": "shell",
+      "command": "npm run dev",
+      "options": { "cwd": "${workspaceFolder}/frontend" },
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Launch all (dev)",
+      "dependsOn": ["Backend: launch (dev)", "Frontend: launch (dev)"],
+      "dependsOrder": "parallel",
+      "group": { "kind": "build", "isDefault": true },
+      "problemMatcher": []
+    }
+  ]
+}
