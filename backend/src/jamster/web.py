@@ -1,5 +1,6 @@
 """The HTTP and WebSocket surface: login, the few REST endpoints, the room socket, static files."""
 
+import logging
 import random
 import secrets
 from contextlib import asynccontextmanager
@@ -22,6 +23,8 @@ SESSION_DAYS = 90
 # WebSocket close codes the frontend understands.
 NO_SESSION, NO_SUCH_ROOM = 4401, 4404
 
+log = logging.getLogger(__name__)
+
 
 def create_app(
     settings: Settings,
@@ -43,8 +46,10 @@ def create_app(
             app.state.services = Services(conn, spotify, importer, resolver, rng or random.Random())
             app.state.rooms = Rooms(app.state.services)
             importer.listeners.append(app.state.rooms.on_library_change)
+            log.info("Jamster started, data in %s", settings.data_dir.resolve())
             yield
         conn.close()
+        log.info("Jamster stopped")
 
     app = FastAPI(title="Jamster", lifespan=lifespan, docs_url=None, redoc_url=None)
     secure = bool(settings.base_url and settings.base_url.startswith("https://"))

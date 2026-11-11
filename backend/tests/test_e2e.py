@@ -1,5 +1,6 @@
 """Whole games through the real app, with only the outside world (Spotify, MusicBrainz) faked."""
 
+import logging
 import random
 import time
 from collections.abc import Callable, Iterator
@@ -11,11 +12,11 @@ import httpx
 import pytest
 from fake_spotify import FakeSpotify, year_of
 from fastapi.testclient import TestClient
+from offline_settings import OfflineSettings
 from starlette.testclient import WebSocketTestSession
 from starlette.websockets import WebSocketDisconnect
 
 from jamster import rooms
-from jamster.config import Settings
 from jamster.web import NO_SUCH_ROOM, create_app
 
 State = dict[str, Any]
@@ -107,13 +108,11 @@ def fake() -> FakeSpotify:
 
 @pytest.fixture
 def client(fake: FakeSpotify, tmp_path: Path) -> Iterator[TestClient]:
-    config = Settings.model_validate(
-        {
-            "spotify_client_id": "client-id",
-            "spotify_client_secret": "client-secret",
-            "session_secret": "test-secret",
-            "data_dir": tmp_path,
-        }
+    config = OfflineSettings(
+        spotify_client_id="client-id",
+        spotify_client_secret="client-secret",
+        session_secret="test-secret",
+        data_dir=tmp_path,
     )
     app = create_app(
         config, transport=httpx.MockTransport(fake), year_interval=0, rng=random.Random(1)
@@ -272,8 +271,9 @@ def test_remote_game_with_a_hot_seat_player(
 
 
 def test_local_game_plays_only_on_the_host_and_recovers_from_a_playback_failure(
-    client: TestClient, fake: FakeSpotify
+    client: TestClient, fake: FakeSpotify, caplog: pytest.LogCaptureFixture
 ):
+    caplog.set_level(logging.INFO, logger="jamster")
     alice, bob = Browser(client), Browser(client)
     alice.login("alice")
     bob.login("bob")
@@ -295,6 +295,12 @@ def test_local_game_plays_only_on_the_host_and_recovers_from_a_playback_failure(
             }
         ]
         assert room["game"]["phase"] == "placing", "the game goes on while playback is fixed"
+        failure = next(r for r in caplog.records if r.levelno == logging.WARNING)
+        assert failure.getMessage().startswith(f"[{code}] playing spotify:track:")
+        assert "NO_ACTIVE_DEVICE" in failure.getMessage()
+        messages = [r.getMessage() for r in caplog.records]
+        assert any(m.startswith(f"[{code}] game started in local mode") for m in messages)
+        assert any(m.startswith(f"[{code}] turn 1, ") and 'playing "Song' in m for m in messages)
 
         del fake.play_errors["alice"]
         b.send_json({"type": "retry_playback"})

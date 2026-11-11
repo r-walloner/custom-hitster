@@ -79,6 +79,7 @@ class Importer:
             await asyncio.gather(task, return_exceptions=True)
 
     def _set(self, player_id: str, status: str, detail: str) -> None:
+        log.debug("import for %s: %s %s", player_id, status, detail)
         db.set_import_state(self._conn, player_id, status, detail)
         for listener in self.listeners:
             listener(player_id)
@@ -86,11 +87,17 @@ class Importer:
     async def _run(self, player_id: str) -> None:
         try:
             async with self._gate:
+                log.debug("import for %s started", player_id)
                 await self._saved(player_id)
                 await self._playlists(player_id)
                 await self._top(player_id)
                 await self._recent(player_id)
             self._set(player_id, "done", "")
+            log.info(
+                "imported the library of %s: %d tracks",
+                player_id,
+                db.count_tracks(self._conn, player_id),
+            )
         except SpotifyError as exc:
             log.warning("import for %s failed: %s", player_id, exc)
             # Sections that finished are already stored, so a partial library stays usable.

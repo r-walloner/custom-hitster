@@ -27,7 +27,8 @@ RUN useradd --uid 10001 --no-create-home jamster && mkdir /data && chown jamster
 USER jamster
 ENV PATH="/app/.venv/bin:$PATH" \
     JAMSTER_STATIC_DIR=/app/static \
-    JAMSTER_DATA_DIR=/data
+    JAMSTER_DATA_DIR=/data \
+    JAMSTER_LOG_TO=stdout
 VOLUME /data
 EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s \

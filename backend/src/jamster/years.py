@@ -59,6 +59,13 @@ class YearResolver:
             return cached
         found = await self._lookup(track.isrc) if track.isrc else []
         picked = pick_year(found or [], year_of(track.release_date), datetime.date.today().year)
+        log.debug(
+            "%r: MusicBrainz %s, Spotify %s -> %s",
+            track.name,
+            "failed" if found is None else (", ".join(map(str, found)) or "-"),
+            year_of(track.release_date) or "-",
+            f"{picked[0]} ({picked[1]})" if picked else "no year",
+        )
         if picked and found is not None:  # a failed lookup is retried next time, not cached
             db.put_year(self._conn, track.id, *picked)
         return picked
@@ -85,7 +92,9 @@ class YearResolver:
             if resp.is_success:
                 years = (year_of(r.get("first-release-date")) for r in resp.json()["recordings"])
                 return [y for y in years if y is not None]
-            log.warning("MusicBrainz answered %s for %s", resp.status_code, isrc)
             if attempt == 0:
+                log.debug("MusicBrainz answered %s for %s, retrying", resp.status_code, isrc)
                 await asyncio.sleep(2 * self._min_interval)
+            else:
+                log.warning("MusicBrainz answered %s twice for %s", resp.status_code, isrc)
         return None

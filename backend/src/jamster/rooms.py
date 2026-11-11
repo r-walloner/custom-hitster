@@ -31,6 +31,32 @@ IDLE_SECONDS = 6 * 3600  # an empty room is dropped after this long
 TEST_PLAYBACK_SECONDS = 5
 
 
+class RoomLog(logging.LoggerAdapter[logging.Logger]):
+    """Prefixes every record with the room code, so one game can be followed in the log."""
+
+    def process(self, msg: Any, kwargs: Any) -> tuple[Any, Any]:
+        return f"[{self.extra['room'] if self.extra else '?'}] {msg}", kwargs
+
+
+def describe(card: Card) -> str:
+    return f'"{card.name}" by {", ".join(card.artists)} ({card.year})'
+
+
+def _count(n: int, noun: str) -> str:
+    return f"{n} {noun}" if n == 1 else f"{n} {noun}s"
+
+
+def where(timeline: list[Card], slot: int) -> str:
+    """A slot of a timeline in words: "before 1984", "between 1984 and 1991", "after 1991"."""
+    if not timeline:
+        return "on the empty timeline"
+    if slot == 0:
+        return f"before {timeline[0].year}"
+    if slot == len(timeline):
+        return f"after {timeline[-1].year}"
+    return f"between {timeline[slot - 1].year} and {timeline[slot].year}"
+
+
 class RoomError(Exception):
     """The request is not allowed. The message is shown to the player who sent it."""
 
@@ -61,6 +87,7 @@ class Room:
         self, code: str, services: Services, host_client: str, host_spotify: str, host_name: str
     ) -> None:
         self.code = code
+        self.log = RoomLog(log, {"room": code})
         self.host_client = host_client
         self.seats = [Seat(secrets.token_hex(4), host_name, host_client, host_spotify)]
         self.settings = m.RoomSettings()
@@ -90,6 +117,7 @@ class Room:
     async def connect(self, ws: WebSocket, client_id: str, spotify_id: str | None) -> None:
         self._sockets[ws] = (client_id, spotify_id)
         seat = self._seat_of(client_id)
+        self.log.info("%s connected", seat.name if seat else "a visitor")
         # A guest who has signed in with Spotify since joining gets their library linked.
         if (
             seat
@@ -99,11 +127,15 @@ class Room:
             and not self.has_spotify_player(spotify_id)
         ):
             seat.spotify_id = spotify_id
+            self.log.info("%s linked their Spotify library", seat.name)
             self._invalidate_deck()
         await self.broadcast()
 
     async def disconnect(self, ws: WebSocket) -> None:
-        self._sockets.pop(ws, None)
+        client = self._sockets.pop(ws, None)
+        if client:
+            seat = self._seat_of(client[0])
+            self.log.info("%s disconnected", seat.name if seat else "a visitor")
         self.last_active = time.monotonic()
         await self.broadcast()
 
@@ -113,12 +145,16 @@ class Room:
         client_id, _ = self._sockets[ws]
         try:
             await self._dispatch(ws, client_id, m.client_message.validate_python(raw))
-        except ValidationError:
+        except ValidationError as exc:
+            self.log.debug("not understood: %r (%s)", raw, exc)
             await self._send(ws, m.ErrorMessage(message="That request was not understood"))
         except (RoomError, engine.RuleError) as exc:
+            seat = self._seat_of(client_id)
+            kind = raw.get("type") if isinstance(raw, dict) else raw
+            self.log.debug("refused %s from %s: %s", kind, seat.name if seat else "a visitor", exc)
             await self._send(ws, m.ErrorMessage(message=str(exc)))
         except Exception:
-            log.exception("room %s: handling %r failed", self.code, raw)
+            self.log.exception("handling %r failed", raw)
             await self._send(ws, m.ErrorMessage(message="Something went wrong on the server"))
         else:
             await self.broadcast()
@@ -158,7 +194,7 @@ class Room:
     def _task_done(self, task: asyncio.Task[Any]) -> None:
         self._tasks.discard(task)
         if not task.cancelled() and task.exception():
-            log.error("room %s: background task failed", self.code, exc_info=task.exception())
+            self.log.error("background task failed", exc_info=task.exception())
 
     # --- views ---------------------------------------------------------------------------
 
@@ -233,10 +269,15 @@ class Room:
     def _add_seat(self, name: str, client_id: str | None, spotify_id: str | None) -> None:
         if len(self.seats) >= MAX_PLAYERS:
             raise RoomError("The room is full")
-        self.seats.append(Seat(secrets.token_hex(4), name, client_id, spotify_id))
+        seat = Seat(secrets.token_hex(4), name, client_id, spotify_id)
+        self.seats.append(seat)
+        how = "with Spotify" if spotify_id else "without Spotify"
+        self.log.info("%s joined, %s", name, how if client_id else "played by the host")
         self._invalidate_deck()
 
     def _invalidate_deck(self) -> None:
+        if self.deck_view.status == "dealing":
+            self.log.info("dealing abandoned: players or settings changed")
         self._deck_epoch += 1
         self.deck_view = m.DeckView()
 
@@ -261,6 +302,7 @@ class Room:
                 self._lobby_only()
                 if any(s.id == player_id and s.client_id == self.host_client for s in self.seats):
                     raise RoomError("The host cannot be removed")
+                self.log.info("%s was removed", self._name(player_id))
                 self.seats = [s for s in self.seats if s.id != player_id]
                 self._invalidate_deck()
 
@@ -270,6 +312,13 @@ class Room:
                 if settings.strategy not in STRATEGIES:
                     raise RoomError("There is no such curation strategy")
                 old, self.settings = self.settings, settings
+                changes = [
+                    f"{key} {value} -> {getattr(settings, key)}"
+                    for key, value in old.model_dump().items()
+                    if getattr(settings, key) != value
+                ]
+                if changes:
+                    self.log.info("settings: %s", ", ".join(changes))
                 if (old.deck_size, old.strategy) != (settings.deck_size, settings.strategy):
                     self._invalidate_deck()
 
@@ -289,6 +338,7 @@ class Room:
                 self._host_only(client_id)
                 if self.game is None:
                     raise RoomError("No game is running")
+                self.log.info("the host ended the game | %s", self._standings(self.game))
                 self.game = None
                 self._stop_looking_ahead()
                 self.playback = m.PlaybackView()
@@ -300,6 +350,11 @@ class Room:
                     devices = await self._s.spotify.devices(spotify_id)
                 except SpotifyError as exc:
                     raise RoomError(exc.friendly) from exc
+                self.log.debug(
+                    "devices of %s: %s",
+                    self._name(self._own_seat(client_id).id),
+                    ", ".join(f"{d.name} ({d.type})" for d in devices) or "none",
+                )
                 views = [
                     m.DeviceView(id=d.id, name=d.name, kind=d.type, is_active=d.is_active)
                     for d in devices
@@ -309,6 +364,7 @@ class Room:
             case m.SetDevice(device_id=device_id, name=name):
                 seat, _ = self._spotify_seat(client_id)
                 seat.device_id, seat.device_name = device_id, name if device_id else None
+                self.log.info("%s plays music on %s", seat.name, name or "their active device")
 
             case m.TestPlayback():
                 self._lobby_only()
@@ -317,6 +373,7 @@ class Room:
                 if uri is None:
                     raise RoomError("Import your library first")
                 error = await self._play_one(seat, uri, 0)
+                self.log.info("%s tested playback: %s", seat.name, error or "it works")
                 text = error or f"Playing {TEST_PLAYBACK_SECONDS} seconds from your library"
                 await self._send(ws, m.PlaybackTestMessage(ok=error is None, message=text))
                 if error is None:
@@ -325,6 +382,9 @@ class Room:
             case m.RetryPlayback():
                 failed = {f.player_id for f in self.playback.failures}
                 if self.game is not None and failed:
+                    self.log.info(
+                        "retrying playback for %s", ", ".join(self._name(s) for s in failed)
+                    )
                     self._start_playback(only=failed)
 
             case m.Place(slot=slot, as_player=who):
@@ -359,10 +419,82 @@ class Room:
     def _act(self, action: engine.Action) -> None:
         if self.game is None:
             raise RoomError("No game is running")
-        draws = self.game.draws
-        self.game = engine.apply(self.game, action)
-        if self.game.draws != draws:
+        before = self.game
+        self.game = game = engine.apply(before, action)
+        if line := self._narrate(action, before, game):
+            self.log.info("%s", line)
+        if game.outcome and not before.outcome:
+            self.log.info("%s", self._reveal_line(game))
+        if game.phase == "finished" and before.phase != "finished":
+            self._log_game_over(game)
+        elif game.draws != before.draws:
+            self._log_new_card(game)
+        if game.draws != before.draws:
             self._start_playback()
+
+    def _name(self, seat_id: str) -> str:
+        return next((s.name for s in self.seats if s.id == seat_id), seat_id)
+
+    def _narrate(self, action: engine.Action, before: engine.Game, after: engine.Game) -> str:
+        """The move in words. Slots refer to the active player's timeline."""
+        name = self._name
+        timeline = next(p.timeline for p in before.players if p.id == before.active)
+        match action:
+            case engine.Place(player, slot):
+                return f"{name(player)} puts the card {where(timeline, slot)}"
+            case engine.Lock(player):
+                return f"{name(player)} locks in"
+            case engine.Skip(player):
+                return f"{name(player)} pays a token to skip {describe(before.card)}"
+            case engine.Buzz(player):
+                return f"{name(player)} challenges"
+            case engine.PickSlot(player, slot):
+                return f"{name(player)} says it goes {where(timeline, slot)}"
+            case engine.Pass(player):
+                return f"{name(player)} passes"
+            case engine.Reveal():
+                return "the challenge window is closed"
+            case engine.SetNamed(value):
+                said = "named" if value else "did not name"
+                return f"{name(after.active)} {said} title and artist"
+            case engine.Buy(player):
+                return f"{name(player)} buys {describe(before.deck[0])} for 3 tokens"
+            case engine.NextTurn():
+                return ""  # the new card's line says it all
+
+    def _reveal_line(self, game: engine.Game) -> str:
+        assert game.outcome is not None
+        active = self._name(game.active)
+        if game.outcome.correct:
+            result = f"{active} was right"
+        elif game.outcome.card_to:
+            result = f"{active} was wrong, {self._name(game.outcome.card_to)} takes the card"
+        else:
+            result = f"{active} was wrong, the card is discarded"
+        return f"it was {describe(game.card)}: {result}"
+
+    def _standings(self, game: engine.Game) -> str:
+        return "; ".join(
+            f"{self._name(p.id)} {_count(len(p.timeline), 'card')}, {_count(p.tokens, 'token')}"
+            for p in game.players
+        )
+
+    def _log_new_card(self, game: engine.Game) -> None:
+        self.log.info(
+            "turn %d, %s's turn: playing %s | %s",
+            game.turn_number,
+            self._name(game.active),
+            describe(game.card),
+            self._standings(game),
+        )
+
+    def _log_game_over(self, game: engine.Game) -> None:
+        self.log.info(
+            "game over after %d turns, %s won | %s",
+            game.turn_number,
+            " and ".join(self._name(w) for w in game.winners),
+            self._standings(game),
+        )
 
     # --- deck ----------------------------------------------------------------------------
 
@@ -380,16 +512,25 @@ class Room:
                 self._s.rng,
             )
             entries = cached_first(self._s.conn, entries, needed)
+            self.log.info(
+                "dealing: %d songs chosen by %r, looking up the years of the first %d",
+                len(entries),
+                self.settings.strategy,
+                needed,
+            )
             while entries and len(cards) < needed:
-                card = await to_card(self._s.resolver, entries.pop(0))
+                entry = entries.pop(0)
+                card = await to_card(self._s.resolver, entry)
                 if epoch != self._deck_epoch:
                     return  # players or settings changed meanwhile
+                if card is None:
+                    self.log.info("no year for %r (%s), dropped", entry.track.name, entry.track.uri)
                 if card:
                     cards.append(card)
                     self.deck_view = m.DeckView(status="dealing", done=len(cards), total=needed)
                     await self.broadcast()
         except Exception:
-            log.exception("room %s: dealing failed", self.code)
+            self.log.exception("dealing failed")
             if epoch == self._deck_epoch:
                 self.deck_view = m.DeckView(status="error", error="Starting the game failed")
                 await self.broadcast()
@@ -397,6 +538,7 @@ class Room:
         if epoch != self._deck_epoch:
             return
         if len(cards) < needed:
+            self.log.warning("only %d of %d opening cards have a year", len(cards), needed)
             self.deck_view = m.DeckView(
                 status="error", error="Too few songs with a known year for this many players"
             )
@@ -408,9 +550,20 @@ class Room:
                 starting_tokens=self.settings.starting_tokens,
             )
             self.game = engine.new_game(order, cards, rules)
+            self.log.info(
+                "game started in %s mode, first to %d cards, %d starting tokens; dealt %s",
+                self.settings.mode,
+                rules.cards_to_win,
+                rules.starting_tokens,
+                ", ".join(
+                    f"{self._name(p.id)} {describe(p.timeline[0])}" for p in self.game.players
+                ),
+            )
+            self.deck_view = m.DeckView()  # dealt
             self._invalidate_deck()  # the dealt cards are in the game now
             self._stop_looking_ahead()
             self._pending = entries
+            self._log_new_card(self.game)
             self._spawn(self._look_ahead(self._game_number))
             self._start_playback()
         await self.broadcast()
@@ -422,12 +575,16 @@ class Room:
                 card = await to_card(self._s.resolver, self._pending[0])
                 if number != self._game_number or self.game is None:
                     return
-                self._pending.pop(0)
+                entry = self._pending.pop(0)
                 if card:
                     self.game.deck.append(card)
+                else:
+                    self.log.info("no year for %r (%s), dropped", entry.track.name, entry.track.uri)
                 self._deck_grew.set()
                 if self.game.phase == "finished":
                     self._pending = []
+                elif not self._pending:
+                    self.log.debug("every card in the deck has its year now")
         except Exception:
             if number == self._game_number:
                 self._pending = []  # the game plays on with the cards it has
@@ -446,6 +603,7 @@ class Room:
         Normally the look-ahead is many cards ahead and this returns at once.
         """
         while self.game is not None and not self.game.deck and self._pending:
+            self.log.info("waiting for the next card's year from MusicBrainz")
             self._deck_grew.clear()
             await self._deck_grew.wait()
 
@@ -468,6 +626,8 @@ class Room:
             position_ms = int((time.monotonic() - self._play_started) * 1000)
             kept = [f for f in self.playback.failures if f.player_id not in only]
         targets = [s for s in self._listeners() if only is None or s.id in only]
+        if not targets:
+            self.log.warning("nobody in the room can play music: no seat has Spotify")
         self.playback = m.PlaybackView(status="starting", failures=kept)
         self._spawn(self._play(self.game.draws, self.game.card.uri, targets, position_ms, kept))
 
@@ -495,10 +655,18 @@ class Room:
     async def _play_one(self, seat: Seat, uri: str, position_ms: int) -> str | None:
         """Start a track on one seat's Spotify. Returns what to tell the player if it failed."""
         if seat.spotify_id is None:
+            self.log.warning("cannot play %s for %s: no Spotify account", uri, seat.name)
             return "No Spotify account connected"
         try:
             await self._s.spotify.play(seat.spotify_id, uri, seat.device_id, position_ms)
         except SpotifyError as exc:
+            self.log.warning(
+                "playing %s on %s's Spotify (%s) failed: %s",
+                uri,
+                seat.name,
+                seat.device_name or "active device",
+                exc,
+            )
             return exc.friendly
         return None
 
@@ -507,8 +675,8 @@ class Room:
             if seat.spotify_id:
                 try:
                     await self._s.spotify.pause(seat.spotify_id, seat.device_id)
-                except SpotifyError:
-                    pass  # best effort: nothing may be playing
+                except SpotifyError as exc:
+                    self.log.debug("pausing failed, maybe nothing was playing: %s", exc)
 
         await asyncio.gather(*(pause(s) for s in seats))
 
@@ -578,6 +746,7 @@ class Rooms:
             pass
         room = Room(code, self._services, host_client, host_spotify, host_name)
         self._rooms[code] = room
+        room.log.info("room created by %s", host_name)
         return room
 
     def get(self, code: str) -> Room | None:

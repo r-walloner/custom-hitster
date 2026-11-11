@@ -1,6 +1,7 @@
 """Spotify login, token refresh, Web API requests and playback control."""
 
 import asyncio
+import logging
 import sqlite3
 import time
 from collections.abc import AsyncIterator
@@ -16,6 +17,8 @@ from .config import Settings
 AUTHORIZE_URL = "https://accounts.spotify.com/authorize"
 TOKEN_URL = "https://accounts.spotify.com/api/token"
 API_URL = "https://api.spotify.com/v1"
+
+log = logging.getLogger(__name__)
 
 SCOPES = " ".join(
     [
@@ -120,6 +123,7 @@ class Spotify:
         player_id, name = me["id"], me.get("display_name") or me["id"]
         db.upsert_player(self._conn, player_id, name, tokens["refresh_token"])
         self._remember(player_id, tokens)
+        log.info("%s signed in with Spotify", name)
         return player_id, name
 
     def forget(self, player_id: str) -> None:
@@ -159,11 +163,13 @@ class Spotify:
             player = db.get_player(self._conn, player_id)
             if player is None or player.refresh_token is None:
                 raise ReauthRequired()
+            log.debug("refreshing the access token of %s", player_id)
             try:
                 tokens = await self._token_request(
                     {"grant_type": "refresh_token", "refresh_token": player.refresh_token}
                 )
             except SpotifyError as exc:
+                log.warning("refreshing the Spotify login of %s failed: %s", player_id, exc)
                 if exc.reason == "invalid_grant":
                     db.set_refresh_token(self._conn, player_id, None)
                     raise ReauthRequired() from exc
@@ -196,6 +202,12 @@ class Spotify:
                 json=json,
                 headers={"Authorization": f"Bearer {token}"},
             )
+            if resp.is_error:
+                log.debug(
+                    "%s %s as %s: %s %s", method, path, player_id, resp.status_code, resp.text[:300]
+                )
+            else:
+                log.debug("%s %s as %s: %s", method, path, player_id, resp.status_code)
             if resp.status_code == 401 and not reauthed:
                 self._tokens.pop(player_id, None)
                 reauthed = True

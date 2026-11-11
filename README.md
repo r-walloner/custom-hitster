@@ -83,6 +83,18 @@ The backend and Docker Compose both read it.
 | `JAMSTER_SESSION_SECRET` | Any long random string, used to sign the session cookie. |
 | `JAMSTER_BASE_URL` | Public address in production, such as `https://jamster.example.com`, and empty locally. |
 | `JAMSTER_MUSICBRAINZ_CONTACT` | A URL or email address sent to MusicBrainz, whose API rules ask for one. |
+| `JAMSTER_LOG_LEVEL` | `INFO` (the default), `DEBUG`, `WARNING` or `ERROR`. |
+| `JAMSTER_LOG_TO` | `file` (the default) or `stdout`. The container image defaults to `stdout`. |
+| `JAMSTER_LOG_FILE` | The log file, by default `jamster.log` in the data directory, so `backend/data/jamster.log` in development. |
+
+The log variables are optional.
+At `INFO`, the log tells each game move by move: whose turn it is, which song plays, every placement, challenge and reveal, and the standings.
+It also records players coming and going, settings changes, logins and imports.
+Failures the game survives, such as a song Spotify refuses to play, are `WARNING` lines with Spotify's reason.
+`DEBUG` adds every Spotify and MusicBrainz call and every refused request.
+Only Jamster's own lines are logged below `WARNING`, so the web server's request lines stay out.
+The log names the song in play, so don't watch it during a game.
+The log file rotates at 10 MB and keeps five old files.
 
 Generate the session secret with:
 
@@ -150,6 +162,7 @@ There are no frontend tests.
 | `backend/src/jamster/curation.py`, `deck.py` | Deck strategies and deck building. |
 | `backend/src/jamster/db.py` | The SQLite schema and every query. |
 | `backend/src/jamster/web.py` | Routes, the room WebSocket, static files. |
+| `backend/src/jamster/logs.py` | Where log records go, and from which level. |
 | `frontend/src/` | The React app: `pages/`, `components/`, `useRoom.ts`. |
 
 `backend/src/jamster/messages.py` and `frontend/src/messages.ts` describe the same WebSocket messages and are kept in sync by hand.
@@ -182,6 +195,7 @@ docker compose up --build
 ```
 
 This builds the image and serves everything on http://127.0.0.1:8000, using `.env`.
+The container logs to stdout, so `docker compose logs -f` shows the log.
 
 To check an image without real credentials, build it and query its health endpoint:
 

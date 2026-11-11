@@ -47,6 +47,7 @@ npm create vite@latest frontend -- --template react-ts --no-interactive
 - `backend/src/jamster/curation.py`, `deck.py`: deck strategies and deck building.
 - `backend/src/jamster/db.py`: the schema and every SQL statement.
 - `backend/src/jamster/web.py`: routes, the room WebSocket, static files.
+- `backend/src/jamster/logs.py`: logging setup. Modules log via `logging.getLogger(__name__)`; rooms via `room.log`, which prefixes the room code.
 - `backend/tests/fake_spotify.py`: stands in for Spotify and MusicBrainz in tests.
 - `frontend/src/`: `messages.ts`, `useRoom.ts`, `pages/`, `components/`.
 
@@ -60,6 +61,7 @@ npm create vite@latest frontend -- --template react-ts --no-interactive
 - Curation strategies are pure functions registered in `curation.STRATEGIES`. Never send Spotify data to an ML model or an LLM; Spotify's developer policy forbids it.
 - Before adding a Spotify API call, check that Development Mode still offers it (see Pitfalls in the brief). There is no batch `GET /tracks`, no artist top tracks and no `popularity` field.
 - Call MusicBrainz only through `YearResolver`, which keeps to one request per second.
-- Tests never touch the network. Use `FakeSpotify` as the `transport` of `create_app`.
+- Logging: game and room events at INFO, as one short readable sentence each (names, not ids); outside calls and refused requests at DEBUG; failures the app survives at WARNING. Don't log the same fact twice. Never log tokens or secrets.
+- Tests never touch the network, and never read `.env`: build settings with `OfflineSettings` from `tests/offline_settings.py`. Use `FakeSpotify` as the `transport` of `create_app`.
 - In `frontend/vite.config.ts`, keep proxy entries in object form. The string shorthand rewrites the Host header, which breaks the Spotify callback URL.
 - Check `uv.lock` and `package-lock.json` in whenever dependencies change.
