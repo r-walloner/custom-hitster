@@ -69,7 +69,15 @@ class TestPlayback(_Client):
 
 
 class RetryPlayback(_Client):
+    """Start the song again for the players whose playback failed, at the others' position."""
+
     type: Literal["retry_playback"]
+
+
+class RestartPlayback(_Client):
+    """Start the song again from the beginning for everyone who hears the music."""
+
+    type: Literal["restart_playback"]
 
 
 class Place(_Acting):
@@ -126,6 +134,7 @@ ClientMessage = Annotated[
     | SetDevice
     | TestPlayback
     | RetryPlayback
+    | RestartPlayback
     | Place
     | LockIn
     | Skip

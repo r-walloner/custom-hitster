@@ -28,6 +28,7 @@ export function Game({ state, game, send, devicePicker }: Props) {
   // newer state (it always does, also on a refusal), the draw buttons stay locked.
   const [drawSentAt, setDrawSentAt] = useState<StateMessage | null>(null)
   const loading = game.drawing || drawSentAt === state
+  const restart = () => send({ type: 'restart_playback' })
   const draw = (message: ClientMessage) => {
     setDrawSentAt(state)
     send(message)
@@ -108,7 +109,10 @@ export function Game({ state, game, send, devicePicker }: Props) {
               <strong>{name(failure.player_id)}:</strong> {failure.message}
             </p>
           ))}
-          <button onClick={() => send({ type: 'retry_playback' })}>Retry playback</button>
+          <div className="row wrap">
+            <button onClick={() => send({ type: 'retry_playback' })}>Retry playback</button>
+            {referee && <button onClick={restart}>Restart song for everyone</button>}
+          </div>
         </div>
       )}
       {listening && playback.status === 'failed' && <section className="panel">{devicePicker}</section>}
@@ -139,6 +143,16 @@ export function Game({ state, game, send, devicePicker }: Props) {
               </p>
             </div>
           </>
+        )}
+        {referee && game.phase !== 'finished' && (
+          <button
+            className="restart"
+            disabled={playback.status === 'starting'}
+            title="Start the song again from the beginning"
+            onClick={restart}
+          >
+            ↻ Restart song
+          </button>
         )}
       </section>
 

@@ -308,6 +308,19 @@ def test_local_game_plays_only_on_the_host_and_recovers_from_a_playback_failure(
         assert room["playback"]["failures"] == []
         assert [p.user for p in fake.plays] == ["alice"]  # local mode: Bob's account stays silent
 
+        # Restarting plays the same song again from the start; only the referee may do it.
+        if room["game"]["active"] != next(p["id"] for p in room["players"] if p["name"] == "Bob"):
+            b.send_json({"type": "restart_playback"})
+            message = until(b, is_type("error"))["message"]
+            assert message == "Only the host or the active player can do that"
+        a.send_json({"type": "restart_playback"})
+        for _ in range(200):
+            if len(fake.plays) == 2:
+                break
+            time.sleep(0.01)
+        first, again = fake.plays
+        assert (again.user, again.uri, again.position_ms) == ("alice", first.uri, 0)
+
     # A player who reconnects gets their seat back.
     with bob.socket(code) as b:
         assert until(b, is_type("state"))["you"]["player_id"] is not None

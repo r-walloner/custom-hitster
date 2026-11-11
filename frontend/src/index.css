@@ -371,6 +371,11 @@ progress {
   gap: 1rem;
 }
 
+.now-playing .restart {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
 .now-playing img {
   width: 7rem;
   height: 7rem;

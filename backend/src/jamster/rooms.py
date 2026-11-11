@@ -389,6 +389,14 @@ class Room:
                     )
                     self._start_playback(only=failed)
 
+            case m.RestartPlayback():
+                self._referee_only(client_id)
+                if self.game is None or self.game.phase == "finished":
+                    raise RoomError("No song is playing")
+                seat = self._seat_of(client_id)
+                self.log.info("%s restarted the song", seat.name if seat else "the host")
+                self._start_playback()
+
             case m.Place(slot=slot, as_player=who):
                 self._act(engine.Place(self._actor(client_id, who), slot))
             case m.LockIn(as_player=who):

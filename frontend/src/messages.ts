@@ -112,7 +112,7 @@ export type ClientMessage =
   | { type: 'remove_player'; player_id: string }
   | { type: 'set_settings'; settings: RoomSettings }
   | { type: 'start_game' | 'end_game' }
-  | { type: 'get_devices' | 'test_playback' | 'retry_playback' }
+  | { type: 'get_devices' | 'test_playback' | 'retry_playback' | 'restart_playback' }
   | { type: 'set_device'; device_id: string | null; name: string | null }
   | ({ type: 'place' | 'pick_slot'; slot: number } & Acting)
   | ({ type: 'lock' | 'skip' | 'buzz' | 'pass' | 'buy' } & Acting)
