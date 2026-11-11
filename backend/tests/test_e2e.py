@@ -337,17 +337,22 @@ def test_years_are_looked_up_only_when_a_card_is_drawn(client: TestClient, fake:
         assert len(fake.lookups) == 2, "nothing is looked up in the background"
 
         # The next song's year is looked up now; the turn waits for it instead of ending the game.
-        a.send_json({"type": "next_turn"})
-        time.sleep(0.1)
-        assert len(fake.lookups) == 3
-        fake.lookup_allowance = None
+        # A second tab is a second connection, which the server serves while the first waits.
+        with alice.socket(code) as tab:
+            a.send_json({"type": "next_turn"})
+            loading = until(tab, state_where(lambda r: r["game"]["drawing"]))["room"]["game"]
+            assert loading["turn_number"] == 1, "every device sees the next song loading"
+            tab.send_json({"type": "next_turn"})  # clicked again elsewhere while it loads
+            assert until(tab, is_type("error"))["message"] == "The next song is still loading"
+            assert len(fake.lookups) == 3, "the second click looks nothing up"
+            fake.lookup_allowance = None
         game = until(
             a,
             state_where(
                 lambda r: r["game"]["turn_number"] == 2 and r["playback"]["status"] == "playing"
             ),
         )["room"]["game"]
-        assert (game["phase"], game["deck_remaining"]) == ("placing", 7)
+        assert (game["phase"], game["deck_remaining"], game["drawing"]) == ("placing", 7, False)
         assert fake.lookups[-1] == f"ISRC{int(fake.plays[-1].uri.rsplit('track', 1)[1]):08d}"
         time.sleep(0.1)
         assert len(fake.lookups) == 3, "still only the cards that were drawn"

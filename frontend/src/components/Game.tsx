@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { ReactNode } from 'react'
-import type { GameView, Send, StateMessage } from '../messages.ts'
+import type { ClientMessage, GameView, Send, StateMessage } from '../messages.ts'
 import { Timeline } from './Timeline.tsx'
 
 interface Props {
@@ -24,6 +24,14 @@ export function Game({ state, game, send, devicePicker }: Props) {
   const { room, you } = state
   // Default to the player on turn, so a game on one device needs no switching.
   const [acting, setActing] = useState(ACTIVE)
+  // The state on screen when this device asked for a new card. Until the server answers with a
+  // newer state (it always does, also on a refusal), the draw buttons stay locked.
+  const [drawSentAt, setDrawSentAt] = useState<StateMessage | null>(null)
+  const loading = game.drawing || drawSentAt === state
+  const draw = (message: ClientMessage) => {
+    setDrawSentAt(state)
+    send(message)
+  }
 
   // The seat the buttons act for. The host can play for anyone, e.g. everyone on one device.
   const actor = !you.is_host || acting === MYSELF ? you.player_id : acting === ACTIVE ? game.active : acting
@@ -180,10 +188,10 @@ export function Game({ state, game, send, devicePicker }: Props) {
                   Lock in
                 </button>
                 <button
-                  disabled={!me || me.tokens < 1 || game.deck_remaining === 0}
-                  onClick={() => send({ type: 'skip', ...onBehalf })}
+                  disabled={!me || me.tokens < 1 || game.deck_remaining === 0 || loading}
+                  onClick={() => draw({ type: 'skip', ...onBehalf })}
                 >
-                  Skip song (1 token)
+                  {loading ? <Loading /> : 'Skip song (1 token)'}
                 </button>
                 {game.slot === null && <span className="muted">Tap a + to place the card.</span>}
               </div>
@@ -237,17 +245,24 @@ export function Game({ state, game, send, devicePicker }: Props) {
                 >
                   No
                 </button>
-                <button className="primary" onClick={() => send({ type: 'next_turn' })}>
-                  Next turn
+                <button
+                  className="primary"
+                  disabled={loading}
+                  aria-busy={loading}
+                  onClick={() => draw({ type: 'next_turn' })}
+                >
+                  {loading ? <Loading /> : 'Next turn'}
                 </button>
               </div>
             ) : (
-              <p className="muted">Waiting for the next turn.</p>
+              <p className="muted">{loading ? <Loading /> : 'Waiting for the next turn.'}</p>
             ))}
 
           {canBuy && (
             <div className="row">
-              <button onClick={() => send({ type: 'buy', ...onBehalf })}>Buy a card (3 tokens)</button>
+              <button disabled={loading} onClick={() => draw({ type: 'buy', ...onBehalf })}>
+                {loading ? <Loading /> : 'Buy a card (3 tokens)'}
+              </button>
             </div>
           )}
         </div>
@@ -283,6 +298,15 @@ export function Game({ state, game, send, devicePicker }: Props) {
           ))}
         </ul>
       </section>
+    </>
+  )
+}
+
+function Loading() {
+  return (
+    <>
+      <span className="spinner" aria-hidden="true" />
+      Loading the next song…
     </>
   )
 }

@@ -69,6 +69,7 @@ export interface GameView {
   outcome: { correct: boolean; card_to: string | null } | null
   named: boolean | null
   winners: string[]
+  drawing: boolean // the next card's year is being looked up; draws wait until it is done
 }
 
 export interface RoomView {

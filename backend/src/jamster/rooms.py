@@ -140,7 +140,7 @@ class Room:
         await self.broadcast()
 
     async def handle(self, ws: WebSocket, raw: Any) -> None:
-        """Process one message from a client, then send everyone the new state."""
+        """Process one message from a client, then send everyone the current state."""
         self.last_active = time.monotonic()
         client_id, _ = self._sockets[ws]
         try:
@@ -156,8 +156,8 @@ class Room:
         except Exception:
             self.log.exception("handling %r failed", raw)
             await self._send(ws, m.ErrorMessage(message="Something went wrong on the server"))
-        else:
-            await self.broadcast()
+        # Every request gets a state back, refused ones too: clients wait for it to unlock buttons.
+        await self.broadcast()
 
     async def broadcast(self) -> None:
         # The snapshot is taken inside the lock, so states always arrive in order.
@@ -218,7 +218,9 @@ class Room:
             ],
             deck=self.deck_view,
             playback=self.playback,
-            game=_game_view(self.game, len(self._pending)) if self.game else None,
+            game=_game_view(self.game, len(self._pending), self._drawing.locked())
+            if self.game
+            else None,
         )
 
     def _library(self, spotify_id: str | None) -> m.LibraryView | None:
@@ -413,6 +415,8 @@ class Room:
                 self._act(engine.SetNamed(value))
             case m.NextTurn():
                 self._referee_only(client_id)
+                if self.game and self.game.phase != "revealed":
+                    raise engine.RuleError("The card is not revealed yet")  # before any lookup
                 await self._prepare_draw()
                 self._act(engine.NextTurn())
 
@@ -575,7 +579,12 @@ class Room:
     async def _prepare_draw(self) -> None:
         """Look up the year of the next card just before it is drawn, so MusicBrainz is asked
         only about songs that are actually played. Cached years cost nothing."""
-        async with self._drawing:  # two quick clicks must not look up two cards
+        if self._drawing.locked():
+            raise RoomError("The next song is still loading")
+        if self.game is None or self.game.deck or not self._pending:
+            return  # a card is ready, or the deck has really run out
+        async with self._drawing:
+            await self.broadcast()  # shows everyone that the next song is loading
             number = self._game_number
             while self.game is not None and not self.game.deck and self._pending:
                 entry = self._pending.pop(0)
@@ -676,7 +685,7 @@ def _card_view(card: Card) -> dict[str, Any]:
     }
 
 
-def _game_view(game: engine.Game, pending: int) -> m.GameView:
+def _game_view(game: engine.Game, pending: int, drawing: bool) -> m.GameView:
     """What clients may see: the card in play stays hidden until it is revealed. `pending`
     counts the undrawn cards whose years have not been looked up yet."""
     revealed = game.phase in ("revealed", "finished")
@@ -707,6 +716,7 @@ def _game_view(game: engine.Game, pending: int) -> m.GameView:
         else None,
         named=game.named,
         winners=game.winners,
+        drawing=drawing,
     )
 
 

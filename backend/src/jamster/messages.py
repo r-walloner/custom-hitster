@@ -221,6 +221,7 @@ class GameView(BaseModel):
     outcome: OutcomeView | None
     named: bool | None
     winners: list[str]
+    drawing: bool  # the next card's year is being looked up; draws wait until it is done
 
 
 class RoomView(BaseModel):
