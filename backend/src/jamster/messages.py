@@ -13,6 +13,8 @@ class RoomSettings(BaseModel):
     starting_tokens: int = Field(default=2, ge=0, le=5)
     deck_size: int = Field(default=60, ge=10, le=300)
     strategy: str = "majority"
+    # How long the others may challenge after the active player locked in.
+    challenge_seconds: int = Field(default=5, ge=1, le=60)
 
 
 # --- client -> server ------------------------------------------------------------------------
@@ -98,8 +100,14 @@ class Buzz(_Acting):
 
 
 class PickSlot(_Acting):
+    """A challenger marks a slot; it can still be changed until LockPick."""
+
     type: Literal["pick_slot"]
     slot: int
+
+
+class LockPick(_Acting):
+    type: Literal["lock_pick"]
 
 
 class Pass(_Acting):
@@ -140,6 +148,7 @@ ClientMessage = Annotated[
     | Skip
     | Buzz
     | PickSlot
+    | LockPick
     | Pass
     | Buy
     | Reveal
@@ -210,6 +219,7 @@ class GamePlayerView(BaseModel):
 class ChallengeView(BaseModel):
     player_id: str
     slot: int | None
+    locked: bool
 
 
 class OutcomeView(BaseModel):
@@ -218,7 +228,7 @@ class OutcomeView(BaseModel):
 
 
 class GameView(BaseModel):
-    phase: Literal["placing", "challenging", "revealed", "finished"]
+    phase: Literal["placing", "challenging", "picking", "revealed", "finished"]
     turn_number: int
     active: str
     deck_remaining: int
@@ -231,6 +241,7 @@ class GameView(BaseModel):
     named: bool | None
     winners: list[str]
     drawing: bool  # the next card's year is being looked up; draws wait until it is done
+    window_left_ms: int | None  # while challenging: time left until the window closes
 
 
 class RoomView(BaseModel):

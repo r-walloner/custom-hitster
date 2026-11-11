@@ -87,57 +87,88 @@ def test_only_the_active_player_places():
         play(game(1980, 1990, 2000, 2010), e.Place("b", 0))
 
 
+def challenge(g: e.Game, player: str, slot: int) -> e.Game:
+    return play(g, e.PickSlot(player, slot), e.LockPick(player))
+
+
 def test_right_challenge_steals_the_card_into_the_challengers_timeline():
-    g = play(
-        game(1980, 1990, 1985, 2010), e.Place("a", 0), e.Lock("a"), e.Buzz("b"), e.PickSlot("b", 1)
-    )
+    g = play(game(1980, 1990, 1985, 2010), e.Place("a", 0), e.Lock("a"), e.Buzz("b"))
+    assert g.phase == "picking", "b was the only one who could challenge"
+    g = challenge(g, "b", 1)
     assert g.outcome == e.Outcome(False, "b")
     assert years(g, "a") == [1980] and years(g, "b") == [1985, 1990]
     assert tokens(g, "b") == 1
 
 
 def test_challenging_a_correct_placement_only_costs_the_token():
-    g = play(
-        game(1980, 1990, 2000, 2010), e.Place("a", 1), e.Lock("a"), e.Buzz("b"), e.PickSlot("b", 0)
-    )
+    g = play(game(1980, 1990, 2000, 2010), e.Place("a", 1), e.Lock("a"), e.Buzz("b"))
+    g = challenge(g, "b", 0)
     assert g.outcome == e.Outcome(True, "a")
     assert years(g, "b") == [1990] and tokens(g, "b") == 1
 
 
+def test_marking_a_slot_reveals_nothing_until_it_is_locked_in():
+    g = play(game(1980, 1990, 1985, 2010), e.Place("a", 0), e.Lock("a"), e.Buzz("b"))
+    g = play(g, e.PickSlot("b", 1))
+    assert (g.phase, g.outcome, tokens(g, "b")) == ("picking", None, 2)
+    with pytest.raises(e.RuleError, match="taken"):
+        play(g, e.PickSlot("b", 0))  # the active player's slot
+    g = play(g, e.PickSlot("b", 1))  # marking the same slot again is fine
+    with pytest.raises(e.RuleError, match="Mark a slot"):
+        play(
+            game(1980, 1990, 1985, 2010), e.Place("a", 0), e.Lock("a"), e.Buzz("b"), e.LockPick("b")
+        )
+
+
 def three_player_challenge(card_year: int) -> e.Game:
-    """a has [1980, 1990] and has wrongly put the card first; b buzzed before c."""
+    """a has [1980, 1990] and has wrongly put the card first; b challenged before c."""
     g = game(1980, 2001, 2002, card_year, 2010, players="abc")
     g.players[0].timeline.append(card(1990))
     return play(g, e.Place("a", 0), e.Lock("a"), e.Buzz("b"), e.Buzz("c"))
 
 
-def test_challengers_pick_in_buzz_order():
+def test_challengers_pick_in_challenge_order():
     g = three_player_challenge(1985)
+    assert g.phase == "picking", "the window closes once everyone has decided"
     with pytest.raises(e.RuleError, match="not your pick"):
         play(g, e.PickSlot("c", 1))
-    g = play(g, e.PickSlot("b", 2), e.PickSlot("c", 1))
+    g = challenge(g, "b", 2)
+    with pytest.raises(e.RuleError, match="not your pick"):
+        play(g, e.PickSlot("b", 1))
+    g = challenge(g, "c", 1)
     assert g.outcome == e.Outcome(False, "c")
     assert tokens(g, "b") == 1 and tokens(g, "c") == 1
 
 
-def test_first_buzzer_wins_when_two_challenges_are_right():
-    g = play(three_player_challenge(1990), e.PickSlot("b", 2), e.PickSlot("c", 1))
+def test_first_challenger_wins_when_two_challenges_are_right():
+    g = challenge(challenge(three_player_challenge(1990), "b", 2), "c", 1)
     assert g.outcome == e.Outcome(False, "b")
 
 
 def test_a_slot_can_only_be_marked_once():
-    g = three_player_challenge(1985)
+    g = challenge(three_player_challenge(1985), "b", 1)
     with pytest.raises(e.RuleError, match="taken"):
-        play(g, e.PickSlot("b", 0))  # the active player's slot
-    with pytest.raises(e.RuleError, match="taken"):
-        play(g, e.PickSlot("b", 1), e.PickSlot("c", 1))
+        play(g, e.PickSlot("c", 1))
 
 
-def test_no_buzz_once_every_slot_is_spoken_for():
+def test_no_challenge_once_every_slot_is_spoken_for():
     g = play(game(1980, 2001, 2002, 1970, 2010, players="abc"), e.Place("a", 1), e.Lock("a"))
     g = play(g, e.Buzz("b"))  # slot 0 is the only free one
-    with pytest.raises(e.RuleError, match="free slot"):
+    assert g.phase == "picking", "c cannot challenge any more, so the window closes"
+    with pytest.raises(e.RuleError, match="over"):
         play(g, e.Buzz("c"))
+
+
+def test_the_window_stays_open_until_everyone_decided_or_time_is_up():
+    g = game(1980, 2001, 2002, 1985, 2010, players="abc")
+    g.players[0].timeline.append(card(1990))  # three slots: room for a and two challengers
+    g = play(g, e.Place("a", 0), e.Lock("a"), e.Buzz("b"))
+    assert g.phase == "challenging", "c may still challenge"
+    assert play(g, e.CloseWindow()).phase == "picking"
+    timed_out = play(game(1980, 1990, 2000, 2010), e.Place("a", 1), e.Lock("a"), e.CloseWindow())
+    assert timed_out.phase == "revealed" and timed_out.outcome == e.Outcome(True, "a")
+    with pytest.raises(e.RuleError, match="over"):
+        play(timed_out, e.CloseWindow())
 
 
 def test_passing_is_final_and_buzzing_needs_a_token():
@@ -154,8 +185,9 @@ def test_lock_reveals_at_once_when_nobody_can_challenge():
     assert g.phase == "revealed"
 
 
-def test_forced_reveal_drops_unpicked_challenges_for_free():
-    g = play(game(1980, 1990, 2000, 2010), e.Place("a", 1), e.Lock("a"), e.Buzz("b"), e.Reveal())
+def test_forced_reveal_drops_unlocked_challenges_for_free():
+    g = play(game(1980, 1990, 2000, 2010), e.Place("a", 1), e.Lock("a"), e.Buzz("b"))
+    g = play(g, e.PickSlot("b", 0), e.Reveal())
     assert g.phase == "revealed" and g.challenges == [] and tokens(g, "b") == 2
 
 

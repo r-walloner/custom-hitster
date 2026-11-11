@@ -13,7 +13,7 @@ A web party game for one friend group: a song plays, the player on turn places i
 - Players sign in with Spotify once. The server keeps their login and a copy of their library.
 - A deck is curated per group from those libraries, through a pluggable strategy.
 - Each card carries the year the song first came out, not the year of a remaster.
-- The game follows the Original rules of the card game Hitster ([rules](https://hitstergame.com/de-at/pages/spielregeln-original)): timelines, challenges in buzz order, tokens, first to 10 cards.
+- The game follows the Original rules of the card game Hitster ([rules](https://hitstergame.com/de-at/pages/spielregeln-original)): timelines, challenges in buzz order, tokens, first to 10 cards. Challenges are called during a short countdown after the lock-in (5 seconds by default, set by the host), and each challenger locks in their slot before the reveal.
 - The server starts each song on the host's Spotify (local mode) or on every connected player's Spotify (remote mode).
 - The host can act for any player, so a whole game works on one device.
 - Naming title and artist is said aloud and confirmed with a tap.

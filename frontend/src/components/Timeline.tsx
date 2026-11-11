@@ -11,14 +11,22 @@ interface Props {
   onPick?: (slot: number) => void
   /** Id of a card to highlight, e.g. the one just won. */
   highlight?: string
+  /** A revealed card shown where it belongs without being part of this timeline. */
+  ghost?: { slot: number; card: CardView }
 }
 
-export function Timeline({ cards, pending, marks, pickable, onPick, highlight }: Props) {
+export function Timeline({ cards, pending, marks, pickable, onPick, highlight, ghost }: Props) {
   const slot = (index: number) => (
     <div className="slot">
       {pending === index && (
         <div className="card mystery" aria-label="The card in play">
           ?
+        </div>
+      )}
+      {ghost?.slot === index && (
+        <div className="card ghost" aria-label="Where the card belongs">
+          <strong className="year">{ghost.card.year}</strong>
+          <span className="muted">belongs here</span>
         </div>
       )}
       {marks?.get(index)?.map((name) => (

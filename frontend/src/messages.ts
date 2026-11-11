@@ -7,6 +7,7 @@ export interface RoomSettings {
   starting_tokens: number
   deck_size: number
   strategy: string
+  challenge_seconds: number
 }
 
 export interface Library {
@@ -57,19 +58,20 @@ export interface GamePlayerView {
 }
 
 export interface GameView {
-  phase: 'placing' | 'challenging' | 'revealed' | 'finished'
+  phase: 'placing' | 'challenging' | 'picking' | 'revealed' | 'finished'
   turn_number: number
   active: string
   deck_remaining: number
   players: GamePlayerView[]
   slot: number | null
-  challenges: { player_id: string; slot: number | null }[]
+  challenges: { player_id: string; slot: number | null; locked: boolean }[]
   passed: string[]
   card: RevealedCard | null
   outcome: { correct: boolean; card_to: string | null } | null
   named: boolean | null
   winners: string[]
   drawing: boolean // the next card's year is being looked up; draws wait until it is done
+  window_left_ms: number | null // while challenging: time left until the window closes
 }
 
 export interface RoomView {
@@ -115,7 +117,7 @@ export type ClientMessage =
   | { type: 'get_devices' | 'test_playback' | 'retry_playback' | 'restart_playback' }
   | { type: 'set_device'; device_id: string | null; name: string | null }
   | ({ type: 'place' | 'pick_slot'; slot: number } & Acting)
-  | ({ type: 'lock' | 'skip' | 'buzz' | 'pass' | 'buy' } & Acting)
+  | ({ type: 'lock' | 'lock_pick' | 'skip' | 'buzz' | 'pass' | 'buy' } & Acting)
   | { type: 'reveal' | 'next_turn' }
   | { type: 'set_named'; value: boolean }
 

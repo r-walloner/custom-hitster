@@ -13,6 +13,7 @@ interface Props {
 const CARDS_TO_WIN = [3, 5, 7, 10, 15]
 const STARTING_TOKENS = [0, 1, 2, 3, 4, 5]
 const DECK_SIZES = [20, 40, 60, 100, 150, 200]
+const CHALLENGE_SECONDS = [3, 5, 8, 10, 15, 20, 30]
 
 export function Lobby({ state, send, devicePicker }: Props) {
   const { room, you } = state
@@ -142,6 +143,7 @@ export function Lobby({ state, send, devicePicker }: Props) {
           {select('Cards to win', 'cards_to_win', CARDS_TO_WIN)}
           {select('Starting tokens', 'starting_tokens', STARTING_TOKENS)}
           {select('Deck size', 'deck_size', DECK_SIZES)}
+          {select('Seconds to challenge', 'challenge_seconds', CHALLENGE_SECONDS)}
           {room.strategies.length > 1 && select('Deck strategy', 'strategy', room.strategies)}
         </div>
         {silent.length > 0 && (

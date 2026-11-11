@@ -249,7 +249,14 @@ def test_remote_game_with_a_hot_seat_player(
         a.send_json({"type": "place", "slot": 1 - right, "as_player": active})  # the other slot
         a.send_json({"type": "lock", "as_player": active})
         a.send_json({"type": "buzz", "as_player": thief})
+        # The only free slot is taken by this challenge, so the window closes at once.
+        until(a, state_where(lambda r: r["game"]["phase"] == "picking"))
         a.send_json({"type": "pick_slot", "slot": right, "as_player": thief})
+        marked = until(a, state_where(lambda r: r["game"]["challenges"][0]["slot"] == right))
+        game = marked["room"]["game"]
+        assert (game["phase"], game["card"], game["outcome"]) == ("picking", None, None)
+        assert game["challenges"] == [{"player_id": thief, "slot": right, "locked": False}]
+        a.send_json({"type": "lock_pick", "as_player": thief})
         game = until(a, state_where(lambda r: r["game"]["phase"] == "revealed"))["room"]["game"]
         assert game["outcome"] == {"correct": False, "card_to": thief}
         cards = {p["id"]: len(p["timeline"]) for p in game["players"]}
@@ -369,3 +376,28 @@ def test_years_are_looked_up_only_when_a_card_is_drawn(client: TestClient, fake:
         assert fake.lookups[-1] == f"ISRC{int(fake.plays[-1].uri.rsplit('track', 1)[1]):08d}"
         time.sleep(0.1)
         assert len(fake.lookups) == 3, "still only the cards that were drawn"
+
+
+def test_the_challenge_window_closes_when_time_is_up(client: TestClient, fake: FakeSpotify):
+    alice = Browser(client)
+    alice.login("alice")
+    assert alice.library()["status"] == "done"
+    code = alice.request("POST", "/api/rooms").json()["code"]
+
+    with alice.socket(code) as a:
+        a.send_json({"type": "add_player", "name": "Carol"})  # played by the host
+        a.send_json(settings(deck_size=10, challenge_seconds=1))
+        a.send_json({"type": "start_game"})
+        game = until(a, state_where(lambda r: r["game"] is not None))["room"]["game"]
+        assert game["window_left_ms"] is None
+
+        active = game["active"]
+        a.send_json({"type": "place", "slot": 0, "as_player": active})
+        a.send_json({"type": "lock", "as_player": active})
+        game = until(a, state_where(lambda r: r["game"]["phase"] == "challenging"))["room"]["game"]
+        assert 0 < game["window_left_ms"] <= 1000
+
+        started = time.monotonic()
+        game = until(a, state_where(lambda r: r["game"]["phase"] == "revealed"))["room"]["game"]
+        assert time.monotonic() - started > 0.5, "nobody challenged, so it waits for the timer"
+        assert game["challenges"] == [] and game["window_left_ms"] is None

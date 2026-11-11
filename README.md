@@ -41,12 +41,15 @@ Jamster is a private tool and cannot become a public one.
 1. The song plays, and the card stays hidden.
 2. The player on turn taps a `+` on their timeline to place the card, then locks it in.
    Skipping to another song costs 1 token.
-3. Every other player challenges or passes.
-   A challenge costs 1 token, and challengers mark a different slot each, in the order they buzzed.
-4. The card is revealed.
+3. A countdown starts, 5 seconds unless the host sets another time in the lobby.
+   Until it runs out, every other player may challenge or pass, and it ends early once everyone has decided.
+4. If nobody challenged, the card is revealed.
+   Otherwise each challenger in turn, in the order they challenged, taps a free `+` where they think the card belongs and locks it in, which costs 1 token.
+   The host sees challenge and pass buttons for every player without a phone, so a hot-seat game works within the countdown.
+5. The card is revealed.
    A correct placement keeps the card.
    Otherwise the first challenger with a correct slot takes it, and if there is none the card is discarded.
-5. The host or the player on turn confirms whether that player named the title and artist aloud, which earns 1 token (5 at most).
+6. The host or the player on turn confirms whether that player named the title and artist aloud, which earns 1 token (5 at most).
 
 Any player can trade 3 tokens for a card.
 The first player to reach the target number of cards wins.

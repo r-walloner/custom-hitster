@@ -196,6 +196,26 @@ select:focus-visible {
   font-size: 1.1rem;
 }
 
+.countdown {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.6rem;
+}
+
+.countdown progress {
+  flex: 1;
+  margin: 0;
+}
+
+.decide {
+  margin-bottom: 0.5rem;
+}
+
+.decide strong {
+  min-width: 6rem;
+}
+
 .spinner {
   display: inline-block;
   width: 0.9em;
@@ -434,6 +454,17 @@ progress {
 .card.new {
   border-color: var(--good);
   box-shadow: 0 0 0 1px var(--good);
+}
+
+.card.ghost {
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  min-height: 6rem;
+  padding: 0.5rem 0.7rem;
+  border: 2px dashed var(--good);
+  background: transparent;
+  text-align: center;
 }
 
 .card.mystery {

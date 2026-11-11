@@ -1,11 +1,14 @@
 """The game rules as a pure state machine: apply(game, action) -> game. No I/O, no clock.
 
-A turn runs placing -> challenging -> revealed, then the next player's turn starts.
+A turn runs placing -> challenging -> picking -> revealed, then the next player's turn starts.
 
-  placing      The active player hears the song and puts the card into a slot of their timeline.
-               They may pay a token to skip to another song.
-  challenging  Other players may buzz. In buzz order, each challenger pays a token and marks a
-               different slot of the active player's timeline.
+  placing      The active player hears the song, puts the card into a slot of their timeline and
+               locks it in. They may pay a token to skip to another song.
+  challenging  The challenge window: the other players challenge or pass. It closes when everyone
+               has decided, or when the caller says time is up (CloseWindow); the room runs the
+               countdown, since the engine has no clock. Without a challenge the card is revealed.
+  picking      In challenge order, each challenger marks a different slot of the active player's
+               timeline and locks it in, paying a token. Then the card is revealed.
   revealed     A correct placement keeps the card. Otherwise the first challenger with a correct
                slot takes it. Naming title and artist earns the active player a token.
 
@@ -19,7 +22,7 @@ from typing import Literal
 
 from .models import Card
 
-Phase = Literal["placing", "challenging", "revealed", "finished"]
+Phase = Literal["placing", "challenging", "picking", "revealed", "finished"]
 
 
 class RuleError(Exception):
@@ -46,7 +49,8 @@ class Player:
 @dataclass(slots=True)
 class Challenge:
     player: str
-    slot: int | None = None  # None until the challenger has picked
+    slot: int | None = None  # None until the challenger has marked a slot
+    locked: bool = False  # the challenger confirmed the slot and paid for it
 
 
 @dataclass(frozen=True, slots=True)
@@ -66,7 +70,7 @@ class Game:
     turn_number: int = 1
     draws: int = 1  # counts cards put into play, so callers can tell when the song changed
     slot: int | None = None  # where the active player put the card
-    challenges: list[Challenge] = field(default_factory=list)  # in buzz order
+    challenges: list[Challenge] = field(default_factory=list)  # in challenge order
     passed: list[str] = field(default_factory=list)
     outcome: Outcome | None = None
     named: bool | None = None  # did the active player name title and artist?
@@ -109,8 +113,18 @@ class Pass:
 
 
 @dataclass(frozen=True, slots=True)
+class CloseWindow:
+    """Time is up for challenging. Players who have not decided have passed."""
+
+
+@dataclass(frozen=True, slots=True)
+class LockPick:
+    player: str
+
+
+@dataclass(frozen=True, slots=True)
 class Reveal:
-    """Close the challenge window now. Challengers who have not picked a slot pay nothing."""
+    """Reveal now, whatever is pending. Challengers who have not locked in pay nothing."""
 
 
 @dataclass(frozen=True, slots=True)
@@ -128,7 +142,20 @@ class Buy:
     player: str
 
 
-Action = Place | Lock | Skip | Buzz | PickSlot | Pass | Reveal | SetNamed | NextTurn | Buy
+Action = (
+    Place
+    | Lock
+    | Skip
+    | Buzz
+    | Pass
+    | CloseWindow
+    | PickSlot
+    | LockPick
+    | Reveal
+    | SetNamed
+    | NextTurn
+    | Buy
+)
 
 
 # --- rules -----------------------------------------------------------------------------------
@@ -168,7 +195,7 @@ def apply(game: Game, action: Action) -> Game:
             _require(player == g.active, "It is not your turn")
             _require(g.slot is not None, "Place the card first")
             g.phase = "challenging"
-            _settle(g)
+            _settle_window(g)
 
         case Skip(player):
             _require(g.phase == "placing", "You can only skip before locking in")
@@ -180,36 +207,46 @@ def apply(game: Game, action: Action) -> Game:
             g.draws += 1
 
         case Buzz(player):
-            _require(g.phase == "challenging", "There is nothing to challenge right now")
+            _require(g.phase == "challenging", "The time to challenge is over")
             _require(player != g.active, "You cannot challenge your own card")
             _require(player not in g.passed, "You already passed")
-            _require(all(c.player != player for c in g.challenges), "You already buzzed")
-            _require(_player(g, player).tokens >= g.rules.challenge_cost, "Not enough tokens")
-            waiting = sum(c.slot is None for c in g.challenges)
-            _require(len(_free_slots(g)) > waiting, "There is no free slot left")
+            _require(all(c.player != player for c in g.challenges), "You already challenged")
+            _require(_can_challenge(g, player), "Not enough tokens")
+            _require(_room_for_challenge(g), "There is no free slot left")
             g.challenges.append(Challenge(player))
-
-        case PickSlot(player, slot):
-            _require(g.phase == "challenging", "There is nothing to challenge right now")
-            first = next((c for c in g.challenges if c.slot is None), None)
-            _require(first is not None and first.player == player, "It is not your pick yet")
-            _require(slot in _free_slots(g), "That slot is taken")
-            _pay(g, player, g.rules.challenge_cost)
-            assert first is not None
-            first.slot = slot
-            _settle(g)
+            _settle_window(g)
 
         case Pass(player):
-            _require(g.phase == "challenging", "There is nothing to pass on right now")
+            _require(g.phase == "challenging", "The time to challenge is over")
             _require(player != g.active, "You cannot pass on your own card")
             _player(g, player)
-            _require(all(c.player != player for c in g.challenges), "You already buzzed")
+            _require(all(c.player != player for c in g.challenges), "You already challenged")
             if player not in g.passed:
                 g.passed.append(player)
-            _settle(g)
+            _settle_window(g)
+
+        case CloseWindow():
+            _require(g.phase == "challenging", "The time to challenge is over")
+            _close_window(g)
+
+        case PickSlot(player, slot):
+            _require(g.phase == "picking", "There is nothing to pick right now")
+            current = _picking(g)
+            _require(current.player == player, "It is not your pick yet")
+            _require(slot in _free_slots(g) or slot == current.slot, "That slot is taken")
+            current.slot = slot
+
+        case LockPick(player):
+            _require(g.phase == "picking", "There is nothing to pick right now")
+            current = _picking(g)
+            _require(current.player == player, "It is not your pick yet")
+            _require(current.slot is not None, "Mark a slot first")
+            _pay(g, player, g.rules.challenge_cost)
+            current.locked = True
+            _settle_picks(g)
 
         case Reveal():
-            _require(g.phase == "challenging", "Lock the card in first")
+            _require(g.phase in ("challenging", "picking"), "Lock the card in first")
             _reveal(g)
 
         case SetNamed(value):
@@ -231,16 +268,17 @@ def apply(game: Game, action: Action) -> Game:
             _pay(g, player, g.rules.buy_cost)
             _insert_in_order(_player(g, player).timeline, g.deck.pop(0))
             _check_win(g)
-            if g.phase == "challenging":
+            if g.phase in ("challenging", "picking"):
                 # A buyer left without tokens can no longer pay for a pending challenge.
                 g.challenges = [
                     c
                     for c in g.challenges
-                    if c.slot is not None
-                    or c.player != player
-                    or _player(g, player).tokens >= g.rules.challenge_cost
+                    if c.locked or c.player != player or _can_challenge(g, player)
                 ]
-                _settle(g)
+                if g.phase == "challenging":
+                    _settle_window(g)
+                else:
+                    _settle_picks(g)
     return g
 
 
@@ -272,26 +310,52 @@ def _insert_in_order(timeline: list[Card], card: Card) -> None:
     timeline.insert(bisect_right([c.year for c in timeline], card.year), card)
 
 
-def _settle(g: Game) -> None:
-    """Reveal as soon as nobody is left who could still challenge."""
-    if any(c.slot is None for c in g.challenges):
-        return
-    free = _free_slots(g)
+def _can_challenge(g: Game, player_id: str) -> bool:
+    return _player(g, player_id).tokens >= g.rules.challenge_cost
+
+
+def _room_for_challenge(g: Game) -> bool:
+    """Every challenger needs a slot of their own besides the active player's."""
+    return len(_player(g, g.active).timeline) > len(g.challenges)
+
+
+def _picking(g: Game) -> Challenge:
+    """The challenger whose turn it is to mark a slot."""
+    current = next((c for c in g.challenges if not c.locked), None)
+    _require(current is not None, "There is nothing to pick right now")
+    assert current is not None
+    return current
+
+
+def _settle_window(g: Game) -> None:
+    """Close the window early once nobody is left who could still challenge."""
     for player in g.players:
         decided = (
             player.id == g.active
             or player.id in g.passed
             or any(c.player == player.id for c in g.challenges)
         )
-        if not decided and free and player.tokens >= g.rules.challenge_cost:
+        if not decided and _can_challenge(g, player.id) and _room_for_challenge(g):
             return
-    _reveal(g)
+    _close_window(g)
+
+
+def _close_window(g: Game) -> None:
+    if g.challenges:
+        g.phase = "picking"
+    else:
+        _reveal(g)
+
+
+def _settle_picks(g: Game) -> None:
+    if all(c.locked for c in g.challenges):
+        _reveal(g)
 
 
 def _reveal(g: Game) -> None:
     active = _player(g, g.active)
     assert g.slot is not None
-    g.challenges = [c for c in g.challenges if c.slot is not None]
+    g.challenges = [c for c in g.challenges if c.locked]
     card_to: str | None = None
     correct = fits(active.timeline, g.slot, g.card.year)
     if correct:

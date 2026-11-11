@@ -100,6 +100,8 @@ class Room:
         self._game_number = 0  # bumped whenever a game starts or ends
         self._pending: list[Entry] = []  # the undrawn deck; years are looked up when drawn
         self._drawing = asyncio.Lock()
+        self._window = 0  # bumped whenever a challenge window opens, so stale timers do nothing
+        self._window_ends = 0.0  # time.monotonic() when the open window closes
         self._play_started = 0.0
         self._sockets: dict[WebSocket, tuple[str, str | None]] = {}  # -> (client id, spotify id)
         self._sending = asyncio.Lock()
@@ -218,7 +220,9 @@ class Room:
             ],
             deck=self.deck_view,
             playback=self.playback,
-            game=_game_view(self.game, len(self._pending), self._drawing.locked())
+            game=_game_view(
+                self.game, len(self._pending), self._drawing.locked(), self._window_left_ms()
+            )
             if self.game
             else None,
         )
@@ -409,6 +413,8 @@ class Room:
                 self._act(engine.Buzz(self._actor(client_id, who)))
             case m.PickSlot(slot=slot, as_player=who):
                 self._act(engine.PickSlot(self._actor(client_id, who), slot))
+            case m.LockPick(as_player=who):
+                self._act(engine.LockPick(self._actor(client_id, who)))
             case m.Pass(as_player=who):
                 self._act(engine.Pass(self._actor(client_id, who)))
             case m.Buy(as_player=who):
@@ -437,12 +443,38 @@ class Room:
             self.log.info("%s", line)
         if game.outcome and not before.outcome:
             self.log.info("%s", self._reveal_line(game))
+        if game.phase == "picking" and before.phase != "picking":
+            order = ", ".join(self._name(c.player) for c in game.challenges)
+            self.log.info("challenges are closed; picking in this order: %s", order)
         if game.phase == "finished" and before.phase != "finished":
             self._log_game_over(game)
         elif game.draws != before.draws:
             self._log_new_card(game)
         if game.draws != before.draws:
             self._start_playback()
+        if game.phase == "challenging" and before.phase != "challenging":
+            self._open_window()
+
+    # --- challenge window ----------------------------------------------------------------
+
+    def _open_window(self) -> None:
+        """Start the countdown during which the others may challenge."""
+        self._window += 1
+        seconds = self.settings.challenge_seconds
+        self._window_ends = time.monotonic() + seconds
+        self._spawn(self._close_window_later(self._window, seconds))
+
+    async def _close_window_later(self, window: int, seconds: float) -> None:
+        await asyncio.sleep(seconds)
+        if window != self._window or self.game is None or self.game.phase != "challenging":
+            return  # closed early, because everyone decided, or a later turn has its own window
+        self._act(engine.CloseWindow())
+        await self.broadcast()
+
+    def _window_left_ms(self) -> int | None:
+        if self.game is None or self.game.phase != "challenging":
+            return None
+        return max(0, int((self._window_ends - time.monotonic()) * 1000))
 
     def _name(self, seat_id: str) -> str:
         return next((s.name for s in self.seats if s.id == seat_id), seat_id)
@@ -462,10 +494,14 @@ class Room:
                 return f"{name(player)} challenges"
             case engine.PickSlot(player, slot):
                 return f"{name(player)} says it goes {where(timeline, slot)}"
+            case engine.LockPick(player):
+                return f"{name(player)} locks in their challenge"
             case engine.Pass(player):
                 return f"{name(player)} passes"
+            case engine.CloseWindow():
+                return "time is up for challenges"
             case engine.Reveal():
-                return "the challenge window is closed"
+                return "the card is revealed early"
             case engine.SetNamed(value):
                 said = "named" if value else "did not name"
                 return f"{name(after.active)} {said} title and artist"
@@ -693,7 +729,9 @@ def _card_view(card: Card) -> dict[str, Any]:
     }
 
 
-def _game_view(game: engine.Game, pending: int, drawing: bool) -> m.GameView:
+def _game_view(
+    game: engine.Game, pending: int, drawing: bool, window_left_ms: int | None
+) -> m.GameView:
     """What clients may see: the card in play stays hidden until it is revealed. `pending`
     counts the undrawn cards whose years have not been looked up yet."""
     revealed = game.phase in ("revealed", "finished")
@@ -712,7 +750,10 @@ def _game_view(game: engine.Game, pending: int, drawing: bool) -> m.GameView:
             for p in game.players
         ],
         slot=game.slot,
-        challenges=[m.ChallengeView(player_id=c.player, slot=c.slot) for c in game.challenges],
+        challenges=[
+            m.ChallengeView(player_id=c.player, slot=c.slot, locked=c.locked)
+            for c in game.challenges
+        ],
         passed=game.passed,
         card=m.RevealedCard(
             **_card_view(card), year_source=card.year_source, known_by=list(card.known_by)
@@ -725,6 +766,7 @@ def _game_view(game: engine.Game, pending: int, drawing: bool) -> m.GameView:
         named=game.named,
         winners=game.winners,
         drawing=drawing,
+        window_left_ms=window_left_ms,
     )
 
 
