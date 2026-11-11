@@ -98,8 +98,8 @@ class Room:
         self._s = services
         self._deck_epoch = 0  # bumped whenever a deal in progress would no longer be valid
         self._game_number = 0  # bumped whenever a game starts or ends
-        self._pending: list[Entry] = []  # the rest of the deck, whose years are not known yet
-        self._deck_grew = asyncio.Event()  # set when a card from `_pending` reached the deck
+        self._pending: list[Entry] = []  # the undrawn deck; years are looked up when drawn
+        self._drawing = asyncio.Lock()
         self._play_started = 0.0
         self._sockets: dict[WebSocket, tuple[str, str | None]] = {}  # -> (client id, spotify id)
         self._sending = asyncio.Lock()
@@ -340,7 +340,7 @@ class Room:
                     raise RoomError("No game is running")
                 self.log.info("the host ended the game | %s", self._standings(self.game))
                 self.game = None
-                self._stop_looking_ahead()
+                self._forget_deck()
                 self.playback = m.PlaybackView()
                 self._spawn(self._pause(self._listeners()))
 
@@ -393,7 +393,7 @@ class Room:
                 self._act(engine.Lock(self._actor(client_id, who)))
             case m.Skip(as_player=who):
                 actor = self._actor(client_id, who)
-                await self._next_card_known()
+                await self._prepare_draw()
                 self._act(engine.Skip(actor))
             case m.Buzz(as_player=who):
                 self._act(engine.Buzz(self._actor(client_id, who)))
@@ -403,7 +403,7 @@ class Room:
                 self._act(engine.Pass(self._actor(client_id, who)))
             case m.Buy(as_player=who):
                 actor = self._actor(client_id, who)
-                await self._next_card_known()
+                await self._prepare_draw()
                 self._act(engine.Buy(actor))
             case m.Reveal():
                 self._referee_only(client_id)
@@ -413,7 +413,7 @@ class Room:
                 self._act(engine.SetNamed(value))
             case m.NextTurn():
                 self._referee_only(client_id)
-                await self._next_card_known()
+                await self._prepare_draw()
                 self._act(engine.NextTurn())
 
     def _act(self, action: engine.Action) -> None:
@@ -500,7 +500,7 @@ class Room:
 
     async def _deal(self, epoch: int, spotify_ids: list[str]) -> None:
         """Start the game as soon as the opening cards have years: one per player and the first
-        card in play. The years of the rest of the deck are looked up while the game runs."""
+        card in play. Every other card's year is looked up when it is drawn."""
         needed = len(self.seats) + 1
         cards: list[Card] = []
         try:
@@ -561,51 +561,31 @@ class Room:
             )
             self.deck_view = m.DeckView()  # dealt
             self._invalidate_deck()  # the dealt cards are in the game now
-            self._stop_looking_ahead()
+            self._forget_deck()
             self._pending = entries
             self._log_new_card(self.game)
-            self._spawn(self._look_ahead(self._game_number))
             self._start_playback()
         await self.broadcast()
 
-    async def _look_ahead(self, number: int) -> None:
-        """Move the pending entries into the game's deck, in order, as their years arrive."""
-        try:
-            while self._pending:
-                card = await to_card(self._s.resolver, self._pending[0])
-                if number != self._game_number or self.game is None:
-                    return
+    def _forget_deck(self) -> None:
+        """Drop the undrawn cards of the game that just started or ended."""
+        self._game_number += 1
+        self._pending = []
+
+    async def _prepare_draw(self) -> None:
+        """Look up the year of the next card just before it is drawn, so MusicBrainz is asked
+        only about songs that are actually played. Cached years cost nothing."""
+        async with self._drawing:  # two quick clicks must not look up two cards
+            number = self._game_number
+            while self.game is not None and not self.game.deck and self._pending:
                 entry = self._pending.pop(0)
+                card = await to_card(self._s.resolver, entry)
+                if number != self._game_number or self.game is None:
+                    return  # the game ended meanwhile
                 if card:
                     self.game.deck.append(card)
                 else:
                     self.log.info("no year for %r (%s), dropped", entry.track.name, entry.track.uri)
-                self._deck_grew.set()
-                if self.game.phase == "finished":
-                    self._pending = []
-                elif not self._pending:
-                    self.log.debug("every card in the deck has its year now")
-        except Exception:
-            if number == self._game_number:
-                self._pending = []  # the game plays on with the cards it has
-            raise
-        finally:
-            self._deck_grew.set()
-
-    def _stop_looking_ahead(self) -> None:
-        self._game_number += 1
-        self._pending = []
-        self._deck_grew.set()  # wakes anyone waiting for a card that will not come
-
-    async def _next_card_known(self) -> None:
-        """Wait until the next card has its year, unless the deck has really run out.
-
-        Normally the look-ahead is many cards ahead and this returns at once.
-        """
-        while self.game is not None and not self.game.deck and self._pending:
-            self.log.info("waiting for the next card's year from MusicBrainz")
-            self._deck_grew.clear()
-            await self._deck_grew.wait()
 
     # --- playback ------------------------------------------------------------------------
 
@@ -698,7 +678,7 @@ def _card_view(card: Card) -> dict[str, Any]:
 
 def _game_view(game: engine.Game, pending: int) -> m.GameView:
     """What clients may see: the card in play stays hidden until it is revealed. `pending`
-    counts the cards whose years are still being looked up."""
+    counts the undrawn cards whose years have not been looked up yet."""
     revealed = game.phase in ("revealed", "finished")
     card = game.card
     return m.GameView(

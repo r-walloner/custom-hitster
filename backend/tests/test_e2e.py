@@ -313,7 +313,7 @@ def test_local_game_plays_only_on_the_host_and_recovers_from_a_playback_failure(
         assert until(b, is_type("state"))["you"]["player_id"] is not None
 
 
-def test_years_are_looked_up_while_playing(client: TestClient, fake: FakeSpotify):
+def test_years_are_looked_up_only_when_a_card_is_drawn(client: TestClient, fake: FakeSpotify):
     alice = Browser(client)
     alice.login("alice")
     assert alice.library()["status"] == "done"
@@ -326,8 +326,7 @@ def test_years_are_looked_up_while_playing(client: TestClient, fake: FakeSpotify
         dealing = until(a, state_where(lambda r: r["deck"]["status"] == "dealing"))["room"]
         assert dealing["deck"]["total"] == 2
         game = until(a, state_where(lambda r: r["game"] is not None))["room"]["game"]
-        assert game["deck_remaining"] == 8, "the rest of the deck still counts"
-        assert len(fake.lookups) <= 3, "the game starts without waiting for the whole deck"
+        assert game["deck_remaining"] == 8, "the undrawn cards still count"
 
         # Alone in the game, locking in reveals at once.
         year = year_of(fake.plays[-1].uri)
@@ -335,18 +334,20 @@ def test_years_are_looked_up_while_playing(client: TestClient, fake: FakeSpotify
         a.send_json({"type": "place", "slot": right_slot(game, me, year)})
         a.send_json({"type": "lock"})
         until(a, state_where(lambda r: r["game"]["phase"] == "revealed"))
+        assert len(fake.lookups) == 2, "nothing is looked up in the background"
 
-        # The next song's year is still unknown: the turn waits for it instead of ending the game.
+        # The next song's year is looked up now; the turn waits for it instead of ending the game.
         a.send_json({"type": "next_turn"})
         time.sleep(0.1)
+        assert len(fake.lookups) == 3
         fake.lookup_allowance = None
-        game = until(a, state_where(lambda r: r["game"]["turn_number"] == 2))["room"]["game"]
-        assert game["phase"] == "placing"
-
-        # The look-ahead works through the rest of the deck in the background.
-        for _ in range(500):
-            if len(fake.lookups) == 10:
-                break
-            time.sleep(0.01)
-        assert sorted(fake.lookups) == sorted(set(fake.lookups)), "each song is looked up once"
-        assert len(fake.lookups) == 10
+        game = until(
+            a,
+            state_where(
+                lambda r: r["game"]["turn_number"] == 2 and r["playback"]["status"] == "playing"
+            ),
+        )["room"]["game"]
+        assert (game["phase"], game["deck_remaining"]) == ("placing", 7)
+        assert fake.lookups[-1] == f"ISRC{int(fake.plays[-1].uri.rsplit('track', 1)[1]):08d}"
+        time.sleep(0.1)
+        assert len(fake.lookups) == 3, "still only the cards that were drawn"
