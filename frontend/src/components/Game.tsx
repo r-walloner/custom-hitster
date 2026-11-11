@@ -22,7 +22,8 @@ const YEAR_SOURCES: Record<string, string> = {
 
 export function Game({ state, game, send, devicePicker }: Props) {
   const { room, you } = state
-  const [acting, setActing] = useState(MYSELF)
+  // Default to the player on turn, so a game on one device needs no switching.
+  const [acting, setActing] = useState(ACTIVE)
 
   // The seat the buttons act for. The host can play for anyone, e.g. everyone on one device.
   const actor = !you.is_host || acting === MYSELF ? you.player_id : acting === ACTIVE ? game.active : acting
