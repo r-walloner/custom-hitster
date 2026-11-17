@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dealing</title>
+<link rel="stylesheet" href="../../system/tokens.css">
+<link rel="stylesheet" href="../../system/components/bundle.css">
+<link href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&amp;family=Bricolage+Grotesque:opsz,wght@12..96,400..800&amp;family=DM+Mono:wght@500&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</head>
+<body>
+<div id="dc-root"></div>
+<template id="dc-template"><main class="jm-screen" style="font-family: var(--font-ui); color: var(--ink);">
+  <header class="jm-header">
+    <span class="jm-logo">jamster</span>
+    <span class="jm-chip">LUMA</span>
+    <span class="jm-header__spacer"></span>
+    <span class="jm-header__meta">Mara's room<i></i><b>4</b> players<i></i>First to <b>10</b></span>
+  </header>
+  <div style="flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; gap: 10px; padding-top: 2px;">
+    <h1 class="jm-moment__headline">Dealing the opening cards</h1>
+    <div style="width: 520px; display: flex; flex-direction: column; gap: 4px;">
+      <div style="height: 14px; box-sizing: border-box; border: 2px solid var(--ink); border-radius: var(--radius-pill); background: var(--sand); overflow: hidden;" role="progressbar" aria-valuemin="0" aria-valuemax="4" aria-valuenow="{{dealt}}" aria-label="Opening cards dealt">
+        <div style="height: 100%; background: var(--coral); width: {{pct}};"></div>
+      </div>
+      <span class="jm-caption" style="text-align: center;">{{status}}</span>
+    </div>
+    <div style="display: flex; gap: 22px; margin-top: 6px;">
+      <sc-for list="{{players}}" as="p" hint-placeholder-count="4">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span class="{{p.avatar}}">{{p.initial}}</span>
+            <span class="jm-section">{{p.name}}</span>
+          </div>
+          <sc-if value="{{p.dealt}}" hint-placeholder-val="{{true}}">
+            <div class="jm-card">
+              <span class="jm-card__year">{{p.year}}</span>
+              <span class="jm-card__title">{{p.title}}</span>
+              <span class="jm-card__artist">{{p.artist}}</span>
+            </div>
+          </sc-if>
+          <sc-if value="{{p.waiting}}" hint-placeholder-val="{{false}}">
+            <div style="width: 112px; height: 108px; box-sizing: border-box; border-radius: var(--radius-card); border: 2px dashed var(--slot-dash); display: flex; align-items: center; justify-content: center;">
+              <span class="jm-caption">Dealing…</span>
+            </div>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</main></template>
+<script src="../../exploration/preview/dc-runtime.js"></script>
+<script>
+class Component extends DCLogic {
+  renderVals() {
+    const dealt = Math.max(0, Math.min(4, this.props.dealt ?? 2));
+    const base = [
+      { name: "Mara", initial: "M", avatar: "jm-avatar jm-p1", year: "1984", title: "Smalltown Boy", artist: "Bronski Beat" },
+      { name: "Sam", initial: "S", avatar: "jm-avatar jm-p2", year: "2010", title: "Dancing On My Own", artist: "Robyn" },
+      { name: "Lea", initial: "L", avatar: "jm-avatar jm-p3", year: "1974", title: "Waterloo", artist: "ABBA" },
+      { name: "Jonas", initial: "J", avatar: "jm-avatar jm-p4", year: "1998", title: "Doo Wop (That Thing)", artist: "Lauryn Hill" }
+    ];
+    const players = base.map((p, i) => ({ ...p, dealt: i < dealt, waiting: i >= dealt }));
+    const status = dealt >= 4
+      ? "All dealt. Mara goes first."
+      : "Picked 120 songs from 2 libraries. " + dealt + " of 4 dealt.";
+    return { players, dealt, pct: (dealt / 4 * 100) + "%", status };
+  }
+}
+DCRuntime.mount(Component, document.getElementById('dc-root'), document.getElementById('dc-template').content, {"dealt": 2});
+</script>
+</body>
+</html>

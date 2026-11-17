@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign-in error</title>
+<link rel="stylesheet" href="../../system/tokens.css">
+<link rel="stylesheet" href="../../system/components/bundle.css">
+<link href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&amp;family=Bricolage+Grotesque:opsz,wght@12..96,400..800&amp;family=DM+Mono:wght@500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.hero .jm-tape--bounce.is-playing .jm-tape__bob{animation-duration:1200ms}
+.hero-float{animation:hero-float 3.6s ease-in-out infinite alternate}
+@keyframes hero-float{from{transform:translateY(0)}to{transform:translateY(-6px)}}
+@media (prefers-reduced-motion: reduce){.hero-float{animation:none}}
+</style>
+</head>
+<body>
+<div id="dc-root"></div>
+<template id="dc-template"><main class="jm-screen" style="display: grid; grid-template-columns: minmax(0, 1fr) 316px; gap: 48px; align-items: center; padding: 24px 40px 24px 32px; font-family: var(--font-ui); color: var(--ink);">
+
+  <div class="hero" style="position: relative; height: 334px;">
+    <span class="jm-logo jm-logo--xl" style="position: absolute; left: 6px; top: 6px; z-index: 3; font-size: 28px; line-height: 36px; padding: 3px 18px;">jamster</span>
+    <p style="position: absolute; left: 14px; top: 76px; z-index: 3; margin: 0; max-width: 240px; font: 800 16px/22px var(--font-ui); letter-spacing: -0.01em; transform: rotate(var(--tilt)); transform-origin: left top;">The music game built from your own playlists.</p>
+
+    <div class="hero-float" style="position: absolute; left: 266px; top: 40px; animation-delay: -1.2s;" aria-hidden="true">
+      <div class="jm-card" style="transform: rotate(7deg) scale(0.74);"><span class="jm-card__year">1994</span><span class="jm-card__title">Zombie</span><span class="jm-card__artist">The Cranberries</span></div>
+    </div>
+    <div class="hero-float" style="position: absolute; left: 4px; top: 262px; animation-delay: -2.4s;" aria-hidden="true">
+      <div class="jm-card" style="transform: rotate(-11deg) scale(0.62);"><span class="jm-card__year">2010</span><span class="jm-card__title">Dancing On My Own</span><span class="jm-card__artist">Robyn</span></div>
+    </div>
+
+    <div class="jm-tape jm-tape--bounce is-playing" style="position: absolute; left: 44px; top: 142px; z-index: 2;" aria-hidden="true">
+      <div class="jm-tape__bob">
+        <div class="jm-tape__shell">
+          <svg viewBox="0 0 300 190" width="200" height="127" style="width: 200px;">
+            <rect class="t-shell" x="4" y="4" width="292" height="182" rx="18" stroke-width="7"></rect>
+            <circle class="t-ink" cx="17" cy="17" r="4.5"></circle><circle class="t-ink" cx="283" cy="17" r="4.5"></circle><circle class="t-ink" cx="17" cy="173" r="4.5"></circle><circle class="t-ink" cx="283" cy="173" r="4.5"></circle>
+            <rect class="t-window" x="92" y="70" width="116" height="40" rx="20"></rect>
+            <circle class="t-pack" cx="105" cy="90" r="36" style="transform: scale(0.78)"></circle>
+            <circle class="t-pack" cx="195" cy="90" r="36" style="transform: scale(0.62)"></circle>
+            <g class="t-reel"><circle class="t-hub" cx="105" cy="90" r="13" stroke-width="4"></circle><path class="t-spoke" d="M105 80v20M96.3 85l17.4 10M96.3 95l17.4-10" stroke-width="4"></path></g>
+            <g class="t-reel"><circle class="t-hub" cx="195" cy="90" r="13" stroke-width="4"></circle><path class="t-spoke" d="M195 80v20M186.3 85l17.4 10M186.3 95l17.4-10" stroke-width="4"></path></g>
+            <path class="t-label" fill-rule="evenodd" stroke-width="5" d="M30 18H270A8 8 0 0 1 278 26V138A8 8 0 0 1 270 146H30A8 8 0 0 1 22 138V26A8 8 0 0 1 30 18Z M92 70H208A20 20 0 0 1 208 110H92A20 20 0 0 1 92 70Z"></path>
+            <text class="t-year" x="150" y="62" text-anchor="middle">????</text>
+            <rect class="t-track" x="40" y="122" width="220" height="11" rx="5.5"></rect>
+            <rect class="t-bar" x="40" y="122" width="84" height="11" rx="5.5"></rect>
+            <path class="t-foot" stroke-width="5" d="M78 186L90 156H210L222 186"></path>
+            <circle class="t-ink" cx="112" cy="174" r="6"></circle><circle class="t-ink" cx="188" cy="174" r="6"></circle>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-float" style="position: absolute; left: 270px; top: 208px; z-index: 3; animation-delay: -0.4s;" aria-hidden="true">
+      <div class="jm-card jm-card--mystery" style="transform: rotate(var(--tilt)) scale(0.78);"><span class="jm-card__year">????</span></div>
+    </div>
+  </div>
+
+  <section class="jm-panel" role="alert" aria-labelledby="err-head" style="padding: 18px 20px 18px; display: flex; flex-direction: column; gap: 10px;">
+    <span class="jm-verdict jm-verdict--wrong">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+      {{tag}}
+    </span>
+    <h1 id="err-head" class="jm-headline" style="font-size: 19px; line-height: 23px;">{{head}}</h1>
+    <p class="jm-meta" style="margin: 0;">{{body}}</p>
+    <button class="jm-btn jm-btn--primary" style="margin-top: 6px; min-height: 46px; font-size: 14px;">{{primary}}</button>
+    <button class="jm-btn" style="min-height: 46px; font-size: 14px;">{{secondary}}</button>
+  </section>
+</main></template>
+<script src="../../exploration/preview/dc-runtime.js"></script>
+<script>
+class Component extends DCLogic {
+  renderVals() {
+    const R = {
+      notApproved: {
+        tag: "Not approved yet",
+        head: "Spotify hasn't approved this account for Jamster.",
+        body: "Jamster is private, so the host adds each Spotify account by hand. Send the host the email you use for Spotify, then try again.",
+        primary: "Try again", secondary: "Back"
+      },
+      notPremium: {
+        tag: "No Premium",
+        head: "This account can't play the music.",
+        body: "Playing songs needs Spotify Premium. Your library can still go into the deck, and another player's speaker plays it.",
+        primary: "Continue", secondary: "Use another account"
+      },
+      full: {
+        tag: "Five accounts in",
+        head: "Five Spotify accounts are already connected.",
+        body: "That's the most Jamster can connect. Join as a guest, or ask the host to remove an account first.",
+        primary: "Join as a guest", secondary: "Back"
+      },
+      cancelled: {
+        tag: "Cancelled",
+        head: "Sign-in was cancelled.",
+        body: "Spotify didn't send a login back, so nothing was saved.",
+        primary: "Try again", secondary: "Back"
+      },
+      network: {
+        tag: "No connection",
+        head: "Couldn't reach Spotify.",
+        body: "Check your connection and try again. Nothing is lost.",
+        primary: "Try again", secondary: "Back"
+      }
+    };
+    return R[this.props.reason ?? "notApproved"] || R.notApproved;
+  }
+}
+DCRuntime.mount(Component, document.getElementById('dc-root'), document.getElementById('dc-template').content, {"reason": "notApproved"});
+</script>
+</body>
+</html>
