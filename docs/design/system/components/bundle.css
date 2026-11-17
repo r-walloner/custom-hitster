@@ -34,6 +34,7 @@ body { margin: 0; font-family: var(--font-ui); background: var(--paper); color: 
 .jm-btn--toggle { font-size: 14px; }
 .jm-btn--toggle[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
 .jm-btn svg { width: 16px; height: 16px; flex: 0 0 auto; }
+.jm-btn > .jm-token { margin-left: 2px; }
 .jm-btn:disabled, .jm-btn[aria-disabled="true"] { opacity: 0.45; cursor: not-allowed; box-shadow: none; transform: none; }
 .jm-btn:focus-visible, .jm-select:focus-visible, .jm-gap:focus-visible, .jm-card__half:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 .jm-select { height: var(--touch-min); box-sizing: border-box; padding: 0 8px; border-radius: var(--radius-card); border: var(--stroke-control) solid var(--ink); background: var(--label); color: var(--ink); font: 600 13px var(--font-ui); }
