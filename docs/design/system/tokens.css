@@ -1,0 +1,66 @@
+/* Jamster — generated from tokens.json. Do not edit by hand; edit tokens.json and regenerate. */
+:root {
+  --paper: #f6eedf;
+  --label: #fffaf0;
+  --sand: #ede2ce;
+  --sand-line: #d8cbb4;
+  --slot-empty: #e4d8c2;
+  --slot-dash: #b9aa94;
+  --ink: #2a211c;
+  --ink-muted: #5c4f44;
+  --ink-subtle: #6e6054;
+  --coral: #ee5a3c;
+  --coral-text: #b83a20;
+  --coral-deep: #d44a2e;
+  --mustard: #e9b43a;
+  --turn-tint: #fbe3c4;
+  --tape-brown: #6b4228;
+  --tape-window: #3a2e26;
+  --player-1: var(--coral);
+  --player-2: #8fbf9f;
+  --player-3: var(--mustard);
+  --player-4: #b9a6e8;
+  --player-5: #8cc8e8;
+  --shadow-sticker-sm: 2px 2px 0 #2a211c;
+  --shadow-sticker: 3px 3px 0 #2a211c;
+  --shadow-sticker-lg: 5px 5px 0 #2a211c;
+  --space-2: 2px;
+  --space-4: 4px;
+  --space-6: 6px;
+  --space-8: 8px;
+  --space-10: 10px;
+  --space-12: 12px;
+  --space-14: 14px;
+  --space-16: 16px;
+  --radius-chip: 8px;
+  --radius-row: 10px;
+  --radius-card: 12px;
+  --radius-panel: 16px;
+  --radius-pill: 999px;
+  --stroke-control: 2px;
+  --tilt: -4deg;
+  --touch-min: 44px;
+  --avatar: 24px;
+  --card-w: 84px;
+  --card-h: 100px;
+  --tape-w: 156px;
+  --screen-w: 844px;
+  --screen-h: 390px;
+  --font-display: "Rubik Mono One", system-ui, sans-serif;
+  --font-ui: "Bricolage Grotesque", system-ui, sans-serif;
+  --font-mono: "DM Mono", ui-monospace, monospace;
+}
+.logo { font-family: var(--font-display); font-size: 17px; line-height: 23px; font-weight: 400; letter-spacing: 0; }
+.logo-xl { font-family: var(--font-display); font-size: 48px; line-height: 58px; font-weight: 400; letter-spacing: 0; }
+.tape-mystery { font-family: var(--font-display); font-size: 30px; line-height: 30px; font-weight: 400; }
+.year { font-family: var(--font-ui); font-size: 22px; line-height: 22px; font-weight: 800; letter-spacing: -0.03em; }
+.headline { font-family: var(--font-ui); font-size: 17px; line-height: 19px; font-weight: 800; letter-spacing: -0.01em; }
+.section { font-family: var(--font-ui); font-size: 14px; line-height: 18px; font-weight: 800; }
+.name { font-family: var(--font-ui); font-size: 14px; line-height: 18px; font-weight: 700; }
+.body { font-family: var(--font-ui); font-size: 13px; line-height: 18px; font-weight: 600; }
+.button { font-family: var(--font-ui); font-size: 13px; line-height: 16px; font-weight: 700; }
+.card-title { font-family: var(--font-ui); font-size: 12px; line-height: 14px; font-weight: 700; }
+.caption { font-family: var(--font-ui); font-size: 11px; line-height: 14px; font-weight: 500; }
+.label-caps { font-family: var(--font-mono); font-size: 11px; line-height: 14px; font-weight: 500; letter-spacing: 0.06em; }
+.time { font-family: var(--font-mono); font-size: 12px; line-height: 16px; font-weight: 500; }
+.room-code { font-family: var(--font-mono); font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: 0.14em; }

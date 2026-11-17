@@ -1,0 +1,287 @@
+{
+  "v": 3,
+  "attachments": {},
+  "boards": {
+    "AfterDark.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "D · Mixtape After Dark — host screen",
+      "w": 1440,
+      "x": 0,
+      "y": 3840
+    },
+    "Logos.dc.html": {
+      "h": 1000,
+      "title": "Logo variations · E palette",
+      "w": 1440,
+      "x": 0,
+      "y": 5120
+    },
+    "Main.dc.html": {
+      "h": 820,
+      "title": "A · Vinyl Night — style tile",
+      "w": 1280,
+      "x": 0,
+      "y": 0
+    },
+    "MixtapeGame.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "B · Mixtape — host screen, challenge window",
+      "w": 1440,
+      "x": 1360,
+      "y": 1280
+    },
+    "MixtapeTile.dc.html": {
+      "h": 820,
+      "title": "B · Mixtape — style tile",
+      "w": 1280,
+      "x": 0,
+      "y": 1280
+    },
+    "PhoneV1.dc.html": {
+      "h": 666,
+      "is_interactive": true,
+      "title": "V1 · Phone host screen · T2 dark tape",
+      "w": 1440,
+      "x": 0,
+      "y": 6540
+    },
+    "PhoneV2.dc.html": {
+      "h": 666,
+      "is_interactive": true,
+      "title": "V2 · Phone host screen · T4 sticker tape + bar  ✓ chosen",
+      "w": 1440,
+      "x": 1520,
+      "y": 6540
+    },
+    "PhoneV3.dc.html": {
+      "h": 666,
+      "is_interactive": true,
+      "title": "V3 · Phone host screen · compact tape strip",
+      "w": 1440,
+      "x": 3040,
+      "y": 6540
+    },
+    "Riso.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "F · Riso Flyer — host screen",
+      "w": 1440,
+      "x": 3040,
+      "y": 3840
+    },
+    "SignalGame.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "C · Signal — host screen, challenge window",
+      "w": 1440,
+      "x": 1360,
+      "y": 2560
+    },
+    "SignalTile.dc.html": {
+      "h": 820,
+      "title": "C · Signal — style tile",
+      "w": 1280,
+      "x": 0,
+      "y": 2560
+    },
+    "Soft.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "E · Mixtape Soft — host screen  ✓ palette chosen",
+      "w": 1440,
+      "x": 1520,
+      "y": 3840
+    },
+    "Tapes.dc.html": {
+      "h": 1040,
+      "is_interactive": true,
+      "title": "Now-playing tape variations",
+      "w": 1440,
+      "x": 1520,
+      "y": 5120
+    },
+    "VinylGame.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "title": "A · Vinyl Night — host screen, challenge window",
+      "w": 1440,
+      "x": 1360,
+      "y": 0
+    },
+    "FontBagel.dc.html": {
+      "x": 0,
+      "y": 7586,
+      "w": 1440,
+      "h": 900,
+      "title": "Brand font · Bagel Fat One · L1 + L2 + in use",
+      "is_interactive": true
+    },
+    "HeroBagel.dc.html": {
+      "x": 0,
+      "y": 8606,
+      "w": 1440,
+      "h": 720,
+      "title": "Repo hero · Bagel Fat One · 1280 × 640 shown at 1.125×",
+      "is_interactive": true
+    },
+    "FontShrikhand.dc.html": {
+      "x": 1520,
+      "y": 7586,
+      "w": 1440,
+      "h": 900,
+      "title": "Brand font · Shrikhand · L1 + L2 + in use",
+      "is_interactive": true
+    },
+    "HeroShrikhand.dc.html": {
+      "x": 1520,
+      "y": 8606,
+      "w": 1440,
+      "h": 720,
+      "title": "Repo hero · Shrikhand · 1280 × 640 shown at 1.125×",
+      "is_interactive": true
+    },
+    "FontRubikMono.dc.html": {
+      "x": 3040,
+      "y": 7586,
+      "w": 1440,
+      "h": 900,
+      "title": "Brand font · Rubik Mono One · L1 + L2 + in use  ✓ chosen (L2 pill)",
+      "is_interactive": true
+    },
+    "HeroRubikMono.dc.html": {
+      "x": 3040,
+      "y": 8606,
+      "w": 1440,
+      "h": 720,
+      "title": "Repo hero · Rubik Mono One · 1280 × 640 shown at 1.125×  ✓ chosen",
+      "is_interactive": true
+    },
+    "FontBowlby.dc.html": {
+      "x": 4560,
+      "y": 7586,
+      "w": 1440,
+      "h": 900,
+      "title": "Brand font · Bowlby One · L1 + L2 + in use",
+      "is_interactive": true
+    },
+    "HeroBowlby.dc.html": {
+      "x": 4560,
+      "y": 8606,
+      "w": 1440,
+      "h": 720,
+      "title": "Repo hero · Bowlby One · 1280 × 640 shown at 1.125×",
+      "is_interactive": true
+    }
+  },
+  "createdOnFiles": {
+    "at": "2026-11-17T15:45:00Z",
+    "v": 1
+  },
+  "designSystems": [],
+  "launch": {
+    "view": "canvas"
+  },
+  "noteOrder": [
+    "titleA",
+    "titleB",
+    "titleC",
+    "titleRound2",
+    "titleRound3",
+    "titleRound4",
+    "titleRound5",
+    "titleRound6"
+  ],
+  "notes": {
+    "titleA": {
+      "kind": "title1",
+      "maxW": 2800,
+      "text": "Round 1 · A · Vinyl Night: warm, dark, record-sleeve cards",
+      "w": 240,
+      "x": 0,
+      "y": -260
+    },
+    "titleB": {
+      "kind": "title1",
+      "maxW": 2800,
+      "text": "Round 1 · B · Mixtape: light, chunky, cassette stickers  ✓ base",
+      "w": 240,
+      "x": 0,
+      "y": 1020
+    },
+    "titleC": {
+      "kind": "title1",
+      "maxW": 2800,
+      "text": "Round 1 · C · Signal: midnight, waveform, decade spectrum",
+      "w": 240,
+      "x": 0,
+      "y": 2300
+    },
+    "titleRound2": {
+      "kind": "title1",
+      "maxW": 4480,
+      "text": "Round 2 · Mixtape variations: D After Dark · E Soft · F Riso  ✓ E's palette",
+      "w": 240,
+      "x": 0,
+      "y": 3580
+    },
+    "titleRound3": {
+      "kind": "title1",
+      "maxW": 1440,
+      "text": "Round 3 · Logo  ✓ L2 pill",
+      "w": 240,
+      "x": 0,
+      "y": 4860
+    },
+    "titleRound4": {
+      "kind": "title1",
+      "maxW": 1440,
+      "text": "Round 4 · Playing tape  ✓ T2 bar + T4 sticker",
+      "w": 240,
+      "x": 1520,
+      "y": 4860
+    },
+    "titleRound5": {
+      "kind": "title1",
+      "maxW": 4480,
+      "text": "Round 5 · Landscape phone, 844 × 390 shown at 1.7×  ✓ V2",
+      "w": 240,
+      "x": 0,
+      "y": 6280
+    },
+    "titleRound6": {
+      "kind": "title1",
+      "maxW": 5840,
+      "text": "Round 6 · Brand font  ✓ Rubik Mono One, pill logo",
+      "x": 0,
+      "y": 7326
+    }
+  },
+  "order": [
+    "Main.dc.html",
+    "VinylGame.dc.html",
+    "MixtapeTile.dc.html",
+    "MixtapeGame.dc.html",
+    "SignalTile.dc.html",
+    "SignalGame.dc.html",
+    "AfterDark.dc.html",
+    "Soft.dc.html",
+    "Riso.dc.html",
+    "Logos.dc.html",
+    "Tapes.dc.html",
+    "PhoneV1.dc.html",
+    "PhoneV2.dc.html",
+    "PhoneV3.dc.html",
+    "FontBagel.dc.html",
+    "HeroBagel.dc.html",
+    "FontShrikhand.dc.html",
+    "HeroShrikhand.dc.html",
+    "FontRubikMono.dc.html",
+    "HeroRubikMono.dc.html",
+    "FontBowlby.dc.html",
+    "HeroBowlby.dc.html"
+  ],
+  "pages": [],
+  "title": "Jamster — Visual Theme Exploration"
+}

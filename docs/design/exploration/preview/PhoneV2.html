@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phone host screen — sticker tape with progress bar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&amp;family=Bricolage+Grotesque:opsz,wght@12..96,400..800&amp;family=DM+Mono:wght@500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#B83A20}a:hover{color:#8F2C17}
+.spin{transform-box:fill-box;transform-origin:center;animation:spin 1.8s linear infinite}
+.bob{animation:bob 500ms ease-in-out infinite alternate}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes bob{from{transform:translateY(0)}to{transform:translateY(-3px)}}
+@media (prefers-reduced-motion: reduce){.spin,.bob{animation:none}}
+</style>
+</head>
+<body>
+<div id="dc-root"></div>
+<template id="dc-template"><div style="width: 1440px; height: 666px; overflow: hidden; background: #F6EEDF">
+<div style="width: 844px; height: 390px; transform: scale(1.7062); transform-origin: 0 0; box-sizing: border-box; padding: 14px 16px; overflow: hidden; background: #F6EEDF; color: #2A211C; font-family: 'Bricolage Grotesque', system-ui, sans-serif; display: flex; flex-direction: column; gap: 8px">
+
+  <!-- Header -->
+  <header style="height: 44px; flex: 0 0 auto; display: flex; align-items: center; gap: 10px">
+    <div style="transform: rotate(-4deg); background: #EE5A3C; border: 2px solid #2A211C; box-shadow: 2px 2px 0 #2A211C; padding: 0 10px 3px; border-radius: 999px">
+      <span style="font-family: Archivo, sans-serif; font-weight: 900; font-stretch: 125%; font-size: 17px; letter-spacing: -0.02em">jamster</span>
+    </div>
+    <span style="padding: 3px 8px; border-radius: 8px; border: 2px solid #2A211C; background: #FFFAF0; font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.14em">QZRK</span>
+    <span style="font-size: 13px; font-weight: 600; color: #5C4F44">Turn 7 · 38 left · first to 10</span>
+    <span style="flex: 1"></span>
+    <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600">As
+      <select style="height: 44px; padding: 0 8px; border-radius: 12px; border: 2px solid #2A211C; background: #FFFAF0; color: #2A211C; font: 600 13px 'Bricolage Grotesque', sans-serif"><option>Mara (on turn)</option><option>Jonas</option><option>Lea</option><option>Tobi</option><option>Sam</option></select>
+    </label>
+    <button type="button" aria-label="Game menu, including end game" style="width: 44px; height: 44px; border-radius: 12px; border: 2px solid #2A211C; background: #FFFAF0; color: #2A211C; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"></circle><circle cx="12" cy="12" r="2"></circle><circle cx="19" cy="12" r="2"></circle></svg></button>
+  </header>
+
+  <div style="flex: 1; min-height: 0; display: flex; gap: 12px">
+    <main style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px">
+
+      <div style="height: 172px; flex: 0 0 auto; display: flex; gap: 12px">
+        <!-- Tape: T4 sticker, tilted, with T2's progress bar -->
+        <div style="width: 168px; flex: 0 0 auto; display: flex; flex-direction: column; gap: 6px">
+          <div class="{{bobClass}}" style="padding: 4px 6px 0 2px">
+            <div style="transform: rotate(-4deg)">
+              <svg width="156" height="99" viewBox="0 0 300 190" role="img" aria-label="Cassette playing the mystery song" style="display: block; filter: drop-shadow(3px 3px 0 #2A211C)">
+                <rect x="4" y="4" width="292" height="182" rx="18" fill="#EE5A3C" stroke="#2A211C" stroke-width="7"></rect>
+                <circle cx="17" cy="17" r="4.5" fill="#2A211C"></circle><circle cx="283" cy="17" r="4.5" fill="#2A211C"></circle><circle cx="17" cy="173" r="4.5" fill="#2A211C"></circle><circle cx="283" cy="173" r="4.5" fill="#2A211C"></circle>
+                <rect x="92" y="70" width="116" height="40" rx="20" fill="#3A2E26"></rect>
+                <circle cx="105" cy="90" r="36" fill="#6B4228" style="transform: scale({{tape.l}}); transform-box: fill-box; transform-origin: center; transition: transform 0.25s linear"></circle>
+                <circle cx="195" cy="90" r="36" fill="#6B4228" style="transform: scale({{tape.r}}); transform-box: fill-box; transform-origin: center; transition: transform 0.25s linear"></circle>
+                <g class="spin"><circle cx="105" cy="90" r="13" fill="#FFFAF0" stroke="#2A211C" stroke-width="4"></circle><path d="M105 80v20M96.3 85l17.4 10M96.3 95l17.4-10" stroke="#2A211C" stroke-width="4" stroke-linecap="round"></path></g>
+                <g class="spin"><circle cx="195" cy="90" r="13" fill="#FFFAF0" stroke="#2A211C" stroke-width="4"></circle><path d="M195 80v20M186.3 85l17.4 10M186.3 95l17.4-10" stroke="#2A211C" stroke-width="4" stroke-linecap="round"></path></g>
+                <path fill-rule="evenodd" d="M30 18H270A8 8 0 0 1 278 26V138A8 8 0 0 1 270 146H30A8 8 0 0 1 22 138V26A8 8 0 0 1 30 18Z M92 70H208A20 20 0 0 1 208 110H92A20 20 0 0 1 92 70Z" fill="#FFFAF0" stroke="#2A211C" stroke-width="5"></path>
+                <text x="150" y="56" text-anchor="middle" font-family="Archivo, sans-serif" font-weight="900" font-size="28" fill="#2A211C">? ? ? ?</text>
+                <rect x="40" y="122" width="220" height="11" rx="5.5" fill="#EDE2CE"></rect>
+                <rect x="40" y="122" width="{{tape.w}}" height="11" rx="5.5" fill="#EE5A3C" style="transition: width 0.25s linear"></rect>
+                <path d="M78 186L90 156H210L222 186" fill="#D44A2E" stroke="#2A211C" stroke-width="5" stroke-linejoin="round"></path>
+                <circle cx="112" cy="174" r="6" fill="#2A211C"></circle><circle cx="188" cy="174" r="6" fill="#2A211C"></circle>
+              </svg>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between">
+            <span style="font-family: 'DM Mono', monospace; font-size: 12px">{{tape.time}} / 0:30</span>
+            <div style="display: flex; gap: 4px">
+              <button type="button" aria-label="Restart song" style="width: 44px; height: 44px; border-radius: 50%; border: 2px solid #2A211C; background: #FFFAF0; color: #2A211C; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><path d="M3 3v5h5"></path></svg></button>
+              <button type="button" aria-label="Retry dropped players" style="width: 44px; height: 44px; border-radius: 50%; border: 2px solid #2A211C; background: #FFFAF0; color: #2A211C; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path><path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path><path d="M21 3v5h-5"></path><path d="M3 21v-5h5"></path></svg></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Challenge window -->
+        <section style="flex: 1; min-width: 0; border-radius: 16px; background: #FFFAF0; border: 2px solid #2A211C; box-shadow: 3px 3px 0 #2A211C; box-sizing: border-box; padding: 8px 10px; display: flex; flex-direction: column; gap: 8px">
+          <div style="display: flex; align-items: center; gap: 10px">
+            <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+              <span style="font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: #B83A20">Challenge window</span>
+              <h2 style="margin: 0; font-weight: 800; font-size: 17px; line-height: 1.1; letter-spacing: -0.01em">Mara put it between 1994 and 2008.</h2>
+            </div>
+            <div style="width: 44px; height: 44px; flex: 0 0 auto; border-radius: 50%; border: 2px solid #2A211C; box-sizing: border-box; background: conic-gradient(#EE5A3C 0 60%, #EDE2CE 60% 100%); display: flex; align-items: center; justify-content: center">
+              <div style="width: 30px; height: 30px; border-radius: 50%; background: #FFFAF0; border: 2px solid #2A211C; box-sizing: border-box; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px">6</div>
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px">
+            <sc-for list="{{challengers}}" as="c" hint-placeholder-count="4">
+              <div style="height: 46px; display: flex; align-items: center; gap: 6px; padding: 0 2px 0 6px; border-radius: 12px; background: #F6EEDF">
+                <span style="width: 24px; height: 24px; flex: 0 0 auto; border-radius: 50%; border: 2px solid #2A211C; box-sizing: border-box; background: {{c.color}}; font-weight: 800; font-size: 11px; display: inline-flex; align-items: center; justify-content: center">{{c.init}}</span>
+                <div style="flex: 1; min-width: 0; display: flex; flex-direction: column">
+                  <span style="font-size: 14px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{c.name}}</span>
+                  <sc-if value="{{c.host}}" hint-placeholder-val="{{false}}"><span style="font-size: 11px; color: #5C4F44; white-space: nowrap">no phone</span></sc-if>
+                </div>
+                <sc-if value="{{c.open}}" hint-placeholder-val="{{true}}">
+                  <div style="display: flex; gap: 4px">
+                    <button type="button" style="height: 44px; padding: 0 10px; border: 2px solid #2A211C; border-radius: 999px; background: #EE5A3C; color: #2A211C; box-shadow: 2px 2px 0 #2A211C; font: 700 13px 'Bricolage Grotesque', sans-serif">Challenge</button>
+                    <button type="button" aria-label="Pass for {{c.name}}" style="width: 44px; height: 44px; border: 2px solid #2A211C; border-radius: 50%; background: #FFFAF0; color: #2A211C; display: flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+                  </div>
+                </sc-if>
+                <sc-if value="{{c.challenging}}" hint-placeholder-val="{{false}}"><span style="display: inline-flex; align-items: center; height: 36px; padding: 0 12px; margin-right: 4px; border-radius: 999px; background: #2A211C; color: #F6EEDF; font-size: 13px; font-weight: 700">Marking…</span></sc-if>
+                <sc-if value="{{c.passed}}" hint-placeholder-val="{{false}}"><span style="padding: 0 10px; font-size: 13px; color: #5C4F44">Passed</span></sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </section>
+      </div>
+
+      <!-- Timeline -->
+      <section style="flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 4px">
+        <div style="display: flex; align-items: baseline; gap: 8px"><h2 style="margin: 0; font-weight: 800; font-size: 14px">Mara's timeline</h2><span style="font-size: 12px; color: #5C4F44">4 of 10 · Jonas's mark hidden until reveal</span></div>
+        <div style="overflow-x: auto; padding: 4px 6px 6px 2px">
+          <div style="display: flex; align-items: center; gap: 8px; min-width: max-content">
+            <sc-for list="{{before}}" as="k" hint-placeholder-count="2">
+              <div style="display: flex; align-items: center; gap: 8px">
+                <div style="width: 84px; height: 100px; border-radius: 12px; background: #FFFAF0; border: 2px solid #2A211C; box-shadow: 3px 3px 0 #2A211C; box-sizing: border-box; padding: 6px 8px; display: flex; flex-direction: column; gap: 1px">
+                  <span style="font-weight: 800; font-size: 22px; line-height: 1; letter-spacing: -0.03em">{{k.year}}</span>
+                  <span style="font-size: 12px; font-weight: 700; line-height: 1.15; margin-top: 4px">{{k.title}}</span>
+                  <span style="font-size: 11px; color: #5C4F44">{{k.artist}}</span>
+                  <span style="margin-top: auto; display: flex; align-items: center; gap: 4px; font-size: 11px; color: #5C4F44"><span style="width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid #2A211C; background: {{k.dot}}" aria-hidden="true"></span>{{k.via}}</span>
+                </div>
+                <sc-if value="{{k.gap}}" hint-placeholder-val="{{true}}"><div style="width: 14px; height: 64px; border-radius: 7px; border: 2px dashed #B9AA94" aria-hidden="true"></div></sc-if>
+              </div>
+            </sc-for>
+            <div style="width: 84px; height: 100px; transform: rotate(-4deg); border-radius: 12px; background: #E9B43A; border: 2px solid #2A211C; box-shadow: 3px 3px 0 #2A211C; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px">
+              <span style="font-weight: 800; font-size: 22px">????</span>
+              <span style="font-size: 12px; font-weight: 700">Mara's pick</span>
+            </div>
+            <sc-for list="{{after}}" as="k" hint-placeholder-count="2">
+              <div style="display: flex; align-items: center; gap: 8px">
+                <div style="width: 84px; height: 100px; border-radius: 12px; background: #FFFAF0; border: 2px solid #2A211C; box-shadow: 3px 3px 0 #2A211C; box-sizing: border-box; padding: 6px 8px; display: flex; flex-direction: column; gap: 1px">
+                  <span style="font-weight: 800; font-size: 22px; line-height: 1; letter-spacing: -0.03em">{{k.year}}</span>
+                  <span style="font-size: 12px; font-weight: 700; line-height: 1.15; margin-top: 4px">{{k.title}}</span>
+                  <span style="font-size: 11px; color: #5C4F44">{{k.artist}}</span>
+                  <span style="margin-top: auto; display: flex; align-items: center; gap: 4px; font-size: 11px; color: #5C4F44"><span style="width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid #2A211C; background: {{k.dot}}" aria-hidden="true"></span>{{k.via}}</span>
+                </div>
+                <sc-if value="{{k.gap}}" hint-placeholder-val="{{true}}"><div style="width: 14px; height: 64px; border-radius: 7px; border: 2px dashed #B9AA94" aria-hidden="true"></div></sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Standings -->
+    <aside style="width: 164px; flex: 0 0 auto; border-radius: 16px; background: #FFFAF0; border: 2px solid #2A211C; box-shadow: 3px 3px 0 #2A211C; box-sizing: border-box; padding: 8px; display: flex; flex-direction: column; gap: 4px">
+      <h2 style="margin: 0 0 2px 4px; font-weight: 800; font-size: 14px">Standings</h2>
+      <sc-for list="{{players}}" as="p" hint-placeholder-count="5">
+        <div style="border-radius: 10px; padding: 5px 7px; display: flex; flex-direction: column; gap: 4px; background: {{p.bg}}">
+          <div style="display: flex; align-items: center; gap: 6px">
+            <span style="width: 22px; height: 22px; flex: 0 0 auto; border-radius: 50%; border: 2px solid #2A211C; box-sizing: border-box; background: {{p.color}}; font-weight: 800; font-size: 10px; display: inline-flex; align-items: center; justify-content: center">{{p.init}}</span>
+            <span style="font-size: 13px; font-weight: 700; flex: 1; min-width: 0">{{p.name}}</span>
+            <span style="display: inline-flex; align-items: center; gap: 2px; font-size: 12px; font-weight: 700"><span style="width: 10px; height: 10px; border-radius: 50%; background: #E9B43A; border: 1.5px solid #2A211C; box-sizing: border-box" aria-hidden="true"></span>{{p.tokens}}</span>
+            <span style="font-weight: 800; font-size: 15px">{{p.cards}}<span style="font-size: 11px; font-weight: 500; color: #5C4F44">/10</span></span>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 2px">
+            <sc-for list="{{p.slots}}" as="s" hint-placeholder-count="10"><div style="height: 5px; border-radius: 3px; background: {{s.fill}}"></div></sc-for>
+          </div>
+        </div>
+      </sc-for>
+    </aside>
+  </div>
+</div>
+</div></template>
+<script src="dc-runtime.js"></script>
+<script>
+class Component extends DCLogic {
+  componentDidMount() {
+    var self = this;
+    this.iv = setInterval(function () {
+      var t = ((self.state && self.state.t) || 9) + 0.25;
+      if (t > 30) t = 0;
+      self.setState({ t: t });
+    }, 250);
+  }
+  componentWillUnmount() { clearInterval(this.iv); }
+  renderVals() {
+    var t = (this.state && this.state.t) || 9;
+    var p = t / 30;
+    var sec = Math.floor(t);
+    var col = { Mara: '#EE5A3C', Jonas: '#8FBF9F', Lea: '#E9B43A', Tobi: '#B9A6E8', Sam: '#8CC8E8' };
+    var players = [
+      { init: 'M', name: 'Mara', cards: 4, tokens: 2, turn: true },
+      { init: 'J', name: 'Jonas', cards: 6, tokens: 1 },
+      { init: 'L', name: 'Lea', cards: 5, tokens: 3 },
+      { init: 'T', name: 'Tobi', cards: 3, tokens: 2 },
+      { init: 'S', name: 'Sam', cards: 2, tokens: 4 }
+    ].map(function (pl) {
+      var slots = [];
+      for (var i = 0; i < 10; i++) slots.push({ fill: i < pl.cards ? col[pl.name] : '#E4D8C2' });
+      return Object.assign({}, pl, { color: col[pl.name], slots: slots, bg: pl.turn ? '#FBE3C4' : '#F6EEDF' });
+    });
+    var card = function (year, title, artist, via, gap) { return { year: year, title: title, artist: artist, via: via, dot: col[via], gap: gap }; };
+    var challengers = [
+      { init: 'J', name: 'Jonas', challenging: true },
+      { init: 'L', name: 'Lea', open: true },
+      { init: 'T', name: 'Tobi', passed: true },
+      { init: 'S', name: 'Sam', open: true, host: true }
+    ].map(function (c) { return Object.assign({ open: false, challenging: false, passed: false, host: false, color: col[c.name] }, c); });
+    return {
+      bobClass: (this.props.bounce ?? true) ? 'bob' : '',
+      tape: {
+        l: (1 - 0.6 * p).toFixed(3),
+        r: (0.4 + 0.6 * p).toFixed(3),
+        w: (220 * p).toFixed(1),
+        time: '0:' + (sec < 10 ? '0' : '') + sec
+      },
+      players: players,
+      challengers: challengers,
+      before: [card(1975, 'Bohemian Rhapsody', 'Queen', 'Lea', true), card(1994, 'Zombie', 'The Cranberries', 'Mara', false)],
+      after: [card(2008, 'Viva la Vida', 'Coldplay', 'Tobi', true), card(2016, 'Redbone', 'Childish Gambino', 'Jonas', true)]
+    };
+  }
+}
+DCRuntime.mount(Component, document.getElementById('dc-root'), document.getElementById('dc-template').content, {"bounce": true});
+</script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+@import url("https://fonts.googleapis.com/css2?family=Rubik+Mono+One&family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=DM+Mono:wght@500&display=swap");
+
+/* Jamster components: plain CSS on top of tokens.css. Prefix: jm- */
+
+body { margin: 0; font-family: var(--font-ui); background: var(--paper); color: var(--ink); }
+.jm-stage { padding: var(--space-16); display: flex; flex-wrap: wrap; gap: var(--space-12); align-items: center; }
+
+/* ---------- Logo (L2) ---------- */
+.jm-logo { display: inline-block; transform: rotate(var(--tilt)); background: var(--coral); color: var(--ink); border: var(--stroke-control) solid var(--ink); box-shadow: var(--shadow-sticker-sm); border-radius: var(--radius-pill); padding: 1px 10px 2px; font-family: var(--font-display); font-weight: 400; font-size: 17px; line-height: 23px; letter-spacing: 0; text-decoration: none; white-space: nowrap; }
+.jm-logo--xl { font-size: 48px; line-height: 58px; padding: 6px 30px 6px; border-width: 3px; box-shadow: var(--shadow-sticker-lg); }
+
+/* ---------- Text helpers ---------- */
+.jm-label { font: 500 11px/14px var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--coral-text); }
+.jm-headline { margin: 0; font: 800 17px/19px var(--font-ui); letter-spacing: -0.01em; }
+.jm-section { margin: 0; font: 800 14px/18px var(--font-ui); }
+.jm-meta { font: 600 13px/18px var(--font-ui); color: var(--ink-muted); }
+.jm-caption { font: 500 11px/14px var(--font-ui); color: var(--ink-muted); }
+.jm-time { font: 500 12px/16px var(--font-mono); }
+
+/* ---------- Buttons & inputs ---------- */
+.jm-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; box-sizing: border-box; min-height: var(--touch-min); padding: 0 14px; border: var(--stroke-control) solid var(--ink); border-radius: var(--radius-pill); background: var(--label); color: var(--ink); font: 700 13px/16px var(--font-ui); cursor: pointer; }
+.jm-btn--primary { background: var(--coral); box-shadow: var(--shadow-sticker-sm); }
+.jm-btn--primary:active { background: var(--coral-deep); transform: translate(2px, 2px); box-shadow: none; }
+.jm-btn--dark { background: var(--ink); color: var(--paper); }
+.jm-btn--icon { width: var(--touch-min); height: var(--touch-min); padding: 0; border-radius: 50%; }
+.jm-btn--square { width: var(--touch-min); height: var(--touch-min); padding: 0; border-radius: var(--radius-card); }
+.jm-btn--sm-pad { padding: 0 10px; }
+.jm-btn svg { width: 16px; height: 16px; flex: 0 0 auto; }
+.jm-btn:disabled, .jm-btn[aria-disabled="true"] { opacity: 0.45; cursor: not-allowed; box-shadow: none; transform: none; }
+.jm-btn:focus-visible, .jm-select:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.jm-select { height: var(--touch-min); box-sizing: border-box; padding: 0 8px; border-radius: var(--radius-card); border: var(--stroke-control) solid var(--ink); background: var(--label); color: var(--ink); font: 600 13px var(--font-ui); }
+.jm-field { display: inline-flex; align-items: center; gap: 6px; font: 600 13px var(--font-ui); }
+.jm-chip { display: inline-flex; align-items: center; box-sizing: border-box; padding: 3px 8px; border-radius: var(--radius-chip); border: var(--stroke-control) solid var(--ink); background: var(--label); font: 500 12px/16px var(--font-mono); letter-spacing: 0.14em; }
+.jm-status { display: inline-flex; align-items: center; height: 36px; padding: 0 12px; border-radius: var(--radius-pill); background: var(--ink); color: var(--paper); font: 700 13px var(--font-ui); white-space: nowrap; }
+.jm-status--quiet { background: none; color: var(--ink-subtle); font-weight: 500; }
+
+/* ---------- Panel ---------- */
+.jm-panel { box-sizing: border-box; background: var(--label); border: var(--stroke-control) solid var(--ink); border-radius: var(--radius-panel); box-shadow: var(--shadow-sticker); padding: 8px 10px; }
+
+/* ---------- Avatar & player colours ---------- */
+.jm-avatar { width: var(--avatar); height: var(--avatar); flex: 0 0 auto; box-sizing: border-box; border-radius: 50%; border: var(--stroke-control) solid var(--ink); display: inline-flex; align-items: center; justify-content: center; font: 800 11px var(--font-ui); color: var(--ink); background: var(--player-1); }
+.jm-avatar--sm { width: 22px; height: 22px; font-size: 10px; }
+.jm-p1 { --pc: var(--player-1); } .jm-p2 { --pc: var(--player-2); } .jm-p3 { --pc: var(--player-3); } .jm-p4 { --pc: var(--player-4); } .jm-p5 { --pc: var(--player-5); }
+.jm-avatar[class*="jm-p"] { background: var(--pc); }
+
+/* ---------- Countdown ring ---------- */
+.jm-ring { --p: 60; width: 44px; height: 44px; flex: 0 0 auto; box-sizing: border-box; border-radius: 50%; border: var(--stroke-control) solid var(--ink); background: conic-gradient(var(--coral) calc(var(--p) * 1%), var(--sand) 0); display: inline-flex; align-items: center; justify-content: center; }
+.jm-ring > span { width: 30px; height: 30px; box-sizing: border-box; border-radius: 50%; background: var(--label); border: var(--stroke-control) solid var(--ink); display: flex; align-items: center; justify-content: center; font: 800 15px var(--font-ui); }
+
+/* ---------- Challenge window ---------- */
+.jm-challenge { display: flex; flex-direction: column; gap: 8px; }
+.jm-challenge__head { display: flex; align-items: center; gap: 10px; }
+.jm-challenge__text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.jm-challengers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+.jm-challenger { height: 46px; display: flex; align-items: center; gap: 6px; padding: 0 2px 0 6px; border-radius: var(--radius-card); background: var(--paper); }
+.jm-challenger__name { flex: 1; min-width: 0; display: flex; flex-direction: column; font: 700 14px/18px var(--font-ui); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.jm-challenger__name small { font: 500 11px/13px var(--font-ui); color: var(--ink-muted); }
+.jm-challenger__actions { display: flex; gap: 4px; }
+.jm-challenger .jm-status { margin-right: 4px; }
+
+/* ---------- Song cards & timeline ---------- */
+.jm-timeline { display: flex; align-items: center; gap: 8px; overflow-x: auto; padding: 4px 6px 6px 2px; }
+.jm-card { width: var(--card-w); height: var(--card-h); flex: 0 0 auto; box-sizing: border-box; border-radius: var(--radius-card); background: var(--label); border: var(--stroke-control) solid var(--ink); box-shadow: var(--shadow-sticker); padding: 6px 8px; display: flex; flex-direction: column; gap: 1px; color: var(--ink); }
+.jm-card__year { font: 800 22px/22px var(--font-ui); letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+.jm-card__title { font: 700 12px/14px var(--font-ui); margin-top: 4px; }
+.jm-card__artist { font: 500 11px/14px var(--font-ui); color: var(--ink-muted); }
+.jm-card__via { margin-top: auto; display: flex; align-items: center; gap: 4px; font: 500 11px/14px var(--font-ui); color: var(--ink-muted); }
+.jm-card__via::before { content: ""; width: 8px; height: 8px; box-sizing: border-box; border-radius: 50%; border: 1.5px solid var(--ink); background: var(--pc, var(--player-1)); }
+.jm-card--mystery { transform: rotate(var(--tilt)); background: var(--mustard); align-items: center; justify-content: center; gap: 4px; padding: 0; }
+.jm-card--mystery .jm-card__year { font-size: 22px; }
+.jm-gap { width: 14px; height: 64px; flex: 0 0 auto; box-sizing: border-box; border-radius: 7px; border: 2px dashed var(--slot-dash); background: none; padding: 0; cursor: pointer; }
+.jm-gap:hover, .jm-gap[aria-pressed="true"] { border-style: solid; border-color: var(--ink); background: var(--turn-tint); }
+.jm-gap:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+/* ---------- Standings ---------- */
+.jm-standings { width: 164px; box-sizing: border-box; display: flex; flex-direction: column; gap: 4px; padding: 8px; }
+.jm-standing { border-radius: var(--radius-row); padding: 5px 7px; display: flex; flex-direction: column; gap: 4px; background: var(--paper); }
+.jm-standing--turn { background: var(--turn-tint); }
+.jm-standing__row { display: flex; align-items: center; gap: 6px; }
+.jm-standing__name { flex: 1; min-width: 0; font: 700 13px/16px var(--font-ui); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.jm-token { display: inline-flex; align-items: center; gap: 2px; font: 700 12px var(--font-ui); }
+.jm-token::before { content: ""; width: 10px; height: 10px; box-sizing: border-box; border-radius: 50%; background: var(--mustard); border: 1.5px solid var(--ink); }
+.jm-score { font: 800 15px var(--font-ui); }
+.jm-score small { font-size: 11px; font-weight: 500; color: var(--ink-subtle); }
+.jm-slots { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: var(--space-2); }
+.jm-slots > span { height: 5px; border-radius: 3px; background: var(--slot-empty); }
+.jm-slots > span.on { background: var(--pc, var(--player-1)); }
+
+/* ---------- Tape player (T4 sticker + T2 bar) ---------- */
+.jm-tape { width: 168px; display: inline-flex; flex-direction: column; gap: 6px; }
+.jm-tape__bob { padding: 4px 6px 0 2px; }
+.jm-tape--bounce.is-playing .jm-tape__bob { animation: jm-bob 500ms ease-in-out infinite alternate; }
+.jm-tape__shell { transform: rotate(var(--tilt)); }
+.jm-tape__shell > svg { display: block; width: var(--tape-w); height: auto; filter: drop-shadow(3px 3px 0 #2a211c); }
+.jm-tape .t-shell { fill: var(--coral); stroke: var(--ink); }
+.jm-tape .t-ink { fill: var(--ink); }
+.jm-tape .t-window { fill: var(--tape-window); }
+.jm-tape .t-pack { fill: var(--tape-brown); transform-box: fill-box; transform-origin: center; transition: transform 0.25s linear; }
+.jm-tape .t-hub { fill: var(--label); stroke: var(--ink); }
+.jm-tape .t-spoke { fill: none; stroke: var(--ink); stroke-linecap: round; }
+.jm-tape .t-label { fill: var(--label); stroke: var(--ink); }
+.jm-tape .t-q { font-family: var(--font-display); font-weight: 400; font-size: 30px; fill: var(--ink); }
+.jm-tape .t-track { fill: var(--sand); }
+.jm-tape .t-bar { fill: var(--coral); transition: width 0.25s linear; }
+.jm-tape .t-foot { fill: var(--coral-deep); stroke: var(--ink); stroke-linejoin: round; }
+.jm-tape .t-reel { transform-box: fill-box; transform-origin: center; }
+.jm-tape.is-playing .t-reel { animation: jm-spin 1.8s linear infinite; }
+.jm-tape__foot { display: flex; align-items: center; justify-content: space-between; }
+.jm-tape__buttons { display: flex; gap: 4px; }
+@keyframes jm-spin { to { transform: rotate(360deg); } }
+@keyframes jm-bob { from { transform: translateY(0); } to { transform: translateY(-3px); } }
+
+/* ---------- Screen layout (landscape phone, 844 × 390) ---------- */
+.jm-screen { width: var(--screen-w); height: var(--screen-h); box-sizing: border-box; padding: var(--space-14) var(--space-16); padding-left: max(var(--space-16), env(safe-area-inset-left)); padding-right: max(var(--space-16), env(safe-area-inset-right)); overflow: hidden; background: var(--paper); color: var(--ink); display: flex; flex-direction: column; gap: var(--space-8); }
+.jm-header { height: var(--touch-min); flex: 0 0 auto; display: flex; align-items: center; gap: var(--space-10); }
+.jm-header__spacer { flex: 1; }
+.jm-screen__body { flex: 1; min-height: 0; display: flex; gap: var(--space-12); }
+.jm-screen__main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-8); }
+.jm-screen__top { height: 172px; flex: 0 0 auto; display: flex; gap: var(--space-12); }
+.jm-screen__top > .jm-panel { flex: 1; min-width: 0; }
+.jm-screen__timeline { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 4px; }
+.jm-screen__timeline-head { display: flex; align-items: baseline; gap: 8px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .jm-tape .t-reel, .jm-tape__bob { animation: none !important; }
+  .jm-tape .t-pack, .jm-tape .t-bar { transition: none; }
+}
