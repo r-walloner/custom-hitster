@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Jamster — screens</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#EDE2CE;color:#2A211C;font-family:"Bricolage Grotesque",system-ui,sans-serif}
+main{max-width:1500px;margin:0 auto;padding:40px 32px 80px;display:flex;flex-direction:column;gap:32px}
+h1{margin:0;font-size:34px} h2{margin:0 0 4px;font-size:18px} p{margin:0 0 10px;color:#5C4F44}
+.item{background:#F6EEDF;border:2px solid #2A211C;border-radius:16px;box-shadow:3px 3px 0 #2A211C;padding:18px 20px;overflow-x:auto}
+.grid{display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start}
+figure{margin:0;display:flex;flex-direction:column;gap:8px}
+iframe{display:block;border:2px solid #2A211C;border-radius:10px;background:#F6EEDF}
+figcaption{font-size:14px} a{color:#B83A20}
+ul{margin:0;padding-left:20px;color:#5C4F44;line-height:1.5}</style></head>
+<body><main>
+  <h1>Jamster — screens</h1>
+  <p>The app's screens, designed on the design system. Each board is live: on Placing and Challengers guess you can tap gaps and card halves, and Named it toggles on the reveal.</p>
+  <section class="item">
+    <h2>Game screen</h2>
+    <p>One round, in order, on a landscape phone (844 × 390).</p>
+    <div class="grid">
+      <figure><iframe src="Main.html" title="1 · Placing" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="Main.html">1 · Placing</a></figcaption></figure>
+      <figure><iframe src="Challenge.html" title="2 · Challenge" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="Challenge.html">2 · Challenge</a></figcaption></figure>
+      <figure><iframe src="Guess.html" title="3 · Challengers guess" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="Guess.html">3 · Challengers guess</a></figcaption></figure>
+      <figure><iframe src="Reveal.html" title="4 · Reveal & result" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="Reveal.html">4 · Reveal &amp; result</a></figcaption></figure>
+    </div>
+    <h2 style="margin-top: 16px">Why it looks like this</h2>
+    <ul>
+      <li>Landscape keeps cards near-square, like real cards; the whole round fits one screen.</li>
+      <li>The timeline owns the full width at the bottom. Fixed 112px cards with dashed + gaps; tap a gap or either half of a card. Too many cards: it scrolls sideways, with a bar.</li>
+      <li>One centre panel holds the only decision right now: Lock it in, Challenge / Pass, Lock guess, Next song. Big targets for tipsy thumbs.</li>
+      <li>The host plays for anyone inside the UI, on each player's own row. No "play as" dropdown.</li>
+      <li>The tape is always visible: reels and bounce show music is playing. Restart is a small icon beside the timer, since it's rarely used.</li>
+      <li>A compact scoreboard on every screen: initial, cards, tokens.</li>
+      <li>Every pick is the same yellow card with a name. Locked picks turn tinted; the one guessing now stays bright, and so does their row.</li>
+      <li>Challengers guess in the order they challenged; guesses are visible, not secret.</li>
+      <li>Reveal: green ✓ and red ✕ marks with initials, same size and height. Library credit up front; the year shows only on the tape and the timeline.</li>
+      <li>One countdown style everywhere: the filling ring.</li>
+      <li>Named it is a single toggle. Buy a card stays (3 tokens, from the rules).</li>
+      <li>Wording is plain and short: "Challenge", "Guessing…", "Is that right?".</li>
+    </ul>
+    <p style="margin-top: 10px">Not designed yet: entry, lobby, dealing, winner, errors and reconnection.</p>
+  </section>
+</main></body></html>

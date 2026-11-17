@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jamster game screen – challengers guess</title>
+<link rel="stylesheet" href="../../system/tokens.css">
+<link rel="stylesheet" href="../../system/components/bundle.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&amp;family=Bricolage+Grotesque:opsz,wght@12..96,400..800&amp;family=DM+Mono:wght@500&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</head>
+<body>
+<div id="dc-root"></div>
+<template id="dc-template"><div class="jm-screen" style="font-family: var(--font-ui); color: #2a211c; padding-bottom: 6px">
+  <header class="jm-header">
+    <span class="jm-logo">jamster</span>
+    <span class="jm-chip" aria-label="Room code QZRK">QZRK</span>
+    <span class="jm-header__meta">Turn <b>7</b><i></i><b>38</b> cards left<i></i>First to <b>10</b></span>
+    <span style="flex: 1"></span>
+    <button type="button" class="jm-btn" style="font-size: 13px">Reveal now</button>
+    <button type="button" class="jm-btn jm-btn--square" aria-label="Game menu: settings, playback device, players, end game"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"></circle><circle cx="12" cy="12" r="2"></circle><circle cx="19" cy="12" r="2"></circle></svg></button>
+  </header>
+
+  <div class="jm-screen__top">
+    <div class="jm-tape-player">
+      <div class="jm-tape jm-tape--bounce is-playing"><div class="jm-tape__bob"><div class="jm-tape__shell">
+        <svg viewBox="0 0 300 190" width="160" height="101" role="progressbar" aria-label="Mystery song progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="60">
+          <rect class="t-shell" x="4" y="4" width="292" height="182" rx="18" stroke-width="7"></rect>
+          <circle class="t-ink" cx="17" cy="17" r="4.5"></circle><circle class="t-ink" cx="283" cy="17" r="4.5"></circle><circle class="t-ink" cx="17" cy="173" r="4.5"></circle><circle class="t-ink" cx="283" cy="173" r="4.5"></circle>
+          <rect class="t-window" x="92" y="70" width="116" height="40" rx="20"></rect>
+          <circle class="t-pack" cx="105" cy="90" r="36" style="transform: scale(0.64)"></circle>
+          <circle class="t-pack" cx="195" cy="90" r="36" style="transform: scale(0.76)"></circle>
+          <g class="t-reel"><circle class="t-hub" cx="105" cy="90" r="13" stroke-width="4"></circle><path class="t-spoke" d="M105 80v20M96.3 85l17.4 10M96.3 95l17.4-10" stroke-width="4"></path></g>
+          <g class="t-reel"><circle class="t-hub" cx="195" cy="90" r="13" stroke-width="4"></circle><path class="t-spoke" d="M195 80v20M186.3 85l17.4 10M186.3 95l17.4-10" stroke-width="4"></path></g>
+          <path class="t-label" fill-rule="evenodd" stroke-width="5" d="M30 18H270A8 8 0 0 1 278 26V138A8 8 0 0 1 270 146H30A8 8 0 0 1 22 138V26A8 8 0 0 1 30 18Z M92 70H208A20 20 0 0 1 208 110H92A20 20 0 0 1 92 70Z"></path>
+          <text class="t-year" x="150" y="60" text-anchor="middle">????</text>
+          <rect class="t-track" x="40" y="122" width="220" height="11" rx="5.5"></rect>
+          <rect class="t-bar" x="40" y="122" width="132" height="11" rx="5.5"></rect>
+          <path class="t-foot" stroke-width="5" d="M78 186L90 156H210L222 186"></path>
+          <circle class="t-ink" cx="112" cy="174" r="6"></circle><circle class="t-ink" cx="188" cy="174" r="6"></circle>
+        </svg>
+      </div></div></div>
+      <div class="jm-tape__foot"><span class="jm-time">0:18 / 0:30</span><button type="button" class="jm-btn jm-btn--icon-sm" aria-label="Restart the song from the beginning"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><path d="M3 3v5h5"></path></svg></button></div>
+    </div>
+
+    <section class="jm-panel jm-moment" style="padding: 8px 12px 12px; gap: 8px" aria-label="Challengers guess, in the order they challenged">
+      <div class="jm-moment__head">
+        <div><span class="jm-label">CHALLENGERS GUESS</span><h1 class="jm-moment__headline">Sam, where does it really go?</h1></div>
+        <div class="jm-ring" style="--p: 45; width: 50px; height: 50px; flex: 0 0 auto" role="timer" aria-label="9 seconds left to guess"><span style="width: 36px; height: 36px; font-size: 18px">9</span></div>
+      </div>
+      <div style="flex: 1; min-height: 0; display: flex; gap: 10px; align-items: flex-end">
+        <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px">
+          <div class="jm-player" style="height: 40px"><span class="jm-avatar jm-p2">J</span><span class="jm-player__name" style="font-size: 14px">1 · Jonas</span><span class="jm-status jm-status--quiet">{{jonasRange}}</span></div>
+          <div class="jm-player jm-player--now" style="height: 44px"><span class="jm-avatar jm-p5">S</span><span class="jm-player__name">2 · Sam</span><span class="jm-status">Guessing…</span></div>
+        </div>
+        <button type="button" class="jm-btn jm-btn--primary jm-btn--xl" style="width: 200px; flex: 0 0 auto; min-height: 60px">Lock Sam's guess</button>
+      </div>
+    </section>
+
+    <aside class="jm-scoreboard" aria-label="Standings">
+      <div class="jm-scoreboard__row jm-scoreboard__row--turn" aria-label="Mara, on turn: 4 cards, 3 tokens"><span class="jm-avatar jm-p1">M</span><span class="jm-scoreboard__score">4</span><span class="jm-token">3</span></div>
+      <div class="jm-scoreboard__row" aria-label="Jonas: 6 cards, 0 tokens"><span class="jm-avatar jm-p2">J</span><span class="jm-scoreboard__score">6</span><span class="jm-token">0</span></div>
+      <div class="jm-scoreboard__row" aria-label="Lea: 5 cards, 2 tokens"><span class="jm-avatar jm-p3">L</span><span class="jm-scoreboard__score">5</span><span class="jm-token">2</span></div>
+      <div class="jm-scoreboard__row" aria-label="Tobi: 3 cards, 2 tokens"><span class="jm-avatar jm-p4">T</span><span class="jm-scoreboard__score">3</span><span class="jm-token">2</span></div>
+      <div class="jm-scoreboard__row" aria-label="Sam: 2 cards, 4 tokens"><span class="jm-avatar jm-p5">S</span><span class="jm-scoreboard__score">2</span><span class="jm-token">4</span></div>
+    </aside>
+  </div>
+
+  <section class="jm-board" aria-label="Mara's timeline, Sam is guessing">
+    <div class="jm-board__head"><h2 class="jm-section">Mara's timeline</h2><span class="jm-meta" style="font-size: 12px">4 of 10</span></div>
+    <div class="jm-board__row jm-board__row--scroll" tabindex="0" aria-label="Timeline, scrolls sideways">
+      <sc-for list="{{items}}" as="item" hint-placeholder-count="10">
+        <sc-if value="{{item.isGap}}" hint-placeholder-val="{{false}}">
+          <button type="button" class="jm-gap" onClick="{{item.pick}}" aria-label="{{item.aria}}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+        </sc-if>
+        <sc-if value="{{item.isLocked}}" hint-placeholder-val="{{false}}">
+          <div class="jm-card jm-card--mystery jm-card--pick-done"><span class="jm-card__year">????</span><span class="jm-card__title">{{item.label}}</span></div>
+        </sc-if>
+        <sc-if value="{{item.isActive}}" hint-placeholder-val="{{false}}">
+          <div class="jm-card jm-card--mystery {{item.cls}}"><span class="jm-card__year">????</span><span class="jm-card__title">{{item.label}}</span></div>
+        </sc-if>
+        <sc-if value="{{item.isCard}}" hint-placeholder-val="{{true}}">
+          <div class="jm-card"><span class="jm-card__year">{{item.year}}</span><span class="jm-card__title">{{item.title}}</span><span class="jm-card__artist">{{item.artist}}</span></div>
+        </sc-if>
+      </sc-for>
+    </div>
+    <div class="jm-board__scrollbar" aria-hidden="true"><span style="width: 90%"></span></div>
+  </section>
+</div></template>
+<script src="../../exploration/preview/dc-runtime.js"></script>
+<script>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { sam: 3 }; }
+  renderVals() {
+    const cards = [
+      { year: 1975, title: 'Bohemian Rhapsody', artist: 'Queen' },
+      { year: 1994, title: 'Zombie', artist: 'The Cranberries' },
+      { year: 2008, title: 'Viva la Vida', artist: 'Coldplay' },
+      { year: 2016, title: 'Redbone', artist: 'Childish Gambino' }
+    ];
+    const n = cards.length, mara = 2, jonas = 1, sam = this.state.sam;
+    const range = (i) => i === 0 ? 'before ' + cards[0].year : i === n ? 'after ' + cards[n - 1].year : cards[i - 1].year + ' to ' + cards[i].year;
+    const items = [];
+    for (let i = 0; i <= n; i++) {
+      if (i === jonas) items.push({ isLocked: true, label: "Jonas's pick", cls: 'jm-card--pick-done' });
+      if (i === mara) items.push({ isLocked: true, label: "Mara's pick", cls: 'jm-card--pick-done' });
+      if (i === sam) items.push({ isActive: true, label: "Sam's pick", cls: '' });
+      else if (i !== mara && i !== jonas) items.push({ isGap: true, aria: "Sam's guess: " + range(i), pick: () => this.setState({ sam: i }) });
+      if (i < n) items.push(Object.assign({ isCard: true }, cards[i]));
+    }
+    return { items, samRange: range(sam), jonasRange: range(jonas) };
+  }
+}
+DCRuntime.mount(Component, document.getElementById('dc-root'), document.getElementById('dc-template').content, {});
+</script>
+</body>
+</html>

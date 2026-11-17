@@ -1,7 +1,12 @@
-"""Export Claude canvas .dc.html boards to standalone HTML pages that use dc-runtime.js."""
+"""Export Claude canvas .dc.html boards to standalone HTML pages that use dc-runtime.js.
+
+Usage: python3 tools/export_canvas.py <board.dc.html> <out.html> <runtime.js> [stylesheet ...]
+Boards that link an uploaded stylesheet (/_blob/...) in the canvas need it passed again
+as local stylesheets, since the canvas upload doesn't exist outside it.
+"""
 import json, re, sys, os, html
 
-def export(src_path, out_path, runtime_rel):
+def export(src_path, out_path, runtime_rel, stylesheets=()):
     s = open(src_path, encoding="utf-8").read()
     title = re.search(r"<title>(.*?)</title>", s, re.S).group(1)
     xdc = re.search(r"<x-dc>(.*)</x-dc>", s, re.S).group(1)
@@ -15,13 +20,14 @@ def export(src_path, out_path, runtime_rel):
     code = sm.group(2)
     decl = json.loads(props_raw)
     props = {k: v.get("default") for k, v in decl.items() if not k.startswith("$") and isinstance(v, dict) and "default" in v}
+    links = "".join(f'<link rel="stylesheet" href="{href}">\n' for href in stylesheets)
     out = f"""<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{title}</title>
-{helmet}
+{links}{helmet}
 </head>
 <body>
 <div id="dc-root"></div>
@@ -37,4 +43,4 @@ DCRuntime.mount(Component, document.getElementById('dc-root'), document.getEleme
     open(out_path, "w", encoding="utf-8").write(out)
 
 if __name__ == "__main__":
-    export(sys.argv[1], sys.argv[2], sys.argv[3])
+    export(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4:])
