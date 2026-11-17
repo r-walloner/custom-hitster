@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Winner</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/jamster/tokens.css">
+<link rel="stylesheet" href="ds/jamster/components/bundle.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&amp;family=Bricolage+Grotesque:opsz,wght@12..96,400..800&amp;family=DM+Mono:wght@500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.hero .jm-tape--bounce.is-playing .jm-tape__bob{animation-duration:1200ms}
+.hero-float{animation:hero-float 3.6s ease-in-out infinite alternate}
+@keyframes hero-float{from{transform:translateY(0)}to{transform:translateY(-6px)}}
+@media (prefers-reduced-motion: reduce){.hero-float{animation:none}}
+</style>
+</helmet>
+<main class="jm-screen" style="font-family: var(--font-ui); color: var(--ink);">
+  <header class="jm-header">
+    <span class="jm-logo">jamster</span>
+    <span class="jm-chip">LUMA</span>
+    <span class="jm-header__spacer"></span>
+    <span class="jm-header__meta">Mara's room<i></i><b>4</b> players<i></i>Game over</span>
+  </header>
+  <div style="flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 20px; padding-top: 4px;">
+
+    <section class="hero" style="display: flex; flex-direction: column; gap: 10px; min-width: 0;" aria-labelledby="win-head">
+      <div style="position: relative; z-index: 3; display: flex; flex-direction: column; gap: 10px; padding: 4px 0 0 4px;">
+        <h1 id="win-head" style="margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 34px; line-height: 40px; color: var(--ink); overflow-wrap: anywhere;">Mara wins!</h1>
+        <p style="margin: 0; max-width: 300px; font: 800 15px/21px var(--font-ui); letter-spacing: -0.01em;">Sam was one card behind. Lea had three tokens left over.</p>
+      </div>
+
+      <div style="position: relative; flex: 1; min-height: 0;" aria-hidden="true">
+        <div class="hero-float" style="position: absolute; left: 192px; top: 2px; animation-delay: -1.2s; animation-duration: 3.1s;">
+          <div class="jm-card" style="transform: rotate(-14deg) scale(0.62);"><span class="jm-card__year">1965</span><span class="jm-card__title">Satisfaction</span><span class="jm-card__artist">The Rolling Stones</span></div>
+        </div>
+        <div class="hero-float" style="position: absolute; left: 298px; top: -26px; animation-delay: -2.6s; animation-duration: 4.2s;">
+          <div class="jm-card" style="transform: rotate(11deg) scale(0.72);"><span class="jm-card__year">1983</span><span class="jm-card__title">Sweet Dreams</span><span class="jm-card__artist">Eurythmics</span></div>
+        </div>
+        <div class="hero-float" style="position: absolute; left: 396px; top: 20px; animation-delay: -0.6s; animation-duration: 3.7s;">
+          <div class="jm-card" style="transform: rotate(-3deg) scale(0.58);"><span class="jm-card__year">1994</span><span class="jm-card__title">Zombie</span><span class="jm-card__artist">The Cranberries</span></div>
+        </div>
+        <div class="hero-float" style="position: absolute; left: 316px; top: 54px; animation-delay: -1.9s; animation-duration: 4.8s;">
+          <div class="jm-card" style="transform: rotate(17deg) scale(0.64);"><span class="jm-card__year">2003</span><span class="jm-card__title">Seven Nation Army</span><span class="jm-card__artist">The White Stripes</span></div>
+        </div>
+
+        <div class="jm-tape jm-tape--bounce is-playing" style="position: absolute; left: 22px; top: 14px; z-index: 2;">
+          <div class="jm-tape__bob">
+            <div class="jm-tape__shell">
+              <svg viewBox="0 0 300 190" width="170" height="108" style="width: 170px;">
+                <rect class="t-shell" x="4" y="4" width="292" height="182" rx="18" stroke-width="7"></rect>
+                <circle class="t-ink" cx="17" cy="17" r="4.5"></circle><circle class="t-ink" cx="283" cy="17" r="4.5"></circle><circle class="t-ink" cx="17" cy="173" r="4.5"></circle><circle class="t-ink" cx="283" cy="173" r="4.5"></circle>
+                <rect class="t-window" x="92" y="70" width="116" height="40" rx="20"></rect>
+                <circle class="t-pack" cx="105" cy="90" r="36" style="transform: scale(0.46)"></circle>
+                <circle class="t-pack" cx="195" cy="90" r="36" style="transform: scale(0.94)"></circle>
+                <g class="t-reel"><circle class="t-hub" cx="105" cy="90" r="13" stroke-width="4"></circle><path class="t-spoke" d="M105 80v20M96.3 85l17.4 10M96.3 95l17.4-10" stroke-width="4"></path></g>
+                <g class="t-reel"><circle class="t-hub" cx="195" cy="90" r="13" stroke-width="4"></circle><path class="t-spoke" d="M195 80v20M186.3 85l17.4 10M186.3 95l17.4-10" stroke-width="4"></path></g>
+                <path class="t-label" fill-rule="evenodd" stroke-width="5" d="M30 18H270A8 8 0 0 1 278 26V138A8 8 0 0 1 270 146H30A8 8 0 0 1 22 138V26A8 8 0 0 1 30 18Z M92 70H208A20 20 0 0 1 208 110H92A20 20 0 0 1 92 70Z"></path>
+                <text class="t-year" x="150" y="60" text-anchor="middle">2019</text>
+                <rect class="t-track" x="40" y="122" width="220" height="11" rx="5.5"></rect>
+                <rect class="t-bar" x="40" y="122" width="198" height="11" rx="5.5"></rect>
+                <path class="t-foot" stroke-width="5" d="M78 186L90 156H210L222 186"></path>
+                <circle class="t-ink" cx="112" cy="174" r="6"></circle><circle class="t-ink" cx="188" cy="174" r="6"></circle>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-float" style="position: absolute; left: 218px; top: 44px; z-index: 3; animation-delay: -0.2s; animation-duration: 3.4s;">
+          <div class="jm-card jm-card--new" style="transform: rotate(var(--tilt)) scale(0.72);"><span class="jm-card__year">2019</span><span class="jm-card__title">Bad Guy</span><span class="jm-card__artist">Billie Eilish</span></div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 10px;">
+        <button class="jm-btn jm-btn--primary jm-btn--next" style="flex: 0 0 200px;">Play again</button>
+        <a href="Lobby.dc.html" class="jm-btn" style="min-height: 50px; padding: 0 18px; text-decoration: none; font-size: 15px;">Back to the lobby</a>
+      </div>
+    </section>
+
+    <aside class="jm-panel" style="padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 6px;" aria-labelledby="final-head">
+      <h2 id="final-head" class="jm-label">Final scoreboard</h2>
+      <div style="display: flex; align-items: center; gap: 8px; height: 46px; padding: 0 10px; box-sizing: border-box; border-radius: var(--radius-card); border: 2px solid var(--ink); background: var(--turn-tint); box-shadow: var(--shadow-sticker-sm);">
+        <span style="width: 16px; font: 800 15px/1 var(--font-ui);">1</span>
+        <span class="jm-avatar jm-p1" style="width: 28px; height: 28px; font-size: 12px;">M</span>
+        <span class="jm-player__name">Mara</span>
+        <span style="font: 800 15px/1 var(--font-ui); font-variant-numeric: tabular-nums;">10</span>
+        <span class="jm-token">1</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px; height: 46px; padding: 0 10px; box-sizing: border-box; border-radius: var(--radius-card); border: 2px solid var(--sand-line); background: var(--paper);">
+        <span style="width: 16px; font: 800 15px/1 var(--font-ui);">2</span>
+        <span class="jm-avatar jm-p2" style="width: 28px; height: 28px; font-size: 12px;">S</span>
+        <span class="jm-player__name">Sam</span>
+        <span style="font: 800 15px/1 var(--font-ui); font-variant-numeric: tabular-nums;">9</span>
+        <span class="jm-token">2</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px; height: 46px; padding: 0 10px; box-sizing: border-box; border-radius: var(--radius-card); border: 2px solid var(--sand-line); background: var(--paper);">
+        <span style="width: 16px; font: 800 15px/1 var(--font-ui);">3</span>
+        <span class="jm-avatar jm-p3" style="width: 28px; height: 28px; font-size: 12px;">L</span>
+        <span class="jm-player__name">Lea</span>
+        <span style="font: 800 15px/1 var(--font-ui); font-variant-numeric: tabular-nums;">7</span>
+        <span class="jm-token">3</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px; height: 46px; padding: 0 10px; box-sizing: border-box; border-radius: var(--radius-card); border: 2px solid var(--sand-line); background: var(--paper);">
+        <span style="width: 16px; font: 800 15px/1 var(--font-ui);">4</span>
+        <span class="jm-avatar jm-p4" style="width: 28px; height: 28px; font-size: 12px;">J</span>
+        <span class="jm-player__name">Jonas</span>
+        <span style="font: 800 15px/1 var(--font-ui); font-variant-numeric: tabular-nums;">5</span>
+        <span class="jm-token">0</span>
+      </div>
+    </aside>
+  </div>
+</main>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":844,"height":390}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

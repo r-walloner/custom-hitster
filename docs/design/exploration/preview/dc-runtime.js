@@ -4,6 +4,7 @@
  *
  * Supports what these boards use: {{dotted.path}} holes in text and attributes,
  * on* event handlers bound to functions, <sc-for list as>, <sc-if value>,
+ * boolean attributes (checked, disabled, selected) bound to a whole {{hole}},
  * data-props defaults as this.props, and state/setState/componentDidMount.
  * Holes (text and attributes) are re-evaluated on every setState. A loop or
  * condition rebuilds its own nodes only when its shape changes (item count,
@@ -110,6 +111,12 @@
         var name = a.name, value = a.value;
         if (/^hint-/.test(name)) return;
         var whole = WHOLE.exec(value);
+        if (/^(checked|disabled|selected)$/.test(name) && whole) {
+          var prop = name;
+          var bb = function () { var on = !!lookup(whole[1], locals, vals); el[prop] = on; if (on) el.setAttribute(prop, ''); else el.removeAttribute(prop); };
+          binds.push(bb); bb();
+          return;
+        }
         if (/^on[a-z]+$/i.test(name) && whole) {
           var evt = name.slice(2).toLowerCase();
           el.addEventListener(evt, function (e) { var fn = lookup(whole[1], locals, vals); if (typeof fn === 'function') fn(e); });

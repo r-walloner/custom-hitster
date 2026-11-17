@@ -1,8 +1,10 @@
 """Export Claude canvas .dc.html boards to standalone HTML pages that use dc-runtime.js.
 
 Usage: python3 tools/export_canvas.py <board.dc.html> <out.html> <runtime.js> [stylesheet ...]
-Boards that link an uploaded stylesheet (/_blob/...) in the canvas need it passed again
-as local stylesheets, since the canvas upload doesn't exist outside it.
+Boards that link a stylesheet only the canvas has (an upload under /_blob/..., or the canvas's
+copy of the design system under ds/jamster/) need it passed again as local stylesheets.
+A <dc-import name="X"> (a board shown inside another, like the game screen behind a pop-up)
+becomes an iframe of X.html, so export X too, into the same folder.
 """
 import json, re, sys, os, html
 
@@ -15,6 +17,14 @@ def export(src_path, out_path, runtime_rel, stylesheets=()):
     if m:
         helmet = m.group(1).strip()
         xdc = xdc[:m.start()] + xdc[m.end():]
+
+    def child(m):
+        name = m.group(1)
+        size = re.search(r'hint-size="([^,"]+),([^"]+)"', m.group(0))
+        w, h = (size.group(1), size.group(2)) if size else ("100%", "100%")
+        return (f'<iframe src="{name}.html" title="{name}" tabindex="-1" aria-hidden="true" '
+                f'style="display: block; width: {w}; height: {h}; border: 0;"></iframe>')
+    xdc = re.sub(r'<dc-import name="([A-Za-z0-9_]+)"[^>]*></dc-import>', child, xdc)
     sm = re.search(r"<script type=\"text/x-dc\" data-dc-script data-props='(.*?)'>(.*?)</script>", s, re.S)
     props_raw = html.unescape(sm.group(1))
     code = sm.group(2)

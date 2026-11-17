@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Join: your name</title>
+<link rel="stylesheet" href="../../system/tokens.css">
+<link rel="stylesheet" href="../../system/components/bundle.css">
+<link href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&amp;family=Bricolage+Grotesque:opsz,wght@12..96,400..800&amp;family=DM+Mono:wght@500&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</head>
+<body>
+<div id="dc-root"></div>
+<template id="dc-template"><main class="jm-screen" style="font-family: var(--font-ui); color: var(--ink);">
+  <header class="jm-header">
+    <span class="jm-logo">jamster</span>
+    <span class="jm-chip">LUMA</span>
+    <span class="jm-header__spacer"></span>
+    <span class="jm-header__meta">Mara's room<i></i><b>3</b> players<i></i>First to <b>10</b></span>
+  </header>
+  <div style="flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) 270px; gap: 16px; padding: 6px 0 2px;">
+    <section class="jm-panel" style="padding: 16px 20px 18px; display: flex; flex-direction: column; gap: 10px;">
+      <span class="jm-label">Joining room LUMA</span>
+      <label for="player-name" class="jm-moment__headline" style="display: block;">What should we call you?</label>
+      <input id="player-name" type="text" value="Jonas" maxlength="16" autocomplete="nickname" style="height: 56px; box-sizing: border-box; border: 2px solid var(--ink); border-radius: var(--radius-card); background: var(--paper); padding: 0 16px; font: 800 24px/1 var(--font-ui); color: var(--ink);">
+      <p class="jm-caption" style="margin: 0;">No account needed. You can add your Spotify library once you're in.</p>
+      <div class="jm-pair" style="margin-top: auto;">
+        <a href="Main.dc.html" class="jm-btn" style="min-height: 52px; font-size: 15px; text-decoration: none;">Back</a>
+        <button class="jm-btn jm-btn--primary" style="min-height: 52px; font-size: 16px; font-weight: 800;">Take a seat</button>
+      </div>
+    </section>
+    <aside style="display: flex; flex-direction: column; gap: 8px; padding-top: 4px;">
+      <h2 class="jm-section">Already at the table</h2>
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <div style="display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 10px; border-radius: var(--radius-card); background: var(--label); border: 2px solid var(--sand-line);">
+          <span class="jm-avatar jm-p1" style="width: 28px; height: 28px; font-size: 12px;">M</span>
+          <span class="jm-player__name">Mara<small>Host</small></span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 10px; border-radius: var(--radius-card); background: var(--label); border: 2px solid var(--sand-line);">
+          <span class="jm-avatar jm-p2" style="width: 28px; height: 28px; font-size: 12px;">S</span>
+          <span class="jm-player__name">Sam</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 10px; border-radius: var(--radius-card); background: var(--label); border: 2px solid var(--sand-line);">
+          <span class="jm-avatar jm-p3" style="width: 28px; height: 28px; font-size: 12px;">L</span>
+          <span class="jm-player__name">Lea</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 10px; border-radius: var(--radius-card); border: 2px dashed var(--slot-dash);">
+          <span class="jm-avatar jm-p4" style="width: 28px; height: 28px; font-size: 12px;">J</span>
+          <span class="jm-player__name" style="color: var(--ink-muted);">Jonas<small>That's you</small></span>
+        </div>
+      </div>
+    </aside>
+  </div>
+</main></template>
+<script src="../../exploration/preview/dc-runtime.js"></script>
+<script>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+DCRuntime.mount(Component, document.getElementById('dc-root'), document.getElementById('dc-template').content, {});
+</script>
+</body>
+</html>

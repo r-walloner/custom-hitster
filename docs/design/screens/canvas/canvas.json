@@ -1,1 +1,279 @@
-{"v":3,"createdOnFiles":{"v":1,"at":"2026-11-17T18:52:00Z"},"title":"Jamster – Screens","launch":{"view":"canvas"},"pages":[],"boards":{"Main.dc.html":{"x":0,"y":260,"w":844,"h":390,"title":"1 · Placing","is_interactive":true},"Challenge.dc.html":{"x":924,"y":260,"w":844,"h":390,"title":"2 · Challenge"},"Guess.dc.html":{"x":0,"y":770,"w":844,"h":390,"title":"3 · Challengers guess","is_interactive":true},"Reveal.dc.html":{"x":924,"y":770,"w":844,"h":390,"title":"4 · Reveal & result","is_interactive":true}},"order":["Main.dc.html","Challenge.dc.html","Guess.dc.html","Reveal.dc.html"],"notes":{"title":{"x":0,"y":0,"text":"Game screen","kind":"title1","maxW":1768},"why":{"x":1848,"y":260,"w":560,"fill":"orange","size":"s","text":"Why it looks like this\n\n• Landscape phone (844×390). Cards stay near-square, like real cards; the whole round fits one screen.\n• Timeline owns the full width at the bottom. Fixed 112px cards, dashed + gaps; tap a gap or either half of a card. Too many cards: it scrolls sideways, with a bar.\n• One centre panel holds the only decision right now: Lock it in, Challenge / Pass, Lock guess, Next song. Big targets for tipsy thumbs.\n• The host plays for anyone inside the UI (per-player buttons). No \"play as\" dropdown.\n• Tape always visible: reels and bounce show music is playing. Restart is a small icon beside the timer, since it's rarely used.\n• Compact scoreboard on every screen: initial, cards, tokens.\n• Every pick is the same yellow card with a name. Locked picks turn tinted; the one guessing now stays bright, and so does their row.\n• Challengers guess in the order they challenged; guesses are visible, not secret.\n• Reveal: green ✓ and red ✕ chips with initials, same size and height. Library credit up front; the year shows only on tape and timeline.\n• One countdown style everywhere: the filling ring.\n• Named it is a single toggle. Buy a card stays (3 tokens, from the rules).\n• Wording: plain and short. \"Challenge\", \"Guessing…\", \"Is that right?\".\n\nNot designed yet: entry, lobby, dealing, winner, errors and reconnection."}},"designSystems":[{"title":"Jamster","namespace":"jamster","artifact":"https://claude.ai/code/artifact/1c57fa7d-0034-4e51-9583-0212a99f7fb4","version":"1794942382-3896","copiedAt":"2026-11-17T19:07:00Z"}]}
+{
+  "v": 3,
+  "attachments": {},
+  "boards": {
+    "Account.dc.html": {
+      "h": 390,
+      "is_interactive": true,
+      "title": "Account & library",
+      "w": 844,
+      "x": 1848,
+      "y": 0
+    },
+    "AddPlayer.dc.html": {
+      "h": 390,
+      "title": "Add a player",
+      "w": 844,
+      "x": 2772,
+      "y": 1500
+    },
+    "Dealing.dc.html": {
+      "h": 390,
+      "title": "Dealing",
+      "w": 844,
+      "x": 3696,
+      "y": 1500
+    },
+    "Feedback.dc.html": {
+      "h": 390,
+      "title": "Action feedback",
+      "w": 844,
+      "x": 1848,
+      "y": 750
+    },
+    "GameChallenge.dc.html": {
+      "h": 390,
+      "title": "2 · Challenge",
+      "w": 844,
+      "x": 924,
+      "y": 2250
+    },
+    "GameGuess.dc.html": {
+      "h": 390,
+      "is_interactive": true,
+      "title": "3 · Challengers guess",
+      "w": 844,
+      "x": 1848,
+      "y": 2250
+    },
+    "GameMenu.dc.html": {
+      "h": 390,
+      "title": "Game menu",
+      "w": 844,
+      "x": 0,
+      "y": 2743
+    },
+    "GamePlacing.dc.html": {
+      "h": 390,
+      "is_interactive": true,
+      "title": "1 · Placing",
+      "w": 844,
+      "x": 0,
+      "y": 2250
+    },
+    "GameReveal.dc.html": {
+      "h": 390,
+      "is_interactive": true,
+      "title": "4 · Reveal & result",
+      "w": 844,
+      "x": 2772,
+      "y": 2250
+    },
+    "GuestLobby.dc.html": {
+      "h": 390,
+      "title": "Lobby (guest)",
+      "w": 844,
+      "x": 924,
+      "y": 750
+    },
+    "JoinName.dc.html": {
+      "h": 390,
+      "title": "Join: your name",
+      "w": 844,
+      "x": 0,
+      "y": 750
+    },
+    "Lobby.dc.html": {
+      "h": 390,
+      "title": "Lobby (host)",
+      "w": 844,
+      "x": 0,
+      "y": 1500
+    },
+    "Main.dc.html": {
+      "h": 390,
+      "title": "Home",
+      "w": 844,
+      "x": 0,
+      "y": 0
+    },
+    "Playback.dc.html": {
+      "h": 390,
+      "title": "Speaker & playback test",
+      "w": 844,
+      "x": 1848,
+      "y": 1500
+    },
+    "Reconnecting.dc.html": {
+      "h": 390,
+      "title": "Reconnecting",
+      "w": 844,
+      "x": 1848,
+      "y": 2743
+    },
+    "Settings.dc.html": {
+      "h": 390,
+      "title": "Game settings",
+      "w": 844,
+      "x": 924,
+      "y": 1500
+    },
+    "SignInError.dc.html": {
+      "h": 390,
+      "title": "Sign-in error",
+      "w": 844,
+      "x": 924,
+      "y": 0
+    },
+    "Standings.dc.html": {
+      "h": 390,
+      "title": "Scoreboard",
+      "w": 844,
+      "x": 924,
+      "y": 2743
+    },
+    "Winner.dc.html": {
+      "h": 390,
+      "title": "Winner",
+      "w": 844,
+      "x": 0,
+      "y": 3493
+    }
+  },
+  "createdOnFiles": {
+    "at": "2026-11-17T19:27:00Z",
+    "v": 1
+  },
+  "designSystems": [
+    {
+      "artifact": "https://claude.ai/code/artifact/192399fa-d3db-473c-a1e0-c2f142d502e0",
+      "copiedAt": "2026-11-17T19:27:00Z",
+      "namespace": "jamster",
+      "title": "Jamster",
+      "version": "1794943422-2380"
+    }
+  ],
+  "launch": {
+    "view": "canvas"
+  },
+  "noteOrder": [
+    "t_entry",
+    "t_join",
+    "t_lobby",
+    "t_game",
+    "t_after",
+    "why",
+    "why_entry",
+    "why_join",
+    "why_lobby",
+    "why_menu",
+    "why_after"
+  ],
+  "notes": {
+    "t_after": {
+      "kind": "title1",
+      "maxW": 844,
+      "text": "After the game",
+      "w": 240,
+      "x": 0,
+      "y": 3233
+    },
+    "t_entry": {
+      "kind": "title1",
+      "maxW": 2692,
+      "text": "Entry",
+      "w": 240,
+      "x": 0,
+      "y": -260
+    },
+    "t_game": {
+      "kind": "title1",
+      "maxW": 3616,
+      "text": "During the game",
+      "w": 240,
+      "x": 0,
+      "y": 1990
+    },
+    "t_join": {
+      "kind": "title1",
+      "maxW": 2692,
+      "text": "Joining a room",
+      "w": 240,
+      "x": 0,
+      "y": 490
+    },
+    "t_lobby": {
+      "kind": "title1",
+      "maxW": 4540,
+      "text": "Before the game",
+      "w": 240,
+      "x": 0,
+      "y": 1240
+    },
+    "why": {
+      "fill": "orange",
+      "text": "• Landscape phone (844×390). Cards stay near-square, like real cards; the whole round fits one screen.\n• Timeline owns the full width at the bottom. Fixed 112px cards, dashed + gaps; tap a gap or either half of a card. Too many cards: it scrolls sideways, with a bar.\n• One centre panel holds the only decision right now: Lock it in, Challenge / Pass, Lock guess, Next song. Big targets for tipsy thumbs.\n• The host plays for anyone inside the UI (per-player buttons). No \"play as\" dropdown.\n• Tape always visible: reels and bounce show music is playing. Restart is a small icon beside the timer, since it's rarely used.\n• Compact scoreboard on every screen: initial, cards, tokens.\n• Every pick is the same yellow card with a name. Locked picks turn tinted; the one guessing now stays bright, and so does their row.\n• Challengers guess in the order they challenged; guesses are visible, not secret.\n• Reveal: green ✓ and red ✕ chips with initials, same size and height. Library credit up front; the year shows only on tape and timeline.\n• One countdown style everywhere: the filling ring.\n• Named it is a single toggle. Buy a card stays (3 tokens, from the rules).\n• Wording: plain and short. \"Challenge\", \"Guessing…\", \"Is that right?\".",
+      "w": 560,
+      "x": -640,
+      "y": 2250
+    },
+    "why_after": {
+      "fill": "orange",
+      "text": "• It reuses the Home art, but the floating cards are the winner's own timeline. The card that won it sits in front, in the card-just-won style.\n• \"Mara wins!\" is the one big line in Rubik Mono One. One sentence below names the near misses.\n• The text has its own block, so a long name pushes the art down instead of covering it.\n• Final scoreboard on the right; Play again and Back to the lobby at the bottom.",
+      "w": 560,
+      "x": -640,
+      "y": 3493
+    },
+    "why_entry": {
+      "fill": "orange",
+      "text": "• Home is the first impression, so it borrows the cover art: the bobbing cassette from the design system with song cards floating around it.\n• One panel, two paths: join with the four-letter code (no account), or host with Spotify.\n• The sign-in error keeps the Home art and only swaps the panel. It says what happened in plain words and offers the next step. One board covers every reason (see Tweaks).\n• Account: the library panel is for choosing what feeds the deck. Liked songs pinned on top, search, All / None, one checkbox per playlist or artist.\n• Re-import and Delete sit together under Your data, out of the way of picking.\n• Only the logo, the tape and the pick cards tilt. The Home slogan is the one exception, cover only.",
+      "w": 560,
+      "x": -640,
+      "y": 0
+    },
+    "why_join": {
+      "fill": "orange",
+      "text": "• Joining asks for a name only. The people already at the table show beside it, so you know you're in the right room.\n• Every screen around the game says where you are in the header: Mara's room, players, First to N.\n• Guests can add their library later from the lobby. It's optional and says how many Spotify spots are left.\n• Action feedback is one toast at a time, bottom centre, gone after 4 seconds. Playback problems are toasts too (music dropped → Retry, speaker failed → Change), not screens of their own.\n• Toast wording: what happened, then one short fact. Nothing more.",
+      "w": 560,
+      "x": -640,
+      "y": 750
+    },
+    "why_lobby": {
+      "fill": "orange",
+      "text": "• Host lobby in three columns: getting people in (code, QR, copy link), who's in, and setup with Start game.\n• Local players have no phone. The host adds them here and plays their turns on this device.\n• Music and Rules are two matching rows with the same Change button. The details live on their own screens.\n• The speaker gets its own screen because it's the most common thing to go wrong: pick a device, play 5 seconds, confirm you heard it.\n• Settings are one line each: steppers and toggles, plain numbers, no coins.\n• Dealing shows each opening card as it lands, so the wait reads as work.\n• Middle dots only in the header; everywhere else commas and full stops.",
+      "w": 560,
+      "x": -640,
+      "y": 1500
+    },
+    "why_menu": {
+      "fill": "orange",
+      "text": "• The gear menu is a centred pop-up, like the others, with only what's needed mid-game: where the music plays (Change), Scoreboard, End game.\n• No \"play as\" option: the board already follows whose turn it is.\n• Restart stays on the tape. Dropped playback is handled by a toast with Retry.\n• Scoreboard: progress to the goal, tokens and each player's timeline in short form. The player on turn is highlighted.\n• Tapping the mini scoreboard on the right of the game screen opens the full scoreboard too.\n• Reconnecting says what happened, then reassures: \"Connection dropped. Your progress is safe.\" The game stays visible behind a dim layer.",
+      "w": 560,
+      "x": 2772,
+      "y": 2743
+    }
+  },
+  "order": [
+    "Main.dc.html",
+    "SignInError.dc.html",
+    "Account.dc.html",
+    "JoinName.dc.html",
+    "GuestLobby.dc.html",
+    "Reconnecting.dc.html",
+    "Feedback.dc.html",
+    "Lobby.dc.html",
+    "Settings.dc.html",
+    "Playback.dc.html",
+    "AddPlayer.dc.html",
+    "Dealing.dc.html",
+    "GamePlacing.dc.html",
+    "GameChallenge.dc.html",
+    "GameGuess.dc.html",
+    "GameReveal.dc.html",
+    "GameMenu.dc.html",
+    "Standings.dc.html",
+    "Winner.dc.html"
+  ],
+  "pages": [],
+  "title": "Jamster Screens"
+}

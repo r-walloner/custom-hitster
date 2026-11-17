@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lobby, guest view</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/jamster/tokens.css">
+<link rel="stylesheet" href="ds/jamster/components/bundle.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&amp;family=Bricolage+Grotesque:opsz,wght@12..96,400..800&amp;family=DM+Mono:wght@500&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<main class="jm-screen" style="font-family: var(--font-ui); color: var(--ink);">
+  <header class="jm-header">
+    <span class="jm-logo">jamster</span>
+    <span class="jm-chip">LUMA</span>
+    <span class="jm-header__spacer"></span>
+    <span class="jm-header__meta">Mara's room<i></i><b>4</b> players<i></i>First to <b>10</b></span>
+  </header>
+  <div style="flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) 290px; gap: 16px; padding: 4px 0 2px;">
+    <section style="display: flex; flex-direction: column; gap: 8px;">
+      <h1 class="jm-moment__headline">You're in, Jonas.</h1>
+      <p class="jm-moment__sub" style="margin: 0;">Mara starts the game when everyone's ready.</p>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; margin-top: 4px;">
+        <div class="jm-player" style="height: 48px; background: var(--label); border-color: var(--sand-line);">
+          <span class="jm-avatar jm-p1">M</span>
+          <span class="jm-player__name">Mara<small>Host, plays the music</small></span>
+        </div>
+        <div class="jm-player" style="height: 48px; background: var(--label); border-color: var(--sand-line);">
+          <span class="jm-avatar jm-p2">S</span>
+          <span class="jm-player__name">Sam<small>Brings a library</small></span>
+        </div>
+        <div class="jm-player" style="height: 48px; background: var(--label); border-color: var(--sand-line);">
+          <span class="jm-avatar jm-p3">L</span>
+          <span class="jm-player__name">Lea<small>Guest</small></span>
+        </div>
+        <div class="jm-player" style="height: 48px; background: var(--turn-tint); border-color: var(--ink);">
+          <span class="jm-avatar jm-p4">J</span>
+          <span class="jm-player__name">Jonas<small>That's you</small></span>
+        </div>
+      </div>
+      <div style="margin-top: auto; display: flex; align-items: center; gap: 10px;">
+        <span class="jm-status">Waiting for Mara</span>
+        <span class="jm-caption" style="flex: 1; min-width: 0;">Keep this page open. The game starts here by itself.</span>
+        <a href="Main.dc.html" class="jm-btn" style="text-decoration: none;">Leave room</a>
+      </div>
+    </section>
+    <aside class="jm-panel" style="padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 8px;" aria-labelledby="bring-head">
+      <span class="jm-label">Optional</span>
+      <h2 id="bring-head" class="jm-headline">Bring your music</h2>
+      <p class="jm-meta" style="margin: 0;">Sign in with Spotify and your saved songs, playlists and top songs can turn up in this game's deck.</p>
+      <button class="jm-btn jm-btn--primary" style="margin-top: auto; width: 100%; font-size: 15px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V6l10-2v12"></path><circle cx="6.5" cy="18" r="2.5"></circle><circle cx="16.5" cy="16" r="2.5"></circle></svg>
+        Add my library
+      </button>
+      <p class="jm-caption" style="margin: 0;">3 of 5 Spotify spots left. Your account needs the host's approval.</p>
+    </aside>
+  </div>
+</main>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":844,"height":390}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

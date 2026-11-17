@@ -1,0 +1,27 @@
+<!-- @dsCard group="Forms" height=270 subtitle="setting · option · checkbox · player" -->
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Rows — preview</title></head>
+<body>
+<div class="jm-stage" style="align-items: flex-start; gap: 24px">
+  <div style="display: flex; flex-direction: column; width: 280px">
+    <div class="jm-setting">
+      <div class="jm-setting__text"><span class="jm-label">Music plays on</span><span class="jm-setting__value">Living room TV</span></div>
+      <button type="button" class="jm-btn">Change</button>
+    </div>
+    <div class="jm-setting">
+      <div class="jm-setting__text"><span class="jm-label">Rules</span><span class="jm-setting__value">First to 10 cards</span><span class="jm-caption">2 tokens each, 20 s to challenge, 120 songs</span></div>
+      <button type="button" class="jm-btn">Change</button>
+    </div>
+    <div style="height: 10px"></div>
+    <div class="jm-player jm-player--list"><span class="jm-avatar jm-p4">J</span><span class="jm-player__name">Jonas<small>Local player</small></span><button type="button" class="jm-btn jm-btn--icon jm-btn--bare" aria-label="Remove Jonas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"></path></svg></button></div>
+  </div>
+  <div style="display: flex; flex-direction: column; gap: 6px; width: 300px">
+    <button type="button" class="jm-option" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="12" rx="2"></rect><path d="M8 21h8"></path></svg><span class="jm-player__name">Living room TV<small>Spotify on the TV</small></span><span class="jm-option__dot"></span></button>
+    <button type="button" class="jm-option" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="3" width="12" height="18" rx="2"></rect><circle cx="12" cy="14" r="3"></circle></svg><span class="jm-player__name" style="color: var(--ink-muted)">Kitchen speaker<small>Asleep. Open Spotify on it to wake it.</small></span></button>
+    <label class="jm-check-row"><input class="jm-check" type="checkbox" checked><span class="jm-player__name">Liked songs<small>Everything you've hearted</small></span><span class="jm-check-row__count">1,206</span></label>
+    <label class="jm-check-row"><input class="jm-check" type="checkbox"><span class="jm-player__name" style="color: var(--ink-muted)">Lo-fi to study to<small>Playlist</small></span><span class="jm-check-row__count">210</span></label>
+  </div>
+</div>
+</body>
+</html>

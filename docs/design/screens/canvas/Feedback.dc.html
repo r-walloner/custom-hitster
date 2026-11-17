@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Action feedback</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/jamster/tokens.css">
+<link rel="stylesheet" href="ds/jamster/components/bundle.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&amp;family=Bricolage+Grotesque:opsz,wght@12..96,400..800&amp;family=DM+Mono:wght@500&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<main class="jm-screen" style="font-family: var(--font-ui); color: var(--ink); padding: 18px 24px; gap: 12px;">
+  <div style="display: flex; align-items: baseline; gap: 12px;">
+    <h1 class="jm-headline">Action feedback</h1>
+    <span class="jm-caption">One at a time, bottom centre. Gone after 4 seconds.</span>
+  </div>
+  <div style="flex: 1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 18px; align-content: start;">
+
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <span class="jm-label">Speaker failed</span>
+      <div role="alert" style="display: flex; align-items: center; gap: 10px; min-height: 52px; box-sizing: border-box; padding: 4px 4px 4px 8px; border: 2px solid var(--ink); border-radius: var(--radius-pill); background: var(--label); box-shadow: var(--shadow-sticker);">
+        <span style="width: 30px; height: 30px; flex: 0 0 auto; box-sizing: border-box; border-radius: 50%; border: 2px solid var(--ink); background: var(--wrong); color: var(--paper); display: inline-flex; align-items: center; justify-content: center;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"></path><path d="M16 9l5 6M21 9l-5 6"></path></svg></span>
+        <span class="jm-meta" style="color: var(--ink); flex: 1;">Living room TV stopped playing.</span>
+        <a href="Playback.dc.html" class="jm-btn jm-btn--primary" style="text-decoration: none;">Change</a>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <span class="jm-label">Refused</span>
+      <div role="status" style="display: flex; align-items: center; gap: 10px; min-height: 52px; box-sizing: border-box; padding: 6px 14px 6px 8px; border: 2px solid var(--ink); border-radius: var(--radius-pill); background: var(--label); box-shadow: var(--shadow-sticker);">
+        <span style="width: 30px; height: 30px; flex: 0 0 auto; box-sizing: border-box; border-radius: 50%; border: 2px solid var(--ink); background: var(--wrong); color: var(--paper); display: inline-flex; align-items: center; justify-content: center;"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></span>
+        <span class="jm-meta" style="color: var(--ink);">Not your turn. Sam is placing.</span>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <span class="jm-label">Refused, with numbers</span>
+      <div role="status" style="display: flex; align-items: center; gap: 10px; min-height: 52px; box-sizing: border-box; padding: 6px 14px 6px 8px; border: 2px solid var(--ink); border-radius: var(--radius-pill); background: var(--label); box-shadow: var(--shadow-sticker);">
+        <span style="width: 30px; height: 30px; flex: 0 0 auto; box-sizing: border-box; border-radius: 50%; border: 2px solid var(--ink); background: var(--wrong); color: var(--paper); display: inline-flex; align-items: center; justify-content: center;"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></span>
+        <span class="jm-meta" style="color: var(--ink); display: inline-flex; align-items: center; gap: 4px; flex-wrap: wrap;">Not enough tokens. A card costs <span class="jm-token">3</span>.</span>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <span class="jm-label">Heads-up</span>
+      <div role="status" style="display: flex; align-items: center; gap: 10px; min-height: 52px; box-sizing: border-box; padding: 6px 14px 6px 8px; border: 2px solid var(--ink); border-radius: var(--radius-pill); background: var(--label); box-shadow: var(--shadow-sticker);">
+        <span style="width: 30px; height: 30px; flex: 0 0 auto; box-sizing: border-box; border-radius: 50%; border: 2px solid var(--ink); background: var(--sand); display: inline-flex; align-items: center; justify-content: center;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 11v6"></path><path d="M12 7.5h.01"></path></svg></span>
+        <span class="jm-meta" style="color: var(--ink);">Lea's connection dropped. Her seat is safe.</span>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <span class="jm-label">With an action</span>
+      <div role="status" style="display: flex; align-items: center; gap: 10px; min-height: 52px; box-sizing: border-box; padding: 4px 4px 4px 8px; border: 2px solid var(--ink); border-radius: var(--radius-pill); background: var(--label); box-shadow: var(--shadow-sticker);">
+        <span style="width: 30px; height: 30px; flex: 0 0 auto; box-sizing: border-box; border-radius: 50%; border: 2px solid var(--ink); background: var(--sand); display: inline-flex; align-items: center; justify-content: center;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"></path><path d="M16 9l5 6M21 9l-5 6"></path></svg></span>
+        <span class="jm-meta" style="color: var(--ink); flex: 1;">Sam's music dropped.</span>
+        <button class="jm-btn jm-btn--primary">Retry</button>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <span class="jm-label">Small wins</span>
+      <div role="status" style="display: flex; align-items: center; gap: 10px; min-height: 52px; box-sizing: border-box; padding: 6px 14px 6px 8px; border: 2px solid var(--ink); border-radius: var(--radius-pill); background: var(--label); box-shadow: var(--shadow-sticker);">
+        <span style="width: 30px; height: 30px; flex: 0 0 auto; box-sizing: border-box; border-radius: 50%; border: 2px solid var(--ink); background: var(--right); display: inline-flex; align-items: center; justify-content: center;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span>
+        <span class="jm-meta" style="color: var(--ink);">Invite link copied.</span>
+      </div>
+    </div>
+
+  </div>
+</main>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":844,"height":390}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

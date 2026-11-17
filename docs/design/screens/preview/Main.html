@@ -3,110 +3,83 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Jamster game screen – placing</title>
+<title>Home</title>
 <link rel="stylesheet" href="../../system/tokens.css">
 <link rel="stylesheet" href="../../system/components/bundle.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&amp;family=Bricolage+Grotesque:opsz,wght@12..96,400..800&amp;family=DM+Mono:wght@500&amp;display=swap">
+<link href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&amp;family=Bricolage+Grotesque:opsz,wght@12..96,400..800&amp;family=DM+Mono:wght@500&amp;display=swap" rel="stylesheet">
 <style>
 body{margin:0}
+.hero .jm-tape--bounce.is-playing .jm-tape__bob{animation-duration:1200ms}
+.hero-float{animation:hero-float 3.6s ease-in-out infinite alternate}
+@keyframes hero-float{from{transform:translateY(0)}to{transform:translateY(-6px)}}
+@media (prefers-reduced-motion: reduce){.hero-float{animation:none}}
 </style>
 </head>
 <body>
 <div id="dc-root"></div>
-<template id="dc-template"><div class="jm-screen" style="font-family: var(--font-ui); color: #2a211c">
-  <header class="jm-header">
-    <span class="jm-logo">jamster</span>
-    <span class="jm-chip" aria-label="Room code QZRK">QZRK</span>
-    <span class="jm-header__meta">Turn <b>7</b><i></i><b>38</b> cards left<i></i>First to <b>10</b></span>
-    <span style="flex: 1"></span>
-    <button type="button" class="jm-btn jm-btn--square" aria-label="Game menu: settings, playback device, players, end game"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"></circle><circle cx="12" cy="12" r="2"></circle><circle cx="19" cy="12" r="2"></circle></svg></button>
-  </header>
+<template id="dc-template"><main class="jm-screen" style="display: grid; grid-template-columns: minmax(0, 1fr) 316px; gap: 48px; align-items: center; padding: 24px 40px 24px 32px; font-family: var(--font-ui); color: var(--ink);">
 
-  <div class="jm-screen__top">
-    <div class="jm-tape-player">
-      <div class="jm-tape jm-tape--bounce is-playing"><div class="jm-tape__bob"><div class="jm-tape__shell">
-        <svg viewBox="0 0 300 190" width="160" height="101" role="progressbar" aria-label="Mystery song progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="30">
-          <rect class="t-shell" x="4" y="4" width="292" height="182" rx="18" stroke-width="7"></rect>
-          <circle class="t-ink" cx="17" cy="17" r="4.5"></circle><circle class="t-ink" cx="283" cy="17" r="4.5"></circle><circle class="t-ink" cx="17" cy="173" r="4.5"></circle><circle class="t-ink" cx="283" cy="173" r="4.5"></circle>
-          <rect class="t-window" x="92" y="70" width="116" height="40" rx="20"></rect>
-          <circle class="t-pack" cx="105" cy="90" r="36" style="transform: scale(0.82)"></circle>
-          <circle class="t-pack" cx="195" cy="90" r="36" style="transform: scale(0.58)"></circle>
-          <g class="t-reel"><circle class="t-hub" cx="105" cy="90" r="13" stroke-width="4"></circle><path class="t-spoke" d="M105 80v20M96.3 85l17.4 10M96.3 95l17.4-10" stroke-width="4"></path></g>
-          <g class="t-reel"><circle class="t-hub" cx="195" cy="90" r="13" stroke-width="4"></circle><path class="t-spoke" d="M195 80v20M186.3 85l17.4 10M186.3 95l17.4-10" stroke-width="4"></path></g>
-          <path class="t-label" fill-rule="evenodd" stroke-width="5" d="M30 18H270A8 8 0 0 1 278 26V138A8 8 0 0 1 270 146H30A8 8 0 0 1 22 138V26A8 8 0 0 1 30 18Z M92 70H208A20 20 0 0 1 208 110H92A20 20 0 0 1 92 70Z"></path>
-          <text class="t-year" x="150" y="60" text-anchor="middle">????</text>
-          <rect class="t-track" x="40" y="122" width="220" height="11" rx="5.5"></rect>
-          <rect class="t-bar" x="40" y="122" width="66" height="11" rx="5.5"></rect>
-          <path class="t-foot" stroke-width="5" d="M78 186L90 156H210L222 186"></path>
-          <circle class="t-ink" cx="112" cy="174" r="6"></circle><circle class="t-ink" cx="188" cy="174" r="6"></circle>
-        </svg>
-      </div></div></div>
-      <div class="jm-tape__foot"><span class="jm-time">0:09 / 0:30</span><button type="button" class="jm-btn jm-btn--icon-sm" aria-label="Restart the song from the beginning"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><path d="M3 3v5h5"></path></svg></button></div>
+  <div class="hero" style="position: relative; height: 334px;">
+    <span class="jm-logo jm-logo--xl" style="position: absolute; left: 6px; top: 6px; z-index: 3; font-size: 28px; line-height: 36px; padding: 3px 18px;">jamster</span>
+    <p style="position: absolute; left: 14px; top: 76px; z-index: 3; margin: 0; max-width: 240px; font: 800 16px/22px var(--font-ui); letter-spacing: -0.01em; transform: rotate(var(--tilt)); transform-origin: left top;">The music game built from your own playlists.</p>
+
+    <div class="hero-float" style="position: absolute; left: 266px; top: 40px; animation-delay: -1.2s;" aria-hidden="true">
+      <div class="jm-card" style="transform: rotate(7deg) scale(0.74);"><span class="jm-card__year">1994</span><span class="jm-card__title">Zombie</span><span class="jm-card__artist">The Cranberries</span></div>
+    </div>
+    <div class="hero-float" style="position: absolute; left: 4px; top: 262px; animation-delay: -2.4s;" aria-hidden="true">
+      <div class="jm-card" style="transform: rotate(-11deg) scale(0.62);"><span class="jm-card__year">2010</span><span class="jm-card__title">Dancing On My Own</span><span class="jm-card__artist">Robyn</span></div>
     </div>
 
-    <section class="jm-panel jm-moment" style="padding: 8px 12px 10px; gap: 5px" aria-label="Your move">
-      <span class="jm-label">Mara's turn</span>
-      <h1 class="jm-moment__headline">{{headline}}</h1>
-      <button type="button" class="jm-btn jm-btn--primary jm-btn--xl" style="min-height: 54px">Lock it in</button>
-      <div class="jm-pair">
-        <button type="button" class="jm-btn">Skip song <span class="jm-token" style="font-size: 14px">1</span></button>
-        <button type="button" class="jm-btn" aria-label="Buy a card for 3 tokens">Buy a card <span class="jm-token" style="font-size: 14px">3</span></button>
+    <div class="jm-tape jm-tape--bounce is-playing" style="position: absolute; left: 44px; top: 142px; z-index: 2;" aria-hidden="true">
+      <div class="jm-tape__bob">
+        <div class="jm-tape__shell">
+          <svg viewBox="0 0 300 190" width="200" height="127" style="width: 200px;">
+            <rect class="t-shell" x="4" y="4" width="292" height="182" rx="18" stroke-width="7"></rect>
+            <circle class="t-ink" cx="17" cy="17" r="4.5"></circle><circle class="t-ink" cx="283" cy="17" r="4.5"></circle><circle class="t-ink" cx="17" cy="173" r="4.5"></circle><circle class="t-ink" cx="283" cy="173" r="4.5"></circle>
+            <rect class="t-window" x="92" y="70" width="116" height="40" rx="20"></rect>
+            <circle class="t-pack" cx="105" cy="90" r="36" style="transform: scale(0.78)"></circle>
+            <circle class="t-pack" cx="195" cy="90" r="36" style="transform: scale(0.62)"></circle>
+            <g class="t-reel"><circle class="t-hub" cx="105" cy="90" r="13" stroke-width="4"></circle><path class="t-spoke" d="M105 80v20M96.3 85l17.4 10M96.3 95l17.4-10" stroke-width="4"></path></g>
+            <g class="t-reel"><circle class="t-hub" cx="195" cy="90" r="13" stroke-width="4"></circle><path class="t-spoke" d="M195 80v20M186.3 85l17.4 10M186.3 95l17.4-10" stroke-width="4"></path></g>
+            <path class="t-label" fill-rule="evenodd" stroke-width="5" d="M30 18H270A8 8 0 0 1 278 26V138A8 8 0 0 1 270 146H30A8 8 0 0 1 22 138V26A8 8 0 0 1 30 18Z M92 70H208A20 20 0 0 1 208 110H92A20 20 0 0 1 92 70Z"></path>
+            <text class="t-year" x="150" y="62" text-anchor="middle">????</text>
+            <rect class="t-track" x="40" y="122" width="220" height="11" rx="5.5"></rect>
+            <rect class="t-bar" x="40" y="122" width="84" height="11" rx="5.5"></rect>
+            <path class="t-foot" stroke-width="5" d="M78 186L90 156H210L222 186"></path>
+            <circle class="t-ink" cx="112" cy="174" r="6"></circle><circle class="t-ink" cx="188" cy="174" r="6"></circle>
+          </svg>
+        </div>
       </div>
-    </section>
+    </div>
 
-    <aside class="jm-scoreboard" aria-label="Standings">
-      <div class="jm-scoreboard__row jm-scoreboard__row--turn" aria-label="Mara, on turn: 4 cards, 3 tokens"><span class="jm-avatar jm-p1">M</span><span class="jm-scoreboard__score">4</span><span class="jm-token">3</span></div>
-      <div class="jm-scoreboard__row" aria-label="Jonas: 6 cards, 1 token"><span class="jm-avatar jm-p2">J</span><span class="jm-scoreboard__score">6</span><span class="jm-token">1</span></div>
-      <div class="jm-scoreboard__row" aria-label="Lea: 5 cards, 2 tokens"><span class="jm-avatar jm-p3">L</span><span class="jm-scoreboard__score">5</span><span class="jm-token">2</span></div>
-      <div class="jm-scoreboard__row" aria-label="Tobi: 3 cards, 2 tokens"><span class="jm-avatar jm-p4">T</span><span class="jm-scoreboard__score">3</span><span class="jm-token">2</span></div>
-      <div class="jm-scoreboard__row" aria-label="Sam: 2 cards, 5 tokens"><span class="jm-avatar jm-p5">S</span><span class="jm-scoreboard__score">2</span><span class="jm-token">5</span></div>
-    </aside>
+    <div class="hero-float" style="position: absolute; left: 270px; top: 208px; z-index: 3; animation-delay: -0.4s;" aria-hidden="true">
+      <div class="jm-card jm-card--mystery" style="transform: rotate(var(--tilt)) scale(0.78);"><span class="jm-card__year">????</span></div>
+    </div>
   </div>
 
-  <section class="jm-board" aria-label="Mara's timeline">
-    <div class="jm-board__head"><h2 class="jm-section">Mara's timeline</h2><span class="jm-meta" style="font-size: 12px">4 of 10</span></div>
-    <div class="jm-board__row">
-      <sc-for list="{{items}}" as="item" hint-placeholder-count="9">
-        <sc-if value="{{item.isGap}}" hint-placeholder-val="{{false}}">
-          <button type="button" class="jm-gap" onClick="{{item.pick}}" aria-label="{{item.aria}}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
-        </sc-if>
-        <sc-if value="{{item.isMystery}}" hint-placeholder-val="{{false}}">
-          <div class="jm-card jm-card--mystery"><span class="jm-card__year">????</span><span class="jm-card__title" style="margin: 0">Mara's pick</span></div>
-        </sc-if>
-        <sc-if value="{{item.isCard}}" hint-placeholder-val="{{true}}">
-          <div class="jm-card">
-            <span class="jm-card__year">{{item.year}}</span><span class="jm-card__title">{{item.title}}</span><span class="jm-card__artist">{{item.artist}}</span>
-            <button type="button" class="jm-card__half jm-card__half--l" onClick="{{item.left}}" aria-label="{{item.leftAria}}"></button>
-            <button type="button" class="jm-card__half jm-card__half--r" onClick="{{item.right}}" aria-label="{{item.rightAria}}"></button>
-          </div>
-        </sc-if>
-      </sc-for>
+  <div class="jm-panel" style="padding: 18px 20px 18px; display: flex; flex-direction: column; gap: 10px;">
+    <label class="jm-label" for="room-code">Room code</label>
+    <div style="display: flex; gap: 8px;">
+      <input id="room-code" type="text" value="LUMA" maxlength="4" autocomplete="off" autocapitalize="characters" style="flex: 1; min-width: 0; height: 52px; box-sizing: border-box; border: 2px solid var(--ink); border-radius: var(--radius-card); background: var(--paper); padding: 0 14px; font: 500 26px/1 var(--font-mono); letter-spacing: 0.3em; text-transform: uppercase; color: var(--ink);">
+      <button class="jm-btn jm-btn--primary" style="min-height: 52px; padding: 0 18px; font-size: 16px; font-weight: 800;">Join</button>
     </div>
-  </section>
-</div></template>
+    <p class="jm-caption" style="margin: 0;">No account needed. Ask the host for the four letters.</p>
+    <div style="display: flex; align-items: center; gap: 10px; margin: 4px 0;">
+      <span style="flex: 1; height: 2px; background: var(--sand-line);"></span>
+      <span class="jm-caption">or</span>
+      <span style="flex: 1; height: 2px; background: var(--sand-line);"></span>
+    </div>
+    <button class="jm-btn" style="min-height: 46px; font-size: 14px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V6l10-2v12"></path><circle cx="6.5" cy="18" r="2.5"></circle><circle cx="16.5" cy="16" r="2.5"></circle></svg>
+      Host with Spotify
+    </button>
+    <p class="jm-caption" style="margin: 0;">Hosting needs Spotify Premium. Private, for one group of friends.</p>
+  </div>
+</main></template>
 <script src="../../exploration/preview/dc-runtime.js"></script>
 <script>
 class Component extends DCLogic {
-  constructor(props) { super(props); this.state = { pos: 2 }; }
-  renderVals() {
-    const cards = [
-      { year: 1975, title: 'Bohemian Rhapsody', artist: 'Queen' },
-      { year: 1994, title: 'Zombie', artist: 'The Cranberries' },
-      { year: 2008, title: 'Viva la Vida', artist: 'Coldplay' },
-      { year: 2016, title: 'Redbone', artist: 'Childish Gambino' }
-    ];
-    const n = cards.length, pos = this.state.pos;
-    const range = (i) => i === 0 ? 'Before ' + cards[0].year : i === n ? 'After ' + cards[n - 1].year : 'Between ' + cards[i - 1].year + ' and ' + cards[i].year;
-    const items = [];
-    for (let i = 0; i <= n; i++) {
-      if (i === pos) items.push({ isMystery: true });
-      else items.push({ isGap: true, aria: 'Put it here: ' + range(i), pick: () => this.setState({ pos: i }) });
-      if (i < n) items.push(Object.assign({ isCard: true,
-        left: () => this.setState({ pos: i }), leftAria: 'Put it before ' + cards[i].year,
-        right: () => this.setState({ pos: i + 1 }), rightAria: 'Put it after ' + cards[i].year }, cards[i]));
-    }
-    return { items, headline: range(pos) + '?' };
-  }
+  renderVals() { return {}; }
 }
 DCRuntime.mount(Component, document.getElementById('dc-root'), document.getElementById('dc-template').content, {});
 </script>

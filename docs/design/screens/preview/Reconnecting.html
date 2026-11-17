@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reconnecting</title>
+<link rel="stylesheet" href="../../system/tokens.css">
+<link rel="stylesheet" href="../../system/components/bundle.css">
+<link href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&amp;family=Bricolage+Grotesque:opsz,wght@12..96,400..800&amp;family=DM+Mono:wght@500&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</head>
+<body>
+<div id="dc-root"></div>
+<template id="dc-template"><div style="position: relative; width: 844px; height: 390px; overflow: hidden; font-family: var(--font-ui); color: var(--ink); background: var(--paper);">
+  <div style="position: relative; z-index: 0;"><iframe src="GamePlacing.html" title="GamePlacing" tabindex="-1" aria-hidden="true" style="display: block; width: 844px; height: 390px; border: 0;"></iframe></div>
+  <div style="position: absolute; inset: 0; background: rgba(42, 33, 28, 0.55);"></div>
+  <section class="jm-panel" role="alertdialog" aria-labelledby="rc-head" style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 380px; padding: 18px 20px 18px; display: flex; flex-direction: column; gap: 10px; box-shadow: var(--shadow-sticker-lg);">
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <span style="width: 44px; height: 44px; flex: 0 0 auto; box-sizing: border-box; border-radius: 50%; border: 2px solid var(--ink); background: var(--sand); display: inline-flex; align-items: center; justify-content: center;">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18"></path><path d="M8.5 16.4a5 5 0 0 1 7 0"></path><path d="M5 12.9a10 10 0 0 1 4.2-2.4M19 12.9a10 10 0 0 0-3-2"></path><path d="M2 9a15 15 0 0 1 4.5-2.7M22 9a15 15 0 0 0-9-3.9"></path><path d="M12 20h.01"></path></svg>
+      </span>
+      <h1 id="rc-head" class="jm-moment__headline" style="white-space: normal;">{{head}}</h1>
+    </div>
+    <p class="jm-meta" style="margin: 0;">{{body}}</p>
+    <sc-if value="{{trying}}" hint-placeholder-val="{{true}}">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span class="jm-status">Reconnecting…</span>
+        <span class="jm-time" style="color: var(--ink-muted);">attempt 2</span>
+      </div>
+    </sc-if>
+    <sc-if value="{{failed}}" hint-placeholder-val="{{false}}">
+      <div class="jm-pair">
+        <button class="jm-btn">Leave room</button>
+        <button class="jm-btn jm-btn--primary">Reload</button>
+      </div>
+    </sc-if>
+  </section>
+</div></template>
+<script src="../../exploration/preview/dc-runtime.js"></script>
+<script>
+class Component extends DCLogic {
+  renderVals() {
+    const failed = (this.props.state ?? "reconnecting") === "failed";
+    return {
+      trying: !failed,
+      failed,
+      head: failed ? "Couldn't get you back in." : "Getting you back in…",
+      body: failed
+        ? "Reload to take your seat back. Nothing is lost."
+        : "Connection dropped. Your progress is safe."
+    };
+  }
+}
+DCRuntime.mount(Component, document.getElementById('dc-root'), document.getElementById('dc-template').content, {"state": "reconnecting"});
+</script>
+</body>
+</html>

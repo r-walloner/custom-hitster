@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scoreboard</title>
+<link rel="stylesheet" href="../../system/tokens.css">
+<link rel="stylesheet" href="../../system/components/bundle.css">
+<link href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&amp;family=Bricolage+Grotesque:opsz,wght@12..96,400..800&amp;family=DM+Mono:wght@500&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</head>
+<body>
+<div id="dc-root"></div>
+<template id="dc-template"><div style="position: relative; width: 844px; height: 390px; overflow: hidden; font-family: var(--font-ui); color: var(--ink); background: var(--paper);">
+  <div style="position: relative; z-index: 0;"><iframe src="GamePlacing.html" title="GamePlacing" tabindex="-1" aria-hidden="true" style="display: block; width: 844px; height: 390px; border: 0;"></iframe></div>
+  <div style="position: absolute; inset: 0; background: rgba(42, 33, 28, 0.55);"></div>
+  <section class="jm-panel" role="dialog" aria-labelledby="st-head" style="position: absolute; left: 28px; right: 28px; top: 24px; bottom: 24px; padding: 12px 18px 16px; display: flex; flex-direction: column; gap: 8px; box-shadow: var(--shadow-sticker-lg);">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <h1 id="st-head" class="jm-headline">Scoreboard</h1>
+      <span class="jm-caption">First to 10 cards wins</span>
+      <span style="flex: 1;"></span>
+      <button class="jm-btn jm-btn--icon" aria-label="Close scoreboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"></path></svg>
+      </button>
+    </div>
+    <div style="display: grid; grid-template-columns: 120px 150px 44px minmax(0, 1fr); gap: 12px; padding: 0 10px;">
+      <span class="jm-label" style="color: var(--ink-muted);">Player</span>
+      <span class="jm-label" style="color: var(--ink-muted);">Cards</span>
+      <span class="jm-label" style="color: var(--ink-muted);">Tokens</span>
+      <span class="jm-label" style="color: var(--ink-muted);">Timeline</span>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <sc-for list="{{players}}" as="p" hint-placeholder-count="4">
+        <div style="{{p.rowStyle}}">
+          <div style="display: flex; align-items: center; gap: 8px; min-width: 0;">
+            <span class="{{p.avatar}}" style="width: 28px; height: 28px; font-size: 12px;">{{p.initial}}</span>
+            <span class="jm-player__name">{{p.name}}<small>{{p.note}}</small></span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <div style="flex: 1; height: 12px; box-sizing: border-box; border: 2px solid var(--ink); border-radius: var(--radius-pill); background: var(--sand); overflow: hidden;">
+              <div style="height: 100%; background: var(--coral); width: {{p.pct}};"></div>
+            </div>
+            <span style="font: 800 15px/1 var(--font-ui); font-variant-numeric: tabular-nums;">{{p.cards}}</span>
+          </div>
+          <span class="jm-token" style="font-size: 14px;">{{p.tokens}}</span>
+          <div style="display: flex; gap: 4px; flex-wrap: wrap;">
+            <sc-for list="{{p.years}}" as="y" hint-placeholder-count="5">
+              <span style="padding: 3px 6px; border-radius: var(--radius-chip); border: 2px solid var(--sand-line); background: var(--label); font: 800 12px/14px var(--font-ui); font-variant-numeric: tabular-nums;">{{y}}</span>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+</div></template>
+<script src="../../exploration/preview/dc-runtime.js"></script>
+<script>
+class Component extends DCLogic {
+  renderVals() {
+    const base = "display: grid; grid-template-columns: 120px 150px 44px minmax(0, 1fr); gap: 12px; align-items: center; min-height: 54px; box-sizing: border-box; padding: 6px 10px; border-radius: var(--radius-card); border: 2px solid ";
+    const rows = [
+      { name: "Mara", initial: "M", avatar: "jm-avatar jm-p1", note: "Leading", cards: 6, tokens: 2, years: ["1965", "1972", "1983", "1994", "2003", "2019"] },
+      { name: "Sam", initial: "S", avatar: "jm-avatar jm-p2", note: "On turn", cards: 4, tokens: 1, years: ["1974", "1984", "1998", "2010"], turn: true },
+      { name: "Lea", initial: "L", avatar: "jm-avatar jm-p3", note: "Can buy a card", cards: 4, tokens: 3, years: ["1979", "1991", "2006", "2015"] },
+      { name: "Jonas", initial: "J", avatar: "jm-avatar jm-p4", note: "Local player", cards: 3, tokens: 0, years: ["1977", "1999", "2012"] }
+    ];
+    const players = rows.map((p) => ({
+      ...p,
+      cards: p.cards + "/10",
+      pct: (p.cards / 10 * 100) + "%",
+      rowStyle: base + (p.turn ? "var(--ink); background: var(--turn-tint);" : "var(--sand-line); background: var(--paper);")
+    }));
+    return { players };
+  }
+}
+DCRuntime.mount(Component, document.getElementById('dc-root'), document.getElementById('dc-template').content, {});
+</script>
+</body>
+</html>
