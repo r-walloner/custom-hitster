@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../components/bundle.css">
+
+<meta charset="utf-8">
+<title>Jamster</title>
+<style>
+  html, body { margin: 0; height: 100%; }
+  body { background: var(--paper); color: var(--ink); font-family: var(--font-ui); overflow: hidden; }
+  .cover { position: relative; height: 288px; overflow: hidden; }
+  .art { position: absolute; top: 0; left: 480px; width: 480px; height: 288px; overflow: hidden; }
+  .art svg { display: block; width: 480px; height: 288px; }
+  .c-coral { fill: var(--coral); }
+  .c-ink { fill: var(--ink); }
+  .c-paper { fill: var(--paper); }
+  .c-mustard { fill: var(--mustard); }
+  .c-sand { fill: var(--sand); }
+  .r-panel { rx: var(--radius-panel); }
+  .r-card { rx: var(--radius-card); }
+  .r-pill { rx: var(--space-6); }
+  .words { position: absolute; left: 40px; bottom: 36px; max-width: 440px; }
+  .name { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 64px; line-height: 0.95; letter-spacing: 0; color: var(--ink); }
+  .tag { margin: 8px 0 0 4px; font-size: 14px; line-height: 20px; color: var(--ink-muted); }
+</style>
+</head>
+<body>
+<div class="cover">
+  <div class="art" aria-hidden="true">
+    <svg viewBox="0 0 480 288" width="480" height="288">
+      <!--
+        blocks      coral 240×152 slab (the action colour, largest) tilted by tilt over an ink slab offset 6px (shadow-sticker); mustard 184×120 bleeding off the top (the mystery card) with its own ink shadow; sand 200×132 bleeding off the bottom-right corner; paper cut-outs. 5 colours, ≈40% of 960×288
+        arrangement one tilted slab with two satellites, stacked like stickers dropped on a table
+        pattern     literal motif from "the sticker cassette is the song in play": two paper discs with mustard hubs and a paper pill cut into the coral slab, the label progress bar, half filled in mustard
+        scales      corners radius-panel (slab), radius-card (satellites), pill rx space-6 (half of its 12px height); offsets = shadow-sticker doubled; every tilt is the one tilt token (−4°)
+      -->
+      <g transform="rotate(-4 412 36)">
+        <rect class="c-ink r-card" x="326" y="-18" width="184" height="120" rx="12"></rect>
+        <rect class="c-mustard r-card" x="320" y="-24" width="184" height="120" rx="12"></rect>
+      </g>
+      <rect class="c-sand r-card" x="304" y="186" width="200" height="132" rx="12"></rect>
+      <g transform="rotate(-4 160 120)">
+        <rect class="c-ink r-panel" x="46" y="50" width="240" height="152" rx="16"></rect>
+        <rect class="c-coral r-panel" x="40" y="44" width="240" height="152" rx="16"></rect>
+        <circle class="c-paper" cx="112" cy="110" r="28"></circle>
+        <circle class="c-paper" cx="208" cy="110" r="28"></circle>
+        <circle class="c-mustard" cx="112" cy="110" r="10"></circle>
+        <circle class="c-mustard" cx="208" cy="110" r="10"></circle>
+        <rect class="c-paper r-pill" x="64" y="160" width="192" height="12" rx="6"></rect>
+        <rect class="c-mustard r-pill" x="64" y="160" width="88" height="12" rx="6"></rect>
+      </g>
+    </svg>
+  </div>
+  <div class="words">
+    <h1 class="name">Jamster</h1>
+    <p class="tag">Your friends' music, in the right order.</p>
+  </div>
+</div>
+</body>
+</html>
