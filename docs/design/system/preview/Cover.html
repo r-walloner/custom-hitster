@@ -11,51 +11,57 @@
   html, body { margin: 0; height: 100%; }
   body { background: var(--paper); color: var(--ink); font-family: var(--font-ui); overflow: hidden; }
   .cover { position: relative; height: 288px; overflow: hidden; }
-  .art { position: absolute; top: 0; left: 480px; width: 480px; height: 288px; overflow: hidden; }
-  .art svg { display: block; width: 480px; height: 288px; }
-  .c-coral { fill: var(--coral); }
-  .c-ink { fill: var(--ink); }
-  .c-paper { fill: var(--paper); }
-  .c-mustard { fill: var(--mustard); }
-  .c-sand { fill: var(--sand); }
-  .r-panel { rx: var(--radius-panel); }
-  .r-card { rx: var(--radius-card); }
-  .r-pill { rx: var(--space-6); }
-  .words { position: absolute; left: 40px; bottom: 36px; max-width: 440px; }
-  .name { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 64px; line-height: 0.95; letter-spacing: 0; color: var(--ink); }
-  .tag { margin: 8px 0 0 4px; font-size: 14px; line-height: 20px; color: var(--ink-muted); }
+  .slab { position: absolute; right: -40px; bottom: -48px; width: 300px; height: 176px; border-radius: var(--radius-panel); background: var(--sand); }
+  .words { position: absolute; left: 40px; bottom: 36px; max-width: 440px; display: flex; flex-direction: column; gap: 14px; }
+  .name { margin: 0; line-height: 0; }
+  .name .jm-logo { margin-left: 4px; }
+  .pitch { margin: 6px 0 0; font: 800 22px/26px var(--font-ui); letter-spacing: -0.01em; }
+  .tag { margin: 0; font: 500 13px/18px var(--font-mono); color: var(--ink-muted); }
+  .cover .art.jm-tape { position: absolute; top: 0; left: 480px; display: block; width: 480px; height: 288px; }
+  .tape { position: absolute; left: 24px; top: 52px; transform: rotate(var(--tilt)); }
+  .tape svg { display: block; width: 300px; height: 190px; filter: drop-shadow(5px 5px 0 #2a211c); }
+  .card { position: absolute; width: 96px; height: 112px; box-sizing: border-box; transform: rotate(var(--tilt)); border-radius: var(--radius-card); border: var(--stroke-control) solid var(--ink); box-shadow: var(--shadow-sticker); }
+  .card--song { left: 352px; top: 22px; background: var(--label); padding: 8px 10px; display: flex; flex-direction: column; gap: 2px; }
+  .card--song b { font: 800 26px/1 var(--font-ui); letter-spacing: -0.03em; }
+  .card--song span { font: 700 12px/14px var(--font-ui); margin-top: 6px; }
+  .card--song small { font: 500 11px/14px var(--font-ui); color: var(--ink-muted); }
+  .card--mystery { left: 372px; top: 168px; background: var(--mustard); display: flex; align-items: center; justify-content: center; font: 400 22px var(--font-display); }
 </style>
 </head>
 <body>
 <div class="cover">
-  <div class="art" aria-hidden="true">
-    <svg viewBox="0 0 480 288" width="480" height="288">
-      <!--
-        blocks      coral 240×152 slab (the action colour, largest) tilted by tilt over an ink slab offset 6px (shadow-sticker); mustard 184×120 bleeding off the top (the mystery card) with its own ink shadow; sand 200×132 bleeding off the bottom-right corner; paper cut-outs. 5 colours, ≈40% of 960×288
-        arrangement one tilted slab with two satellites, stacked like stickers dropped on a table
-        pattern     literal motif from "the sticker cassette is the song in play": two paper discs with mustard hubs and a paper pill cut into the coral slab, the label progress bar, half filled in mustard
-        scales      corners radius-panel (slab), radius-card (satellites), pill rx space-6 (half of its 12px height); offsets = shadow-sticker doubled; every tilt is the one tilt token (−4°)
-      -->
-      <g transform="rotate(-4 412 36)">
-        <rect class="c-ink r-card" x="326" y="-18" width="184" height="120" rx="12"></rect>
-        <rect class="c-mustard r-card" x="320" y="-24" width="184" height="120" rx="12"></rect>
-      </g>
-      <rect class="c-sand r-card" x="304" y="186" width="200" height="132" rx="12"></rect>
-      <g transform="rotate(-4 160 120)">
-        <rect class="c-ink r-panel" x="46" y="50" width="240" height="152" rx="16"></rect>
-        <rect class="c-coral r-panel" x="40" y="44" width="240" height="152" rx="16"></rect>
-        <circle class="c-paper" cx="112" cy="110" r="28"></circle>
-        <circle class="c-paper" cx="208" cy="110" r="28"></circle>
-        <circle class="c-mustard" cx="112" cy="110" r="10"></circle>
-        <circle class="c-mustard" cx="208" cy="110" r="10"></circle>
-        <rect class="c-paper r-pill" x="64" y="160" width="192" height="12" rx="6"></rect>
-        <rect class="c-mustard r-pill" x="64" y="160" width="88" height="12" rx="6"></rect>
-      </g>
-    </svg>
+  <div class="slab" aria-hidden="true"></div>
+  <div class="art jm-tape" aria-hidden="true">
+    <!--
+      blocks      coral cassette 300×190 (the action colour, largest) tilted by tilt over its shadow-sticker-lg drop shadow; mustard mystery card and label song card, 96×112, tilted by tilt; sand slab bleeding off the bottom-right corner
+      arrangement the repo hero (round 6): stickers dropped on a table, tape in front, two cards scattered beside it
+      pattern     literal motif: the TapePlayer itself, reels and label progress bar, still (covers don't move)
+      scales      corners radius-panel (slab), radius-card (cards), tape radii in its own 300×190 units; one tilt (−4°); shadows shadow-sticker and shadow-sticker-lg
+    -->
+    <div class="tape">
+      <svg viewBox="0 0 300 190" width="300" height="190">
+        <rect class="t-shell" x="4" y="4" width="292" height="182" rx="18" stroke-width="7"></rect>
+        <circle class="t-ink" cx="17" cy="17" r="4.5"></circle><circle class="t-ink" cx="283" cy="17" r="4.5"></circle><circle class="t-ink" cx="17" cy="173" r="4.5"></circle><circle class="t-ink" cx="283" cy="173" r="4.5"></circle>
+        <rect class="t-window" x="92" y="70" width="116" height="40" rx="20"></rect>
+        <circle class="t-pack" cx="105" cy="90" r="36" style="transform: scale(0.78)"></circle>
+        <circle class="t-pack" cx="195" cy="90" r="36" style="transform: scale(0.62)"></circle>
+        <g class="t-reel"><circle class="t-hub" cx="105" cy="90" r="13" stroke-width="4"></circle><path class="t-spoke" d="M105 80v20M96.3 85l17.4 10M96.3 95l17.4-10" stroke-width="4"></path></g>
+        <g class="t-reel"><circle class="t-hub" cx="195" cy="90" r="13" stroke-width="4"></circle><path class="t-spoke" d="M195 80v20M186.3 85l17.4 10M186.3 95l17.4-10" stroke-width="4"></path></g>
+        <path class="t-label" fill-rule="evenodd" stroke-width="5" d="M30 18H270A8 8 0 0 1 278 26V138A8 8 0 0 1 270 146H30A8 8 0 0 1 22 138V26A8 8 0 0 1 30 18Z M92 70H208A20 20 0 0 1 208 110H92A20 20 0 0 1 92 70Z"></path>
+        <text class="t-q" x="150" y="58" text-anchor="middle">? ? ? ?</text>
+        <rect class="t-track" x="40" y="122" width="220" height="11" rx="5.5"></rect>
+        <rect class="t-bar" x="40" y="122" width="84" height="11" rx="5.5"></rect>
+        <path class="t-foot" stroke-width="5" d="M78 186L90 156H210L222 186"></path>
+        <circle class="t-ink" cx="112" cy="174" r="6"></circle><circle class="t-ink" cx="188" cy="174" r="6"></circle>
+      </svg>
+    </div>
+    <div class="card card--song"><b>1994</b><span>Zombie</span><small>The Cranberries</small></div>
+    <div class="card card--mystery">????</div>
   </div>
   <div class="words">
-    <h1 class="name">Jamster</h1>
-    <p class="tag">Your friends' music, in the right order.</p>
+    <h1 class="name"><span class="jm-logo jm-logo--xl">jamster</span></h1>
+    <p class="pitch">The music game built from your own playlists.</p>
+    <p class="tag">Hear it · place it · challenge your friends</p>
   </div>
 </div>
 </body>
