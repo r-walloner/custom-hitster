@@ -21,12 +21,13 @@ It is the only place the game shows that music is playing, so it must always be 
 | --- | --- | --- | --- |
 | Playing | spin | on | `????` |
 | Loading next song / paused | still | off | bar keeps its position |
-| Playback dropped | still | off | pair with action feedback (not designed yet); the device picker comes back if it fails |
+| Playback dropped | still | off | pair with a toast with *Retry*; if the speaker itself fails, a toast with *Change* opens the speaker choice |
 | Revealed | spin while the song plays on | on | the year |
 
 ## Rules
 
-- Bringing back players whose playback dropped happens on its own or from the ⋯ menu; it has no button under the tape.
+- Bringing back players whose playback dropped happens on its own or from a toast with *Retry*; it has no button under the tape.
+- On covers (*Hero*) the tape is decoration: no foot, a slower bob (`jm-tape--slow`), and no `role="progressbar"`.
 - Respect `prefers-reduced-motion`: no spin, no bob, no transitions (bundle.css does this).
 - Use the SVG's `role="progressbar"` with `aria-valuenow` (0–100) so the progress is announced.
-- Don't use the tape as a decorative icon elsewhere.
+- Don't use the tape as a decorative icon elsewhere; the covers are the one exception.

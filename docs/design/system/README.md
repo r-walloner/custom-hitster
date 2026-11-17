@@ -7,8 +7,8 @@ It came out of a six-round exploration (warm "Mixtape Soft" colours, the L2 pill
 ## Using this system
 
 - **Load** `tokens.css` and `components/bundle.css`. bundle.css imports the three Google fonts and holds every component as plain CSS classes prefixed `jm-`. There is no JavaScript bundle; the app is React, so wrap these classes in your own components.
-- **Design size**: a landscape phone, **844 × 390** CSS px. Everything is drawn at that size; scale up for laptops and TVs (see *GameScreen*).
-- **Start from** the *GameScreen* preview for any in-game screen, and from the components below for the parts.
+- **Design size**: a landscape phone, **844 × 390** CSS px. Everything is drawn at that size; scale up for laptops and TVs (see *Header*).
+- **Build screens** from the components below; the screens themselves are mocked up separately, in [`../screens/`](../screens/).
 
 ## Voice
 
@@ -17,6 +17,9 @@ It came out of a six-round exploration (warm "Mixtape Soft" colours, the L2 pill
 - Buttons: sentence case, verb first, one or two words. If it costs or earns tokens, put the coin and the number right after the label, with no separator: *Skip song ●1*, *Buy a card ●3*, *Named it ●+1*.
 - State labels: *Challenged*, *Passed*, *Guessing…*. Guesses are never secret, so don't say "hidden".
 - Never reveal anything about the song in play (title, artist, year, whose library) before the reveal.
+- Feedback and errors: say what happened, then one short fact. "Connection dropped. Your progress is safe." "Not your turn. Sam is placing." Nothing more.
+- Middle dots only in the header line (*Mara's room · 4 players · First to 10*). Everywhere else use commas and full stops.
+- Ways out are words, not arrows: *Back* as the left half of a button pair, *Leave room*, *Close room*, *End game*.
 - No emoji in the UI.
 
 ## Visual foundations
@@ -42,7 +45,7 @@ A warm paper ground with one loud colour for action, one for mystery, and a righ
 
 ### Type
 
-- **Rubik Mono One** (brand): the logo only. It's caps-only and very wide; never set sentences in it. It could later carry one-line big moments ("Lea wins!"); decide that with the winner screen.
+- **Rubik Mono One** (brand): the logo, and the one big line on the winner screen ("Mara wins!", `jm-big-moment`). It's caps-only and very wide; never set sentences in it.
 - **Bricolage Grotesque**: everything players read. Years are 800 weight with tabular figures; the tape label uses the same face for `????` and the year (`tape-year`), so the marks line up like digits. The moment panel's sentence is 22px/800 (`moment`), other headlines 17px/800, and body text never goes below 13px for anything you need to act on.
 - **DM Mono**: small "machine" text: time, room code, uppercase state labels.
 
@@ -50,22 +53,24 @@ A warm paper ground with one loud colour for action, one for mystery, and a righ
 
 - Every raised thing has a **2px ink outline** (`stroke-control`) and a **hard offset shadow with no blur** (`shadow-sticker-sm` / `shadow-sticker` / `-lg`). That's the whole look; don't add soft shadows or gradients.
 - Radii: `radius-pill` for buttons, chips, marks and the logo, `radius-card` for cards, gaps and cells, `radius-panel` (18px for the moment panel) for panels.
-- **Tilt** marks what's special. One angle, the `tilt` token (−4°), used by exactly three things: the logo, the playing tape and the yellow pick cards on the board. Nothing else rotates.
+- **Tilt** marks what's special. One angle, the `tilt` token (−4°), used by exactly three things: the logo, the playing tape and the yellow pick cards on the board. Nothing else rotates, except on a cover (*Hero*): there the floating cards lean freely and the Home slogan sits at `tilt`.
+- Pop-ups are `label` panels with `shadow-sticker-lg` over the screen dimmed with ink at 55% (*Dialog*).
 - Pressing a primary button sinks it 2px into its shadow.
 
 ### Motion
 
 - The cassette reels spin only while audio is actually playing. The progress bar and the tape packs move with the song. The 3px tape bob is on in the game screen; the footer under the tape leaves room for it.
-- Countdowns are always the filling ring (`jm-ring`): challenge window, guessing, and the automatic next song. Don't show a countdown any other way.
-- Everything else is still: no idle animations, no parallax. `prefers-reduced-motion` stops spin, bob and transitions.
+- Countdowns are always the filling ring (`jm-ring`): challenge window, guessing, and the automatic next song. Don't show a countdown any other way. Amounts (an import, cards dealt, cards toward the goal) use the bar (`jm-progress`), which never counts down.
+- On covers (Home, the sign-in error, the winner) the tape bobs slower, 1.2 s a swing (`jm-tape--slow`), and the song cards drift a few pixels, each at its own pace (`jm-float`).
+- Everything else is still: no idle animations, no parallax. `prefers-reduced-motion` stops spin, bob, drift and transitions.
 
 ### Layout
 
-Landscape phone first (844 × 390). A 44px header (logo, room code, *Turn · cards left · First to N*, ⋯ menu), a 172px top band (tape, moment panel, scoreboard), and the board below at full width. Touch targets are at least 44px; the only exception is the small restart icon, which is rarely used. Details in *GameScreen*.
+Landscape phone first (844 × 390). Every screen starts with the 44px header (*Header*). In the game, a 172px top band follows (tape, moment panel, scoreboard), with the board below at full width. Touch targets are at least 44px; the only exception is the small restart icon, which is rarely used.
 
 ### Iconography
 
-Inline SVG on a 24px grid: stroke 2.4, round caps and joins, `currentColor`. For ✕ and ✓ use stroke 3–3.4. The current set: restart, plus (gaps), skip (next song), pass ✕, right ✓ and menu ⋯. Icon-only buttons always carry an `aria-label`. No emoji, no filled icon packs (the skip triangle is the one filled shape).
+Inline SVG on a 24px grid: stroke 2.4, round caps and joins, `currentColor`. For ✕ and ✓ use stroke 3–3.4. The current set: restart, plus (gaps), skip (next song), pass ✕, right ✓, the gear (game menu), back arrow, speaker, search, link and the device shapes (TV, laptop, phone, speaker). Icon-only buttons are round (`jm-btn--icon`) and always carry an `aria-label`; a pop-up's close ✕ is borderless (`jm-btn--bare`). No emoji, no filled icon packs (the skip triangle is the one filled shape).
 
 ## Components
 
@@ -77,8 +82,16 @@ Inline SVG on a 24px grid: stroke 2.4, round caps and joins, `currentColor`. For
 | SongCard | Revealed card, yellow pick card (now / locked), card just won, dashed + gap, ✓ / ✕ marks. |
 | Board | The active player's timeline: full width, tap a gap or a card half, scrolls sideways with an indicator. |
 | MomentPanel | The centre panel holding the one decision of the moment: place, challenge, guess, result. |
-| Scoreboard | Compact standings: initial, cards held, tokens. Always visible. |
-| GameScreen | The reference layout everything sits in. |
+| Scoreboard | The mini scoreboard: initial, cards held, tokens. Always visible in the game; tapping it opens the full scoreboard. |
+| YearChip | A timeline in short form, for the full scoreboard. |
+| Header | The 44px row on every screen, and the 844 × 390 screen frame. |
+| Dialog | A centred pop-up over the dimmed screen: game menu, scoreboard, adding a player, reconnecting. |
+| Toast | One line of feedback, with at most one button. |
+| Input | Room code, name, search, and the QR tile. |
+| Rows | Setting rows, option rows (speakers), checkbox rows (playlists), players in the lobby. |
+| Stepper | − / number / +, and segmented toggles. |
+| Progress | A bar for amounts, never for time. |
+| Hero | The cover art: slow-bobbing tape, drifting song cards, the big winner line. |
 
 ## Accessibility
 
@@ -88,4 +101,4 @@ Inline SVG on a 24px grid: stroke 2.4, round caps and joins, `currentColor`. For
 
 ## Not designed yet
 
-Entry and sign-in, room code and invite screens, the lobby (players, device choice and playback test, settings), dealing progress, the ⋯ game menu, a wrong placement by the player on turn, a card bought with tokens, the winner, reconnection, error and action feedback. Build them from these foundations and the game screen.
+A guest's in-game menu (leaving a running game), and portrait phones.

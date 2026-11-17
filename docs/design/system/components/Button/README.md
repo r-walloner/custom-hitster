@@ -13,9 +13,10 @@ Pill buttons with a 2px ink outline: coral for the one thing to do now, label-cr
 | `.jm-btn--lg` | 52px secondary that sits beside `--next` (*Keep listening*). |
 | `.jm-btn--toggle` | On/off with `aria-pressed`. Pressed = ink fill, paper text, plus a ✓ icon: *Named it ●+1*. Tap again to undo. |
 | `.jm-btn.jm-btn--dark` | A held state shown as a button. |
-| `.jm-btn--icon` | Round 44px icon button: pass ✕ in a player cell. Always an `aria-label`. |
+| `.jm-btn--icon` | Round 44px icon button: pass ✕ in a player cell, the gear for the game menu, the back arrow on sub-screens, − and + in a stepper. Always an `aria-label`. |
+| `.jm-btn--icon.jm-btn--bare` | Borderless round icon button: a pop-up's close ✕, removing a player from the lobby. |
 | `.jm-btn--icon-sm` | Round 36px icon button for rare controls: restart under the tape. The one exception to the 44px rule. |
-| `.jm-btn--square` | Square 44px icon button for the header ⋯ game menu. |
+| `.jm-btn--square` | Square 44px icon button. Kept for compatibility; header icons are round now. |
 | `.jm-pair` | Two equal buttons side by side (*Skip song* / *Buy a card*). |
 | `.jm-chip` | The room code. Not a button. |
 | `.jm-status` / `--quiet` | Read-only state where a button was: *Challenged*, *Guessing…* (ink pill) and *Passed* (quiet). |
