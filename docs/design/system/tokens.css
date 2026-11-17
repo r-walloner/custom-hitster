@@ -14,6 +14,8 @@
   --coral-deep: #d44a2e;
   --mustard: #e9b43a;
   --turn-tint: #fbe3c4;
+  --right: #6cc07a;
+  --wrong: #b3261e;
   --tape-brown: #6b4228;
   --tape-window: #3a2e26;
   --player-1: var(--coral);
@@ -41,9 +43,10 @@
   --tilt: -4deg;
   --touch-min: 44px;
   --avatar: 24px;
-  --card-w: 84px;
-  --card-h: 100px;
-  --tape-w: 156px;
+  --card-w: 112px;
+  --card-h: 108px;
+  --gap-w: 36px;
+  --tape-w: 160px;
   --screen-w: 844px;
   --screen-h: 390px;
   --font-display: "Rubik Mono One", system-ui, sans-serif;
@@ -52,14 +55,15 @@
 }
 .logo { font-family: var(--font-display); font-size: 17px; line-height: 23px; font-weight: 400; letter-spacing: 0; }
 .logo-xl { font-family: var(--font-display); font-size: 48px; line-height: 58px; font-weight: 400; letter-spacing: 0; }
-.tape-mystery { font-family: var(--font-display); font-size: 30px; line-height: 30px; font-weight: 400; }
-.year { font-family: var(--font-ui); font-size: 22px; line-height: 22px; font-weight: 800; letter-spacing: -0.03em; }
+.tape-year { font-family: var(--font-ui); font-size: 40px; line-height: 40px; font-weight: 800; letter-spacing: -1px; }
+.moment { font-family: var(--font-ui); font-size: 22px; line-height: 25px; font-weight: 800; letter-spacing: -0.015em; }
+.year { font-family: var(--font-ui); font-size: 24px; line-height: 24px; font-weight: 800; letter-spacing: -0.03em; }
 .headline { font-family: var(--font-ui); font-size: 17px; line-height: 19px; font-weight: 800; letter-spacing: -0.01em; }
 .section { font-family: var(--font-ui); font-size: 14px; line-height: 18px; font-weight: 800; }
 .name { font-family: var(--font-ui); font-size: 14px; line-height: 18px; font-weight: 700; }
 .body { font-family: var(--font-ui); font-size: 13px; line-height: 18px; font-weight: 600; }
 .button { font-family: var(--font-ui); font-size: 13px; line-height: 16px; font-weight: 700; }
-.card-title { font-family: var(--font-ui); font-size: 12px; line-height: 14px; font-weight: 700; }
+.card-title { font-family: var(--font-ui); font-size: 13px; line-height: 15px; font-weight: 700; }
 .caption { font-family: var(--font-ui); font-size: 11px; line-height: 14px; font-weight: 500; }
 .label-caps { font-family: var(--font-mono); font-size: 11px; line-height: 14px; font-weight: 500; letter-spacing: 0.06em; }
 .time { font-family: var(--font-mono); font-size: 12px; line-height: 16px; font-weight: 500; }

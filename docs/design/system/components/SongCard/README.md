@@ -1,18 +1,21 @@
 # SongCard
 
-A revealed song on a timeline (year, title, artist, and whose library it came from), the tilted mustard mystery card, and the dashed gaps between cards where a song can go.
+The cards on a board: a revealed song (year, title, artist), the yellow pick card that stands for a guess, the card just won, the dashed + gap between cards, and the ✓ / ✕ marks shown after the reveal.
 
 ## Parts
 
-- `.jm-card`: `label` surface, ink outline, `shadow-sticker`, `card-w` × `card-h` (84 × 100 on a phone; 100 × 116 when the timeline has the height).
-  - `.jm-card__year`: `year` style, tabular figures. The year is the answer, so it's always the largest thing on the card.
-  - `.jm-card__title` (`card-title`, may wrap to 2 lines), `.jm-card__artist` (`caption`, `ink-muted`).
-  - `.jm-card__via`: whose library it came from. A dot in that player's colour plus their name; set the player with `.jm-p1`…`.jm-p5` on the card.
-- `.jm-card--mystery`: the song in play once it sits in a gap. `mustard`, tilted `tilt` (−4°), shows `????` and "<name>'s pick". Only one exists at a time.
-- `.jm-gap`: a button between cards. Dashed `slot-dash` when empty; solid ink on `turn-tint` when hovered or chosen (`aria-pressed="true"`). Label it with its range: "Place between 1975 and 1994".
+- `.jm-card`: `label` surface, ink outline, `shadow-sticker`, fixed `card-w` × `card-h` (112 × 108), so it reads like a real, near-square card.
+  - `.jm-card__year`: 24px/800, tabular figures. The year is the answer, so it's always the largest thing on the card.
+  - `.jm-card__title` (13px/700, up to three lines), `.jm-card__artist` (`caption`, `ink-muted`, at the bottom).
+  - No "via" line: every card on a board belongs to the same player.
+  - `.jm-card__half--l` / `--r`: two invisible buttons covering the card's halves. Tapping the left half puts the pick before this card, the right half after it. Label them "Put it before 1994".
+- `.jm-card--mystery`: a pick. `mustard`, tilted `tilt`, `????` and "<name>'s pick". Every pick looks the same: the player on turn's and each challenger's.
+  - `.jm-card--pick-done`: a pick that is locked in, in `turn-tint`. While challengers guess, only the one guessing now stays mustard.
+- `.jm-card--new`: the card just won, in `turn-tint` with `shadow-sticker-lg`.
+- `.jm-gap`: a button between cards, 36px wide, dashed `slot-dash` with a + icon; solid ink on `turn-tint` when hovered or chosen (`aria-pressed="true"`). Its tap area reaches past the dashes.
+- `.jm-mark--right` / `--wrong`: 24px pills after the reveal, 13px above the card tops. ✓ + initial on `right` sits centred over the won card; ✕ + initial on `wrong` sits centred over the gap that was guessed (put it inside the card to the gap's left).
 
 ## Rules
 
 - Never show the year, title or artist of the song in play before the reveal.
-- The "via" colour always comes with the name; colour is never the only cue.
-- The results after a reveal (right/wrong marks, challengers' guesses on the timeline, where the card really belongs) are **not designed yet**. Design them in this language: ink outline + icon + word, not colour alone.
+- Right and wrong are always icon + initial, never colour alone.

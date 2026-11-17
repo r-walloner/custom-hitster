@@ -6,25 +6,13 @@
 <link rel="stylesheet" href="../components/bundle.css">
 <meta charset="utf-8"><title>SongCard — preview</title></head>
 <body>
-<div class="jm-stage" style="gap: 16px">
-  <div class="jm-card jm-p3">
-    <span class="jm-card__year">1975</span>
-    <span class="jm-card__title">Bohemian Rhapsody</span>
-    <span class="jm-card__artist">Queen</span>
-    <span class="jm-card__via">Lea</span>
-  </div>
-  <button type="button" class="jm-gap" aria-label="Place between 1975 and 1994"></button>
-  <button type="button" class="jm-gap" aria-pressed="true" aria-label="Selected: between 1994 and 2008"></button>
-  <div class="jm-card jm-card--mystery">
-    <span class="jm-card__year">????</span>
-    <span class="jm-card__title" style="margin: 0">Mara's pick</span>
-  </div>
-  <div class="jm-card jm-p2">
-    <span class="jm-card__year">2016</span>
-    <span class="jm-card__title">Redbone</span>
-    <span class="jm-card__artist">Childish Gambino</span>
-    <span class="jm-card__via">Jonas</span>
-  </div>
+<div class="jm-stage" style="gap: 10px; padding-top: 28px">
+  <div class="jm-card"><span class="jm-mark jm-mark--wrong" role="img" aria-label="Jonas guessed between 1975 and 1994: wrong"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>J</span><span class="jm-card__year">1975</span><span class="jm-card__title">Bohemian Rhapsody</span><span class="jm-card__artist">Queen</span></div>
+  <button type="button" class="jm-gap" aria-label="Put it here"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+  <button type="button" class="jm-gap" aria-label="Selected" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+  <div class="jm-card jm-card--mystery"><span class="jm-card__year">????</span><span class="jm-card__title">Sam's pick</span></div>
+  <div class="jm-card jm-card--mystery jm-card--pick-done"><span class="jm-card__year">????</span><span class="jm-card__title">Jonas's pick</span></div>
+  <div class="jm-card jm-card--new"><span class="jm-mark jm-mark--right" role="img" aria-label="Mara placed it here: right"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>M</span><span class="jm-card__year">1995</span><span class="jm-card__title">Wonderwall</span><span class="jm-card__artist">Oasis</span></div>
 </div>
 </body>
 </html>

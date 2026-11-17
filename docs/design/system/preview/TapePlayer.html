@@ -6,86 +6,47 @@
 <link rel="stylesheet" href="../components/bundle.css">
 <meta charset="utf-8"><title>TapePlayer — preview</title></head>
 <body>
-<div class="jm-stage" style="gap: 40px; align-items: flex-start">
-  <div style="display: flex; flex-direction: column; gap: 6px">
-    <span class="jm-caption">Playing · bounce on</span>
-    <div class="jm-tape jm-tape--bounce is-playing" data-length="30" data-start="9">
-      <div class="jm-tape__bob"><div class="jm-tape__shell">
-        <svg viewBox="0 0 300 190" width="156" height="99" role="progressbar" aria-label="Mystery song progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="30">
+<div class="jm-stage" style="gap: 48px; align-items: flex-start">
+  <div class="jm-tape-player">
+      <div class="jm-tape jm-tape--bounce is-playing"><div class="jm-tape__bob"><div class="jm-tape__shell">
+        <svg viewBox="0 0 300 190" width="160" height="101" role="progressbar" aria-label="Song progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="30">
           <rect class="t-shell" x="4" y="4" width="292" height="182" rx="18" stroke-width="7"></rect>
           <circle class="t-ink" cx="17" cy="17" r="4.5"></circle><circle class="t-ink" cx="283" cy="17" r="4.5"></circle><circle class="t-ink" cx="17" cy="173" r="4.5"></circle><circle class="t-ink" cx="283" cy="173" r="4.5"></circle>
           <rect class="t-window" x="92" y="70" width="116" height="40" rx="20"></rect>
-          <circle class="t-pack" data-side="l" cx="105" cy="90" r="36"></circle>
-          <circle class="t-pack" data-side="r" cx="195" cy="90" r="36"></circle>
+          <circle class="t-pack" cx="105" cy="90" r="36" style="transform: scale(0.82)"></circle>
+          <circle class="t-pack" cx="195" cy="90" r="36" style="transform: scale(0.58)"></circle>
           <g class="t-reel"><circle class="t-hub" cx="105" cy="90" r="13" stroke-width="4"></circle><path class="t-spoke" d="M105 80v20M96.3 85l17.4 10M96.3 95l17.4-10" stroke-width="4"></path></g>
           <g class="t-reel"><circle class="t-hub" cx="195" cy="90" r="13" stroke-width="4"></circle><path class="t-spoke" d="M195 80v20M186.3 85l17.4 10M186.3 95l17.4-10" stroke-width="4"></path></g>
           <path class="t-label" fill-rule="evenodd" stroke-width="5" d="M30 18H270A8 8 0 0 1 278 26V138A8 8 0 0 1 270 146H30A8 8 0 0 1 22 138V26A8 8 0 0 1 30 18Z M92 70H208A20 20 0 0 1 208 110H92A20 20 0 0 1 92 70Z"></path>
-          <text class="t-q" x="150" y="56" text-anchor="middle">? ? ? ?</text>
+          <text class="t-year" x="150" y="60" text-anchor="middle">????</text>
           <rect class="t-track" x="40" y="122" width="220" height="11" rx="5.5"></rect>
           <rect class="t-bar" x="40" y="122" width="66" height="11" rx="5.5"></rect>
           <path class="t-foot" stroke-width="5" d="M78 186L90 156H210L222 186"></path>
           <circle class="t-ink" cx="112" cy="174" r="6"></circle><circle class="t-ink" cx="188" cy="174" r="6"></circle>
         </svg>
-      </div></div>
-      <div class="jm-tape__foot">
-        <span class="jm-time">0:09 / 0:30</span>
-        <div class="jm-tape__buttons">
-          <button type="button" class="jm-btn jm-btn--icon" aria-label="Restart song"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><path d="M3 3v5h5"></path></svg></button>
-          <button type="button" class="jm-btn jm-btn--icon" aria-label="Retry dropped players"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path><path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path><path d="M21 3v5h-5"></path><path d="M3 21v-5h5"></path></svg></button>
-        </div>
-      </div>
+      </div></div></div>
+      <div class="jm-tape__foot"><span class="jm-time">0:09 / 0:30</span><button type="button" class="jm-btn jm-btn--icon-sm" aria-label="Restart the song from the beginning"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><path d="M3 3v5h5"></path></svg></button></div>
     </div>
-  </div>
-
-  <div style="display: flex; flex-direction: column; gap: 6px">
-    <span class="jm-caption">Paused / loading · reels still, no bounce</span>
-    <div class="jm-tape" data-length="30" data-start="21">
-      <div class="jm-tape__bob"><div class="jm-tape__shell">
-        <svg viewBox="0 0 300 190" width="156" height="99" role="progressbar" aria-label="Mystery song progress, paused" aria-valuemin="0" aria-valuemax="100" aria-valuenow="70">
+  <div class="jm-tape-player">
+      <div class="jm-tape jm-tape--bounce is-playing"><div class="jm-tape__bob"><div class="jm-tape__shell">
+        <svg viewBox="0 0 300 190" width="160" height="101" role="progressbar" aria-label="Song progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="70">
           <rect class="t-shell" x="4" y="4" width="292" height="182" rx="18" stroke-width="7"></rect>
           <circle class="t-ink" cx="17" cy="17" r="4.5"></circle><circle class="t-ink" cx="283" cy="17" r="4.5"></circle><circle class="t-ink" cx="17" cy="173" r="4.5"></circle><circle class="t-ink" cx="283" cy="173" r="4.5"></circle>
           <rect class="t-window" x="92" y="70" width="116" height="40" rx="20"></rect>
-          <circle class="t-pack" data-side="l" cx="105" cy="90" r="36"></circle>
-          <circle class="t-pack" data-side="r" cx="195" cy="90" r="36"></circle>
+          <circle class="t-pack" cx="105" cy="90" r="36" style="transform: scale(0.58)"></circle>
+          <circle class="t-pack" cx="195" cy="90" r="36" style="transform: scale(0.82)"></circle>
           <g class="t-reel"><circle class="t-hub" cx="105" cy="90" r="13" stroke-width="4"></circle><path class="t-spoke" d="M105 80v20M96.3 85l17.4 10M96.3 95l17.4-10" stroke-width="4"></path></g>
           <g class="t-reel"><circle class="t-hub" cx="195" cy="90" r="13" stroke-width="4"></circle><path class="t-spoke" d="M195 80v20M186.3 85l17.4 10M186.3 95l17.4-10" stroke-width="4"></path></g>
           <path class="t-label" fill-rule="evenodd" stroke-width="5" d="M30 18H270A8 8 0 0 1 278 26V138A8 8 0 0 1 270 146H30A8 8 0 0 1 22 138V26A8 8 0 0 1 30 18Z M92 70H208A20 20 0 0 1 208 110H92A20 20 0 0 1 92 70Z"></path>
-          <text class="t-q" x="150" y="56" text-anchor="middle">? ? ? ?</text>
+          <text class="t-year" x="150" y="60" text-anchor="middle">1995</text>
           <rect class="t-track" x="40" y="122" width="220" height="11" rx="5.5"></rect>
           <rect class="t-bar" x="40" y="122" width="154" height="11" rx="5.5"></rect>
           <path class="t-foot" stroke-width="5" d="M78 186L90 156H210L222 186"></path>
           <circle class="t-ink" cx="112" cy="174" r="6"></circle><circle class="t-ink" cx="188" cy="174" r="6"></circle>
         </svg>
-      </div></div>
-      <div class="jm-tape__foot">
-        <span class="jm-time">0:21 / 0:30</span>
-        <div class="jm-tape__buttons">
-          <button type="button" class="jm-btn jm-btn--icon" aria-label="Restart song"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><path d="M3 3v5h5"></path></svg></button>
-          <button type="button" class="jm-btn jm-btn--icon" aria-label="Retry dropped players"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path><path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path><path d="M21 3v5h-5"></path><path d="M3 21v-5h5"></path></svg></button>
-        </div>
-      </div>
+      </div></div></div>
+      <div class="jm-tape__foot"><span class="jm-time">0:21 / 0:30</span><button type="button" class="jm-btn jm-btn--icon-sm" aria-label="Restart the song from the beginning"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><path d="M3 3v5h5"></path></svg></button></div>
     </div>
-  </div>
 </div>
-<script>
-(function () {
-  function fmt(s) { s = Math.floor(s); return Math.floor(s / 60) + ':' + (s % 60 < 10 ? '0' : '') + (s % 60); }
-  document.querySelectorAll('.jm-tape[data-length]').forEach(function (el) {
-    var len = +el.getAttribute('data-length') || 30, t = +el.getAttribute('data-start') || 0;
-    var l = el.querySelector('[data-side="l"]'), r = el.querySelector('[data-side="r"]');
-    var bar = el.querySelector('.t-bar'), time = el.querySelector('.jm-time'), svg = el.querySelector('svg[role="progressbar"]');
-    function draw() {
-      var p = t / len;
-      l.style.transform = 'scale(' + (1 - 0.6 * p).toFixed(3) + ')';
-      r.style.transform = 'scale(' + (0.4 + 0.6 * p).toFixed(3) + ')';
-      bar.setAttribute('width', (220 * p).toFixed(1));
-      if (time) time.textContent = fmt(t) + ' / ' + fmt(len);
-      if (svg) svg.setAttribute('aria-valuenow', String(Math.round(p * 100)));
-    }
-    draw();
-    if (el.classList.contains('is-playing')) setInterval(function () { t += 0.25; if (t > len) t = 0; draw(); }, 250);
-  });
-})();
-</script>
 </body>
 </html>

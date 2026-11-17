@@ -1,23 +1,26 @@
-<!-- @dsCard group="Actions" height=150 subtitle="primary · secondary · dark · icon · select · chip" -->
+<!-- @dsCard group="Actions" height=200 subtitle="primary · XL · toggle · next · icon · chip · status" -->
 <!doctype html>
 <html lang="en">
 <head><meta charset="utf-8"><title>Button — preview</title></head>
 <body>
-<div class="jm-stage">
-  <button type="button" class="jm-btn jm-btn--primary">Challenge</button>
-  <button type="button" class="jm-btn jm-btn--primary">Lock it in</button>
-  <button type="button" class="jm-btn">Skip · 1 token</button>
-  <button type="button" class="jm-btn jm-btn--dark">Keep listening</button>
-  <button type="button" class="jm-btn jm-btn--primary" disabled>Next song</button>
-  <button type="button" class="jm-btn jm-btn--icon" aria-label="Pass"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
-  <button type="button" class="jm-btn jm-btn--icon" aria-label="Restart song"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><path d="M3 3v5h5"></path></svg></button>
-  <button type="button" class="jm-btn jm-btn--square" aria-label="Game menu"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"></circle><circle cx="12" cy="12" r="2"></circle><circle cx="19" cy="12" r="2"></circle></svg></button>
-  <label class="jm-field">As
-    <select class="jm-select"><option>Mara (on turn)</option><option>Jonas</option></select>
-  </label>
-  <span class="jm-chip">QZRK</span>
-  <span class="jm-status">Marking…</span>
-  <span class="jm-status jm-status--quiet">Passed</span>
+<div class="jm-stage" style="flex-direction: column; align-items: stretch; gap: 14px">
+  <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center">
+    <button type="button" class="jm-btn jm-btn--primary">Challenge</button>
+    <button type="button" class="jm-btn">Skip song · <span class="jm-token">1</span></button>
+    <button type="button" class="jm-btn jm-btn--toggle" aria-pressed="false">Named it · +<span class="jm-token">1</span></button>
+    <button type="button" class="jm-btn jm-btn--toggle" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>Named it · +<span class="jm-token">1</span></button>
+    <button type="button" class="jm-btn jm-btn--icon" aria-label="Pass"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+    <button type="button" class="jm-btn jm-btn--icon-sm" aria-label="Restart the song"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><path d="M3 3v5h5"></path></svg></button>
+    <button type="button" class="jm-btn jm-btn--square" aria-label="Game menu"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"></circle><circle cx="12" cy="12" r="2"></circle><circle cx="19" cy="12" r="2"></circle></svg></button>
+    <span class="jm-chip">QZRK</span>
+    <span class="jm-status">Guessing…</span>
+    <span class="jm-status jm-status--quiet">Passed</span>
+  </div>
+  <div style="display: flex; gap: 10px; width: 520px">
+    <button type="button" class="jm-btn jm-btn--primary jm-btn--xl" style="width: 240px">Lock it in</button>
+    <button type="button" class="jm-btn jm-btn--lg">Keep listening</button>
+    <button type="button" class="jm-btn jm-btn--primary jm-btn--next"><span style="display: inline-flex; align-items: center; gap: 6px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 5l10 7-10 7z" fill="currentColor"></path><path d="M19 5v14"></path></svg>Next song</span></button>
+  </div>
 </div>
 </body>
 </html>
