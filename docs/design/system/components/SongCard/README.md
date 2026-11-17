@@ -13,7 +13,7 @@ The cards on a board: a revealed song (year, title, artist), the yellow pick car
   - `.jm-card--pick-done`: a pick that is locked in, in `turn-tint`. While challengers guess, only the one guessing now stays mustard.
 - `.jm-card--new`: the card just won, in `turn-tint` with `shadow-sticker-lg`.
 - `.jm-gap`: a button between cards, 36px wide, dashed `slot-dash` with a + icon; solid ink on `turn-tint` when hovered or chosen (`aria-pressed="true"`). Its tap area reaches past the dashes.
-- `.jm-mark--right` / `--wrong`: 24px pills after the reveal, 13px above the card tops. ✓ + initial on `right` sits centred over the won card; ✕ + initial on `wrong` sits centred over the gap that was guessed (put it inside the card to the gap's left).
+- `.jm-mark--right` / `--wrong`: 24px pills after the reveal, 13px above the card tops. ✓ + initial on `right` sits at the won card's top-right corner; ✕ + initial on `wrong` sits centred over the gap that was guessed (put it inside the card to the gap's left).
 
 ## Rules
 

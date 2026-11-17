@@ -97,7 +97,7 @@ body { margin: 0; font-family: var(--font-ui); background: var(--paper); color: 
 .jm-gap svg { width: 18px; height: 18px; }
 .jm-mark { position: absolute; top: -13px; z-index: 5; display: inline-flex; align-items: center; gap: 3px; height: 24px; box-sizing: border-box; padding: 0 8px 0 6px; border-radius: var(--radius-pill); border: 2px solid var(--ink); font: 800 12px/1 var(--font-ui); white-space: nowrap; box-shadow: var(--shadow-sticker-sm); }
 .jm-mark svg { width: 12px; height: 12px; }
-.jm-mark--right { left: 50%; transform: translateX(-50%); background: var(--right); color: var(--ink); }
+.jm-mark--right { right: -8px; background: var(--right); color: var(--ink); }
 .jm-mark--wrong { right: -5px; transform: translateX(50%); background: var(--wrong); color: var(--paper); }
 .jm-verdict { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; height: 32px; padding: 0 12px 0 8px; border-radius: var(--radius-pill); border: 2px solid var(--ink); font: 800 14px var(--font-ui); background: var(--right); }
 .jm-verdict--wrong { background: var(--wrong); color: var(--paper); }
@@ -115,7 +115,7 @@ body { margin: 0; font-family: var(--font-ui); background: var(--paper); color: 
 /* ---------- Moment panel: the one decision of the moment ---------- */
 .jm-moment { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; padding: 8px 12px 10px; border-radius: 18px; }
 .jm-moment__head { display: flex; align-items: center; gap: 10px; }
-.jm-moment__head > div { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.jm-moment__head > div:not(.jm-ring) { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
 .jm-moment__headline { margin: 0; font: 800 22px/25px var(--font-ui); letter-spacing: -0.015em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .jm-moment__sub { font: 600 13px/17px var(--font-ui); color: var(--ink-muted); }
 .jm-players { flex: 1; min-height: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
