@@ -1,0 +1,49 @@
+<!-- @dsCard group="Turn" height=400 width=1120 subtitle="placing · challenge · guessing · result" -->
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>MomentPanel — preview</title></head>
+<body>
+<div style="padding: 16px; display: grid; grid-template-columns: repeat(2, 540px); gap: 16px">
+  <div style="height: 172px; display: flex"><section class="jm-panel jm-moment" aria-label="Your move">
+      <span class="jm-label">Mara's turn</span>
+      <h1 class="jm-moment__headline">Between 1994 and 2008?</h1>
+      <button type="button" class="jm-btn jm-btn--primary jm-btn--xl" style="min-height: 54px">Lock it in</button>
+      <div class="jm-pair"><button type="button" class="jm-btn">Skip song <span class="jm-token" style="font-size: 14px">1</span></button><button type="button" class="jm-btn" aria-label="Buy a card for 3 tokens">Buy a card <span class="jm-token" style="font-size: 14px">3</span></button></div>
+    </section></div>
+  <div style="height: 172px; display: flex"><section class="jm-panel jm-moment" aria-label="Challenge">
+      <div class="jm-moment__head"><div><span class="jm-label">Challenge</span><h1 class="jm-moment__headline">Mara says 1994 to 2008. Is that right?</h1></div><div class="jm-ring" style="--p: 60" role="timer" aria-label="6 seconds left"><span>6</span></div></div>
+      <div class="jm-players">
+        <div class="jm-player"><span class="jm-avatar jm-p2">J</span><span class="jm-player__name">Jonas</span><span class="jm-status">Challenged</span></div>
+        <div class="jm-player"><span class="jm-avatar jm-p3">L</span><span class="jm-player__name">Lea</span><button type="button" class="jm-btn jm-btn--primary">Challenge</button><button type="button" class="jm-btn jm-btn--icon" aria-label="Pass for Lea"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
+        <div class="jm-player"><span class="jm-avatar jm-p4">T</span><span class="jm-player__name">Tobi</span><span class="jm-status jm-status--quiet">Passed</span></div>
+        <div class="jm-player"><span class="jm-avatar jm-p5">S</span><span class="jm-player__name">Sam</span><button type="button" class="jm-btn jm-btn--primary">Challenge</button><button type="button" class="jm-btn jm-btn--icon" aria-label="Pass for Sam"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
+      </div>
+    </section></div>
+  <div style="height: 172px; display: flex"><section class="jm-panel jm-moment" style="padding-bottom: 12px; gap: 8px" aria-label="Challengers guess, in the order they challenged">
+      <div class="jm-moment__head"><div><span class="jm-label">Challengers guess</span><h1 class="jm-moment__headline">Sam, where does it really go?</h1></div><div class="jm-ring" style="--p: 45" role="timer" aria-label="9 seconds left to guess"><span>9</span></div></div>
+      <div style="flex: 1; min-height: 0; display: flex; gap: 10px; align-items: flex-end">
+        <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px">
+          <div class="jm-player" style="height: 40px"><span class="jm-avatar jm-p2">J</span><span class="jm-player__name" style="font-size: 14px">1 · Jonas</span><span class="jm-status jm-status--quiet">1975 to 1994</span></div>
+          <div class="jm-player jm-player--now" style="height: 44px"><span class="jm-avatar jm-p5">S</span><span class="jm-player__name">2 · Sam</span><span class="jm-status">Guessing…</span></div>
+        </div>
+        <button type="button" class="jm-btn jm-btn--primary jm-btn--xl" style="width: 200px; flex: 0 0 auto; min-height: 60px">Lock Sam's guess</button>
+      </div>
+    </section></div>
+  <div style="height: 172px; display: flex"><section class="jm-panel jm-moment" style="padding: 10px 12px 12px" aria-label="Round result">
+      <div class="jm-result">
+        <div class="jm-song">
+          <span class="jm-label">The song</span>
+          <span class="jm-song__title">Wonderwall</span>
+          <span class="jm-song__artist">Oasis</span>
+          <span class="jm-song__library"><span class="jm-avatar jm-p2">J</span><span>From Jonas's library<small>Year: original release, MusicBrainz</small></span></span>
+        </div>
+        <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px">
+          <div style="display: flex; align-items: center; gap: 8px"><span class="jm-verdict"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>Right</span><h1 class="jm-moment__headline" style="font-size: 20px; flex: 1; min-width: 0">Mara nailed it.</h1><div class="jm-ring" style="--p: 40; width: 44px; height: 44px" role="timer" aria-label="Next song in 6 seconds"><span style="width: 32px; height: 32px; font-size: 16px">6</span></div></div>
+          <div style="display: flex; align-items: center; gap: 8px"><span class="jm-moment__sub" style="flex: 1; min-width: 0">Card is hers. Jonas and Sam missed.</span><button type="button" class="jm-btn jm-btn--toggle" aria-pressed="false">Named it <span class="jm-token" style="font-size: 14px">+1</span></button></div>
+          <div style="display: flex; gap: 8px; margin-top: auto"><button type="button" class="jm-btn jm-btn--lg">Keep listening</button><button type="button" class="jm-btn jm-btn--primary jm-btn--next" aria-label="Next song, starts by itself in 6 seconds"><span style="display: inline-flex; align-items: center; gap: 6px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 5l10 7-10 7z" fill="currentColor"></path><path d="M19 5v14"></path></svg>Next song</span></button></div>
+        </div>
+      </div>
+    </section></div>
+</div>
+</body>
+</html>
