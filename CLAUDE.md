@@ -49,7 +49,7 @@ npm create vite@latest frontend -- --template react-ts --no-interactive
 - `backend/src/jamster/web.py`: routes, the room WebSocket, static files.
 - `backend/src/jamster/logs.py`: logging setup. Modules log via `logging.getLogger(__name__)`; rooms via `room.log`, which prefixes the room code.
 - `backend/tests/fake_spotify.py`: stands in for Spotify and MusicBrainz in tests.
-- `frontend/src/`: `messages.ts`, `useRoom.ts`, `api.ts`, `pages/` (one per screen board), `components/` (React wrappers around the design system's `jm-` classes), `fixtures.ts` (sample data while the pages are static).
+- `frontend/src/`: `messages.ts`, `useRoom.ts` (the room socket), `api.ts`, `room.ts` (the room context and helpers every room screen uses), `types.ts`, `pages/` (one per screen board; `pages/Room.tsx` picks the screen from the room state, `pages/game/` holds the game phases), `components/` (React wrappers around the design system's `jm-` classes).
 - `frontend/src/styles/`: `tokens.css` and `jamster.css` are copies of `docs/design/system/tokens.css` and `components/bundle.css`; re-copy them when the system changes. `app.css` holds the app's own additions.
 - `docs/design/`: the design system and the screen mock-ups the frontend is built from.
 
@@ -65,6 +65,7 @@ npm create vite@latest frontend -- --template react-ts --no-interactive
 - Call MusicBrainz only through `YearResolver`, which keeps to one request per second.
 - Logging: game and room events at INFO, as one short readable sentence each (names, not ids); outside calls and refused requests at DEBUG; failures the app survives at WARNING. Don't log the same fact twice. Never log tokens or secrets.
 - Tests never touch the network, and never read `.env`: build settings with `OfflineSettings` from `tests/offline_settings.py`. Use `FakeSpotify` as the `transport` of `create_app`.
-- The frontend pages are static mock-ups for now, not wired to the API or the room socket. Their per-screen routes (`/room/:code/lobby`, `/room/:code/game/placing`, …) and `paths.ts` are a temporary scaffold: when wiring up room state, collapse them into `/room/:code` as described in `frontend/src/main.tsx`. Don't build on them.
+- Inside `/room/:code` the room state picks the screen; sub-screens (settings, speaker) and pop-ups (add player, menu, scoreboard) are component state in `pages/Room.tsx`, not routes.
+- Backend work the designed screens still need is listed under "Backend TODOs for the designed screens" in `README.md`. Check it before changing the backend or a screen's fallback, and update it when an item is done.
 - In `frontend/vite.config.ts`, keep proxy entries in object form. The string shorthand rewrites the Host header, which breaks the Spotify callback URL.
 - Check `uv.lock` and `package-lock.json` in whenever dependencies change.

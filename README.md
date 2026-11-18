@@ -5,7 +5,7 @@ A song plays, the player on turn places it on their timeline by release year, an
 The deck is built from the players' own Spotify libraries.
 
 > [!WARNING]
-> The code passes its tests against a fake Spotify, but it has never run against the real Spotify API, and the interface has never been opened in a browser.
+> The code passes its tests against a fake Spotify, and a whole game has been played in a browser against that fake, but it has never run against the real Spotify API.
 > Expect to fix things on the first real game.
 
 ## Constraints
@@ -23,15 +23,15 @@ Jamster is a private tool and cannot become a public one.
 
 ### Before the game
 
-1. Sign in with Spotify on the home page.
+1. Choose "Host with Spotify" on the home page and sign in.
    The server imports your saved tracks, the playlists you own or collaborate on, your top tracks and artists, and your recent plays.
    A large library takes a minute or two.
 2. Create a room and share its link or four-letter code.
 3. Others join with a nickname.
    Signing in with Spotify is optional and adds their library to the deck.
-4. The host can add players who have no phone and play for them through the "Acting as" menu, so one device is enough.
-5. The host chooses where the music plays: on the host's Spotify (same room) or on every player's Spotify (remote).
-6. Each player whose Spotify plays music picks a device and presses "Test playback".
+4. The host can add local players, who have no phone; the host's screen shows their buttons on their own rows, so one device is enough.
+5. The host chooses where the music plays in the game settings: on one speaker (the host's Spotify, same room) or on everyone's own Spotify (remote).
+6. Each player whose Spotify plays music picks a speaker and plays a 5-second test on the speaker screen.
 7. The host starts the game.
    The deck is chosen at once, but each song needs its release year, which MusicBrainz gives out at about one song per second.
    So the game starts as soon as the opening cards have years, preferring songs looked up in earlier games, and every later card is looked up when its round starts, which adds about a second to "Next turn" for a song new to Jamster.
@@ -45,19 +45,59 @@ Jamster is a private tool and cannot become a public one.
    Until it runs out, every other player may challenge or pass, and it ends early once everyone has decided.
 4. If nobody challenged, the card is revealed.
    Otherwise each challenger in turn, in the order they challenged, taps a free `+` where they think the card belongs and locks it in, which costs 1 token.
-   The host sees challenge and pass buttons for every player without a phone, so a hot-seat game works within the countdown.
+   The host sees challenge and pass buttons on every other player's row, so a hot-seat game works within the countdown.
 5. The card is revealed.
    A correct placement keeps the card.
    Otherwise the first challenger with a correct slot takes it, and if there is none the card is discarded.
 6. The host or the player on turn confirms whether that player named the title and artist aloud, which earns 1 token (5 at most).
 7. A second countdown, 15 seconds unless the host sets another time or turns it off in the lobby, starts the next turn by itself.
-   The host or the player on turn can start it at once with "Next turn", or stop the countdown with "Keep listening" and move on by hand.
+   The host or the player on turn can start it at once with "Next song", or stop the countdown with "Keep listening" and move on by hand.
 
-Any player can trade 3 tokens for a card.
+Any player can trade 3 tokens for a card, from the scoreboard (the player on turn only after the reveal).
 The first player to reach the target number of cards wins.
 If the deck runs out first, the player with the most cards wins.
 
 The Spotify app on the playing device shows the title, so nobody should look at it.
+
+## Backend TODOs for the designed screens
+
+The frontend follows the screens in `docs/design/screens/`, but some of what they show has no data behind it yet.
+Each item below says what the screen does meanwhile.
+Remove an item once the backend provides it and the screen uses it.
+
+- **Choosing what goes in the deck.**
+  The Account screen is designed as a picker of playlists, artists, liked and top songs.
+  The importer stores tracks as signals without their source, and curation uses all of them.
+  This needs the source of each signal (which playlist or artist), per-player exclusions in the database (a schema change, so the database file must be deleted), an API to list and toggle sources, and curation that honours the exclusions.
+  Meanwhile the Account screen shows how many songs were copied.
+- **Local players.**
+  `PlayerView.connected` is false both for a local player and for a guest who dropped out.
+  A `local` flag (the seat has no `client_id`) would tell them apart.
+  Meanwhile a seat this browser has never seen online counts as local, so a browser that arrives after a guest dropped calls that guest a local player.
+- **The opening cards on the Dealing screen.**
+  `DeckView` only counts the dealt cards.
+  The design shows each player's card as it lands, which needs the seat order shuffled before dealing (today it is shuffled after) and the dealt cards in `DeckView`, never the first card in play.
+  Meanwhile dealt cards show face down.
+- **Leaving and closing a room.**
+  There is no message to leave a lobby or to close a room.
+  A guest's "Leave room" only goes home, and their seat stays as a dropped player until the host removes it.
+  The host's "Close room" is shown as "Leave room" for the same reason; the room lives on until it has been empty for six hours.
+- **How far the song is.**
+  `PlaybackView` doesn't say when the song started, and cards carry no duration.
+  The tape counts from when this browser saw the song start (a reload starts it again at 0:00), fills over a nominal 30 seconds, and shows the elapsed time without the design's "/ 0:30".
+  This needs `elapsed_ms` in `PlaybackView`, and `duration_ms` for the total.
+- **A countdown while challengers guess.**
+  The design shows a ring on the guessing step, but only the challenge window has a timer.
+  Meanwhile there is no ring there, and a referee can use "Reveal now".
+- **When the library was copied.**
+  The Account screen's "Copied 3 days ago" needs the time of the last import, which isn't stored.
+  Meanwhile the line is left out.
+- **Spotify places left.**
+  The guest lobby's "3 of 5 Spotify spots left" needs to know how many accounts the Spotify app allows and uses.
+  Meanwhile it says the account needs the host's approval.
+- **Premium.**
+  The Account header's "Spotify Premium" can't be known: Spotify no longer reports it.
+  Meanwhile it says "Spotify".
 
 ## Setup
 
@@ -168,7 +208,7 @@ There are no frontend tests.
 | `backend/src/jamster/db.py` | The SQLite schema and every query. |
 | `backend/src/jamster/web.py` | Routes, the room WebSocket, static files. |
 | `backend/src/jamster/logs.py` | Where log records go, and from which level. |
-| `frontend/src/` | The React app: `pages/`, `components/`, `useRoom.ts`. |
+| `frontend/src/` | The React app: `pages/Room.tsx` picks a room's screen from its state, `room.ts` holds the helpers the screens share, `components/` wraps the design system. |
 
 `backend/src/jamster/messages.py` and `frontend/src/messages.ts` describe the same WebSocket messages and are kept in sync by hand.
 
