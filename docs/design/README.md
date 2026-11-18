@@ -14,6 +14,7 @@ The visual language of Jamster, and how it was found.
 - `system/tokens.json` holds every value (colours, type, spacing, radii, shadows, tilt, sizes). `system/tokens.css` is the same as CSS custom properties, generated from it: `python3 tools/tokens_to_css.py`.
 - `system/components/bundle.css` holds every component as plain CSS classes prefixed `jm-`, on top of `tokens.css`. It also imports the three Google fonts (Rubik Mono One, Bricolage Grotesque, DM Mono). There's no JavaScript; wrap the classes in React components.
 - Design size is a landscape phone, 844 × 390 CSS px. See `system/components/Header/README.md`, and build each screen like its board in `screens/`.
+- The frontend uses copies of both stylesheets, in `frontend/src/styles/` (`tokens.css`, and `jamster.css` = `bundle.css` without the font `@import`, since `index.html` loads the fonts). Re-copy them after changing the system here.
 
 ## Looking at it
 

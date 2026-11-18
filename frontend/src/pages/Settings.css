@@ -1,0 +1,54 @@
+.settings__done {
+  min-width: 96px;
+  font-size: 15px;
+}
+
+.settings {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.settings .jm-setting {
+  gap: 12px;
+}
+
+.settings .jm-setting__text {
+  gap: 1px;
+}
+
+.settings .settings__music {
+  gap: 16px;
+  padding: 4px 0 8px;
+  border-bottom: 2px solid var(--sand-line);
+}
+
+.settings__music .jm-segmented {
+  gap: 6px;
+}
+
+.settings__music .jm-btn--toggle {
+  padding: 0 14px;
+}
+
+.settings__grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 28px;
+}
+
+.settings__grid .jm-setting {
+  padding: 0;
+  border-bottom: 2px solid var(--sand-line);
+}
+
+/* The last row of each column has no rule under it. */
+.settings__grid .jm-setting:nth-last-child(-n + 2) {
+  border-bottom: 0;
+}
+
+.settings__select {
+  width: 172px;
+}

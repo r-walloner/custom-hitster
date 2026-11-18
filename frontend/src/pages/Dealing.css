@@ -1,0 +1,47 @@
+.dealing {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding-top: 2px;
+}
+
+.dealing__progress {
+  width: 520px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: center;
+}
+
+.dealing__players {
+  display: flex;
+  gap: 22px;
+  margin-top: 6px;
+}
+
+.dealing__player {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.dealing__name {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dealing__waiting {
+  width: var(--card-w);
+  height: var(--card-h);
+  box-sizing: border-box;
+  border-radius: var(--radius-card);
+  border: 2px dashed var(--slot-dash);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

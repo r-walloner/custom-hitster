@@ -1,0 +1,79 @@
+.lobby {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 196px minmax(0, 1fr) 232px;
+  gap: 14px;
+  padding-top: 2px;
+}
+
+.lobby__invite {
+  padding: 12px 14px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.lobby__invite p {
+  margin: 0;
+}
+
+.lobby__code {
+  font: 500 44px/1 var(--font-mono);
+  letter-spacing: 0.12em;
+}
+
+.lobby__invite .jm-qr {
+  align-self: center;
+  margin-top: 4px;
+}
+
+.lobby__copy {
+  margin-top: auto;
+  width: 100%;
+}
+
+.lobby__players {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.lobby__music {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 26px;
+  padding: 0 9px;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--ink);
+  background: var(--turn-tint);
+  font: 700 11px var(--font-ui);
+}
+
+.lobby__players .lobby__add {
+  margin-top: 2px;
+  align-self: flex-start;
+  border-style: dashed;
+  border-color: var(--ink-subtle);
+}
+
+.lobby__setup {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.lobby__rules {
+  padding: 4px 12px;
+}
+
+.lobby__close {
+  margin-top: auto;
+  width: 100%;
+}
+
+.lobby__rules .jm-setting {
+  gap: 10px;
+}

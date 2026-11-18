@@ -1,0 +1,45 @@
+.playback {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 310px;
+  gap: 16px;
+  padding-top: 2px;
+}
+
+.playback__devices {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.playback__devices .jm-caption {
+  margin: 2px 0 0;
+}
+
+.playback__test {
+  padding: 14px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.playback__test p {
+  margin: 0;
+}
+
+.playback__listening {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.playback__listening > div:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.playback__main {
+  margin-top: auto;
+}

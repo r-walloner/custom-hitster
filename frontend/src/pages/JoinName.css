@@ -1,0 +1,72 @@
+.join {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 270px;
+  gap: 16px;
+  padding: 6px 0 2px;
+}
+
+.join__panel {
+  padding: 16px 20px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.join__panel p {
+  margin: 0;
+}
+
+.join__panel .join__name {
+  height: 56px;
+  padding: 0 16px;
+  font-size: 24px;
+}
+
+.join__pair {
+  margin-top: auto;
+}
+
+.join__pair .jm-btn {
+  min-height: 52px;
+  font-size: 15px;
+}
+
+.join__pair .jm-btn--primary {
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.join__table {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 4px;
+}
+
+.join__table .jm-section {
+  margin-bottom: 2px;
+}
+
+.join__table .jm-player--list {
+  height: 44px;
+  gap: 10px;
+  padding: 0 10px;
+}
+
+.join__table .jm-avatar {
+  width: 28px;
+  height: 28px;
+  font-size: 12px;
+}
+
+/* Not seated yet: a dashed place at the table. */
+.join__table .join__you {
+  background: none;
+  border: 2px dashed var(--slot-dash);
+}
+
+.join__you .jm-player__name {
+  color: var(--ink-muted);
+}

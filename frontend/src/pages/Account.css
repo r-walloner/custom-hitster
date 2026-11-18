@@ -1,0 +1,113 @@
+.account {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 236px;
+  gap: 14px;
+  padding: 6px 0 2px;
+}
+
+.account__panel {
+  min-height: 0;
+  padding: 12px 14px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.account__panel p {
+  margin: 0;
+}
+
+.account__head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.account__head .jm-caption {
+  margin-left: auto;
+}
+
+.account__tools {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.account__tools .jm-btn {
+  padding: 0 12px;
+}
+
+.account__search {
+  flex: 1;
+  min-width: 0;
+}
+
+.account__list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  margin: 0 -6px;
+  padding: 0 2px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ink-subtle) var(--sand);
+}
+
+.account__panel .account__none {
+  margin: 12px 6px;
+}
+
+.account__strong {
+  color: var(--ink);
+}
+
+.account__intro {
+  max-width: 420px;
+}
+
+.account__start {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.account__import {
+  min-width: 180px;
+  font-size: 15px;
+}
+
+.account__side {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.account__host.jm-btn--xl {
+  font-size: 17px;
+}
+
+.account__join {
+  width: 100%;
+  font-size: 15px;
+}
+
+.account__data {
+  margin-top: auto;
+  padding: 12px 14px;
+  border: 2px solid var(--sand-line);
+  border-radius: var(--radius-card);
+  background: var(--label);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.account__data p {
+  margin: 0;
+}
+
+.account__data .jm-btn {
+  width: 100%;
+}

@@ -1,0 +1,104 @@
+.winner {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  gap: 20px;
+  padding-top: 4px;
+}
+
+.winner__main {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.winner__text {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 4px 0 0 4px;
+}
+
+.winner__big.jm-big-moment {
+  font-size: 34px;
+  line-height: 40px;
+}
+
+.winner__sentence {
+  margin: 0;
+  max-width: 300px;
+  font: 800 15px/21px var(--font-ui);
+  letter-spacing: -0.01em;
+}
+
+.winner__art {
+  flex: 1;
+  min-height: 0;
+}
+
+.winner__actions {
+  display: flex;
+  gap: 10px;
+}
+
+.winner__actions .winner__again {
+  flex: 0 0 200px;
+}
+
+.winner__lobby {
+  min-height: 50px;
+  padding: 0 18px;
+  font-size: 15px;
+}
+
+.winner__final {
+  padding: 12px 14px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.winner__rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.winner__row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 46px;
+  padding: 0 10px;
+  box-sizing: border-box;
+  border-radius: var(--radius-card);
+  border: 2px solid var(--sand-line);
+  background: var(--paper);
+}
+
+.winner__row--first {
+  border-color: var(--ink);
+  background: var(--turn-tint);
+  box-shadow: var(--shadow-sticker-sm);
+}
+
+.winner__place {
+  width: 16px;
+  font: 800 15px/1 var(--font-ui);
+}
+
+.winner__row .jm-player__name {
+  flex: 1;
+}
+
+.winner__cards {
+  font: 800 15px/1 var(--font-ui);
+  font-variant-numeric: tabular-nums;
+}
