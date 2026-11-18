@@ -33,7 +33,10 @@ export function importProgress(
   if (justImported) return 1
   if (!source.picked || !source.copying) return null
   // The importer reports "Copying Liked songs: 9 of 25 requests". Without it, the import waits
-  // for another player's.
+  // for another player's. Right after one source finishes, the next is already marked as
+  // copying while the line still reports the last one's "3 of 3", so only trust a line that
+  // names this source.
+  if (!library.detail.startsWith(`Copying ${source.name}: `)) return 0
   const step = /(\d+) of (\d+) requests$/.exec(library.detail)
   return step ? Math.min(1, Number(step[1]) / Math.max(1, Number(step[2]))) : 0
 }
