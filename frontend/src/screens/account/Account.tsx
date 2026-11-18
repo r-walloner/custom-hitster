@@ -55,7 +55,7 @@ export default function Account() {
         <Avatar player={{ name: spotify.name, color: 1 }} size="lg" />
         <HeaderMeta>
           <b>{spotify.name}</b>
-          <span>Spotify</span>
+          <span>via Spotify</span>
         </HeaderMeta>
         <Button onClick={signOut}>
           <Icon name="signOut" />

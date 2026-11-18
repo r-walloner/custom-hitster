@@ -92,9 +92,6 @@ Remove an item once the backend provides it and the screen uses it.
 - **When the library was copied.**
   The Account screen's "Copied 3 days ago" needs the time of the last import, which isn't stored.
   Meanwhile the line is left out.
-- **Premium.**
-  The Account header's "Spotify Premium" can't be known: Spotify no longer reports it.
-  Meanwhile it says "Spotify".
 
 ## Setup
 
