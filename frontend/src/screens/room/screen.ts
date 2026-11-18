@@ -2,13 +2,12 @@ import type { StateMessage } from '../../api/messages.ts'
 import type { DialogName, Subscreen } from './context.ts'
 
 /** The room's main screens, one of which is always showing. */
-export type ScreenKind = 'join' | 'lobby' | 'guest' | 'dealing' | 'game' | 'winner'
+export type ScreenKind = 'join' | 'lobby' | 'dealing' | 'game' | 'winner'
 
 // The sub-screens and pop-ups each screen can open.
 const VIEWS: Record<ScreenKind, (Subscreen | DialogName)[]> = {
   join: [],
   lobby: ['settings', 'playback', 'library', 'addPlayer', 'rename'],
-  guest: ['playback', 'library', 'rename'],
   dealing: [],
   game: ['playback', 'menu', 'scoreboard'],
   winner: [],
@@ -21,7 +20,7 @@ export function pickScreen(state: StateMessage): ScreenKind {
   if (game) return 'game'
   if (deck.status === 'dealing') return 'dealing'
   if (!state.you.player_id) return 'join'
-  return state.you.is_host ? 'lobby' : 'guest'
+  return 'lobby'
 }
 
 /**

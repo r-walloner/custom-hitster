@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Button } from '../../components/Button.tsx'
+import { loginUrl } from '../../api/http.ts'
+import { Button, Status } from '../../components/Button.tsx'
 import { Icon } from '../../components/Icon.tsx'
 import { ImportProgress } from '../../components/ImportProgress.tsx'
 import { QrTile } from '../../components/Input.tsx'
@@ -7,22 +8,32 @@ import { Logo } from '../../components/Logo.tsx'
 import { PlayerRow, SettingRow } from '../../components/Rows.tsx'
 import { Header, RoomMeta, Screen, Spacer } from '../../components/Screen.tsx'
 import { ScrollArea } from '../../components/ScrollArea.tsx'
-import { names, plural } from '../../words.ts'
+import { plural } from '../../words.ts'
 import { useImport } from '../library/useImport.ts'
 import { useRoomTools } from '../room/context.ts'
 import { playerStatus, songCount } from './status.ts'
 import './Lobby.css'
 
-/** The host's lobby: getting people in, who's in, and setup with Start game. */
+/**
+ * The lobby: getting people in, who's in, and setup. The host changes the setup and starts the
+ * game; a guest sees the same screen, views the rules and waits for the host.
+ */
 export default function Lobby() {
   const { room, you, host, player, isLocal, send, open, toast } = useRoomTools()
   const { settings, deck } = room
+  const isHost = you.is_host
   const remote = settings.mode === 'remote'
   const link = `${location.origin}/room/${room.code}`
   const mine = room.players.find((seat) => seat.id === you.player_id)
-  const silent = remote ? room.players.filter((seat) => !seat.spotify) : []
+  const hostName = host?.name ?? 'The host'
   const [closing, setClosing] = useState(false)
   const { progress } = useImport(you.spotify, mine?.library?.status)
+
+  // Where this player hears it: their own speaker, or with one speaker the host's.
+  const speaker =
+    remote || isHost
+      ? (mine?.device ?? 'Your active Spotify device')
+      : (host?.device ?? `${hostName}'s active Spotify device`)
 
   // The clipboard API only exists on HTTPS and on 127.0.0.1.
   const copy = () =>
@@ -37,16 +48,10 @@ export default function Lobby() {
         <Logo />
         <Spacer />
         <RoomMeta
-          host={host?.name ?? 'Your'}
+          host={host?.name ?? (isHost ? 'Your' : 'The host')}
           players={room.players.length}
           toWin={settings.cards_to_win}
         />
-        <Button
-          className="app-btn--danger"
-          onClick={() => (closing ? send({ type: 'close_room' }) : setClosing(true))}
-        >
-          {closing ? 'Tap again to close it for everyone' : 'Close room'}
-        </Button>
       </Header>
       <div className="lobby">
         <section className="jm-panel lobby__invite" aria-labelledby="code-label">
@@ -64,7 +69,10 @@ export default function Lobby() {
           )}
         </section>
 
-        <section className="lobby__players app-scroll" aria-labelledby="players-head">
+        <section
+          className="lobby__players app-scroll"
+          aria-labelledby="players-head"
+        >
           <h1 id="players-head" className="jm-section">
             Players
           </h1>
@@ -84,61 +92,54 @@ export default function Lobby() {
                     Music
                   </span>
                 )}
-                {(seat.id === you.player_id || local) && (
-                  <Button
-                    variant="bare"
-                    size="icon"
-                    className="lobby__rename"
-                    aria-label={seat.id === you.player_id ? 'Change your name' : `Rename ${seat.name}`}
-                    onClick={() => open('rename', seat.id)}
-                  >
-                    <Icon name="edit" />
-                  </Button>
-                )}
-                {!seat.is_host && (
-                  <Button
-                    variant="bare"
-                    size="icon"
-                    aria-label={`Remove ${seat.name}`}
-                    onClick={() => send({ type: 'remove_player', player_id: seat.id })}
-                  >
-                    <Icon name="close" />
-                  </Button>
-                )}
+                {/* Rename your own seat; the host removes the others. A local player with the
+                    wrong name is removed and added again. */}
+                <span className="lobby__action">
+                  {seat.id === you.player_id ? (
+                    <Button
+                      variant="bare"
+                      size="icon"
+                      aria-label="Change your name"
+                      onClick={() => open('rename', seat.id)}
+                    >
+                      <Icon name="edit" />
+                    </Button>
+                  ) : (
+                    isHost && (
+                      <Button
+                        variant="bare"
+                        size="icon"
+                        aria-label={`Remove ${seat.name}`}
+                        onClick={() => send({ type: 'remove_player', player_id: seat.id })}
+                      >
+                        <Icon name="close" />
+                      </Button>
+                    )
+                  )}
+                </span>
               </PlayerRow>
             )
           })}
-          <Button onClick={() => open('addPlayer')} className="lobby__add">
-            <Icon name="plus" />
-            Add local player
-          </Button>
+          {isHost && (
+            <Button onClick={() => open('addPlayer')} className="lobby__add">
+              <Icon name="plus" />
+              Add local player
+            </Button>
+          )}
         </section>
 
         <aside className="lobby__setup">
           <section className="jm-panel lobby__rules" aria-label="Game setup">
-            {/* Long captions (remote play, several players without Spotify) can outgrow the
-                screen; then the rows scroll and Start game stays put. */}
+            {/* On a short screen the rows scroll and the buttons below stay put. */}
             <ScrollArea className="lobby__rules-rows">
               <SettingRow
                 label="Music plays on"
-                value={remote ? 'Separate speakers' : (mine?.device ?? 'Your active Spotify device')}
-                caption={
-                  silent.length > 0
-                    ? `Without Spotify, ${names(silent.map((seat) => seat.name))} won't hear it.`
-                    : remote
-                      ? `Yours: ${mine?.device ?? 'your active device'}`
-                      : undefined
-                }
+                value={speaker}
               >
-                <Button onClick={() => open('playback')}>Change</Button>
+                {/* The speaker screen lists your own Spotify devices, so it needs Spotify. */}
+                {you.spotify && <Button onClick={() => open('playback')}>Change</Button>}
               </SettingRow>
-              <SettingRow
-                label="Rules"
-                value={`First to ${plural(settings.cards_to_win, 'card')}`}
-              >
-                <Button onClick={() => open('settings')}>Change</Button>
-              </SettingRow>
-              {you.spotify && (
+              {you.spotify ? (
                 <SettingRow
                   label="Your songs"
                   value={
@@ -151,23 +152,55 @@ export default function Lobby() {
                 >
                   <Button onClick={() => open('library')}>Change</Button>
                 </SettingRow>
+              ) : (
+                <SettingRow
+                  label="Your songs"
+                  value="Not signed in"
+                >
+                  <Button href={loginUrl(`/room/${room.code}`)}>Sign in</Button>
+                </SettingRow>
               )}
+              <SettingRow
+                label="Rules"
+                value={`First to ${plural(settings.cards_to_win, 'card')}`}
+              >
+                <Button onClick={() => open('settings')}>{isHost ? 'Change' : 'View'}</Button>
+              </SettingRow>
             </ScrollArea>
           </section>
-          {deck.status === 'error' && (
+          {isHost && deck.status === 'error' && (
             <p className="jm-caption" role="alert">
               {deck.error ?? 'Starting the game failed.'} Try again, or change the setup.
             </p>
           )}
-          <Button
-            variant="primary"
-            size="xl"
-            className="lobby__start"
-            disabled={deck.status === 'dealing'}
-            onClick={() => send({ type: 'start_game' })}
-          >
-            Start game
-          </Button>
+          {isHost ? (
+            <>
+              <Button
+                className="app-btn--danger lobby__leave"
+                onClick={() => (closing ? send({ type: 'close_room' }) : setClosing(true))}
+              >
+                {closing ? 'Tap again to close it for everyone' : 'Close room'}
+              </Button>
+              <Button
+                variant="primary"
+                size="xl"
+                disabled={deck.status === 'dealing'}
+                onClick={() => send({ type: 'start_game' })}
+              >
+                Start game
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button className="lobby__leave" onClick={() => send({ type: 'leave_room' })}>
+                Leave room
+              </Button>
+              <div className="lobby__wait" role="status">
+                <Status>Waiting for {hostName}</Status>
+                <span className="jm-caption">{hostName} starts the game when everyone's ready.</span>
+              </div>
+            </>
+          )}
         </aside>
       </div>
     </Screen>

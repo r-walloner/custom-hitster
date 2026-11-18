@@ -12,7 +12,6 @@ import Game from '../game/Game.tsx'
 import GameMenu from '../game/GameMenu.tsx'
 import Standings from '../game/Standings.tsx'
 import AddPlayer from '../lobby/AddPlayer.tsx'
-import GuestLobby from '../lobby/GuestLobby.tsx'
 import JoinName from '../lobby/JoinName.tsx'
 import Library from '../library/Library.tsx'
 import Lobby from '../lobby/Lobby.tsx'
@@ -46,7 +45,6 @@ export default function Room() {
 const SCREENS: Record<ScreenKind, () => ReactNode> = {
   join: () => <JoinName />,
   lobby: () => <Lobby />,
-  guest: () => <GuestLobby />,
   dealing: () => <Dealing />,
   game: () => <Game />,
   winner: () => <Winner />,

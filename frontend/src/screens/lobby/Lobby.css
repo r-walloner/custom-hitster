@@ -52,9 +52,10 @@
   font: 700 11px var(--font-ui);
 }
 
-/* Rename beside Remove: the two 44px targets overlap a little, so the icons sit as a pair. */
-.jm-player .lobby__rename:not(:last-child) {
-  margin-right: -12px;
+/* Rename or Remove. Every row keeps the slot, empty or not, so the Music badges line up. */
+.lobby__action {
+  flex: 0 0 44px;
+  display: flex;
 }
 
 .lobby__players .lobby__add {
@@ -86,11 +87,32 @@
   padding-right: 6px;
 }
 
-.lobby__start {
+/* Close room or Leave room, then Start game or the wait for the host, at the bottom. */
+.lobby__leave {
   margin-top: auto;
+  width: 100%;
+}
+
+.lobby__wait {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: center;
+}
+
+/* As tall as Start game, so the column looks the same for host and guests. */
+.lobby__wait .jm-status {
+  justify-content: center;
+  height: 56px;
+  font-size: 15px;
 }
 
 .lobby__rules .jm-setting {
   gap: 10px;
   padding: 6px 0;
+}
+
+/* Change, View and Sign in take one width, so the buttons form a column. */
+.lobby__rules .jm-setting > .jm-btn {
+  min-width: 80px;
 }

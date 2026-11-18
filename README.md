@@ -32,7 +32,7 @@ Jamster is a private tool and cannot become a public one.
 2. Create a room and share its link or four-letter code.
 3. Others join with a nickname.
    Signing in with Spotify is optional and adds their library to the deck.
-   Anyone can change their name in the lobby, and the host can rename local players.
+   Anyone can change their own name in the lobby; a local player with the wrong name is removed and added again.
    A signed-in player's name is saved with their account, so it comes back in the next room; the Account pop-up on the home page can change it too.
 4. The host can add local players, who have no phone; the host's screen shows their buttons on their own rows, so one device is enough.
 5. The host picks the playback mode on the speaker screen (Music plays on, in the lobby): one speaker (the host's Spotify, same room) or separate speakers (everyone's own Spotify, remote).
