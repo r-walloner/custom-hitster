@@ -155,9 +155,15 @@ export function TapePlayer({ progress, time, year, playing, onRestart }: TapePla
       />
       <div className="jm-tape__foot">
         <span className="jm-time">{time}</span>
-        <Button size="icon-sm" aria-label="Restart the song from the beginning" onClick={onRestart}>
-          <Icon name="restart" />
-        </Button>
+        {onRestart && (
+          <Button
+            size="icon-sm"
+            aria-label="Restart the song from the beginning"
+            onClick={onRestart}
+          >
+            <Icon name="restart" />
+          </Button>
+        )}
       </div>
     </div>
   )

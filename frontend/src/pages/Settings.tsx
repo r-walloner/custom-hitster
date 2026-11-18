@@ -1,30 +1,41 @@
-import { useState } from 'react'
 import { Button } from '../components/Button.tsx'
 import { ControlRow } from '../components/Rows.tsx'
 import { Screen } from '../components/Screen.tsx'
 import { Segmented, Stepper } from '../components/Stepper.tsx'
-import { useRoomPaths } from '../paths.ts'
+import type { RoomSettings } from '../messages.ts'
+import { fmt, useRoomTools } from '../room.ts'
 import { SubHeader } from './SubHeader.tsx'
 import './Settings.css'
 
-const MUSIC = ['One speaker', "Everyone's Spotify"] as const
-const CHALLENGE = ['10 s', '15 s', '20 s', '30 s'] as const
-const NEXT = ['5 s', '10 s', '20 s', 'Tap'] as const
+// The choices offered, as label → value. The limits follow messages.py (RoomSettings).
+const MUSIC = { 'One speaker': 'local', "Everyone's Spotify": 'remote' } as const
+const CHALLENGE = { '5 s': 5, '10 s': 10, '15 s': 15, '20 s': 20 } as const
+const NEXT = { '5 s': 5, '10 s': 10, '15 s': 15, Tap: 0 } as const
 
-/** Game settings: one line each, steppers and toggles, plain numbers. */
+// What each deck strategy (curation.STRATEGIES) is called here; unknown ones show their key.
+const STRATEGY_NAMES: Record<string, string> = {
+  majority: 'Songs most know',
+}
+
+/** The label of `value` among `options`, or none when the value isn't offered. */
+function labelOf<T extends string, V>(options: Record<T, V>, value: V): T {
+  const labels = Object.keys(options) as T[]
+  return labels.find((label) => options[label] === value) ?? ('' as T)
+}
+
+/** Game settings: one line each, steppers and toggles, plain numbers. Only the host gets here. */
 export default function Settings() {
-  const paths = useRoomPaths()
-  const [music, setMusic] = useState<(typeof MUSIC)[number]>('One speaker')
-  const [toWin, setToWin] = useState(10)
-  const [tokens, setTokens] = useState(2)
-  const [deck, setDeck] = useState(120)
-  const [challenge, setChallenge] = useState<(typeof CHALLENGE)[number]>('20 s')
-  const [next, setNext] = useState<(typeof NEXT)[number]>('10 s')
+  const { room, send, close } = useRoomTools()
+  const { settings } = room
+  const change = (patch: Partial<RoomSettings>) =>
+    send({ type: 'set_settings', settings: { ...settings, ...patch } })
+  const libraries = room.players.filter((seat) => seat.library?.status === 'done')
+  const songs = libraries.reduce((sum, seat) => sum + (seat.library?.tracks ?? 0), 0)
 
   return (
     <Screen>
-      <SubHeader back={paths.lobby} title="Game settings">
-        <Button to={paths.lobby} variant="primary" className="settings__done">
+      <SubHeader onBack={close} backLabel="Back to the lobby" title="Game settings">
+        <Button onClick={close} variant="primary" className="settings__done">
           Done
         </Button>
       </SubHeader>
@@ -35,14 +46,19 @@ export default function Settings() {
           caption="One speaker for a room together. Everyone's own Spotify for a call: each phone plays the song at the same moment."
           className="settings__music"
         >
-          <Segmented labelledBy="s-music" options={MUSIC} value={music} onChange={setMusic} />
+          <Segmented
+            labelledBy="s-music"
+            options={Object.keys(MUSIC) as (keyof typeof MUSIC)[]}
+            value={labelOf(MUSIC, settings.mode)}
+            onChange={(label) => change({ mode: MUSIC[label] })}
+          />
         </ControlRow>
         <div className="settings__grid">
           <ControlRow name="Cards to win" nameId="s-win" caption="First to this many wins.">
             <Stepper
               labelledBy="s-win"
-              value={toWin}
-              onChange={setToWin}
+              value={settings.cards_to_win}
+              onChange={(value) => change({ cards_to_win: value })}
               min={3}
               max={20}
               lessLabel="Fewer cards"
@@ -56,9 +72,9 @@ export default function Settings() {
           >
             <Stepper
               labelledBy="s-tokens"
-              value={tokens}
-              onChange={setTokens}
-              max={9}
+              value={settings.starting_tokens}
+              onChange={(value) => change({ starting_tokens: value })}
+              max={5}
               lessLabel="Fewer tokens"
               moreLabel="More tokens"
             />
@@ -66,15 +82,19 @@ export default function Settings() {
           <ControlRow
             name="Deck size"
             nameId="s-deck"
-            caption="Picked from 3,402 songs in 2 libraries."
+            caption={
+              libraries.length > 0
+                ? `Picked from ${fmt(songs)} songs in ${libraries.length} ${libraries.length === 1 ? 'library' : 'libraries'}.`
+                : 'No library is imported yet.'
+            }
           >
             <Stepper
               labelledBy="s-deck"
-              value={deck}
-              onChange={setDeck}
+              value={settings.deck_size}
+              onChange={(value) => change({ deck_size: value })}
               step={10}
-              min={40}
-              max={400}
+              min={20}
+              max={300}
               lessLabel="Smaller deck"
               moreLabel="Bigger deck"
             />
@@ -85,9 +105,17 @@ export default function Settings() {
             labelFor="s-strategy"
             caption="How songs are picked from each library."
           >
-            <select id="s-strategy" className="jm-select settings__select">
-              <option>Even mix of libraries</option>
-              <option>Spread across decades</option>
+            <select
+              id="s-strategy"
+              className="jm-select settings__select"
+              value={settings.strategy}
+              onChange={(event) => change({ strategy: event.target.value })}
+            >
+              {room.strategies.map((strategy) => (
+                <option key={strategy} value={strategy}>
+                  {STRATEGY_NAMES[strategy] ?? strategy}
+                </option>
+              ))}
             </select>
           </ControlRow>
           <ControlRow
@@ -97,17 +125,22 @@ export default function Settings() {
           >
             <Segmented
               labelledBy="s-challenge"
-              options={CHALLENGE}
-              value={challenge}
-              onChange={setChallenge}
+              options={Object.keys(CHALLENGE) as (keyof typeof CHALLENGE)[]}
+              value={labelOf(CHALLENGE, settings.challenge_seconds)}
+              onChange={(label) => change({ challenge_seconds: CHALLENGE[label] })}
             />
           </ControlRow>
           <ControlRow
             name="Next song starts"
             nameId="s-next"
-            caption="After the reveal. Anyone can keep listening."
+            caption="After the reveal. Tap: only when someone taps Next song."
           >
-            <Segmented labelledBy="s-next" options={NEXT} value={next} onChange={setNext} />
+            <Segmented
+              labelledBy="s-next"
+              options={Object.keys(NEXT) as (keyof typeof NEXT)[]}
+              value={labelOf(NEXT, settings.next_turn_seconds)}
+              onChange={(label) => change({ next_turn_seconds: NEXT[label] })}
+            />
           </ControlRow>
         </div>
       </div>

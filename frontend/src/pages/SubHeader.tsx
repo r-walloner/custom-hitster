@@ -5,17 +5,20 @@ import { Header, Spacer } from '../components/Screen.tsx'
 
 /** A sub-screen's header: a back arrow instead of the logo, the screen's name, its action on the right. */
 export function SubHeader({
-  back,
+  onBack,
+  backLabel,
   title,
   children,
 }: {
-  back: string
+  onBack: () => void
+  /** "Back to the lobby", "Back to the game". */
+  backLabel: string
   title: string
   children?: ReactNode
 }) {
   return (
     <Header>
-      <Button to={back} size="icon" aria-label="Back to the lobby">
+      <Button onClick={onBack} size="icon" aria-label={backLabel}>
         <Icon name="back" />
       </Button>
       <h1 className="jm-headline">{title}</h1>

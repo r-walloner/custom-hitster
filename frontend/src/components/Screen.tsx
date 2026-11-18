@@ -37,21 +37,23 @@ export function HeaderMeta({ children }: { children: ReactNode }) {
 export function RoomMeta({
   host,
   players,
+  toWin,
   last,
 }: {
   host: string
   players: number
+  toWin: number
   last?: ReactNode
 }) {
   return (
     <HeaderMeta>
       <span>{host}'s room</span>
       <span>
-        <b>{players}</b> players
+        <b>{players}</b> {players === 1 ? 'player' : 'players'}
       </span>
       {last ?? (
         <span>
-          First to <b>10</b>
+          First to <b>{toWin}</b>
         </span>
       )}
     </HeaderMeta>

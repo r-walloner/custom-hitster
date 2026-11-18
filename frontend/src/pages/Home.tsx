@@ -4,7 +4,6 @@ import { useNavigate, useSearchParams } from 'react-router'
 import { Button } from '../components/Button.tsx'
 import { Icon } from '../components/Icon.tsx'
 import { CodeInput } from '../components/Input.tsx'
-import { ROOM_CODE } from '../fixtures.ts'
 import { HomeCover } from './HomeCover.tsx'
 import { SignInError } from './SignInError.tsx'
 
@@ -20,9 +19,11 @@ function JoinOrHost() {
   const navigate = useNavigate()
   const [code, setCode] = useState('')
 
+  const letters = code.trim().toUpperCase()
+
   const join = (event: FormEvent) => {
     event.preventDefault()
-    navigate(`/room/${(code.trim() || ROOM_CODE).toUpperCase()}`)
+    if (letters.length === 4) navigate(`/room/${letters}`)
   }
 
   return (
@@ -36,9 +37,9 @@ function JoinOrHost() {
             id="room-code"
             value={code}
             onChange={(event) => setCode(event.target.value)}
-            placeholder={ROOM_CODE}
+            placeholder="ABCD"
           />
-          <Button type="submit" variant="primary">
+          <Button type="submit" variant="primary" disabled={letters.length !== 4}>
             Join
           </Button>
         </div>

@@ -45,3 +45,15 @@
   align-items: center;
   justify-content: center;
 }
+
+/* More players than fit in a row: they wrap, and the cards shrink a little. */
+.dealing__players {
+  flex-wrap: wrap;
+  justify-content: center;
+  row-gap: 8px;
+}
+
+.dealing__players:has(> :nth-child(6)) .jm-card,
+.dealing__players:has(> :nth-child(6)) .dealing__waiting {
+  zoom: 0.6;
+}

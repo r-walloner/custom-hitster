@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react'
-import type { Song } from '../fixtures.ts'
+import type { Song } from '../types.ts'
 import { Icon } from './Icon.tsx'
 
 interface SongCardProps {
@@ -97,16 +97,19 @@ export function Gap({
 
 interface MarkProps {
   right: boolean
+  /** On the card's left edge: a guess for the gap before the first card. */
+  before?: boolean
   initial: string
   /** In words: "Jonas guessed between 1975 and 1994: wrong". */
   label: string
 }
 
 /** ✓ or ✕ with an initial, on a card after the reveal. Never colour alone. */
-export function Mark({ right, initial, label }: MarkProps) {
+export function Mark({ right, before, initial, label }: MarkProps) {
+  const classes = ['jm-mark', right ? 'jm-mark--right' : 'jm-mark--wrong', before && 'app-mark--before']
   return (
     <span
-      className={right ? 'jm-mark jm-mark--right' : 'jm-mark jm-mark--wrong'}
+      className={classes.filter(Boolean).join(' ')}
       role="img"
       aria-label={label}
     >

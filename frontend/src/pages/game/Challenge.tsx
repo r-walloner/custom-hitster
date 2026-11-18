@@ -1,61 +1,98 @@
-import { Ring } from '../../components/Avatar.tsx'
 import { Board } from '../../components/Board.tsx'
-import type { BoardItem } from '../../components/boardItems.ts'
+import { pickingItems, slotRangeShort } from '../../components/boardItems.ts'
 import { Button, Status } from '../../components/Button.tsx'
+import { Countdown } from '../../components/Countdown.tsx'
 import { Icon } from '../../components/Icon.tsx'
 import { MomentHead, MomentPanel, PlayerCell } from '../../components/MomentPanel.tsx'
-import { JONAS, LEA, MARA, MARA_CARDS, SAM, TOBI } from '../../fixtures.ts'
-import type { Player } from '../../fixtures.ts'
-import { useRoomPaths } from '../../paths.ts'
+import { useRoomTools } from '../../room.ts'
 import { GameScreen } from './GameScreen.tsx'
+import type { Turn } from './turn.ts'
 
-/** 2 · Challenge: everyone else gets a few seconds to say Mara is wrong. */
-export default function Challenge() {
-  const paths = useRoomPaths()
-  const items: BoardItem[] = [
-    { kind: 'card', song: MARA_CARDS[0] },
-    { kind: 'card', song: MARA_CARDS[1] },
-    { kind: 'pick', name: MARA.name },
-    { kind: 'card', song: MARA_CARDS[2] },
-    { kind: 'card', song: MARA_CARDS[3] },
-  ]
+/** 2 · Challenge: everyone else gets a few seconds to say the player on turn is wrong. */
+export default function Challenge({ turn }: { turn: Turn }) {
+  const { room, name, player, canActFor, as, send } = useRoomTools()
+  const { game, cards } = turn
+  const who = name(game.active)
+  const slot = game.slot ?? 0
+  const items = pickingItems(cards, [{ name: who, slot }])
 
-  const deciding = (player: Player) => (
-    <PlayerCell player={player}>
-      <Button to={paths.guess} variant="primary">
-        Challenge
-      </Button>
-      <Button size="icon" aria-label={`Pass for ${player.name}`}>
-        <Icon name="pass" />
-      </Button>
-    </PlayerCell>
-  )
+  const cell = (id: string, tokens: number) => {
+    if (game.challenges.some((challenge) => challenge.player_id === id)) {
+      return (
+        <PlayerCell key={id} player={player(id)}>
+          <Status>Challenged</Status>
+        </PlayerCell>
+      )
+    }
+    if (game.passed.includes(id)) {
+      return (
+        <PlayerCell key={id} player={player(id)}>
+          <Status quiet>Passed</Status>
+        </PlayerCell>
+      )
+    }
+    if (!canActFor(id)) {
+      return (
+        <PlayerCell key={id} player={player(id)}>
+          <Status quiet>Deciding…</Status>
+        </PlayerCell>
+      )
+    }
+    return (
+      <PlayerCell key={id} player={player(id)}>
+        <Button
+          variant="primary"
+          disabled={tokens < 1}
+          title={tokens < 1 ? 'A challenge costs 1 token' : undefined}
+          onClick={() => send({ type: 'buzz', ...as(id) })}
+        >
+          Challenge
+        </Button>
+        <Button
+          size="icon"
+          aria-label={`Pass for ${name(id)}`}
+          onClick={() => send({ type: 'pass', ...as(id) })}
+        >
+          <Icon name="pass" />
+        </Button>
+      </PlayerCell>
+    )
+  }
 
   return (
     <GameScreen
-      phase="challenge"
-      revealNow
-      tape={{ progress: 0.47, time: '0:14 / 0:30' }}
+      turn={turn}
       panel={
         <MomentPanel label="Challenge">
           <MomentHead
             label="Challenge"
-            headline="Mara says 1994 to 2008. Is that right?"
-            ring={<Ring percent={60} seconds={6} label="6 seconds left" />}
+            headline={`${who} says ${slotRangeShort(cards, slot)}. Is that right?`}
+            ring={
+              game.window_left_ms !== null && (
+                <Countdown
+                  key={game.window_left_ms}
+                  ms={game.window_left_ms}
+                  total={room.settings.challenge_seconds * 1000}
+                  label={(seconds) => `${seconds} seconds left to challenge`}
+                />
+              )
+            }
           />
-          <div className="jm-players">
-            <PlayerCell player={JONAS}>
-              <Status>Challenged</Status>
-            </PlayerCell>
-            {deciding(LEA)}
-            <PlayerCell player={TOBI}>
-              <Status quiet>Passed</Status>
-            </PlayerCell>
-            {deciding(SAM)}
+          <div className="jm-players app-scroll">
+            {game.players
+              .filter((p) => p.id !== game.active)
+              .map((p) => cell(p.id, p.tokens))}
           </div>
         </MomentPanel>
       }
-      board={<Board owner={MARA.name} count="4 of 10" items={items} spaced />}
+      board={
+        <Board
+          owner={who}
+          count={`${cards.length} of ${room.settings.cards_to_win}`}
+          items={items}
+          spaced
+        />
+      }
     />
   )
 }

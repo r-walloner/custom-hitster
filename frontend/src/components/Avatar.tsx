@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react'
-import type { Player } from '../fixtures.ts'
+import type { Player } from '../types.ts'
 
 const SIZES = { sm: 'jm-avatar--sm', md: '', lg: 'app-avatar--lg', xl: 'app-avatar--xl' }
 

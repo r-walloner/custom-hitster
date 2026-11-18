@@ -1,37 +1,33 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
-import { useNavigate } from 'react-router'
-import { Button, ButtonPair, RoomCode } from '../components/Button.tsx'
+import { Button, ButtonPair } from '../components/Button.tsx'
 import { TextInput } from '../components/Input.tsx'
-import { Logo } from '../components/Logo.tsx'
 import { PlayerRow } from '../components/Rows.tsx'
-import { Header, RoomMeta, Screen, Spacer } from '../components/Screen.tsx'
-import { JONAS, LEA, MARA, SAM } from '../fixtures.ts'
-import { useRoomPaths } from '../paths.ts'
+import { Screen } from '../components/Screen.tsx'
+import { useRoomTools } from '../room.ts'
+import type { Player } from '../types.ts'
+import { RoomHeader } from './RoomHeader.tsx'
 import './JoinName.css'
+
+const MAX_NAME = 16
 
 /** Joining asks for a name only, with the people already at the table beside it. */
 export default function JoinName() {
-  const paths = useRoomPaths()
-  const navigate = useNavigate()
-  const [name, setName] = useState('Jonas')
+  const { me, room, send, player } = useRoomTools()
+  const [name, setName] = useState((me.spotify?.name ?? '').slice(0, MAX_NAME))
+  const shown = name.trim()
 
   const sit = (event: FormEvent) => {
     event.preventDefault()
-    navigate(paths.guestLobby)
+    if (shown) send({ type: 'join', name: shown })
   }
 
   return (
     <Screen>
-      <Header>
-        <Logo />
-        <RoomCode code={paths.code} />
-        <Spacer />
-        <RoomMeta host="Mara" players={3} />
-      </Header>
+      <RoomHeader />
       <div className="join">
         <form className="jm-panel join__panel" onSubmit={sit}>
-          <span className="jm-label">Joining room {paths.code}</span>
+          <span className="jm-label">Joining room {room.code}</span>
           <label htmlFor="player-name" className="jm-moment__headline">
             What should we call you?
           </label>
@@ -40,26 +36,33 @@ export default function JoinName() {
             className="join__name"
             value={name}
             onChange={(event) => setName(event.target.value)}
-            maxLength={16}
+            maxLength={MAX_NAME}
             autoComplete="nickname"
+            autoFocus
           />
           <p className="jm-caption">
-            No account needed. You can add your Spotify library once you're in.
+            {me.spotify
+              ? 'Your Spotify library goes into the deck.'
+              : "No account needed. You can add your Spotify library once you're in."}
           </p>
           <ButtonPair className="join__pair">
             <Button to="/">Back</Button>
-            <Button type="submit" variant="primary" disabled={!name.trim()}>
+            <Button type="submit" variant="primary" disabled={!shown}>
               Take a seat
             </Button>
           </ButtonPair>
         </form>
-        <aside className="join__table">
+        <aside className="join__table app-scroll">
           <h2 className="jm-section">Already at the table</h2>
-          <PlayerRow player={MARA} status="Host" />
-          <PlayerRow player={SAM} />
-          <PlayerRow player={LEA} />
+          {room.players.map((seat) => (
+            <PlayerRow
+              key={seat.id}
+              player={player(seat.id)}
+              status={seat.is_host ? 'Host' : undefined}
+            />
+          ))}
           <PlayerRow
-            player={{ ...JONAS, name: name.trim() || JONAS.name }}
+            player={{ id: 'you', name: shown || '?', color: ((room.players.length % 5) + 1) as Player['color'] }}
             status="That's you"
             className="join__you"
           />

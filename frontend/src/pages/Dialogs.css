@@ -60,7 +60,7 @@
 
 .standings__grid {
   display: grid;
-  grid-template-columns: 120px 150px 44px minmax(0, 1fr);
+  grid-template-columns: 120px 150px 44px minmax(0, 1fr) auto;
   gap: 12px;
   align-items: center;
 }

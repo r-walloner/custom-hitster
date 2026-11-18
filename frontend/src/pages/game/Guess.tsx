@@ -1,70 +1,94 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router'
-import { Ring } from '../../components/Avatar.tsx'
 import { Board } from '../../components/Board.tsx'
 import { pickingItems, slotRangeShort } from '../../components/boardItems.ts'
+import type { Pick } from '../../components/boardItems.ts'
 import { Button, Status } from '../../components/Button.tsx'
 import { MomentHead, MomentPanel, PlayerCell } from '../../components/MomentPanel.tsx'
-import { JONAS, MARA, MARA_CARDS, SAM } from '../../fixtures.ts'
-import { useRoomPaths } from '../../paths.ts'
+import { useRoomTools } from '../../room.ts'
 import { GameScreen } from './GameScreen.tsx'
+import type { Turn } from './turn.ts'
 
 /** 3 · Challengers guess, in the order they challenged. Guesses are visible, not secret. */
-export default function Guess() {
-  const paths = useRoomPaths()
-  const navigate = useNavigate()
-  const [slot, setSlot] = useState(3)
-  const items = pickingItems(
-    MARA_CARDS,
-    [
-      { name: JONAS.name, slot: 1, done: true },
-      { name: MARA.name, slot: 2, done: true },
-    ],
-    {
-      name: SAM.name,
-      slot,
-      onPick: setSlot,
-      gapLabel: (i) => `Sam's guess: ${slotRangeShort(MARA_CARDS, i)}`,
-    },
-  )
+export default function Guess({ turn }: { turn: Turn }) {
+  const { room, name, player, canActFor, as, send } = useRoomTools()
+  const { game, cards, picker } = turn
+  const who = name(game.active)
+  const guesser = picker ? name(picker.player_id) : '?'
+  const acting = picker !== undefined && canActFor(picker.player_id)
+  const tokens = game.players.find((p) => p.id === picker?.player_id)?.tokens ?? 0
+
+  // The placement and the locked guesses are done; the one guessing now moves.
+  const picks: Pick[] = [
+    ...(game.slot === null ? [] : [{ name: who, slot: game.slot, done: true }]),
+    ...game.challenges
+      .filter((challenge) => challenge.locked && challenge.slot !== null)
+      .map((challenge) => ({ name: name(challenge.player_id), slot: challenge.slot!, done: true })),
+  ]
+  const items =
+    acting && picker
+      ? pickingItems(cards, picks, {
+          name: guesser,
+          slot: picker.slot,
+          onPick: (slot) => send({ type: 'pick_slot', slot, ...as(picker.player_id) }),
+          gapLabel: (slot) => `${guesser}'s guess: ${slotRangeShort(cards, slot)}`,
+        })
+      : pickingItems(
+          cards,
+          picker?.slot != null ? [...picks, { name: guesser, slot: picker.slot }] : picks,
+        )
 
   return (
     <GameScreen
-      phase="guess"
-      revealNow
+      turn={turn}
       className="game--guess"
-      tape={{ progress: 0.63, time: '0:19 / 0:30' }}
       panel={
         <MomentPanel
           label="Challengers guess, in the order they challenged"
           className="game__guess"
         >
-          <MomentHead
-            label="Challengers guess"
-            headline="Sam, where does it really go?"
-            ring={<Ring percent={45} seconds={9} label="9 seconds left to guess" />}
-          />
+          <MomentHead label="Challengers guess" headline={`${guesser}, where does it really go?`} />
           <div className="game__guess-body">
-            <div className="game__guess-order">
-              <PlayerCell player={JONAS} name="1 · Jonas" className="game__done">
-                <Status quiet>{slotRangeShort(MARA_CARDS, 1)}</Status>
-              </PlayerCell>
-              <PlayerCell player={SAM} name="2 · Sam" now>
-                <Status>Guessing…</Status>
-              </PlayerCell>
+            <div className="game__guess-order app-scroll">
+              {game.challenges.map((challenge, index) => {
+                const now = challenge === picker
+                return (
+                  <PlayerCell
+                    key={challenge.player_id}
+                    player={player(challenge.player_id)}
+                    name={`${index + 1} · ${name(challenge.player_id)}`}
+                    now={now}
+                    className={challenge.locked ? 'game__done' : undefined}
+                  >
+                    {challenge.locked && challenge.slot !== null ? (
+                      <Status quiet>{slotRangeShort(cards, challenge.slot)}</Status>
+                    ) : now ? (
+                      <Status>Guessing…</Status>
+                    ) : (
+                      <Status quiet>Next</Status>
+                    )}
+                  </PlayerCell>
+                )
+              })}
             </div>
-            <Button variant="primary" size="xl" onClick={() => navigate(paths.reveal)}>
-              Lock Sam's guess
-            </Button>
+            {acting && picker ? (
+              <Button
+                variant="primary"
+                size="xl"
+                disabled={picker.slot === null || tokens < 1}
+                title={tokens < 1 ? 'A guess costs 1 token' : undefined}
+                onClick={() => send({ type: 'lock_pick', ...as(picker.player_id) })}
+              >
+                {picker.slot === null ? 'Tap a gap first' : `Lock ${guesser}'s guess`}
+              </Button>
+            ) : null}
           </div>
         </MomentPanel>
       }
       board={
         <Board
-          owner={MARA.name}
-          count="4 of 10"
+          owner={who}
+          count={`${cards.length} of ${room.settings.cards_to_win}`}
           items={items}
-          label="Mara's timeline, Sam is guessing"
+          label={`${who}'s timeline, ${guesser} is guessing`}
         />
       }
     />

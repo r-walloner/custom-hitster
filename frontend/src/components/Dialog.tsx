@@ -3,22 +3,29 @@ import type { ReactNode } from 'react'
 import { Button } from './Button.tsx'
 import { Icon } from './Icon.tsx'
 
-/** A pop-up over the dimmed screen. The screen behind keeps running and stays visible. */
-export function Overlay({ under, children }: { under: ReactNode; children: ReactNode }) {
+/**
+ * A pop-up over the dimmed screen. The screen behind keeps running and stays visible. Without a
+ * pop-up it shows the screen alone, so opening and closing one never remounts the screen.
+ */
+export function Overlay({ under, children }: { under: ReactNode; children?: ReactNode }) {
   return (
     <div className="jm-overlay app-overlay">
       {/* Keeps the screen in its own layer, so its raised parts can't show through the scrim. */}
       <div className="jm-overlay__under">{under}</div>
-      <div className="jm-scrim" />
-      {children}
+      {children && (
+        <>
+          <div className="jm-scrim" />
+          {children}
+        </>
+      )}
     </div>
   )
 }
 
 interface DialogProps {
   title: ReactNode
-  /** Where the close ✕ goes. Left out on alerts, which have no ✕. */
-  closeTo?: string
+  /** What the close ✕ does. Left out on alerts, which have no ✕. */
+  onClose?: () => void
   closeLabel?: string
   /** Fills the screen but a margin: for content that needs room (the scoreboard). */
   wide?: boolean
@@ -34,7 +41,7 @@ interface DialogProps {
 
 export function Dialog({
   title,
-  closeTo,
+  onClose,
   closeLabel = 'Close',
   wide,
   alert,
@@ -60,8 +67,8 @@ export function Dialog({
             {title}
           </h1>
           {headExtra}
-          {closeTo !== undefined && !alert && (
-            <Button to={closeTo} variant="bare" size="icon" aria-label={closeLabel}>
+          {onClose !== undefined && !alert && (
+            <Button onClick={onClose} variant="bare" size="icon" aria-label={closeLabel}>
               <Icon name="close" />
             </Button>
           )}

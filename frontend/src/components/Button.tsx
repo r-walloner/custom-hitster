@@ -12,6 +12,8 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   pressed?: boolean
   /** Navigate instead of acting: renders a link that looks the same. */
   to?: string
+  /** Like `to`, but a full page load (the Spotify sign-in goes through the server). */
+  href?: string
 }
 
 function buttonClasses(variant: Variant = 'secondary', size: Size = 'md', toggle = false) {
@@ -31,6 +33,7 @@ export function Button({
   size,
   pressed,
   to,
+  href,
   className,
   children,
   type = 'button',
@@ -44,6 +47,13 @@ export function Button({
       {children}
     </>
   )
+  if (href !== undefined) {
+    return (
+      <a href={href} className={classes} aria-label={rest['aria-label']} style={rest.style}>
+        {content}
+      </a>
+    )
+  }
   if (to !== undefined) {
     return (
       <Link

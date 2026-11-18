@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import type { Player, Song } from '../fixtures.ts'
+import type { Player, Song } from '../types.ts'
 import { Avatar } from './Avatar.tsx'
 
 interface MomentPanelProps {
@@ -67,8 +67,8 @@ export function PlayerCell({ player, now, name, className, children }: PlayerCel
 
 interface SongResultProps {
   song: Song
-  /** Whose library it came from. */
-  from: Player
+  /** Whose libraries it came from; may be empty. */
+  from: Player[]
   /** Where the year came from. */
   source: string
 }
@@ -81,12 +81,21 @@ export function SongResult({ song, from, source }: SongResultProps) {
       <span className="jm-song__title">{song.title}</span>
       <span className="jm-song__artist">{song.artist}</span>
       <span className="jm-song__library">
-        <Avatar player={from} />
+        {from.slice(0, 3).map((player) => (
+          <Avatar key={player.id} player={player} />
+        ))}
         <span>
-          From {from.name}'s library
+          {from.length > 0 && <>From {libraries(from)}</>}
           <small>{source}</small>
         </span>
       </span>
     </div>
   )
+}
+
+/** "Jonas's library", "Jonas's and Sam's libraries". */
+function libraries(players: Player[]): string {
+  const names = players.map((player) => `${player.name}'s`)
+  if (names.length === 1) return `${names[0]} library`
+  return `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]} libraries`
 }

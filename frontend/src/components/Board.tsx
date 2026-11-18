@@ -53,7 +53,7 @@ export function Board({ owner, count, items, spaced, label }: BoardProps) {
     element.scrollTo({ left: target, behavior: 'smooth' })
   }, [items])
 
-  const hasMarks = items.some((item) => item.kind === 'card' && item.mark)
+  const hasMarks = items.some((item) => item.kind === 'card' && item.mark !== undefined)
   const rowClasses = [
     'jm-board__row',
     scroll.overflows && 'jm-board__row--scroll',
@@ -78,9 +78,10 @@ export function Board({ owner, count, items, spaced, label }: BoardProps) {
             case 'card':
               return (
                 <SongCard
-                  key={`card-${item.song.year}-${item.song.title}`}
+                  key={`card-${item.song.id ?? `${item.song.year}-${item.song.title}`}`}
                   song={item.song}
                   isNew={item.isNew}
+                  className={item.ghost ? 'app-card--ghost' : undefined}
                   mark={item.mark}
                   onBefore={item.onBefore}
                   onAfter={item.onAfter}

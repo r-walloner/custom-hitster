@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import type { Player } from '../fixtures.ts'
+import type { Player } from '../types.ts'
 import { Avatar } from './Avatar.tsx'
 import { Icon } from './Icon.tsx'
 import type { IconName } from './Icon.tsx'

@@ -1,142 +1,224 @@
-import { useState } from 'react'
-import { useSearchParams } from 'react-router'
-import { Ring } from '../components/Avatar.tsx'
+import { useEffect, useState } from 'react'
 import { Button, ButtonPair } from '../components/Button.tsx'
+import { Countdown } from '../components/Countdown.tsx'
 import { Icon } from '../components/Icon.tsx'
 import type { IconName } from '../components/Icon.tsx'
 import { OptionRow } from '../components/Rows.tsx'
 import { Screen } from '../components/Screen.tsx'
 import { Verdict } from '../components/SongCard.tsx'
-import { useRoomPaths } from '../paths.ts'
+import type { Device } from '../messages.ts'
+import { useRoomTools } from '../room.ts'
 import { SubHeader } from './SubHeader.tsx'
 import './Playback.css'
 
-interface Device {
-  id: string
-  icon: IconName
-  name: string
-  detail: string
-  asleep?: boolean
+/** How long the test plays (rooms.TEST_PLAYBACK_SECONDS). */
+const TEST_SECONDS = 5
+
+const ICONS: Record<string, IconName> = {
+  computer: 'laptop',
+  smartphone: 'phone',
+  tablet: 'phone',
+  tv: 'tv',
+  castvideo: 'tv',
 }
 
-const DEVICES: Device[] = [
-  { id: 'tv', icon: 'tv', name: 'Living room TV', detail: 'Spotify on the TV' },
-  { id: 'browser', icon: 'laptop', name: 'This browser', detail: "Mara's laptop" },
-  { id: 'phone', icon: 'phone', name: "Mara's iPhone", detail: 'Phone' },
-  {
-    id: 'kitchen',
-    icon: 'deviceSpeaker',
-    name: 'Kitchen speaker',
-    detail: 'Asleep. Open Spotify on it to wake it.',
-    asleep: true,
-  },
-]
+const KINDS: Record<string, string> = {
+  computer: 'Computer',
+  smartphone: 'Phone',
+  tablet: 'Tablet',
+  tv: 'TV',
+  speaker: 'Speaker',
+  avr: 'Stereo',
+  castaudio: 'Cast speaker',
+  castvideo: 'Cast screen',
+  automobile: 'Car',
+}
 
-/** The speaker: pick a device, play 5 seconds, confirm you heard it. `?test=ready|playing|heard|failed` */
+function detail(device: Device) {
+  const kind = KINDS[device.kind.toLowerCase()] ?? device.kind
+  return device.is_active ? `${kind}, playing now` : kind
+}
+
+type Test = 'ready' | 'sent' | 'playing' | 'heard' | 'failed'
+
+/** The speaker: pick a device, play 5 seconds, confirm you heard it. */
 export default function Playback() {
-  const paths = useRoomPaths()
-  const [params, setParams] = useSearchParams()
-  const test = params.get('test') ?? 'playing'
-  const [chosen, setChosen] = useState('tv')
-  const device = DEVICES.find((d) => d.id === chosen)!.name
-  const go = (next: string) => setParams({ test: next }, { replace: true })
+  const { room, you, send, devices, playbackTest, close } = useRoomTools()
+  const mine = room.players.find((seat) => seat.id === you.player_id)
+  const device = mine?.device ?? null
+  const shown = device ?? 'your active device'
+  const inGame = room.game !== null
+  const [test, setTest] = useState<Test>('ready')
+  const [failure, setFailure] = useState<string | null>(null)
+  // The answer last acted on; a new one moves the test along.
+  const [answered, setAnswered] = useState(playbackTest)
+
+  if (playbackTest !== answered) {
+    setAnswered(playbackTest)
+    if (playbackTest && test === 'sent') {
+      setTest(playbackTest.ok ? 'playing' : 'failed')
+      setFailure(playbackTest.ok ? null : playbackTest.message)
+    }
+  }
+
+  useEffect(() => {
+    send({ type: 'get_devices' })
+  }, [send])
+
+  const choose = (chosen: Device | null) => {
+    send({ type: 'set_device', device_id: chosen?.id ?? null, name: chosen?.name ?? null })
+    setTest('ready')
+  }
+  const play = () => {
+    setFailure(null)
+    setTest('sent')
+    send({ type: 'test_playback' })
+  }
+  const noLibrary = !mine?.library || mine.library.tracks === 0
+  const myFailure = room.playback.failures.find((f) => f.player_id === you.player_id)
 
   return (
     <Screen>
-      <SubHeader back={paths.lobby} title="Where should the music play?">
-        <Button>
+      <SubHeader
+        onBack={close}
+        backLabel={inGame ? 'Back to the game' : 'Back to the lobby'}
+        title="Where should the music play?"
+      >
+        <Button onClick={() => send({ type: 'get_devices' })}>
           <Icon name="refresh" />
           Refresh list
         </Button>
       </SubHeader>
       <div className="playback">
-        <section className="playback__devices" aria-label="Spotify devices">
-          {DEVICES.map((d) => (
+        <section className="playback__devices app-scroll" aria-label="Spotify devices">
+          {devices === null && <p className="jm-caption">Looking for your Spotify devices…</p>}
+          {devices?.map((d) => (
             <OptionRow
               key={d.id}
-              icon={d.icon}
+              icon={ICONS[d.kind.toLowerCase()] ?? 'deviceSpeaker'}
               name={d.name}
-              detail={d.detail}
-              pressed={d.id === chosen}
-              disabled={d.asleep}
-              onClick={() => setChosen(d.id)}
+              detail={detail(d)}
+              pressed={d.name === device}
+              onClick={() => choose(d)}
             />
           ))}
+          {devices !== null && (
+            <OptionRow
+              icon="music"
+              name="Whichever device is active"
+              detail="The one Spotify last played on"
+              pressed={device === null}
+              onClick={() => choose(null)}
+            />
+          )}
           <p className="jm-caption">
-            Don't see your speaker? Play anything on it from Spotify once, then refresh.
+            {devices?.length === 0
+              ? 'No devices online. Open Spotify on your speaker, phone or computer, then refresh.'
+              : "Don't see your speaker? Play anything on it from Spotify once, then refresh."}
           </p>
         </section>
 
         <section className="jm-panel playback__test" aria-labelledby="test-head">
-          <span className="jm-label">Playback test</span>
-          {test === 'ready' && (
+          <span className="jm-label">{inGame ? 'Playback' : 'Playback test'}</span>
+          {inGame && (
             <>
               <h2 id="test-head" className="jm-headline">
-                Play 5 seconds on {device}?
+                The next song plays on {shown}.
               </h2>
               <p className="jm-meta">
-                Turn the volume up. We play a song nobody holds, so nothing gets spoiled.
+                {myFailure
+                  ? `The song didn't start: ${myFailure.message}`
+                  : 'The song playing now stays where it is.'}
+              </p>
+              {myFailure ? (
+                <Button
+                  variant="primary"
+                  size="xl"
+                  className="playback__main"
+                  onClick={() => {
+                    send({ type: 'retry_playback' })
+                    close()
+                  }}
+                >
+                  Play it there now
+                </Button>
+              ) : (
+                <Button variant="primary" size="xl" className="playback__main" onClick={close}>
+                  Back to the game
+                </Button>
+              )}
+            </>
+          )}
+          {!inGame && (test === 'ready' || test === 'sent') && (
+            <>
+              <h2 id="test-head" className="jm-headline">
+                Play 5 seconds on {shown}?
+              </h2>
+              <p className="jm-meta">
+                {noLibrary
+                  ? 'The test plays a song from your library. Import your library first.'
+                  : 'Turn the volume up. The test plays a song from your library.'}
               </p>
               <Button
                 variant="primary"
                 size="xl"
                 className="playback__main"
-                onClick={() => go('playing')}
+                disabled={test === 'sent' || noLibrary}
+                onClick={play}
               >
-                Play a test
+                {test === 'sent' ? 'Starting…' : 'Play a test'}
               </Button>
             </>
           )}
-          {test === 'playing' && (
+          {!inGame && test === 'playing' && (
             <>
               <div className="playback__listening">
-                <Ring percent={40} seconds={3} label="3 seconds of the test left" />
+                <Countdown
+                  ms={TEST_SECONDS * 1000}
+                  total={TEST_SECONDS * 1000}
+                  label={(seconds) => `${seconds} seconds of the test left`}
+                />
                 <div>
                   <h2 id="test-head" className="jm-headline">
                     Can you hear it?
                   </h2>
-                  <span className="jm-moment__sub">Playing on {device}</span>
+                  <span className="jm-moment__sub">Playing on {shown}</span>
                 </div>
               </div>
               <p className="jm-meta">
-                If nothing comes out, check the TV's volume and that Spotify is open on it.
+                If nothing comes out, check the volume and that Spotify is open on it.
               </p>
               <ButtonPair className="playback__main">
-                <Button onClick={() => go('failed')}>Nothing</Button>
-                <Button variant="primary" onClick={() => go('heard')}>
+                <Button onClick={() => setTest('failed')}>Nothing</Button>
+                <Button variant="primary" onClick={() => setTest('heard')}>
                   Yes, I hear it
                 </Button>
               </ButtonPair>
             </>
           )}
-          {test === 'heard' && (
+          {!inGame && test === 'heard' && (
             <>
               <Verdict right>Sound works</Verdict>
               <h2 id="test-head" className="jm-headline">
-                {device} is ready.
+                {device ?? 'Your active device'} is ready.
               </h2>
               <p className="jm-meta">Every song in this game plays there.</p>
-              <Button to={paths.lobby} variant="primary" size="xl" className="playback__main">
+              <Button variant="primary" size="xl" className="playback__main" onClick={close}>
                 Use this speaker
               </Button>
             </>
           )}
-          {test === 'failed' && (
+          {!inGame && test === 'failed' && (
             <>
               <Verdict right={false}>No sound</Verdict>
               <h2 id="test-head" className="jm-headline">
-                Nothing came out of {device}.
+                Nothing came out of {shown}.
               </h2>
               <p className="jm-meta">
-                Open Spotify on the TV so it wakes up, check the volume, then try again. Or pick
-                another speaker.
+                {failure ??
+                  'Open Spotify on it so it wakes up, check the volume, then try again. Or pick another speaker.'}
               </p>
-              <Button
-                variant="primary"
-                size="xl"
-                className="playback__main"
-                onClick={() => go('playing')}
-              >
+              <Button variant="primary" size="xl" className="playback__main" onClick={play}>
                 Try again
               </Button>
             </>

@@ -2,8 +2,8 @@
 export function YearChips({ years }: { years: number[] }) {
   return (
     <div className="app-year-chips">
-      {years.map((year) => (
-        <span key={year} className="jm-year-chip">
+      {years.map((year, index) => (
+        <span key={index} className="jm-year-chip">
           {year}
         </span>
       ))}

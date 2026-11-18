@@ -1,5 +1,4 @@
-import { Link } from 'react-router'
-import type { Score } from '../fixtures.ts'
+import type { Score } from '../types.ts'
 import { Avatar } from './Avatar.tsx'
 
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`
@@ -12,17 +11,18 @@ interface ScoreboardProps {
   scores: Score[]
   /** The id of the player on turn. */
   turn: string
-  /** Where tapping it goes: the full scoreboard. */
-  to: string
+  /** Opens the full scoreboard. */
+  onOpen: () => void
 }
 
 /** The mini scoreboard at the right end of the top band: initial, cards held, tokens. */
-export function Scoreboard({ scores, turn, to }: ScoreboardProps) {
+export function Scoreboard({ scores, turn, onOpen }: ScoreboardProps) {
   const summary = scores.map((score) => rowLabel(score, score.player.id === turn)).join('. ')
   return (
-    <Link
-      to={to}
-      className="jm-scoreboard"
+    <button
+      type="button"
+      onClick={onOpen}
+      className="jm-scoreboard app-scoreboard"
       aria-label={`Scoreboard. ${summary}. Open the full scoreboard.`}
     >
       {scores.map((score) => (
@@ -39,6 +39,6 @@ export function Scoreboard({ scores, turn, to }: ScoreboardProps) {
           <span className="jm-token">{score.tokens}</span>
         </span>
       ))}
-    </Link>
+    </button>
   )
 }

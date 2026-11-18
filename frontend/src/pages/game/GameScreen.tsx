@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
 import { Button, RoomCode } from '../../components/Button.tsx'
 import { Icon } from '../../components/Icon.tsx'
@@ -5,57 +6,55 @@ import { Logo } from '../../components/Logo.tsx'
 import { Scoreboard } from '../../components/Scoreboard.tsx'
 import { Header, HeaderMeta, Screen, Spacer } from '../../components/Screen.tsx'
 import { TapePlayer } from '../../components/TapePlayer.tsx'
-import { MARA, SCORES } from '../../fixtures.ts'
-import type { Score } from '../../fixtures.ts'
-import { useRoomPaths } from '../../paths.ts'
-import type { Phase } from './phases.ts'
+import { useRoomTools } from '../../room.ts'
+import type { Turn } from './turn.ts'
 import './Game.css'
 
+/** Tokens never go above this (engine.Rules.max_tokens). */
+const MAX_TOKENS = 5
+
 interface GameScreenProps {
-  /** Which phase this is, so the pop-ups opened from it can close back to it. */
-  phase: Phase
-  tape: { progress: number; time: string; year?: number }
+  turn: Turn
   /** The centre panel: the one decision of the moment. */
   panel: ReactNode
   /** The board along the bottom. */
   board: ReactNode
-  /** Shows *Reveal now* left of the gear (challenge and guessing). */
-  revealNow?: boolean
-  scores?: Score[]
   className?: string
 }
 
 /** The game screen: header, the top band (tape, moment panel, scoreboard), the board below. */
-export function GameScreen({
-  phase,
-  tape,
-  panel,
-  board,
-  revealNow,
-  scores = SCORES,
-  className,
-}: GameScreenProps) {
-  const paths = useRoomPaths()
+export function GameScreen({ turn, panel, board, className }: GameScreenProps) {
+  const { room, send, open, player, songStart } = useRoomTools()
+  const { game } = turn
+  const revealNow = turn.referee && (game.phase === 'challenging' || game.phase === 'picking')
+  // Named it pays out when the next turn starts; show the token already.
+  const bonus = (id: string) => (game.phase === 'revealed' && game.named && id === game.active ? 1 : 0)
+  const scores = game.players.map((p) => ({
+    player: player(p.id),
+    cards: p.timeline.length,
+    tokens: Math.min(MAX_TOKENS, p.tokens + bonus(p.id)),
+  }))
+
   return (
     <Screen className={className}>
       <Header>
         <Logo />
-        <RoomCode code={paths.code} />
+        <RoomCode code={room.code} />
         <HeaderMeta>
           <span>
-            Turn <b>7</b>
+            Turn <b>{game.turn_number}</b>
           </span>
           <span>
-            <b>38</b> cards left
+            <b>{game.deck_remaining}</b> cards left
           </span>
           <span>
-            First to <b>10</b>
+            First to <b>{room.settings.cards_to_win}</b>
           </span>
         </HeaderMeta>
         <Spacer />
-        {revealNow && <Button to={paths.reveal}>Reveal now</Button>}
+        {revealNow && <Button onClick={() => send({ type: 'reveal' })}>Reveal now</Button>}
         <Button
-          to={`${paths.menu}?over=${phase}`}
+          onClick={() => open('menu')}
           size="icon"
           aria-label="Game menu: playback device, scoreboard, end game"
         >
@@ -63,11 +62,52 @@ export function GameScreen({
         </Button>
       </Header>
       <div className="jm-screen__top">
-        <TapePlayer progress={tape.progress} time={tape.time} year={tape.year} />
+        <LiveTape
+          start={songStart}
+          year={game.card?.year}
+          onRestart={turn.referee ? () => send({ type: 'restart_playback' }) : undefined}
+        />
         {panel}
-        <Scoreboard scores={scores} turn={MARA.id} to={`${paths.scoreboard}?over=${phase}`} />
+        <Scoreboard scores={scores} turn={game.active} onOpen={() => open('scoreboard')} />
       </div>
       {board}
     </Screen>
+  )
+}
+
+/** The tape fills over this much of the song: about how long a turn listens. */
+const LISTEN_MS = 30_000
+
+const clock = (ms: number) => {
+  const seconds = Math.floor(ms / 1000)
+  return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`
+}
+
+/** The tape for the song in play, counting from `start`. */
+function LiveTape({
+  start,
+  year,
+  onRestart,
+}: {
+  start: number
+  year?: number
+  onRestart?: () => void
+}) {
+  const { room } = useRoomTools()
+  const status = room.playback.status
+  const [now, setNow] = useState(() => Date.now())
+  useEffect(() => {
+    const timer = window.setInterval(() => setNow(Date.now()), 500)
+    return () => window.clearInterval(timer)
+  }, [])
+  const elapsed = status === 'idle' || status === 'starting' ? 0 : Math.max(0, now - start)
+  return (
+    <TapePlayer
+      progress={elapsed / LISTEN_MS}
+      time={status === 'starting' ? 'Starting…' : clock(elapsed)}
+      year={year}
+      playing={status === 'playing'}
+      onRestart={onRestart}
+    />
   )
 }

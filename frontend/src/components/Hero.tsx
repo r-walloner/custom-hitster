@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import type { Song } from '../fixtures.ts'
+import type { Song } from '../types.ts'
 import { PickCard, SongCard } from './SongCard.tsx'
 import { Tape } from './TapePlayer.tsx'
 
