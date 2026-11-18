@@ -77,7 +77,7 @@ interface SongResultProps {
 export function SongResult({ song, from, source }: SongResultProps) {
   return (
     <div className="jm-song">
-      <span className="jm-label">The song</span>
+      <span className="jm-label">Round result</span>
       <span className="jm-song__title">{song.title}</span>
       <span className="jm-song__artist">{song.artist}</span>
       <span className="jm-song__library">

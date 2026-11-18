@@ -8,10 +8,10 @@ The centre panel of the top band. It holds exactly one decision at a time, with 
 
 | State | Content |
 | --- | --- |
-| Placing | `jm-label` "Mara's turn", `.jm-moment__headline` with the range ("Between 1994 and 2008?"), `jm-btn--primary jm-btn--xl` *Lock it in*, then a `jm-pair`: *Skip song ●1* and *Buy a card ●3*. |
+| Placing | `jm-label` "Guess", `.jm-moment__headline` with the range ("Between 1994 and 2008?"), `jm-btn--primary jm-btn--xl` *Lock it in*, then a `jm-pair`: *Skip song ●1* and *Buy a card ●3*. |
 | Challenge | `.jm-moment__head`: label "Challenge", headline "Mara says 1994 to 2008. Is that right?" and the countdown `jm-ring`. Then `.jm-players`, a 2 × 2 grid of `.jm-player` cells: avatar, name, and either *Challenge* (primary) + pass ✕, or a status (*Challenged*, *Passed*). Only appears after the player on turn has locked in. |
 | Guessing | Head: label "Challengers guess", headline "Sam, where does it really go?", ring. Then the challengers in the order they challenged, numbered, with the one guessing now as `.jm-player--now` (mustard, like their pick on the board), and *Lock Sam's guess* (primary, XL height). |
-| Result | `.jm-result`: `.jm-song` on the left (label "The song", title, artist, and `.jm-song__library`: the owner's avatar + "From Jonas's library", with where the year came from underneath). On the right: `jm-verdict` *Right* + "Mara nailed it." + the ring for the automatic next song; a one-line summary next to the *Named it ●+1* toggle; then *Keep listening* (`--lg`) and *Next song* (`--next`). |
+| Result | `.jm-result`: `.jm-song` on the left (label "Round result", title, artist, and `.jm-song__library`: the owner's avatar + "From Jonas's library", with where the year came from underneath). On the right: `jm-verdict` *Right* + "Mara nailed it." + the ring for the automatic next song; a one-line summary next to the *Named it ●+1* toggle; then *Keep listening* (`--lg`) and *Next song* (`--next`). |
 
 ## Rules
 
