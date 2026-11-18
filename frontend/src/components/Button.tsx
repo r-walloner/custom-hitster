@@ -41,9 +41,15 @@ export function Button({
 }: ButtonProps) {
   const toggle = pressed !== undefined
   const classes = [buttonClasses(variant, size, toggle), className].filter(Boolean).join(' ')
+  // A toggle's ✓ sits in its left padding, which is wide enough in both states, so pressing it
+  // neither moves the label nor changes the button's width.
   const content = (
     <>
-      {pressed && <Icon name="check" />}
+      {pressed && (
+        <span className="app-toggle__check">
+          <Icon name="check" />
+        </span>
+      )}
       {children}
     </>
   )

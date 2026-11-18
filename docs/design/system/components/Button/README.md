@@ -11,7 +11,7 @@ Pill buttons with a 2px ink outline: coral for the one thing to do now, label-cr
 | `.jm-btn--xl` | The moment panel's main action, full width, 56px tall, 19px/800. |
 | `.jm-btn--next` | *Next song*: skip icon + label on one line, fills the row next to *Keep listening*. |
 | `.jm-btn--lg` | 52px secondary that sits beside `--next` (*Keep listening*). |
-| `.jm-btn--toggle` | On/off with `aria-pressed`. Pressed = ink fill, paper text, plus a ✓ icon: *Named it ●+1*. Tap again to undo. |
+| `.jm-btn--toggle` | On/off with `aria-pressed`. Pressed = ink fill, paper text, plus a ✓ icon before the label: *Named the song ●+1*. The ✓ sits in the left padding, which is wide enough for it in both states, so the label and the width stay put. Tap again to undo. |
 | `.jm-btn.jm-btn--dark` | A held state shown as a button. |
 | `.jm-btn--icon` | Round 44px icon button: pass ✕ in a player cell, the gear for the game menu, the back arrow on sub-screens, − and + in a stepper. Always an `aria-label`. |
 | `.jm-btn--icon.jm-btn--bare` | Borderless round icon button: a pop-up's close ✕, removing a player from the lobby. |
