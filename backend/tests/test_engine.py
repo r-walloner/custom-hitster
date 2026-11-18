@@ -255,22 +255,30 @@ def test_only_an_open_challenge_can_be_withdrawn():
         play(game(1980, 1990, 2000, 2010), e.Withdraw("b"))
 
 
-def test_buying_a_card():
-    g = game(1980, 1990, 2000, 1970, 2010, starting_tokens=3)
-    with pytest.raises(e.RuleError, match="Finish your turn"):
+def test_the_player_on_turn_buys_the_card_instead_of_guessing():
+    g = game(1980, 1990, 1970, 2010, starting_tokens=3)
+    g = play(g, e.Place("a", 1), e.Buy("a"))
+    assert years(g, "a") == [1970, 1980] and tokens(g, "a") == 0
+    assert g.phase == "revealed" and g.slot == 0
+    assert g.outcome == e.Outcome(True, "a", bought=True)
+    g = play(g, e.SetNamed(True), e.NextTurn())
+    assert g.active == "b" and tokens(g, "a") == 1
+
+
+def test_only_the_player_on_turn_can_buy_and_only_before_the_lock_in():
+    g = game(1980, 1990, 2000, 2010, starting_tokens=3)
+    with pytest.raises(e.RuleError, match="Only the player on turn"):
+        play(g, e.Buy("b"))
+    g = play(g, e.Place("a", 1), e.Lock("a"))
+    with pytest.raises(e.RuleError, match="before locking it in"):
         play(g, e.Buy("a"))
-    g = play(g, e.Buy("b"))  # others may buy at any time
-    assert years(g, "b") == [1970, 1990] and tokens(g, "b") == 0
-    assert g.card.year == 2000 and g.draws == 1  # the song in play is untouched
-    g = play(g, e.Place("a", 1), e.Lock("a"))  # b has no tokens left to challenge
-    g = play(g, e.Buy("a"))
-    assert years(g, "a") == [1980, 2000, 2010]
+    with pytest.raises(e.RuleError, match="Not enough tokens"):
+        play(game(1980, 1990, 2000, 2010), e.Buy("a"))
 
 
-def test_buying_away_the_tokens_cancels_a_pending_challenge():
-    g = game(1980, 1990, 2000, 2010, 2020, starting_tokens=3)
-    g = play(g, e.Place("a", 1), e.Lock("a"), e.Buzz("b"), e.Buy("b"))
-    assert g.phase == "revealed" and g.challenges == []
+def test_buying_the_winning_card_ends_the_game():
+    g = play(game(1980, 1990, 2000, starting_tokens=3, cards_to_win=2), e.Buy("a"))
+    assert g.phase == "finished" and g.winners == ["a"]
 
 
 def test_reaching_the_target_wins():

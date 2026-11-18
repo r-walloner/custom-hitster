@@ -8,19 +8,15 @@ export const BUY_COST = 3
 /** Tokens never go above this (engine.Rules.max_tokens). */
 export const MAX_TOKENS = 5
 
-/**
- * May `id` buy a card now? The player on turn waits until their card is revealed, and nobody buys
- * while a new song is `loading`.
- */
+/** Is the card in play for sale to `id`? Only to the player on turn, until they lock it in. */
+export function buyable(game: GameView, id: string): boolean {
+  return game.phase === 'placing' && id === game.active
+}
+
+/** Can `id` buy the card in play right now? Also takes the tokens, and no new song `loading`. */
 export function canBuy(game: GameView, id: string, loading: boolean): boolean {
   const tokens = game.players.find((player) => player.id === id)?.tokens ?? 0
-  return (
-    tokens >= BUY_COST &&
-    game.deck_remaining > 0 &&
-    game.phase !== 'finished' &&
-    (id !== game.active || game.phase === 'revealed') &&
-    !loading
-  )
+  return buyable(game, id) && tokens >= BUY_COST && !loading
 }
 
 /** Is a card from `year` in order at `slot`? Equal years may go on either side, as in the engine. */

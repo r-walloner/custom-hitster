@@ -3,7 +3,8 @@
 A turn runs placing -> challenging -> picking -> revealed, then the next player's turn starts.
 
   placing      The active player hears the song, puts the card into a slot of their timeline and
-               locks it in. They may pay a token to skip to another song.
+               locks it in. They may pay a token to skip to another song, or buy the card (Buy):
+               it goes into their timeline unguessed and is revealed, with no challenge.
   challenging  The challenge window: the other players challenge or pass. It closes when everyone
                has decided, when as many players have challenged as the rules allow (one by
                default: the first to challenge), or when the caller says time is up (CloseWindow);
@@ -64,6 +65,7 @@ class Challenge:
 class Outcome:
     correct: bool  # did the active player place the card correctly?
     card_to: str | None  # who got the card; None if it was discarded
+    bought: bool = False  # the active player bought the card instead of guessing
 
 
 @dataclass(slots=True)
@@ -295,24 +297,16 @@ def apply(game: Game, action: Action) -> Game:
             _settle_picks(g)
 
         case Buy(player):
-            # Buying changes the buyer's timeline, so the active player waits until their own
-            # card is resolved; otherwise the slots in play would shift.
-            _require(player != g.active or g.phase == "revealed", "Finish your turn first")
-            _require(bool(g.deck), "The deck is empty")
+            # The player on turn buys the card instead of guessing; nobody can challenge it.
+            _require(g.phase == "placing", "You can only buy the card before locking it in")
+            _require(player == g.active, "Only the player on turn can buy the card")
             _pay(g, player, g.rules.buy_cost)
-            _insert_in_order(_player(g, player).timeline, g.deck.pop(0))
+            timeline = _player(g, player).timeline
+            g.slot = bisect_right([c.year for c in timeline], g.card.year)
+            timeline.insert(g.slot, g.card)
+            g.outcome = Outcome(True, player, bought=True)
+            g.phase = "revealed"
             _check_win(g)
-            if g.phase in ("challenging", "picking"):
-                # A buyer left without tokens can no longer pay for a pending challenge.
-                g.challenges = [
-                    c
-                    for c in g.challenges
-                    if c.locked or c.player != player or _can_challenge(g, player)
-                ]
-                if g.phase == "challenging":
-                    _settle_window(g)
-                else:
-                    _settle_picks(g)
     return g
 
 

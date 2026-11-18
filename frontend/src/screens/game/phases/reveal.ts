@@ -33,19 +33,21 @@ export function revealOutcome(
   const kept = outcome.correct
   const winner = outcome.card_to
   const before = kept ? cards.filter((song) => song.id !== card.id) : cards
-  const guesses: Guess[] = [
-    { id: game.active, name: who, slot: game.slot },
-    ...game.challenges
-      .filter((challenge) => challenge.slot !== null)
-      .map((challenge) => ({
-        id: challenge.player_id,
-        name: name(challenge.player_id),
-        slot: challenge.slot!,
-      })),
-  ]
+  const placed: Guess = { id: game.active, name: who, slot: game.slot }
+  const challenged: Guess[] = game.challenges
+    .filter((challenge) => challenge.slot !== null)
+    .map((challenge) => ({
+      id: challenge.player_id,
+      name: name(challenge.player_id),
+      slot: challenge.slot!,
+    }))
+  // A bought card has no guesses to mark: it simply sits where it belongs.
+  const guesses: Guess[] = outcome.bought ? [] : [placed, ...challenged]
   const won = guesses.find((guess) => guess.id === winner)
   const firstFit = before.findIndex((_, slot) => fits(before, slot, card.year))
-  const at = won ? won.slot : firstFit === -1 ? before.length : firstFit
+  let at = firstFit === -1 ? before.length : firstFit
+  if (outcome.bought) at = game.slot
+  else if (won) at = won.slot
 
   return { revealed, kept, winner, before, guesses, at }
 }

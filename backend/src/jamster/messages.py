@@ -276,6 +276,7 @@ class ChallengeView(BaseModel):
 class OutcomeView(BaseModel):
     correct: bool
     card_to: str | None
+    bought: bool  # the player on turn bought the card instead of guessing
 
 
 class GameView(BaseModel):

@@ -416,7 +416,7 @@ def test_remote_game_with_a_hot_seat_player(
         for other in others:
             move(other, {"type": "pass"})
         game = until(a, state_where(lambda r: r["game"]["phase"] == "revealed"))["room"]["game"]
-        assert game["outcome"] == {"correct": True, "card_to": active}
+        assert game["outcome"] == {"correct": True, "card_to": active, "bought": False}
         assert game["card"]["year"] == year
         assert game["card"]["year_source"] == ("musicbrainz" if year % 2 == 0 else "spotify")
         assert game["card"]["known_by"] == ["Alice", "Bob"]
@@ -452,7 +452,7 @@ def test_remote_game_with_a_hot_seat_player(
         assert game["challenges"] == [{"player_id": thief, "slot": right, "locked": False}]
         move(thief, {"type": "lock_pick"})
         game = until(a, state_where(lambda r: r["game"]["phase"] == "revealed"))["room"]["game"]
-        assert game["outcome"] == {"correct": False, "card_to": thief}
+        assert game["outcome"] == {"correct": False, "card_to": thief, "bought": False}
         cards = {p["id"]: len(p["timeline"]) for p in game["players"]}
         assert cards[thief] >= 2 and cards[active] <= 2
 

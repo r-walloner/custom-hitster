@@ -686,8 +686,8 @@ class Room:
             case engine.SetNamed(value):
                 said = "named" if value else "did not name"
                 return f"{name(after.active)} {said} title and artist"
-            case engine.Buy(player):
-                return f"{name(player)} buys {describe(before.deck[0])} for 3 tokens"
+            case engine.Buy():
+                return ""  # the reveal line says it
             case engine.NextTurn():
                 return ""  # the new card's line says it all
             case engine.SkipTurn():
@@ -699,7 +699,9 @@ class Room:
     def _reveal_line(self, game: engine.Game) -> str:
         assert game.outcome is not None
         active = self._name(game.active)
-        if game.outcome.correct:
+        if game.outcome.bought:
+            result = f"{active} bought it for {game.rules.buy_cost} tokens"
+        elif game.outcome.correct:
             result = f"{active} was right"
         elif game.outcome.card_to:
             result = f"{active} was wrong, {self._name(game.outcome.card_to)} takes the card"
@@ -970,7 +972,11 @@ def _game_view(
         )
         if revealed
         else None,
-        outcome=m.OutcomeView(correct=game.outcome.correct, card_to=game.outcome.card_to)
+        outcome=m.OutcomeView(
+            correct=game.outcome.correct,
+            card_to=game.outcome.card_to,
+            bought=game.outcome.bought,
+        )
         if game.outcome
         else None,
         named=game.named,

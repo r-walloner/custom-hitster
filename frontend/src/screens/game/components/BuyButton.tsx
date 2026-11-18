@@ -1,6 +1,6 @@
 import { Button, Token } from '../../../components/Button.tsx'
 import { useRoomTools } from '../../room/context.ts'
-import { BUY_COST, canBuy } from '../rules.ts'
+import { BUY_COST, buyable, canBuy } from '../rules.ts'
 import type { Turn } from '../turn.ts'
 
 interface BuyButtonProps {
@@ -9,18 +9,21 @@ interface BuyButtonProps {
   /** Who buys. */
   id: string
   label?: string
+  size?: 'xl'
 }
 
-/** Trade 3 tokens for the next card, for `id`. Shown only while they may. */
-export function BuyButton({ turn, id, label }: BuyButtonProps) {
+/** The player on turn trades 3 tokens for the card in play. Greyed out if they can't. */
+export function BuyButton({ turn, id, label, size }: BuyButtonProps) {
   const { as, canActFor } = useRoomTools()
-  if (!canActFor(id) || !canBuy(turn.game, id, turn.loading)) return null
+  if (!canActFor(id) || !buyable(turn.game, id)) return null
   return (
     <Button
-      aria-label={`${label ?? 'Buy a card'} for ${BUY_COST} tokens`}
+      size={size}
+      disabled={!canBuy(turn.game, id, turn.loading)}
+      aria-label={`${label ?? 'Buy this card'} for ${BUY_COST} tokens`}
       onClick={() => turn.draw({ type: 'buy', ...as(id) })}
     >
-      {label ?? 'Buy a card'} <Token>{BUY_COST}</Token>
+      {label ?? 'Buy this card'} <Token>{BUY_COST}</Token>
     </Button>
   )
 }

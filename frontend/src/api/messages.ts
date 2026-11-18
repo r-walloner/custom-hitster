@@ -73,7 +73,8 @@ export interface GameView {
   challenges: { player_id: string; slot: number | null; locked: boolean }[]
   passed: string[]
   card: RevealedCard | null
-  outcome: { correct: boolean; card_to: string | null } | null
+  // bought: the player on turn bought the card instead of guessing
+  outcome: { correct: boolean; card_to: string | null; bought: boolean } | null
   named: boolean | null
   winners: string[]
   drawing: boolean // the next card's year is being looked up; draws wait until it is done
