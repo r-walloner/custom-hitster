@@ -1,8 +1,10 @@
 /* The game screen's frame and the moment panel's states (game/phases/*). */
-/* Placing and the challenger's guess: one decision, laid out the same way. */
-.game__placing .jm-btn--xl,
-.game__guess .jm-btn--xl {
-  min-height: 54px;
+/* Every button in the moment panel has the same height and lettering, whichever phase it is
+   in: Lock it in, Skip song, Buy this card, Challenge, Named the song, Next song. */
+.jm-moment .jm-btn {
+  min-height: var(--touch-min);
+  padding: 0 14px;
+  font: 800 15px/1 var(--font-ui);
 }
 
 /* The challenger's Lock it in sits centred in the space under the text. */
@@ -14,23 +16,19 @@
   margin: 0;
 }
 
-/* One decision, centred in the space under the headline: the main button and its alternative
-   side by side, the main one wider (Lock it in and Skip song), or the main one alone
-   (Challenge). A third button (the host's Buy) takes a row of its own. */
+/* One decision, centred in the space under the headline: the main button across the full
+   width, and its alternatives side by side below it, all the same height (Lock it in, then
+   Skip song and Buy this card), or the main one alone (Challenge). */
 .game__decide {
   flex: 1;
   min-height: 0;
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: 1fr 1fr;
   align-content: center;
   gap: 8px;
 }
 
-.game__decide .jm-btn--xl {
-  min-height: 54px;
-}
-
-.game__decide > :nth-child(3) {
+.game__decide > :first-child {
   grid-column: 1 / -1;
 }
 
@@ -184,10 +182,6 @@
   gap: 8px;
 }
 
-.game__outcome-actions .jm-btn {
-  font-size: 14px;
-}
-
 /* What everyone but the host sees once the host gives the token: "Bob named the song ●+1", as
    plain text. Before that it is hidden but keeps its space, so the row never changes. */
 .game__named {
@@ -217,6 +211,5 @@
 .game__outcome-actions .game__next {
   flex: 1 1 0;
   min-width: 0;
-  font: 800 16px/1 var(--font-ui);
   box-shadow: var(--shadow-sticker);
 }
