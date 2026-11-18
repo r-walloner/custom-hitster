@@ -1,4 +1,4 @@
-import { Button, Status, Token } from '../../../components/Button.tsx'
+import { Button, Token } from '../../../components/Button.tsx'
 import { Countdown } from '../../../components/Countdown.tsx'
 import { Icon } from '../../../components/Icon.tsx'
 import { Mark } from '../../../components/SongCard.tsx'
@@ -24,6 +24,13 @@ export default function Reveal({ turn }: { turn: Turn }) {
   const advance = loading ? null : game.advance_left_ms
 
   const who = name(game.active)
+  // Everyone but the host sees it when the host gives the token, as text. Until then it is
+  // hidden but keeps its space, so nothing moves when it appears.
+  const named = !you.is_host && (
+    <span className={game.named ? 'game__named' : 'game__named game__named--off'}>
+      {who} named the song <Token>+1</Token>
+    </span>
+  )
   const items = revealItems(before, revealed, guesses, winner, kept, at, (right, guess, edge) => (
     <Mark
       key={guess.id}
@@ -46,7 +53,7 @@ export default function Reveal({ turn }: { turn: Turn }) {
       panel={
         <MomentPanel
           phase="Reveal"
-          className="game__result"
+          className={referee ? 'game__result' : 'game__result game__result--watch'}
           ring={
             advance !== null && (
               <Countdown
@@ -59,49 +66,46 @@ export default function Reveal({ turn }: { turn: Turn }) {
           }
         >
           <SongResult song={revealed} cover={card.image_url} from={from} />
-          <div className="game__outcome-actions">
-            {/* Only the host judges, so the player on turn can't award themselves the token. */}
-            {you.is_host ? (
-              <Button
-                pressed={game.named === true}
-                aria-label={`${who} named title and artist: 1 token`}
-                onClick={() => send({ type: 'set_named', value: game.named !== true })}
-              >
-                Named the song <Token>+1</Token>
-              </Button>
-            ) : (
-              game.named && (
-                // Looks like the host's pressed toggle, without being a button.
-                <span className="game__named">
-                  <span className="app-toggle__check">
-                    <Icon name="check" />
-                  </span>
-                  {who} named the song <Token>+1</Token>
-                </span>
-              )
-            )}
-            {referee ? (
-              <>
-                {advance !== null && (
-                  <Button onClick={() => send({ type: 'hold_turn' })}>Keep listening</Button>
-                )}
+          {referee ? (
+            <div className="game__outcome-actions">
+              {/* Only the host judges, so the player on turn can't award themselves the token. */}
+              {you.is_host ? (
                 <Button
-                  variant="primary"
-                  className="game__next"
-                  disabled={loading}
-                  aria-busy={loading}
-                  onClick={() => turn.draw({ type: 'next_turn' })}
+                  pressed={game.named === true}
+                  aria-label={`${who} named title and artist: 1 token`}
+                  onClick={() => send({ type: 'set_named', value: game.named !== true })}
                 >
-                  <Icon name="skip" />
-                  {loading ? 'Loading…' : 'Next song'}
+                  Named the song <Token>+1</Token>
                 </Button>
-              </>
-            ) : (
-              <Status quiet>
-                {loading ? 'Loading the next song…' : `${who} starts the next song.`}
-              </Status>
-            )}
-          </div>
+              ) : (
+                named
+              )}
+              {/* Greyed out once the countdown is stopped, rather than gone, so the row
+                  doesn't jump. Not there at all when there's no automatic next song. */}
+              {room.settings.next_turn_seconds > 0 && (
+                <Button
+                  className="game__keep"
+                  disabled={advance === null}
+                  onClick={() => send({ type: 'hold_turn' })}
+                >
+                  Keep listening
+                </Button>
+              )}
+              <Button
+                variant="primary"
+                className="game__next"
+                disabled={loading}
+                aria-busy={loading}
+                onClick={() => turn.draw({ type: 'next_turn' })}
+              >
+                <Icon name="skip" />
+                {loading ? 'Loading…' : 'Next song'}
+              </Button>
+            </div>
+          ) : (
+            // The song stays centred in the space above this row, which is always there.
+            <div className="game__outcome-actions">{named}</div>
+          )}
         </MomentPanel>
       }
       board={

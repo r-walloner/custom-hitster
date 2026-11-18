@@ -46,7 +46,23 @@
   align-content: safe center;
 }
 
-/* The result: the cover, then the song (title in up to two lines, the libraries in one), beside
+/* Without the buttons, the bottom row holds only the "named the song" line, so it is only as tall
+   as that line. The song moves down a little from the phase name, the line follows close under
+   it, and the rest of the room stays at the bottom. */
+.jm-moment.game__result--watch > .jm-result {
+  margin-top: 10px;
+}
+
+.game__result--watch .game__outcome-actions {
+  min-height: 0;
+  margin-top: 3px;
+}
+
+.game__result--watch .game__named {
+  min-height: 0;
+}
+
+/* The result: the cover, then the song (title, artist and libraries, a line each), beside
    the ring; the buttons in one row underneath. The board's marks say who was right. */
 .game__result .jm-result {
   flex: 0 0 auto;
@@ -87,10 +103,9 @@
   margin: 0;
   font-size: 18px;
   line-height: 20px;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
+  white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .game__result .jm-song__artist {
@@ -99,6 +114,28 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* The library credit follows the artist after a 10px gap. The song is never taller than the cover:
+   should it run out of room, the gap gives way (the ::after spacer is the only part that
+   shrinks). */
+.game__result .jm-song {
+  max-height: 82px;
+}
+
+.game__result .jm-song > * {
+  flex-shrink: 0;
+}
+
+.game__result .jm-song::after {
+  content: "";
+  order: 1;
+  flex: 0 1 10px;
+}
+
+.game__result .jm-song__library {
+  order: 2;
+  margin-top: 0;
 }
 
 /* The library credit: one line of up to three names, cut short rather than wrapped (the avatars
@@ -137,7 +174,8 @@
   letter-spacing: -0.02em;
 }
 
-/* Named the song, Keep listening and Next song; Next song takes the room the others leave. */
+/* Named the song, Keep listening and Next song; the last two share the room Named the song
+   leaves, half each. */
 .game__outcome-actions {
   flex: 0 0 auto;
   min-height: var(--touch-min);
@@ -150,45 +188,34 @@
   font-size: 14px;
 }
 
-/* What the others see once the referee has pressed Named the song: the pressed toggle's look
-   (Button.tsx, app.css), as a label. */
+/* What everyone but the host sees once the host gives the token: "Bob named the song ●+1", as
+   plain text. Before that it is hidden but keeps its space, so the row never changes. */
 .game__named {
-  position: relative;
   flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  box-sizing: border-box;
   min-height: var(--touch-min);
-  padding-inline: 32px;
-  border: var(--stroke-control) solid var(--ink);
-  border-radius: var(--radius-pill);
-  background: var(--ink);
-  color: var(--paper);
   font: 700 14px/16px var(--font-ui);
+  color: var(--ink);
   white-space: nowrap;
-}
-
-.game__named svg {
-  width: 16px;
-  height: 16px;
 }
 
 .game__named > .jm-token {
   margin-left: 2px;
 }
 
-/* "Bob starts the next song." gives way to the label above, cut short rather than wrapped. */
-.game__outcome-actions .jm-status--quiet {
-  display: block;
+.game__named--off {
+  visibility: hidden;
+}
+
+.game__outcome-actions .game__keep {
+  flex: 1 1 0;
   min-width: 0;
-  line-height: 36px;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .game__outcome-actions .game__next {
-  flex: 1;
+  flex: 1 1 0;
   min-width: 0;
   font: 800 16px/1 var(--font-ui);
   box-shadow: var(--shadow-sticker);
