@@ -6,9 +6,6 @@ interface SongCardProps {
   song: Song
   /** The card just won: tinted, with the large sticker shadow. */
   isNew?: boolean
-  /** Make the card's halves tappable: left puts the pick before it, right after it. */
-  onBefore?: () => void
-  onAfter?: () => void
   /** A ✓ or ✕ mark after the reveal. */
   mark?: ReactNode
   className?: string
@@ -16,37 +13,13 @@ interface SongCardProps {
 }
 
 /** A revealed song: the year (always the largest thing), the title, the artist. */
-export function SongCard({
-  song,
-  isNew,
-  onBefore,
-  onAfter,
-  mark,
-  className,
-  style,
-}: SongCardProps) {
+export function SongCard({ song, isNew, mark, className, style }: SongCardProps) {
   const classes = ['jm-card', isNew && 'jm-card--new', className].filter(Boolean).join(' ')
   return (
     <div className={classes} style={style}>
       <span className="jm-card__year">{song.year}</span>
       <span className="jm-card__title">{song.title}</span>
       <span className="jm-card__artist">{song.artist}</span>
-      {onBefore && (
-        <button
-          type="button"
-          className="jm-card__half jm-card__half--l"
-          onClick={onBefore}
-          aria-label={`Put it before ${song.year}`}
-        />
-      )}
-      {onAfter && (
-        <button
-          type="button"
-          className="jm-card__half jm-card__half--r"
-          onClick={onAfter}
-          aria-label={`Put it after ${song.year}`}
-        />
-      )}
       {mark}
     </div>
   )

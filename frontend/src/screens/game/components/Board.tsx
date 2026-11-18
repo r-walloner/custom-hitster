@@ -15,8 +15,6 @@ export type BoardItem =
       /** Shown where it belongs without being part of this timeline (a stolen or lost card). */
       ghost?: boolean
       mark?: ReactNode
-      onBefore?: () => void
-      onAfter?: () => void
     }
   | { kind: 'pick'; name: string; done?: boolean }
   | { kind: 'gap'; label: string; onPick: () => void }
@@ -82,8 +80,6 @@ export function Board({ owner, count, items, spaced, label }: BoardProps) {
                   isNew={item.isNew}
                   className={item.ghost ? 'app-card--ghost' : undefined}
                   mark={item.mark}
-                  onBefore={item.onBefore}
-                  onAfter={item.onAfter}
                 />
               )
             case 'pick':

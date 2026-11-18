@@ -45,8 +45,8 @@ export interface ActivePick {
 /**
  * The row while someone places or guesses: gap, card, gap, card, … with the picks in their slots.
  * Slots already taken are left out, not disabled. The one picking now on this device (`active`)
- * can also tap card halves; `onPick` moves their pick to a slot. Without `active` the row is
- * read-only: cards and picks, no gaps.
+ * taps a gap's +; `onPick` moves their pick to that slot. Without `active` the row is read-only:
+ * cards and picks, no gaps.
  */
 export function pickingItems(cards: Song[], picks: Pick[], active?: ActivePick): BoardItem[] {
   const taken = (slot: number) => picks.some((pick) => pick.slot === slot)
@@ -63,13 +63,7 @@ export function pickingItems(cards: Song[], picks: Pick[], active?: ActivePick):
       }
     }
     if (i < cards.length) {
-      const before = i
-      items.push({
-        kind: 'card',
-        song: cards[i],
-        onBefore: active && !taken(before) ? () => active.onPick(before) : undefined,
-        onAfter: active && !taken(before + 1) ? () => active.onPick(before + 1) : undefined,
-      })
+      items.push({ kind: 'card', song: cards[i] })
     }
   }
   return items
