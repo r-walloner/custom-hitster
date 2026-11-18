@@ -123,7 +123,7 @@ def test_marking_a_slot_reveals_nothing_until_it_is_locked_in():
 
 def three_player_challenge(card_year: int) -> e.Game:
     """a has [1980, 1990] and has wrongly put the card first; b challenged before c."""
-    g = game(1980, 2001, 2002, card_year, 2010, players="abc")
+    g = game(1980, 2001, 2002, card_year, 2010, players="abc", max_challengers=2)
     g.players[0].timeline.append(card(1990))
     return play(g, e.Place("a", 0), e.Lock("a"), e.Buzz("b"), e.Buzz("c"))
 
@@ -153,15 +153,25 @@ def test_a_slot_can_only_be_marked_once():
 
 
 def test_no_challenge_once_every_slot_is_spoken_for():
-    g = play(game(1980, 2001, 2002, 1970, 2010, players="abc"), e.Place("a", 1), e.Lock("a"))
+    g = game(1980, 2001, 2002, 1970, 2010, players="abc", max_challengers=2)
+    g = play(g, e.Place("a", 1), e.Lock("a"))
     g = play(g, e.Buzz("b"))  # slot 0 is the only free one
     assert g.phase == "picking", "c cannot challenge any more, so the window closes"
     with pytest.raises(e.RuleError, match="over"):
         play(g, e.Buzz("c"))
 
 
-def test_the_window_stays_open_until_everyone_decided_or_time_is_up():
+def test_only_the_first_to_challenge_challenges_by_default():
     g = game(1980, 2001, 2002, 1985, 2010, players="abc")
+    g.players[0].timeline.append(card(1990))  # slots to spare for a second challenger
+    g = play(g, e.Place("a", 0), e.Lock("a"), e.Buzz("b"))
+    assert g.phase == "picking", "the window closes at the first challenge"
+    with pytest.raises(e.RuleError, match="over"):
+        play(g, e.Buzz("c"))
+
+
+def test_the_window_stays_open_until_everyone_decided_or_time_is_up():
+    g = game(1980, 2001, 2002, 1985, 2010, players="abc", max_challengers=2)
     g.players[0].timeline.append(card(1990))  # three slots: room for a and two challengers
     g = play(g, e.Place("a", 0), e.Lock("a"), e.Buzz("b"))
     assert g.phase == "challenging", "c may still challenge"

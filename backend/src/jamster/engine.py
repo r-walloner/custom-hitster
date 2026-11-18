@@ -5,8 +5,10 @@ A turn runs placing -> challenging -> picking -> revealed, then the next player'
   placing      The active player hears the song, puts the card into a slot of their timeline and
                locks it in. They may pay a token to skip to another song.
   challenging  The challenge window: the other players challenge or pass. It closes when everyone
-               has decided, or when the caller says time is up (CloseWindow); the room runs the
-               countdown, since the engine has no clock. Without a challenge the card is revealed.
+               has decided, when as many players have challenged as the rules allow (one by
+               default: the first to challenge), or when the caller says time is up (CloseWindow);
+               the room runs the countdown, since the engine has no clock. Without a challenge the
+               card is revealed.
   picking      In challenge order, each challenger marks a different slot of the active player's
                timeline and locks it in, paying a token. Then the card is revealed. A challenger
                who is away may be withdrawn (Withdraw) before locking in, paying nothing.
@@ -40,6 +42,7 @@ class Rules:
     max_tokens: int = 5
     skip_cost: int = 1
     challenge_cost: int = 1
+    max_challengers: int = 1
     buy_cost: int = 3
 
 
@@ -346,8 +349,9 @@ def _can_challenge(g: Game, player_id: str) -> bool:
 
 
 def _room_for_challenge(g: Game) -> bool:
-    """Every challenger needs a slot of their own besides the active player's."""
-    return len(_player(g, g.active).timeline) > len(g.challenges)
+    """Below the rules' number of challengers, with a slot for each besides the active player's."""
+    taken = len(g.challenges)
+    return taken < g.rules.max_challengers and len(_player(g, g.active).timeline) > taken
 
 
 def _picking(g: Game) -> Challenge:
