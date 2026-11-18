@@ -212,6 +212,39 @@ def test_skip_costs_a_token_and_changes_the_song():
         play(g, e.Skip("a"))
 
 
+def test_skipping_a_turn_throws_the_card_away():
+    g = play(game(1980, 1990, 2000, 2010, 2020), e.Place("a", 0), e.SkipTurn())
+    assert (g.active, g.card.year, g.phase, g.turn_number, g.draws) == ("b", 2010, "placing", 2, 2)
+    assert years(g, "a") == [1980] and years(g, "b") == [1990]
+    assert (tokens(g, "a"), g.slot) == (2, None)
+    with pytest.raises(e.RuleError, match="locked in"):
+        play(g, e.Place("b", 0), e.Lock("b"), e.SkipTurn())
+
+
+def test_skipping_the_last_turn_ends_the_game():
+    g = play(game(1980, 1990, 2000), e.SkipTurn())
+    assert g.phase == "finished" and g.winners == ["a", "b"]
+
+
+def test_an_away_challenger_withdraws_for_free():
+    g = three_player_challenge(1985)
+    g = play(g, e.PickSlot("b", 1), e.Withdraw("b"))
+    assert [c.player for c in g.challenges] == ["c"] and tokens(g, "b") == 2
+    g = play(g, e.Withdraw("c"))
+    assert g.phase == "revealed" and g.outcome == e.Outcome(False, None)
+    assert tokens(g, "c") == 2
+
+
+def test_only_an_open_challenge_can_be_withdrawn():
+    g = challenge(three_player_challenge(1985), "b", 2)
+    with pytest.raises(e.RuleError, match="no open challenge"):
+        play(g, e.Withdraw("b"))
+    with pytest.raises(e.RuleError, match="no open challenge"):
+        play(g, e.Withdraw("a"))
+    with pytest.raises(e.RuleError, match="nothing to pick"):
+        play(game(1980, 1990, 2000, 2010), e.Withdraw("b"))
+
+
 def test_buying_a_card():
     g = game(1980, 1990, 2000, 1970, 2010, starting_tokens=3)
     with pytest.raises(e.RuleError, match="Finish your turn"):

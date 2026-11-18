@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Button, ButtonPair, Status, Token } from '../../../components/Button.tsx'
 import { useRoomTools } from '../../room/context.ts'
 import { pickingItems, slotRange, slotRangeShort } from '../board.ts'
@@ -10,10 +11,15 @@ import type { Turn } from '../turn.ts'
 
 /** 1 · Placing: the player on turn taps a gap or a card half, then locks it in. */
 export default function Placing({ turn }: { turn: Turn }) {
-  const { room, you, name, canActFor, as, send } = useRoomTools()
+  const { room, you, name, canActFor, isAway, as, send } = useRoomTools()
   const { game, active, cards, loading } = turn
   const who = name(game.active)
   const acting = canActFor(game.active)
+  const away = isAway(game.active)
+  // Skipping an away player's turn throws the card away, so it takes a second tap.
+  // The tap is remembered per turn, so the next away player's turn starts with one tap again.
+  const [skipTapped, setSkipTapped] = useState<number | null>(null)
+  const skipping = skipTapped === game.turn_number
   const count = `${cards.length} of ${room.settings.cards_to_win}`
   // On a shared device the host may buy for themselves while someone else places.
   const buyer =
@@ -69,6 +75,25 @@ export default function Placing({ turn }: { turn: Turn }) {
       ) : (
         skip
       )}
+    </MomentPanel>
+  ) : away ? (
+    <MomentPanel label={`${who} is away`} className="game__placing">
+      <span className="jm-label">{who}'s turn</span>
+      <h1 className="jm-moment__headline">{who} is away.</h1>
+      <Status quiet>Waiting for {who} to come back.</Status>
+      {you.is_host && (
+        <Button
+          disabled={loading}
+          onClick={() => (skipping ? turn.draw({ type: 'skip_turn' }) : setSkipTapped(game.turn_number))}
+        >
+          {loading
+            ? 'Loading…'
+            : skipping
+              ? 'Tap again to throw the card away'
+              : `Skip ${who}'s turn`}
+        </Button>
+      )}
+      {you.player_id && <BuyButton turn={turn} id={you.player_id} />}
     </MomentPanel>
   ) : (
     <MomentPanel label={`${who}'s move`} className="game__placing">

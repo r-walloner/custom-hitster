@@ -45,13 +45,23 @@ Jamster is a private tool and cannot become a public one.
    Until it runs out, every other player may challenge or pass, and it ends early once everyone has decided.
 4. If nobody challenged, the card is revealed.
    Otherwise each challenger in turn, in the order they challenged, taps a free `+` where they think the card belongs and locks it in, which costs 1 token.
-   The host sees challenge and pass buttons on every other player's row, so a hot-seat game works within the countdown.
+   The host sees challenge and pass buttons on the row of every other player who is here, so a hot-seat game works within the countdown.
 5. The card is revealed.
    A correct placement keeps the card.
    Otherwise the first challenger with a correct slot takes it, and if there is none the card is discarded.
 6. The host or the player on turn confirms whether that player named the title and artist aloud, which earns 1 token (5 at most).
 7. A second countdown, 15 seconds unless the host sets another time or turns it off in the lobby, starts the next turn by itself.
    The host or the player on turn can start it at once with "Next song", or stop the countdown with "Keep listening" and move on by hand.
+
+A player who leaves the lobby gives up their seat; one who leaves a game, or loses their connection, keeps it and gets it back by opening the room link again in the same browser.
+While they are away:
+
+- On their turn everyone waits for them, or the host skips the turn and the card is thrown away.
+- If they challenged and it is their turn to guess, their challenge is dropped without costing a token: at once if they left, after 10 seconds if their connection dropped.
+- In remote play, a player who left gets no more songs on their Spotify until they return.
+
+The host's "Close room" in the lobby ends the room for everyone.
+An abandoned room is dropped once it has been empty for six hours.
 
 Any player can trade 3 tokens for a card, from the scoreboard (the player on turn only after the reveal).
 The first player to reach the target number of cards wins.
@@ -70,14 +80,6 @@ Remove an item once the backend provides it and the screen uses it.
   The importer stores tracks as signals without their source, and curation uses all of them.
   This needs the source of each signal (which playlist or artist), per-player exclusions in the database (a schema change, so the database file must be deleted), an API to list and toggle sources, and curation that honours the exclusions.
   Meanwhile the Account screen shows how many songs were copied.
-- **Local players.**
-  `PlayerView.connected` is false both for a local player and for a guest who dropped out.
-  A `local` flag (the seat has no `client_id`) would tell them apart.
-  Meanwhile a seat this browser has never seen online counts as local, so a browser that arrives after a guest dropped calls that guest a local player.
-- **Leaving and closing a room.**
-  There is no message to leave a lobby or to close a room.
-  A guest's "Leave room" only goes home, and their seat stays as a dropped player until the host removes it.
-  The host's "Close room" is shown as "Leave room" for the same reason; the room lives on until it has been empty for six hours.
 - **When the library was copied.**
   The Account screen's "Copied 3 days ago" needs the time of the last import, which isn't stored.
   Meanwhile the line is left out.

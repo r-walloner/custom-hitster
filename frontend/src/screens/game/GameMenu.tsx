@@ -40,9 +40,16 @@ export default function GameMenu() {
           {ending ? 'Tap again to end it for everyone' : 'End game'}
         </Button>
       ) : (
-        <Button to="/" variant="dark" className="dialog__end">
-          Leave game
-        </Button>
+        <>
+          <Button
+            variant="dark"
+            className="dialog__end"
+            onClick={() => send({ type: 'leave_room' })}
+          >
+            Leave game
+          </Button>
+          <p className="jm-caption">Open the room link again to get your seat back.</p>
+        </>
       )}
     </Dialog>
   )

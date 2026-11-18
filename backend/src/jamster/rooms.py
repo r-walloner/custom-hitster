@@ -7,7 +7,7 @@ import random
 import secrets
 import sqlite3
 import time
-from collections.abc import Coroutine
+from collections.abc import Callable, Coroutine
 from dataclasses import dataclass
 from typing import Any
 
@@ -29,6 +29,9 @@ CODE_LETTERS = "ABCDEFGHJKLMNPQRSTUVWXYZ"  # no I or O, which read as 1 and 0
 MAX_PLAYERS = 10
 IDLE_SECONDS = 6 * 3600  # an empty room is dropped after this long
 TEST_PLAYBACK_SECONDS = 5
+DROP_GRACE_SECONDS = 10  # a challenger whose connection dropped keeps their guess this long
+# WebSocket close codes the frontend understands, besides those in web.py.
+LEFT_ROOM, ROOM_CLOSED = 4200, 4410
 DEAL_SECONDS = 1.5  # the least time between two opening cards landing, so dealing reads as work
 DEALT_SECONDS = 2.5  # how long the full deal shows before the game starts
 
@@ -82,13 +85,21 @@ class Seat:
     spotify_id: str | None
     device_id: str | None = None
     device_name: str | None = None
+    left: bool = False  # left the game on purpose; their Spotify gets no songs until they return
 
 
 class Room:
     def __init__(
-        self, code: str, services: Services, host_client: str, host_spotify: str, host_name: str
+        self,
+        code: str,
+        services: Services,
+        host_client: str,
+        host_spotify: str,
+        host_name: str,
+        on_close: Callable[[], None] = lambda: None,
     ) -> None:
         self.code = code
+        self._on_close = on_close
         self.log = RoomLog(log, {"room": code})
         self.host_client = host_client
         self.seats = [Seat(secrets.token_hex(4), host_name, host_client, host_spotify)]
@@ -124,6 +135,8 @@ class Room:
         self._sockets[ws] = (client_id, spotify_id)
         seat = self._seat_of(client_id)
         self.log.info("%s connected", seat.name if seat else "a visitor")
+        if seat:
+            seat.left = False
         # A guest who has signed in with Spotify since joining gets their library linked.
         if (
             seat
@@ -142,6 +155,8 @@ class Room:
         if client:
             seat = self._seat_of(client[0])
             self.log.info("%s disconnected", seat.name if seat else "a visitor")
+            if seat and self._away(seat):
+                self._spawn(self._withdraw_later(seat.id, DROP_GRACE_SECONDS))
         self.last_active = time.monotonic()
         await self.broadcast()
 
@@ -186,6 +201,16 @@ class Room:
         async with self._sending:
             await self._deliver(ws, message)
 
+    async def _close_sockets(self, client_id: str | None, code: int) -> None:
+        """Close one browser's sockets, or everyone's. Their receive loops then end."""
+        for ws, (owner, _) in list(self._sockets.items()):
+            if client_id is None or owner == client_id:
+                self._sockets.pop(ws, None)
+                try:
+                    await ws.close(code=code)
+                except Exception:
+                    pass  # already gone
+
     async def _deliver(self, ws: WebSocket, message: BaseModel) -> None:
         try:
             await ws.send_text(message.model_dump_json())
@@ -216,6 +241,7 @@ class Room:
                     name=s.name,
                     is_host=s.client_id == self.host_client,
                     connected=s.client_id in connected,
+                    local=s.client_id is None,
                     spotify=s.spotify_id is not None,
                     library=self._library(s.spotify_id),
                     device=s.device_name,
@@ -242,6 +268,14 @@ class Room:
         return m.LibraryView.model_validate(status, from_attributes=True)
 
     # --- requests ------------------------------------------------------------------------
+
+    def _seat_by_id(self, seat_id: str) -> Seat | None:
+        return next((s for s in self.seats if s.id == seat_id), None)
+
+    def _away(self, seat: Seat) -> bool:
+        """A guest (or the host) with no open socket; hot-seat players are never away."""
+        connected = {client_id for client_id, _ in self._sockets.values()}
+        return seat.client_id is not None and seat.client_id not in connected
 
     def _seat_of(self, client_id: str) -> Seat | None:
         return next((s for s in self.seats if s.client_id == client_id), None)
@@ -289,6 +323,10 @@ class Room:
         self.log.info("%s joined, %s", name, how if client_id else "played by the host")
         self._invalidate_deck()
 
+    def _remove_seat(self, seat_id: str) -> None:
+        self.seats = [s for s in self.seats if s.id != seat_id]
+        self._invalidate_deck()
+
     def _invalidate_deck(self) -> None:
         if self.deck_view.status == "dealing":
             self.log.info("dealing abandoned: players or settings changed")
@@ -317,8 +355,43 @@ class Room:
                 if any(s.id == player_id and s.client_id == self.host_client for s in self.seats):
                     raise RoomError("The host cannot be removed")
                 self.log.info("%s was removed", self._name(player_id))
-                self.seats = [s for s in self.seats if s.id != player_id]
+                self._remove_seat(player_id)
+
+            case m.LeaveRoom():
+                seat = self._own_seat(client_id)
+                if client_id == self.host_client:
+                    raise RoomError("The host closes the room instead")
+                if self.game is None:
+                    self.log.info("%s left the room", seat.name)
+                    self._remove_seat(seat.id)
+                else:
+                    self.log.info("%s left the game; their seat stays", seat.name)
+                    if seat in self._listeners():
+                        self._spawn(self._pause([seat]))
+                    seat.left = True
+                await self._close_sockets(client_id, LEFT_ROOM)
+                if self.game is not None:
+                    self._withdraw_if_away(seat.id)
+
+            case m.CloseRoom():
+                self._host_only(client_id)
+                self._lobby_only()
+                self.log.info("the host closed the room")
                 self._invalidate_deck()
+                self._on_close()
+                await self._close_sockets(None, ROOM_CLOSED)
+
+            case m.SkipTurn():
+                self._host_only(client_id)
+                if self.game is None:
+                    raise RoomError("No game is running")
+                seat = self._seat_by_id(self.game.active)
+                if seat is None or not self._away(seat):
+                    raise RoomError(f"{self._name(self.game.active)} is here to play")
+                if self.game.phase != "placing":
+                    raise engine.RuleError("The card is already locked in")  # before any lookup
+                await self._prepare_draw()
+                self._act(engine.SkipTurn())
 
             case m.SetSettings(settings=settings):
                 self._host_only(client_id)
@@ -463,6 +536,11 @@ class Room:
         if game.phase == "picking" and before.phase != "picking":
             order = ", ".join(self._name(c.player) for c in game.challenges)
             self.log.info("challenges are closed; picking in this order: %s", order)
+            for challenge in game.challenges:
+                seat = self._seat_by_id(challenge.player)
+                if seat and self._away(seat):
+                    delay = 0 if seat.left else DROP_GRACE_SECONDS
+                    self._spawn(self._withdraw_later(seat.id, delay))
         if game.phase == "finished" and before.phase != "finished":
             self._log_game_over(game)
         elif game.draws != before.draws:
@@ -473,6 +551,23 @@ class Room:
             self._open_window()
         if game.phase == "revealed" and before.phase != "revealed":
             self._start_advance()
+
+    # --- away challengers -----------------------------------------------------------------
+
+    async def _withdraw_later(self, seat_id: str, seconds: float) -> None:
+        await asyncio.sleep(seconds)
+        if self._withdraw_if_away(seat_id):
+            await self.broadcast()
+
+    def _withdraw_if_away(self, seat_id: str) -> bool:
+        """Drop the open challenge of a challenger who is away, so the others need not wait."""
+        game, seat = self.game, self._seat_by_id(seat_id)
+        if game is None or game.phase != "picking" or seat is None or not self._away(seat):
+            return False
+        if not any(c.player == seat_id and not c.locked for c in game.challenges):
+            return False
+        self._act(engine.Withdraw(seat_id))
+        return True
 
     # --- challenge window ----------------------------------------------------------------
 
@@ -567,6 +662,11 @@ class Room:
                 return f"{name(player)} buys {describe(before.deck[0])} for 3 tokens"
             case engine.NextTurn():
                 return ""  # the new card's line says it all
+            case engine.SkipTurn():
+                skipped = name(before.active)
+                return f"the host skips {skipped}'s turn and throws {describe(before.card)} away"
+            case engine.Withdraw(player):
+                return f"{name(player)} is away, so their challenge is dropped"
 
     def _reveal_line(self, game: engine.Game) -> str:
         assert game.outcome is not None
@@ -717,7 +817,7 @@ class Room:
         """The seats whose Spotify account plays the music."""
         if self.settings.mode == "local":
             return [s for s in self.seats if s.client_id == self.host_client]
-        return [s for s in self.seats if s.spotify_id]
+        return [s for s in self.seats if s.spotify_id and not s.left]
 
     def _start_playback(self, only: set[str] | None = None) -> None:
         """Play the card in play for everyone, or (on a retry) for the seats in `only`,
@@ -867,10 +967,20 @@ class Rooms:
         }
         while (code := "".join(secrets.choice(CODE_LETTERS) for _ in range(4))) in self._rooms:
             pass
-        room = Room(code, self._services, host_client, host_spotify, host_name)
+        room = Room(
+            code,
+            self._services,
+            host_client,
+            host_spotify,
+            host_name,
+            on_close=lambda: self._forget(code),
+        )
         self._rooms[code] = room
         room.log.info("room created by %s", host_name)
         return room
+
+    def _forget(self, code: str) -> None:
+        self._rooms.pop(code, None)
 
     def get(self, code: str) -> Room | None:
         return self._rooms.get(code.upper())

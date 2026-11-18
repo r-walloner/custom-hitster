@@ -8,9 +8,13 @@ A turn runs placing -> challenging -> picking -> revealed, then the next player'
                has decided, or when the caller says time is up (CloseWindow); the room runs the
                countdown, since the engine has no clock. Without a challenge the card is revealed.
   picking      In challenge order, each challenger marks a different slot of the active player's
-               timeline and locks it in, paying a token. Then the card is revealed.
+               timeline and locks it in, paying a token. Then the card is revealed. A challenger
+               who is away may be withdrawn (Withdraw) before locking in, paying nothing.
   revealed     A correct placement keeps the card. Otherwise the first challenger with a correct
                slot takes it. Naming title and artist earns the active player a token.
+
+While placing, the turn of a player who is away may be skipped (SkipTurn): the card is thrown
+away and the next player's turn starts. Who is away is the caller's knowledge, not the engine's.
 
 Slot i of a timeline is the gap before card i; slot len(timeline) is the end.
 """
@@ -138,6 +142,18 @@ class NextTurn:
 
 
 @dataclass(frozen=True, slots=True)
+class SkipTurn:
+    """The active player is away: throw the card away and start the next player's turn."""
+
+
+@dataclass(frozen=True, slots=True)
+class Withdraw:
+    """A challenger who is away gives up their guess before locking it in, paying nothing."""
+
+    player: str
+
+
+@dataclass(frozen=True, slots=True)
 class Buy:
     player: str
 
@@ -154,6 +170,8 @@ Action = (
     | Reveal
     | SetNamed
     | NextTurn
+    | SkipTurn
+    | Withdraw
     | Buy
 )
 
@@ -259,6 +277,19 @@ def apply(game: Game, action: Action) -> Game:
                 active = _player(g, g.active)
                 active.tokens = min(g.rules.max_tokens, active.tokens + 1)
             _next_turn(g)
+
+        case SkipTurn():
+            _require(g.phase == "placing", "The card is already locked in")
+            _next_turn(g)
+
+        case Withdraw(player):
+            _require(g.phase == "picking", "There is nothing to pick right now")
+            _require(
+                any(c.player == player and not c.locked for c in g.challenges),
+                "There is no open challenge to withdraw",
+            )
+            g.challenges = [c for c in g.challenges if c.player != player]
+            _settle_picks(g)
 
         case Buy(player):
             # Buying changes the buyer's timeline, so the active player waits until their own

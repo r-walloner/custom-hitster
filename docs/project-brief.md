@@ -31,7 +31,9 @@ A player signs in with Spotify, and a background import copies their saved track
 |---|---|---|---|---|
 | Game rules | Timeline game with a buzzer for challenges | Buzzer quiz; both as modes | Matches the rules the project is modelled on | High |
 | Discord | A plain web link used during a call | Discord Activity; Discord bot | No integration to build; Spotify login inside Discord's iframe is awkward | Medium |
-| Local play | Host screen, phones optional, host can act for anyone | One device only; phones required | Same code path as remote play | Low |
+| Local play | Host screen, phones optional, host can act for anyone who isn't away | One device only; phones required | Same code path as remote play | Low |
+| Away players | Their seat stays; on their turn everyone waits, or the host skips it and the card is thrown away; an away challenger's guess is dropped for free | The host plays for them; the skipped card goes to the next player | Playing for someone absent is a third, confusing way out; the next player would have heard the song already | Low |
+| Leaving and closing | A guest leaving the lobby frees the seat; the host closes the room from the lobby | Rooms only expire after six empty hours | The lobby shows who's really coming; a closed code stops working at once | Low |
 | Backend | Python 3.14, FastAPI | TypeScript on Node | Curation work benefits from Python; matches the prototype | Very high |
 | Frontend | React 19 single-page app built with Vite | Svelte; server-rendered HTML with HTMX | User's choice; live shared state needs a component framework | Very high |
 | Real-time | One WebSocket per client, full state after every change | Diffs; polling | About ten message types and tiny states; nothing to keep in sync | Medium |

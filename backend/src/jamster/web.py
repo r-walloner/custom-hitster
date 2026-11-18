@@ -12,6 +12,7 @@ from fastapi import FastAPI, HTTPException, Request, WebSocket, WebSocketDisconn
 from fastapi.responses import FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
+from starlette.websockets import WebSocketState
 
 from . import db, years
 from .config import Settings
@@ -20,7 +21,7 @@ from .rooms import Rooms, Services
 from .spotify import Spotify, SpotifyError
 
 SESSION_DAYS = 90
-# WebSocket close codes the frontend understands.
+# WebSocket close codes the frontend understands; the room has its own (LEFT_ROOM, ROOM_CLOSED).
 NO_SESSION, NO_SUCH_ROOM = 4401, 4404
 
 log = logging.getLogger(__name__)
@@ -182,7 +183,8 @@ def create_app(
             spotify_id = None
         await room.connect(ws, client_id, spotify_id)
         try:
-            while True:
+            # The room closes the socket itself when its player leaves or the room is closed.
+            while ws.application_state == WebSocketState.CONNECTED:
                 try:
                     raw = await ws.receive_json()
                 except ValueError:

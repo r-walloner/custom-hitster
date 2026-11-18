@@ -45,6 +45,18 @@ class RemovePlayer(_Client):
     player_id: str
 
 
+class LeaveRoom(_Client):
+    """A guest leaves. In the lobby their seat goes; in a game it stays, as an away player."""
+
+    type: Literal["leave_room"]
+
+
+class CloseRoom(_Client):
+    """The host ends the room for everyone, from the lobby."""
+
+    type: Literal["close_room"]
+
+
 class SetSettings(_Client):
     type: Literal["set_settings"]
     settings: RoomSettings
@@ -88,6 +100,12 @@ class RestartPlayback(_Client):
     """Start the song again from the beginning for everyone who hears the music."""
 
     type: Literal["restart_playback"]
+
+
+class SkipTurn(_Client):
+    """The host skips the turn of an away player; the card in play is thrown away."""
+
+    type: Literal["skip_turn"]
 
 
 class Place(_Acting):
@@ -143,6 +161,8 @@ ClientMessage = Annotated[
     Join
     | AddPlayer
     | RemovePlayer
+    | LeaveRoom
+    | CloseRoom
     | SetSettings
     | StartGame
     | EndGame
@@ -152,6 +172,7 @@ ClientMessage = Annotated[
     | RetryPlayback
     | RestartPlayback
     | HoldTurn
+    | SkipTurn
     | Place
     | LockIn
     | Skip
@@ -181,7 +202,8 @@ class PlayerView(BaseModel):
     id: str
     name: str
     is_host: bool
-    connected: bool  # False for hot-seat players and for players who dropped out
+    connected: bool  # False for hot-seat players and for players who are away
+    local: bool  # a hot-seat player, whom the host plays for
     spotify: bool
     library: LibraryView | None
     device: str | None

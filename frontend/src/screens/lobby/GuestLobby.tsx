@@ -10,7 +10,7 @@ import './GuestLobby.css'
 
 /** The lobby as a guest sees it: who's in, waiting for the host, and an optional library. */
 export default function GuestLobby() {
-  const { room, you, host, player, name, isLocal, open } = useRoomTools()
+  const { room, you, host, player, name, isLocal, isAway, send, open } = useRoomTools()
   const remote = room.settings.mode === 'remote'
   const mine = room.players.find((seat) => seat.id === you.player_id)
   const hostName = host?.name ?? 'The host'
@@ -40,14 +40,14 @@ export default function GuestLobby() {
                       : playerStatus(seat, isLocal(seat.id))
                 }
                 you={seat.id === you.player_id}
-                away={!seat.connected && !isLocal(seat.id)}
+                away={isAway(seat.id)}
               />
             ))}
           </div>
           <div className="guest__wait">
             <Status>Waiting for {hostName}</Status>
             <span className="jm-caption">Keep this page open. The game starts here by itself.</span>
-            <Button to="/">Leave room</Button>
+            <Button onClick={() => send({ type: 'leave_room' })}>Leave room</Button>
           </div>
         </section>
         {you.spotify ? (

@@ -27,7 +27,9 @@ export interface RoomTools {
   host: PlayerView | undefined
   /** A hot-seat player, played on the host's device. */
   isLocal: (id: string) => boolean
-  /** Can this device make that player's moves? The host may act for anyone. */
+  /** A player who has left or lost their connection; their seat waits for them. */
+  isAway: (id: string) => boolean
+  /** Can this device make that player's moves? The host may act for anyone who isn't away. */
   canActFor: (id: string) => boolean
   /** `as_player` for a move made for someone else. */
   as: (id: string) => { as_player?: string }

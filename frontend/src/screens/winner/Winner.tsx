@@ -86,7 +86,7 @@ export default function Winner() {
             ) : (
               <>
                 <Status>Waiting for {host?.name ?? 'the host'}</Status>
-                <Button to="/" className="winner__lobby">
+                <Button className="winner__lobby" onClick={() => send({ type: 'leave_room' })}>
                   Leave room
                 </Button>
               </>

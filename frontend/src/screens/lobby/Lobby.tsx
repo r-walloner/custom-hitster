@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Button } from '../../components/Button.tsx'
 import { Icon } from '../../components/Icon.tsx'
 import { QrTile } from '../../components/Input.tsx'
@@ -17,6 +18,7 @@ export default function Lobby() {
   const link = `${location.origin}/room/${room.code}`
   const mine = room.players.find((seat) => seat.id === you.player_id)
   const silent = remote ? room.players.filter((seat) => !seat.spotify) : []
+  const [closing, setClosing] = useState(false)
 
   // The clipboard API only exists on HTTPS and on 127.0.0.1.
   const copy = () =>
@@ -119,8 +121,11 @@ export default function Lobby() {
               {deck.error ?? 'Starting the game failed.'} Try again, or change the setup.
             </p>
           )}
-          <Button to="/" className="app-btn--danger lobby__close">
-            Leave room
+          <Button
+            className="app-btn--danger lobby__close"
+            onClick={() => (closing ? send({ type: 'close_room' }) : setClosing(true))}
+          >
+            {closing ? 'Tap again to close it for everyone' : 'Close room'}
           </Button>
           <Button
             variant="primary"

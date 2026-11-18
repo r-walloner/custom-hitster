@@ -17,6 +17,7 @@ from starlette.testclient import WebSocketTestSession
 from starlette.websockets import WebSocketDisconnect
 
 from jamster import rooms
+from jamster.rooms import LEFT_ROOM, ROOM_CLOSED
 from jamster.web import NO_SUCH_ROOM, create_app
 
 State = dict[str, Any]
@@ -451,3 +452,103 @@ def test_the_next_turn_starts_by_itself_unless_someone_keeps_listening(client: T
         assert room["game"]["turn_number"] == 2, "held: no automatic next turn"
         a.send_json({"type": "next_turn"})
         until(a, state_where(lambda r: r["game"]["turn_number"] == 3))
+
+
+def closed_with(ws: WebSocketTestSession) -> int:
+    """The close code the server ends this socket with, skipping the messages before it."""
+    with pytest.raises(WebSocketDisconnect) as closed:
+        for _ in range(1000):
+            ws.receive_json()
+    return closed.value.code
+
+
+def test_leaving_the_lobby_frees_the_seat_and_closing_ends_the_room(client: TestClient):
+    alice, bob, carol = Browser(client), Browser(client), Browser(client)
+    alice.login("alice")
+    bob.get("/api/me")
+    carol.get("/api/me")
+    code = alice.request("POST", "/api/rooms").json()["code"]
+
+    with alice.socket(code) as a:
+        with bob.socket(code) as b:
+            b.send_json({"type": "join", "name": "Bob"})
+            until(a, state_where(lambda r: len(r["players"]) == 2))
+            b.send_json({"type": "leave_room"})
+            assert closed_with(b) == LEFT_ROOM
+        room = until(a, state_where(lambda r: len(r["players"]) == 1))["room"]
+        assert [p["name"] for p in room["players"]] == ["Alice"]
+
+        a.send_json({"type": "leave_room"})
+        assert until(a, is_type("error"))["message"] == "The host closes the room instead"
+
+        with carol.socket(code) as c:
+            c.send_json({"type": "join", "name": "Carol"})
+            until(a, state_where(lambda r: len(r["players"]) == 2))
+            c.send_json({"type": "close_room"})
+            assert until(c, is_type("error"))["message"] == "Only the host can do that"
+            a.send_json({"type": "close_room"})
+            assert closed_with(a) == ROOM_CLOSED
+            assert closed_with(c) == ROOM_CLOSED
+
+    with carol.socket(code) as c:
+        assert closed_with(c) == NO_SUCH_ROOM
+
+
+def test_an_away_player_keeps_their_seat_and_the_host_may_skip_their_turn(client: TestClient):
+    alice, bob = Browser(client), Browser(client)
+    alice.login("alice")
+    bob.get("/api/me")
+    assert alice.library()["status"] == "done"
+    code = alice.request("POST", "/api/rooms").json()["code"]
+
+    with alice.socket(code) as a:
+        with bob.socket(code) as b:
+            b.send_json({"type": "join", "name": "Bob"})
+            room = until(a, state_where(lambda r: len(r["players"]) == 2))["room"]
+            ids = {p["name"]: p["id"] for p in room["players"]}
+            assert [p["local"] for p in room["players"]] == [False, False]
+            a.send_json(settings(deck_size=10, next_turn_seconds=0))
+            a.send_json({"type": "start_game"})
+            game = until(a, state_where(lambda r: r["game"] is not None))["room"]["game"]
+
+            a.send_json({"type": "skip_turn"})
+            assert until(a, is_type("error"))["message"].endswith("is here to play")
+
+            if game["active"] == ids["Bob"]:  # play Bob's turn, so that Alice's comes next
+                b.send_json({"type": "place", "slot": 0})
+                b.send_json({"type": "lock"})
+                a.send_json({"type": "pass"})
+                until(a, state_where(lambda r: r["game"]["phase"] == "revealed"))
+                a.send_json({"type": "next_turn"})
+                until(a, state_where(lambda r: r["game"]["active"] == ids["Alice"]))
+
+            # Bob challenges, then leaves before guessing: his challenge goes, for free.
+            a.send_json({"type": "place", "slot": 0})
+            a.send_json({"type": "lock"})
+            until(a, state_where(lambda r: r["game"]["phase"] == "challenging"))
+            b.send_json({"type": "buzz"})
+            until(a, state_where(lambda r: r["game"]["phase"] == "picking"))
+            b.send_json({"type": "leave_room"})
+            assert closed_with(b) == LEFT_ROOM
+
+        room = until(a, state_where(lambda r: r["game"]["phase"] == "revealed"))["room"]
+        bob_seat = next(p for p in room["players"] if p["id"] == ids["Bob"])
+        assert (bob_seat["connected"], bob_seat["local"]) == (False, False)
+        assert room["game"]["challenges"] == []
+        assert next(p for p in room["game"]["players"] if p["id"] == ids["Bob"])["tokens"] == 2
+
+        # Bob is on turn but away: the host skips it, and the card is thrown away.
+        a.send_json({"type": "next_turn"})
+        game = until(a, state_where(lambda r: r["game"]["active"] == ids["Bob"]))["room"]["game"]
+        a.send_json({"type": "skip_turn"})
+        skipped = until(a, state_where(lambda r: r["game"]["active"] == ids["Alice"]))
+        after = skipped["room"]["game"]
+        assert after["turn_number"] == game["turn_number"] + 1
+        assert after["deck_remaining"] == game["deck_remaining"] - 1
+        assert [len(p["timeline"]) for p in after["players"]] == [
+            len(p["timeline"]) for p in game["players"]
+        ]
+
+        # Opening the room again in the same browser gives Bob his seat back.
+        with bob.socket(code) as b:
+            assert until(b, is_type("state"))["you"]["player_id"] == ids["Bob"]

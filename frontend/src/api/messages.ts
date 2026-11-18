@@ -21,7 +21,8 @@ export interface PlayerView {
   id: string
   name: string
   is_host: boolean
-  connected: boolean
+  connected: boolean // false for local players and for players who are away
+  local: boolean // a hot-seat player, whom the host plays for
   spotify: boolean
   library: Library | null
   device: string | null
@@ -118,13 +119,14 @@ export type ClientMessage =
   | { type: 'join'; name: string }
   | { type: 'add_player'; name: string }
   | { type: 'remove_player'; player_id: string }
+  | { type: 'leave_room' | 'close_room' }
   | { type: 'set_settings'; settings: RoomSettings }
   | { type: 'start_game' | 'end_game' }
   | { type: 'get_devices' | 'test_playback' | 'retry_playback' | 'restart_playback' | 'hold_turn' }
   | { type: 'set_device'; device_id: string | null; name: string | null }
   | ({ type: 'place' | 'pick_slot'; slot: number } & Acting)
   | ({ type: 'lock' | 'lock_pick' | 'skip' | 'buzz' | 'pass' | 'buy' } & Acting)
-  | { type: 'reveal' | 'next_turn' }
+  | { type: 'reveal' | 'next_turn' | 'skip_turn' }
   | { type: 'set_named'; value: boolean }
 
 export type Send = (message: ClientMessage) => void

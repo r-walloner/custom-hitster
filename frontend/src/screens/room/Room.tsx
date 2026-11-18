@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 import type { ReactNode } from 'react'
-import { useParams } from 'react-router'
+import { Navigate, useParams } from 'react-router'
 import type { Me } from '../../api/http.ts'
 import { useMe } from '../../api/useMe.ts'
 import { useRoom } from '../../api/useRoom.ts'
@@ -23,6 +23,7 @@ import type { Flash } from './components/RoomToast.tsx'
 import { RoomContext } from './context.ts'
 import type { DialogName, RoomTools, Subscreen } from './context.ts'
 import Reconnecting from './Reconnecting.tsx'
+import RoomClosed from './RoomClosed.tsx'
 import RoomNotFound from './RoomNotFound.tsx'
 import { allowedView, pickScreen } from './screen.ts'
 import type { ScreenKind } from './screen.ts'
@@ -55,15 +56,22 @@ function Connected({ code, me }: { code: string; me: Me }) {
   const [view, setView] = useState<Subscreen | DialogName | null>(null)
   const [flash, setFlash] = useState<Flash | null>(null)
   const endFlash = useCallback(() => setFlash(null), [])
-  const seen = usePresence(state, (seat, key) =>
+  usePresence(state, (seat, key) =>
     setFlash({
       tone: 'heads-up',
-      text: `${seat.name}'s connection dropped. The seat is safe.`,
+      text: `${seat.name} is away. The seat is kept for them.`,
       id: `drop-${key}`,
     }),
   )
 
   if (connection === 'not_found') return <RoomNotFound code={code} />
+  if (connection === 'left' || (connection === 'closed' && state?.you.is_host)) {
+    return <Navigate to="/" replace />
+  }
+  if (connection === 'closed') {
+    const host = state?.room.players.find((seat) => seat.is_host)?.name
+    return <RoomClosed code={code} host={host} />
+  }
   if (!state) {
     if (connection === 'failed') {
       return (
@@ -89,7 +97,7 @@ function Connected({ code, me }: { code: string; me: Me }) {
     devices: room.devices,
     playbackTest: room.playbackTest,
     songStart: room.songStart,
-    ...seatHelpers(state, seen),
+    ...seatHelpers(state),
     open: setView,
     close: () => setView(null),
     toast: (tone, text) => setFlash({ tone, text, id: `${Date.now()}` }),

@@ -1,14 +1,17 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ClientMessage, Device, ServerMessage, StateMessage } from './messages.ts'
 
-// Close codes sent by the backend (web.py).
+// Close codes sent by the backend (web.py and rooms.py).
 const NO_SESSION = 4401
 const NO_SUCH_ROOM = 4404
+const LEFT_ROOM = 4200
+const ROOM_CLOSED = 4410
 const RECONNECT_MS = 1000
 /** After this many failed reconnects in a row, stop and offer a reload. */
 const MAX_ATTEMPTS = 10
 
-export type Connection = 'connecting' | 'open' | 'not_found' | 'failed'
+/** `left`: this browser left the room. `closed`: the host closed it. */
+export type Connection = 'connecting' | 'open' | 'not_found' | 'failed' | 'left' | 'closed'
 
 export interface Notice {
   ok: boolean
@@ -66,6 +69,8 @@ export function useRoom(code: string) {
       ws.onclose = (event) => {
         if (stopped) return
         if (event.code === NO_SUCH_ROOM) return setConnection('not_found')
+        if (event.code === LEFT_ROOM) return setConnection('left')
+        if (event.code === ROOM_CLOSED) return setConnection('closed')
         // A missing session cookie is fixed by loading the page again.
         if (event.code === NO_SESSION) return location.reload()
         failures += 1
