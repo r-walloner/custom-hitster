@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import { Gap, PickCard, SongCard } from '../../../components/SongCard.tsx'
 import type { Song } from '../../../components/types.ts'
 import { useScrollBar } from '../../../components/useScrollBar.ts'
+import { useWheelScrollsSideways } from '../../../components/useWheelScrollsSideways.ts'
 import './Board.css'
 
 /** One thing on a board's row, left to right. */
@@ -34,12 +35,13 @@ interface BoardProps {
 
 /**
  * The active player's timeline, full width along the bottom, oldest on the left. Cards keep their
- * fixed width; when the row doesn't fit it scrolls sideways with a bar under it, and the pick being
- * placed is kept in view.
+ * fixed width; when the row doesn't fit it scrolls sideways with a bar under it (the mouse wheel
+ * scrolls it too), and the pick being placed is kept in view.
  */
 export function Board({ owner, count, items, spaced, label }: BoardProps) {
   const row = useRef<HTMLDivElement>(null)
   const scroll = useScrollBar(row, 'x')
+  useWheelScrollsSideways(row)
 
   // Keep the pick being placed in the middle when it moves.
   useEffect(() => {
