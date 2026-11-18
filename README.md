@@ -92,9 +92,6 @@ Remove an item once the backend provides it and the screen uses it.
 - **When the library was copied.**
   The Account screen's "Copied 3 days ago" needs the time of the last import, which isn't stored.
   Meanwhile the line is left out.
-- **Spotify places left.**
-  The guest lobby's "3 of 5 Spotify spots left" needs to know how many accounts the Spotify app allows and uses.
-  Meanwhile it says the account needs the host's approval.
 - **Premium.**
   The Account header's "Spotify Premium" can't be known: Spotify no longer reports it.
   Meanwhile it says "Spotify".

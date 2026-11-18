@@ -233,7 +233,7 @@
     },
     "why_join": {
       "fill": "orange",
-      "text": "• Joining asks for a name only. The people already at the table show beside it, so you know you're in the right room.\n• Every screen around the game says where you are in the header: Mara's room, players, First to N.\n• Guests can add their library later from the lobby. It's optional and says how many Spotify spots are left.\n• Action feedback is one toast at a time, bottom centre, gone after 4 seconds. Playback problems are toasts too (music dropped → Retry, speaker failed → Change), not screens of their own.\n• Toast wording: what happened, then one short fact. Nothing more.",
+      "text": "• Joining asks for a name only. The people already at the table show beside it, so you know you're in the right room.\n• Every screen around the game says where you are in the header: Mara's room, players, First to N.\n• Guests can add their library later from the lobby. It's optional and says the account needs the host's approval.\n• Action feedback is one toast at a time, bottom centre, gone after 4 seconds. Playback problems are toasts too (music dropped → Retry, speaker failed → Change), not screens of their own.\n• Toast wording: what happened, then one short fact. Nothing more.",
       "w": 560,
       "x": -640,
       "y": 750
