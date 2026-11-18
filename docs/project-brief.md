@@ -90,7 +90,7 @@ Deliberately left out:
 **Built.**
 
 - Backend: Spotify login and token refresh, library listing and copying of picked sources, MusicBrainz year resolver, curation interface with the default strategy, deck builder, rules engine, rooms with playback control, HTTP and WebSocket layer, SQLite store.
-- Frontend: home page (sign in, library, create or join a room), lobby (players, settings, device picker, start), game board with controls for every phase.
+- Frontend: home page (join, log in, and once logged in host a game and manage the account), library picker (also opened from the lobby), lobby (players, settings, device picker, start), game board with controls for every phase.
 - Operations: `Dockerfile`, `compose.yaml`, `.env.example`.
 - Tests: 82, covering the engine, year picking, curation, picked library sources, the opening deal and whole games against a fake Spotify.
 

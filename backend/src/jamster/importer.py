@@ -174,7 +174,7 @@ class Importer:
             patience=PATIENCE,
         )
         newest = (body.get("items") or [{}])[0].get("added_at", "")
-        # In the order the Account screen shows them, which is also the order they are copied in.
+        # In the order the library screen shows them, which is also the order they are copied in.
         listed = [
             db.Listed("recent", "recent", "Recently played", None, now),
             db.Listed("top", "top", "Your top songs", None, now),
@@ -265,7 +265,7 @@ class Importer:
         return max(1, math.ceil((source.songs or 0) / PAGE))
 
     def _progress(self, player_id: str, source: db.Source, done: int, total: int) -> None:
-        """Report how far a copy is. The Account screen draws its progress bar from this."""
+        """Report how far a copy is. The library screen draws its progress bar from this."""
         self._set(player_id, "running", f"Copying {source.name}: {done} of {total} requests")
 
     def _page_done(self, player_id: str, source: db.Source, number: int, total: int) -> None:

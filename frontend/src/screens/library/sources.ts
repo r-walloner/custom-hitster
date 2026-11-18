@@ -1,7 +1,7 @@
 import type { LibraryDetails, Source } from '../../api/http.ts'
 import { fmt, plural } from '../../words.ts'
 
-// The Account screen's picker of library sources, in words.
+// The library screen's picker of library sources, in words.
 
 const KINDS: Record<Source['kind'], string> = {
   liked: "Everything you've hearted",

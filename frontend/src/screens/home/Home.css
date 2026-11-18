@@ -30,3 +30,58 @@
   height: 2px;
   background: var(--sand-line);
 }
+
+/* Logged in, the panel holds a little more, so its rows sit a little closer. */
+.app-cover__panel.home--in {
+  gap: 8px;
+}
+
+.app-cover__panel.home--in .home__or {
+  margin: 0;
+}
+
+/* Who is logged in, and the way to their account. */
+.home__you {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--sand-line);
+}
+
+.home__name {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  font-size: 15px;
+}
+
+.home__name b {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Your songs, with the deck's song count at its right end. */
+.home__songs .home__note {
+  margin-left: auto;
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* The account pop-up: the name row between lines, like the game menu's speaker row. */
+.jm-setting.home__setting {
+  gap: 10px;
+  border-top: 2px solid var(--sand-line);
+  border-bottom: 2px solid var(--sand-line);
+}
+
+.home__link {
+  justify-content: space-between;
+}
+
+/* The delete pop-up's buttons keep a little distance from its text. */
+.home__delete-actions {
+  margin-top: 6px;
+}

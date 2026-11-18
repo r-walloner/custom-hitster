@@ -474,7 +474,7 @@ class Room:
                 seat, spotify_id = self._spotify_seat(client_id)
                 uri = db.random_track_uri(self._s.conn, spotify_id)
                 if uri is None:
-                    raise RoomError("Pick songs for the deck on your account page first")
+                    raise RoomError("Pick your songs for the deck first")
                 error = await self._play_one(seat, uri, 0)
                 self.log.info("%s tested playback: %s", seat.name, error or "it works")
                 text = error or f"Playing {TEST_PLAYBACK_SECONDS} seconds from your library"
@@ -1000,7 +1000,7 @@ class Rooms:
         return self._rooms.get(code.upper())
 
     def rename_spotify_player(self, spotify_id: str, name: str) -> None:
-        """A player renamed themselves on the Account page; lobbies they sit in follow."""
+        """A player renamed themselves on the main menu; lobbies they sit in follow."""
         for room in self._rooms.values():
             seat = next((s for s in room.seats if s.spotify_id == spotify_id), None)
             if room.game is None and seat is not None and seat.name != name:

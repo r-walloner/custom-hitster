@@ -23,16 +23,17 @@ Jamster is a private tool and cannot become a public one.
 
 ### Before the game
 
-1. Choose "Host with Spotify" on the home page and sign in.
+1. Choose "Log in with Spotify" on the home page. Logged in, the home page also offers Host a game, Your songs and your account (name, sign out, delete).
    The server lists your library within seconds: your liked songs, the playlists you own or collaborate on, your top songs and your recent plays.
-   On the Account page you tick which of them go into the deck, and only the ticked ones are copied, one at a time; unticking one stops its copy.
+   On the Your songs screen you tick which of them go into the deck, and only the ticked ones are copied, one at a time; unticking one stops its copy.
+   You reach it from the home page, and from the lobby, so every signed-in player can change their picks until the host starts.
    Recent plays, top songs and liked songs sit at the top, in that order, and are ticked to begin with; your playlists follow in the order Spotify lists them.
-   Refresh library lists the library again and imports only what changed.
+   Refresh on that screen lists the library again and imports only what changed.
 2. Create a room and share its link or four-letter code.
 3. Others join with a nickname.
    Signing in with Spotify is optional and adds their library to the deck.
    Anyone can change their name in the lobby, and the host can rename local players.
-   A signed-in player's name is saved with their account, so it comes back in the next room; the Account page can change it too.
+   A signed-in player's name is saved with their account, so it comes back in the next room; the Account pop-up on the home page can change it too.
 4. The host can add local players, who have no phone; the host's screen shows their buttons on their own rows, so one device is enough.
 5. The host chooses where the music plays in the game settings: on one speaker (the host's Spotify, same room) or on everyone's own Spotify (remote).
 6. Each player whose Spotify plays music picks a speaker and plays a 5-second test on the speaker screen.

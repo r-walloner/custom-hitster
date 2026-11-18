@@ -7,8 +7,8 @@ export type ScreenKind = 'join' | 'lobby' | 'guest' | 'dealing' | 'game' | 'winn
 // The sub-screens and pop-ups each screen can open.
 const VIEWS: Record<ScreenKind, (Subscreen | DialogName)[]> = {
   join: [],
-  lobby: ['settings', 'playback', 'addPlayer', 'rename'],
-  guest: ['playback', 'rename'],
+  lobby: ['settings', 'playback', 'library', 'addPlayer', 'rename'],
+  guest: ['playback', 'library', 'rename'],
   dealing: [],
   game: ['playback', 'menu', 'scoreboard'],
   winner: [],

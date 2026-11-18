@@ -151,7 +151,7 @@ def create_app(
 
     @app.get("/api/me/library")
     async def my_library(request: Request) -> dict[str, Any]:
-        """The library's state and its sources, for the Account screen's picker."""
+        """The library's state and its sources, for the library screen's picker."""
         player, importer = require_player(request), services(request).importer
         library, copying = importer.status(player.id), importer.copying(player.id)
         return {

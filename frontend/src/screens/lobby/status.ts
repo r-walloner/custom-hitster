@@ -16,6 +16,13 @@ export function libraryStatus(library: Library | null): string {
   }
 }
 
+/** The host's own songs, for the setup panel: as short as the panel's other values. */
+export function songCount(library: Library | null): string {
+  if (!library || library.status === 'none') return 'None imported yet'
+  if (library.status === 'running') return 'Importing…'
+  return plural(library.tracks, 'song')
+}
+
 /** A player's status in the lobby lists. */
 export function playerStatus(player: PlayerView, local: boolean): string {
   if (local) return 'Local player'

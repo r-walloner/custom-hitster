@@ -14,7 +14,7 @@ export default function DeleteAccount({ onDelete, onClose }: DeleteAccountProps)
         This removes your Jamster account and all imported data. Your Spotify account will not be
         touched.
       </p>
-      <ButtonPair className="account__delete-actions">
+      <ButtonPair className="home__delete-actions">
         <Button onClick={onClose} autoFocus>
           Cancel
         </Button>

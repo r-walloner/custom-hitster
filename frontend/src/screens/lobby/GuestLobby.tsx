@@ -67,7 +67,10 @@ export default function GuestLobby() {
             <h2 id="bring-head" className="jm-headline">
               {libraryStatus(mine?.library ?? null)}
             </h2>
-            <p className="jm-meta">Songs from your library can turn up in this game's deck.</p>
+            <p className="jm-meta">
+              Songs from your library can turn up in this game's deck. Pick which until the game
+              starts.
+            </p>
             {remote && (
               <SettingRow
                 label="Music plays on"
@@ -76,6 +79,10 @@ export default function GuestLobby() {
                 <Button onClick={() => open('playback')}>Change</Button>
               </SettingRow>
             )}
+            <Button onClick={() => open('library')} className="guest__add">
+              <Icon name="music" />
+              Choose songs
+            </Button>
           </aside>
         ) : (
           <aside className="jm-panel guest__bring" aria-labelledby="bring-head">

@@ -14,6 +14,7 @@ import Standings from '../game/Standings.tsx'
 import AddPlayer from '../lobby/AddPlayer.tsx'
 import GuestLobby from '../lobby/GuestLobby.tsx'
 import JoinName from '../lobby/JoinName.tsx'
+import Library from '../library/Library.tsx'
 import Lobby from '../lobby/Lobby.tsx'
 import Rename from '../lobby/Rename.tsx'
 import Playback from '../playback/Playback.tsx'
@@ -112,6 +113,7 @@ function Connected({ code, me }: { code: string; me: Me }) {
   let screen = SCREENS[kind]()
   if (shown === 'settings') screen = <Settings />
   if (shown === 'playback') screen = <Playback />
+  if (shown === 'library') screen = <Library onBack={tools.close} backLabel="Back to the lobby" />
 
   let dialog: ReactNode = null
   if (shown === 'addPlayer') dialog = <AddPlayer />

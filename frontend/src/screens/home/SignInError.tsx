@@ -1,3 +1,4 @@
+import { loginUrl } from '../../api/http.ts'
 import { Button } from '../../components/Button.tsx'
 import { CoverScreen } from '../../components/CoverScreen.tsx'
 import { Verdict } from '../../components/SongCard.tsx'
@@ -10,20 +11,23 @@ interface Reason {
   secondary: [string, string]
 }
 
+/** Stands for the Spotify login, which comes back to Home. */
+const LOG_IN = 'log in'
+
 const REASONS: Record<string, Reason> = {
   notApproved: {
     tag: 'Not approved yet',
     head: "Spotify hasn't approved this account for Jamster.",
     body: 'Jamster is private, so the host adds each Spotify account by hand. Send the host the email you use for Spotify, then try again.',
-    primary: ['Try again', '/account'],
+    primary: ['Try again', LOG_IN],
     secondary: ['Back', '/'],
   },
   notPremium: {
     tag: 'No Premium',
     head: "This account can't play the music.",
     body: "Playing songs needs Spotify Premium. Your library can still go into the deck, and another player's speaker plays it.",
-    primary: ['Continue', '/account'],
-    secondary: ['Use another account', '/account'],
+    primary: ['Continue', '/'],
+    secondary: ['Use another account', LOG_IN],
   },
   full: {
     tag: 'Five accounts in',
@@ -36,17 +40,20 @@ const REASONS: Record<string, Reason> = {
     tag: 'Cancelled',
     head: 'Sign-in was cancelled.',
     body: "Spotify didn't send a login back, so nothing was saved.",
-    primary: ['Try again', '/account'],
+    primary: ['Try again', LOG_IN],
     secondary: ['Back', '/'],
   },
   network: {
     tag: 'No connection',
     head: "Couldn't reach Spotify.",
     body: 'Check your connection and try again. Nothing is lost.',
-    primary: ['Try again', '/account'],
+    primary: ['Try again', LOG_IN],
     secondary: ['Back', '/'],
   },
 }
+
+/** A route, or the Spotify login (a full page load, so it isn't a route). */
+const target = (to: string) => (to === LOG_IN ? { href: loginUrl('/') } : { to })
 
 // The codes the backend redirects with (web.py: /?error=…), mapped onto the designed reasons.
 const BACKEND_CODES: Record<string, string> = {
@@ -65,10 +72,10 @@ export function SignInError({ reason }: { reason: string }) {
           {r.head}
         </h1>
         <p className="jm-meta">{r.body}</p>
-        <Button to={r.primary[1]} variant="primary" className="app-cover__big-btn app-cover__error-first">
+        <Button {...target(r.primary[1])} variant="primary" className="app-cover__big-btn app-cover__error-first">
           {r.primary[0]}
         </Button>
-        <Button to={r.secondary[1]} className="app-cover__big-btn">
+        <Button {...target(r.secondary[1])} className="app-cover__big-btn">
           {r.secondary[0]}
         </Button>
       </section>

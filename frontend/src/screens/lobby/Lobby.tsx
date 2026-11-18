@@ -5,9 +5,10 @@ import { QrTile } from '../../components/Input.tsx'
 import { Logo } from '../../components/Logo.tsx'
 import { PlayerRow, SettingRow } from '../../components/Rows.tsx'
 import { Header, RoomMeta, Screen, Spacer } from '../../components/Screen.tsx'
+import { ScrollArea } from '../../components/ScrollArea.tsx'
 import { names, plural } from '../../words.ts'
 import { useRoomTools } from '../room/context.ts'
-import { playerStatus } from './status.ts'
+import { playerStatus, songCount } from './status.ts'
 import './Lobby.css'
 
 /** The host's lobby: getting people in, who's in, and setup with Start game. */
@@ -37,6 +38,12 @@ export default function Lobby() {
           players={room.players.length}
           toWin={settings.cards_to_win}
         />
+        <Button
+          className="app-btn--danger"
+          onClick={() => (closing ? send({ type: 'close_room' }) : setClosing(true))}
+        >
+          {closing ? 'Tap again to close it for everyone' : 'Close room'}
+        </Button>
       </Header>
       <div className="lobby">
         <section className="jm-panel lobby__invite" aria-labelledby="code-label">
@@ -106,26 +113,35 @@ export default function Lobby() {
 
         <aside className="lobby__setup">
           <section className="jm-panel lobby__rules" aria-label="Game setup">
-            <SettingRow
-              label="Music plays on"
-              value={remote ? "Everyone's own Spotify" : (mine?.device ?? 'Your active Spotify device')}
-              caption={
-                silent.length > 0
-                  ? `Without Spotify, ${names(silent.map((seat) => seat.name))} won't hear it.`
-                  : remote
-                    ? `Yours: ${mine?.device ?? 'your active device'}`
-                    : undefined
-              }
-            >
-              <Button onClick={() => open('playback')}>Change</Button>
-            </SettingRow>
-            <SettingRow
-              label="Rules"
-              value={`First to ${plural(settings.cards_to_win, 'card')}`}
-              caption={`${plural(settings.starting_tokens, 'token')} each, ${settings.challenge_seconds} s to challenge, ${plural(settings.deck_size, 'song')}`}
-            >
-              <Button onClick={() => open('settings')}>Change</Button>
-            </SettingRow>
+            {/* Long captions (remote play, several players without Spotify) can outgrow the
+                screen; then the rows scroll and Start game stays put. */}
+            <ScrollArea className="lobby__rules-rows">
+              <SettingRow
+                label="Music plays on"
+                value={remote ? "Everyone's Spotify" : (mine?.device ?? 'Your active Spotify device')}
+                caption={
+                  silent.length > 0
+                    ? `Without Spotify, ${names(silent.map((seat) => seat.name))} won't hear it.`
+                    : remote
+                      ? `Yours: ${mine?.device ?? 'your active device'}`
+                      : undefined
+                }
+              >
+                <Button onClick={() => open('playback')}>Change</Button>
+              </SettingRow>
+              <SettingRow
+                label="Rules"
+                value={`First to ${plural(settings.cards_to_win, 'card')}`}
+                caption={`${plural(settings.starting_tokens, 'token')} each, ${settings.challenge_seconds} s to challenge, ${plural(settings.deck_size, 'song')}`}
+              >
+                <Button onClick={() => open('settings')}>Change</Button>
+              </SettingRow>
+              {you.spotify && (
+                <SettingRow label="Your songs" value={songCount(mine?.library ?? null)}>
+                  <Button onClick={() => open('library')}>Change</Button>
+                </SettingRow>
+              )}
+            </ScrollArea>
           </section>
           {deck.status === 'error' && (
             <p className="jm-caption" role="alert">
@@ -133,14 +149,9 @@ export default function Lobby() {
             </p>
           )}
           <Button
-            className="app-btn--danger lobby__close"
-            onClick={() => (closing ? send({ type: 'close_room' }) : setClosing(true))}
-          >
-            {closing ? 'Tap again to close it for everyone' : 'Close room'}
-          </Button>
-          <Button
             variant="primary"
             size="xl"
+            className="lobby__start"
             disabled={deck.status === 'dealing'}
             onClick={() => send({ type: 'start_game' })}
           >

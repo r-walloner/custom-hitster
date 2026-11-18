@@ -8,7 +8,7 @@ import { ScrollArea } from '../../../components/ScrollArea.tsx'
 import { importProgress, matching, sourceCount, sourceDetail, summary } from '../sources.ts'
 import { useJustImported } from '../useJustImported.ts'
 
-// The account's library panel: the picker of what goes in the deck, or, before the library's
+// The library screen's panel: the picker of what goes in the deck, or, before the library's
 // sources are known, reading them or the way to start.
 
 interface PickerProps {
@@ -26,8 +26,8 @@ export function Picker({ library, onPick }: PickerProps) {
     onPick(Object.fromEntries(sources.map((source) => [source.id, picked])))
 
   return (
-    <section className="jm-panel account__panel" aria-labelledby="lib-head">
-      <div className="account__head">
+    <section className="jm-panel library__panel" aria-labelledby="lib-head">
+      <div className="library__head">
         <h1 id="lib-head" className="jm-section">
           What goes in the deck
         </h1>
@@ -40,9 +40,9 @@ export function Picker({ library, onPick }: PickerProps) {
           {library.detail} Refresh the library to try again.
         </p>
       )}
-      <div className="account__tools">
+      <div className="library__tools">
         <SearchInput
-          className="account__search"
+          className="library__search"
           placeholder="Search your playlists"
           aria-label="Search your playlists"
           value={query}
@@ -51,7 +51,7 @@ export function Picker({ library, onPick }: PickerProps) {
         <Button onClick={() => all(true)}>All</Button>
         <Button onClick={() => all(false)}>None</Button>
       </div>
-      <ScrollArea className="account__list" role="group" aria-label="Library sources">
+      <ScrollArea className="library__list" role="group" aria-label="Library sources">
         {shown.map((source) => {
           const progress = importProgress(source, library, justImported.has(source.id))
           return (
@@ -60,7 +60,7 @@ export function Picker({ library, onPick }: PickerProps) {
               name={source.name}
               detail={
                 progress !== null ? (
-                  <span className="account__importing">
+                  <span className="library__importing">
                     <Progress
                       small
                       value={Math.round(progress * 100)}
@@ -80,7 +80,7 @@ export function Picker({ library, onPick }: PickerProps) {
           )
         })}
         {shown.length === 0 && (
-          <p className="jm-caption account__none">Nothing called that in your library.</p>
+          <p className="jm-caption library__none">Nothing called that in your library.</p>
         )}
       </ScrollArea>
     </section>
@@ -90,7 +90,7 @@ export function Picker({ library, onPick }: PickerProps) {
 /** Spotify is listing the library's sources; this takes a few seconds. */
 export function Listing() {
   return (
-    <section className="jm-panel account__panel account__listing" aria-live="polite">
+    <section className="jm-panel library__panel library__listing" aria-live="polite">
       <p className="jm-meta">Looking through your library…</p>
     </section>
   )
@@ -104,17 +104,17 @@ interface NotImportedProps {
 
 export function NotImported({ problem, onImport }: NotImportedProps) {
   return (
-    <section className="jm-panel account__panel" aria-labelledby="lib-head">
+    <section className="jm-panel library__panel" aria-labelledby="lib-head">
       <span className="jm-label">Your library</span>
       <h1 id="lib-head" className="jm-moment__headline">
         {problem ? "Your library couldn't be read." : "Your library isn't in yet."}
       </h1>
-      <p className="jm-meta account__intro" role={problem ? 'alert' : undefined}>
+      <p className="jm-meta library__intro" role={problem ? 'alert' : undefined}>
         {problem ??
           'We list your liked songs, playlists and top songs. You pick which go into the deck.'}
       </p>
-      <div className="account__start">
-        <Button variant="primary" className="account__import" onClick={onImport}>
+      <div className="library__start">
+        <Button variant="primary" className="library__import" onClick={onImport}>
           {problem ? 'Try again' : 'Import my library'}
         </Button>
         <span className="jm-caption">Takes a few seconds.</span>

@@ -52,7 +52,7 @@ npm create vite@latest frontend -- --template react-ts --no-interactive
 - `frontend/src/`:
   - `api/`: talking to the backend. `messages.ts` (the socket messages), `http.ts` (REST calls), `useRoom.ts` (the room socket), `useMe.ts`.
   - `components/`: the reusable components, props in and markup out: generic building blocks (buttons, inputs, rows, year chips, dialog, toast, stepper) and anything several screen folders use. Most wrap the design system's `jm-` classes. `types.ts` holds the shapes they draw (`Player`, `Song`).
-  - `screens/`: one folder per area of the design's screen boards. `room/` is the `/room/:code` page: `Room.tsx` connects, picks the stage from the room state, and shows toasts, Reconnecting and RoomNotFound; `context.ts` gives every room screen `useRoomTools()`. `lobby/`, `dealing/`, `game/` and `winner/` are the stages it shows; `settings/` and `playback/` are its sub-screens. `game/` switches on the phase; `game/phases/` holds the four phase screens.
+  - `screens/`: one folder per area of the design's screen boards. `room/` is the `/room/:code` page: `Room.tsx` connects, picks the stage from the room state, and shows toasts, Reconnecting and RoomNotFound; `context.ts` gives every room screen `useRoomTools()`. `lobby/`, `dealing/`, `game/` and `winner/` are the stages it shows; `settings/`, `playback/` and `library/` are its sub-screens. `library/` (Your songs, the deck picker) is also the `/library` page, reached from `home/`, which is also the logged-in player's menu (host, your songs, the Account pop-up). `game/` switches on the phase; `game/phases/` holds the four phase screens.
   - `words.ts`: numbers and lists in words.
 - Where frontend code goes:
   - A screen folder holds its screens at the top: each design board, dialogs included, with its `.css`.
@@ -76,7 +76,7 @@ npm create vite@latest frontend -- --template react-ts --no-interactive
 - Call MusicBrainz only through `YearResolver`, which keeps to one request per second.
 - Logging: game and room events at INFO, as one short readable sentence each (names, not ids); outside calls and refused requests at DEBUG; failures the app survives at WARNING. Don't log the same fact twice. Never log tokens or secrets.
 - Tests never touch the network, and never read `.env`: build settings with `OfflineSettings` from `tests/offline_settings.py`. Use `FakeSpotify` as the `transport` of `create_app`.
-- Inside `/room/:code` the room state picks the screen; sub-screens (settings, playback) and pop-ups (add player, menu, scoreboard) are component state in `screens/room/Room.tsx`, not routes.
+- Inside `/room/:code` the room state picks the screen; sub-screens (settings, playback, library) and pop-ups (add player, menu, scoreboard) are component state in `screens/room/Room.tsx`, not routes.
 - Backend work the designed screens still need is listed under "Backend TODOs for the designed screens" in `README.md`. Check it before changing the backend or a screen's fallback, and update it when an item is done.
 - In `frontend/vite.config.ts`, keep proxy entries in object form. The string shorthand rewrites the Host header, which breaks the Spotify callback URL.
 - Check `uv.lock` and `package-lock.json` in whenever dependencies change.

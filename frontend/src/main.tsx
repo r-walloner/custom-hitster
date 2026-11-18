@@ -5,8 +5,8 @@ import './styles/tokens.css'
 import './styles/jamster.css'
 import './styles/app.css'
 import { Fit } from './components/Fit.tsx'
-import Account from './screens/account/Account.tsx'
 import Home from './screens/home/Home.tsx'
+import LibraryPage from './screens/library/LibraryPage.tsx'
 import Room from './screens/room/Room.tsx'
 
 createRoot(document.getElementById('root')!).render(
@@ -16,7 +16,7 @@ createRoot(document.getElementById('root')!).render(
         <Route element={<Fit />}>
           {/* `/?error=` stays: the backend redirects failed sign-ins there. */}
           <Route path="/" element={<Home />} />
-          <Route path="/account" element={<Account />} />
+          <Route path="/library" element={<LibraryPage />} />
           {/* Inside a room the room's state picks the screen; sub-screens and pop-ups are state too. */}
           <Route path="/room/:code" element={<Room />} />
           <Route path="*" element={<Home />} />

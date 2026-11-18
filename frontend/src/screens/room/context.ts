@@ -5,7 +5,7 @@ import type { PlaybackTest } from '../../api/useRoom.ts'
 import type { Player } from '../../components/types.ts'
 
 /** Screens that replace the room's screen until closed. */
-export type Subscreen = 'settings' | 'playback'
+export type Subscreen = 'settings' | 'playback' | 'library'
 /** Pop-ups over the room's screen. */
 export type DialogName = 'addPlayer' | 'rename' | 'menu' | 'scoreboard'
 export type ToastTone = 'right' | 'wrong' | 'heads-up'

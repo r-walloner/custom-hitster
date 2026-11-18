@@ -19,7 +19,7 @@ export interface Source {
   copying: boolean
 }
 
-/** The library with its sources, for the Account screen. */
+/** The library with its sources, for the library screen. */
 export interface LibraryDetails extends Library {
   /** When the sources were last listed, as an ISO time; null before the first listing. */
   refreshed_at: string | null

@@ -25,8 +25,8 @@ const CARDS: FloatingCard[] = [
 ]
 
 /**
- * A cover screen: the cover art on the left, one panel on the right. Home, a sign-in error and a
- * missing room use it.
+ * A cover screen: the cover art on the left, one panel on the right. Home, the sign-in error and
+ * a missing room use it.
  */
 export function CoverScreen({ children }: { children: ReactNode }) {
   return (

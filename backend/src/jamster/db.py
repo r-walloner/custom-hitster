@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS sources (
     id TEXT NOT NULL,                            -- liked | top | recent | playlist:<Spotify id>
     kind TEXT NOT NULL,                          -- liked | top | recent | playlist | collaborative
     name TEXT NOT NULL,
-    position INTEGER NOT NULL,                   -- order on the Account screen
+    position INTEGER NOT NULL,                   -- order on the library screen
     songs INTEGER,                               -- as Spotify counts them; NULL until known
     picked INTEGER NOT NULL,                     -- 1 if its songs may go into decks
     version TEXT NOT NULL,                       -- changes when the contents may have changed

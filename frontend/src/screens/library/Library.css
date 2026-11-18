@@ -1,0 +1,116 @@
+.library {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 6px 0 2px;
+}
+
+.library > p {
+  margin: 0;
+}
+
+.library__done {
+  min-width: 96px;
+  font-size: 15px;
+}
+
+.library__panel {
+  flex: 1;
+  min-height: 0;
+  padding: 12px 14px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.library__panel p {
+  margin: 0;
+}
+
+.library__head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.library__head .jm-caption {
+  margin-left: auto;
+}
+
+.library__tools {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.library__tools .jm-btn {
+  padding: 0 12px;
+}
+
+.library__search {
+  flex: 1;
+  min-width: 0;
+}
+
+.library__list {
+  flex: 1;
+  margin: 0 -6px;
+}
+
+.library__list .app-scroll__box {
+  padding: 0 2px;
+}
+
+/* A source being imported: a tiny bar, then "Importing…". */
+.library__importing {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.library__importing .jm-progress {
+  flex: none;
+  width: 96px;
+  height: 8px;
+  border-width: 1.5px;
+}
+
+/* Each step slides, so the jumps read as progress. */
+.library__importing .jm-progress > span {
+  transition: width 300ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .library__importing .jm-progress > span {
+    transition: none;
+  }
+}
+
+.library__panel .library__none {
+  margin: 12px 6px;
+}
+
+.library__intro {
+  max-width: 420px;
+}
+
+/* Before the sources are known: one line in the middle of the panel. */
+.library__listing {
+  align-items: center;
+  justify-content: center;
+}
+
+.library__start {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.library__import {
+  min-width: 180px;
+  font-size: 15px;
+}
+
