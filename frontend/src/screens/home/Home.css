@@ -70,6 +70,11 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* While picked sources import: "Importing…" over one bar for all of them, where the count goes. */
+.home__songs .home__importing {
+  margin-left: auto;
+}
+
 /* The account pop-up: the name row between lines, like the game menu's speaker row. */
 .jm-setting.home__setting {
   gap: 10px;

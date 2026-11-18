@@ -7,13 +7,15 @@ import { fmt } from '../../words.ts'
 export const songsLabel = (library: Library) =>
   library.status === 'none' ? 'Import my library' : 'Your songs'
 
-/** The short note at the button's right end: how many songs can go in the deck. */
+/**
+ * The short note at the button's right end: how many songs can go in the deck. While the
+ * library imports, the button shows a bar there instead.
+ */
 export function songsNote(library: Library): string {
   switch (library.status) {
     case 'none':
-      return ''
     case 'running':
-      return 'Importing…'
+      return ''
     case 'done':
     case 'error':
       return fmt(library.tracks)

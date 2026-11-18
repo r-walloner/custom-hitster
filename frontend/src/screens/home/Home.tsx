@@ -11,6 +11,8 @@ import { Overlay } from '../../components/Dialog.tsx'
 import { Icon } from '../../components/Icon.tsx'
 import { CodeInput } from '../../components/Input.tsx'
 import { NameDialog } from '../../components/NameDialog.tsx'
+import { ImportProgress } from '../../components/ImportProgress.tsx'
+import { useImport } from '../library/useImport.ts'
 import AccountDialog from './AccountDialog.tsx'
 import DeleteAccount from './DeleteAccount.tsx'
 import { SignInError } from './SignInError.tsx'
@@ -36,6 +38,9 @@ function JoinOrHost() {
   // Until /api/me answers, or if it fails, this is the logged-out page: joining needs nothing.
   const { me, refresh } = useMe()
   const spotify = me?.spotify ?? null
+  // The sources too, polled while they import, for the bar on Your songs.
+  const { library: details, progress } = useImport(!!spotify)
+  const library = details ?? spotify?.library
   const [pop, setPop] = useState<Pop | null>(null)
   const [problem, setProblem] = useState<string | null>(null)
 
@@ -95,8 +100,12 @@ function JoinOrHost() {
             </Button>
             <Button to="/library" className="app-cover__big-btn home__songs">
               <Icon name="music" />
-              {songsLabel(spotify.library)}
-              <span className="home__note">{songsNote(spotify.library)}</span>
+              {songsLabel(library ?? spotify.library)}
+              {progress !== null ? (
+                <ImportProgress value={progress} className="home__importing" />
+              ) : (
+                <span className="home__note">{songsNote(library ?? spotify.library)}</span>
+              )}
             </Button>
           </>
         ) : (

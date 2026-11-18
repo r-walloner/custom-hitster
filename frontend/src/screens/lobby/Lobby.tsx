@@ -1,12 +1,14 @@
 import { useState } from 'react'
 import { Button } from '../../components/Button.tsx'
 import { Icon } from '../../components/Icon.tsx'
+import { ImportProgress } from '../../components/ImportProgress.tsx'
 import { QrTile } from '../../components/Input.tsx'
 import { Logo } from '../../components/Logo.tsx'
 import { PlayerRow, SettingRow } from '../../components/Rows.tsx'
 import { Header, RoomMeta, Screen, Spacer } from '../../components/Screen.tsx'
 import { ScrollArea } from '../../components/ScrollArea.tsx'
 import { names, plural } from '../../words.ts'
+import { useImport } from '../library/useImport.ts'
 import { useRoomTools } from '../room/context.ts'
 import { playerStatus, songCount } from './status.ts'
 import './Lobby.css'
@@ -20,6 +22,7 @@ export default function Lobby() {
   const mine = room.players.find((seat) => seat.id === you.player_id)
   const silent = remote ? room.players.filter((seat) => !seat.spotify) : []
   const [closing, setClosing] = useState(false)
+  const { progress } = useImport(you.spotify, mine?.library?.status)
 
   // The clipboard API only exists on HTTPS and on 127.0.0.1.
   const copy = () =>
@@ -137,7 +140,16 @@ export default function Lobby() {
                 <Button onClick={() => open('settings')}>Change</Button>
               </SettingRow>
               {you.spotify && (
-                <SettingRow label="Your songs" value={songCount(mine?.library ?? null)}>
+                <SettingRow
+                  label="Your songs"
+                  value={
+                    progress !== null ? (
+                      <ImportProgress value={progress} strong />
+                    ) : (
+                      songCount(mine?.library ?? null)
+                    )
+                  }
+                >
                   <Button onClick={() => open('library')}>Change</Button>
                 </SettingRow>
               )}

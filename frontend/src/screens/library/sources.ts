@@ -73,3 +73,25 @@ export function summary(library: LibraryDetails): string {
   const songs = selected.reduce((sum, source) => sum + (source.songs ?? 0), 0)
   return `${selected.length} of ${library.sources.length} selected, ${plural(songs, 'song')} in total`
 }
+
+/** Top songs and recent plays have no count until they're imported; each holds about 50. */
+const UNCOUNTED_SONGS = 50
+
+/**
+ * How far the import of all picked sources is, from 0 to 1, weighted by their songs; null when
+ * none is waiting for or in an import (nothing to show, or Spotify is only listing).
+ */
+export function overallProgress(library: LibraryDetails): number | null {
+  if (library.status !== 'running') return null
+  const picked = library.sources.filter((source) => source.picked)
+  if (!picked.some((source) => !source.copied)) return null
+  const size = (source: Source) => source.songs ?? UNCOUNTED_SONGS
+  const total = picked.reduce((sum, source) => sum + size(source), 0)
+  const done = picked.reduce(
+    (sum, source) =>
+      sum +
+      (source.copied ? 1 : (importProgress(source, library, false) ?? 0)) * size(source),
+    0,
+  )
+  return total ? Math.min(1, done / total) : 0
+}

@@ -1,9 +1,11 @@
 import { loginUrl } from '../../api/http.ts'
 import { Button, Status } from '../../components/Button.tsx'
 import { Icon } from '../../components/Icon.tsx'
+import { ImportProgress } from '../../components/ImportProgress.tsx'
 import { InfoHeader } from '../../components/InfoHeader.tsx'
 import { PlayerRow, SettingRow } from '../../components/Rows.tsx'
 import { Screen } from '../../components/Screen.tsx'
+import { useImport } from '../library/useImport.ts'
 import { useRoomTools } from '../room/context.ts'
 import { libraryStatus, playerStatus } from './status.ts'
 import './GuestLobby.css'
@@ -14,6 +16,7 @@ export default function GuestLobby() {
   const remote = room.settings.mode === 'remote'
   const mine = room.players.find((seat) => seat.id === you.player_id)
   const hostName = host?.name ?? 'The host'
+  const { progress } = useImport(you.spotify, mine?.library?.status)
 
   return (
     <Screen>
@@ -65,7 +68,11 @@ export default function GuestLobby() {
           <aside className="jm-panel guest__bring" aria-labelledby="bring-head">
             <span className="jm-label">Your music</span>
             <h2 id="bring-head" className="jm-headline">
-              {libraryStatus(mine?.library ?? null)}
+              {progress !== null ? (
+                <ImportProgress value={progress} strong />
+              ) : (
+                libraryStatus(mine?.library ?? null)
+              )}
             </h2>
             <p className="jm-meta">
               Songs from your library can turn up in this game's deck. Pick which until the game
