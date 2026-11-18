@@ -135,7 +135,6 @@ export default function Lobby() {
               <SettingRow
                 label="Rules"
                 value={`First to ${plural(settings.cards_to_win, 'card')}`}
-                caption={`${plural(settings.starting_tokens, 'token')} each, ${settings.challenge_seconds} s to challenge, ${plural(settings.deck_size, 'song')}`}
               >
                 <Button onClick={() => open('settings')}>Change</Button>
               </SettingRow>
