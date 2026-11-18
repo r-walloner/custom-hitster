@@ -42,6 +42,29 @@
   margin: 0;
 }
 
+/* A name pop-up (components/NameDialog.tsx): avatar and field in a row, the buttons below. */
+.app-name-dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.app-name-dialog__name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.app-name-dialog__name .jm-input {
+  flex: 1;
+  min-width: 0;
+  height: 48px;
+}
+
+.app-name-dialog__actions {
+  margin-top: 6px;
+}
+
 /* ---------- Small extensions the screens share ---------- */
 a.jm-btn {
   text-decoration: none;
