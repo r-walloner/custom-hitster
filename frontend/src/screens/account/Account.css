@@ -141,3 +141,8 @@
 .account__data .jm-btn {
   width: 100%;
 }
+
+/* The delete pop-up's buttons keep a little distance from its text. */
+.account__delete-actions {
+  margin-top: 6px;
+}

@@ -1,4 +1,4 @@
-import { useId } from 'react'
+import { Children, useId } from 'react'
 import type { ReactNode } from 'react'
 import { Button } from './Button.tsx'
 import { Icon } from './Icon.tsx'
@@ -8,11 +8,14 @@ import { Icon } from './Icon.tsx'
  * pop-up it shows the screen alone, so opening and closing one never remounts the screen.
  */
 export function Overlay({ under, children }: { under: ReactNode; children?: ReactNode }) {
+  // Several optional pop-ups (`{a && <A />}{b && <B />}`) arrive as an array, which is truthy
+  // even when every one is closed; count what would actually render.
+  const open = Children.toArray(children).length > 0
   return (
     <div className="jm-overlay app-overlay">
       {/* Keeps the screen in its own layer, so its raised parts can't show through the scrim. */}
       <div className="jm-overlay__under">{under}</div>
-      {children && (
+      {open && (
         <>
           <div className="jm-scrim" />
           {children}

@@ -12,6 +12,7 @@ import { Header, HeaderMeta, Screen, Spacer } from '../../components/Screen.tsx'
 import { Waiting } from '../../components/Waiting.tsx'
 import { ago } from '../../words.ts'
 import { Listing, NotImported, Picker } from './components/LibraryPanel.tsx'
+import DeleteAccount from './DeleteAccount.tsx'
 import { useLibrary } from './useLibrary.ts'
 import './Account.css'
 
@@ -23,6 +24,7 @@ export default function Account() {
   const { library, failed: libraryFailed, pick, reload } = useLibrary(!!me?.spotify)
   const [problem, setProblem] = useState<string | null>(null)
   const [renaming, setRenaming] = useState(false)
+  const [deleting, setDeleting] = useState(false)
   const importing = library?.status === 'running'
 
   // Signed out: this page is the way in, so go and sign in with Spotify.
@@ -44,8 +46,7 @@ export default function Account() {
       () => setProblem("Couldn't open a room. Try again."),
     )
   const forget = () => {
-    if (!window.confirm("Delete your copy of your Spotify library and your login from Jamster?"))
-      return
+    setDeleting(false)
     deleteMe().then(
       () => navigate('/'),
       () => setProblem("Deleting didn't work. Try again."),
@@ -118,9 +119,9 @@ export default function Account() {
               <Icon name="refresh" />
               Refresh library
             </Button>
-            <Button className="app-btn--danger" onClick={forget}>
+            <Button className="app-btn--danger" onClick={() => setDeleting(true)}>
               <Icon name="trash" />
-              Delete my copy
+              Delete my account
             </Button>
           </section>
         </aside>
@@ -140,6 +141,7 @@ export default function Account() {
           onClose={() => setRenaming(false)}
         />
       )}
+      {deleting && <DeleteAccount onDelete={forget} onClose={() => setDeleting(false)} />}
     </Overlay>
   )
 }

@@ -112,7 +112,7 @@ a.jm-btn--dark {
   font-size: 16px;
 }
 
-/* A destructive secondary action (Close room, Delete my copy). */
+/* A destructive secondary action (Close room, Delete my account). */
 .app-btn--danger {
   color: var(--coral-text);
 }
