@@ -15,6 +15,7 @@ import AddPlayer from '../lobby/AddPlayer.tsx'
 import GuestLobby from '../lobby/GuestLobby.tsx'
 import JoinName from '../lobby/JoinName.tsx'
 import Lobby from '../lobby/Lobby.tsx'
+import Rename from '../lobby/Rename.tsx'
 import Playback from '../playback/Playback.tsx'
 import Settings from '../settings/Settings.tsx'
 import Winner from '../winner/Winner.tsx'
@@ -54,6 +55,7 @@ function Connected({ code, me }: { code: string; me: Me }) {
   const room = useRoom(code)
   const { state, connection, notice, dismissNotice, send } = room
   const [view, setView] = useState<Subscreen | DialogName | null>(null)
+  const [renaming, setRenaming] = useState<string | null>(null)
   const [flash, setFlash] = useState<Flash | null>(null)
   const endFlash = useCallback(() => setFlash(null), [])
   usePresence(state, (seat, key) =>
@@ -98,7 +100,11 @@ function Connected({ code, me }: { code: string; me: Me }) {
     playbackTest: room.playbackTest,
     songStart: room.songStart,
     ...seatHelpers(state),
-    open: setView,
+    open: (next, player) => {
+      setView(next)
+      setRenaming(player ?? null)
+    },
+    renaming,
     close: () => setView(null),
     toast: (tone, text) => setFlash({ tone, text, id: `${Date.now()}` }),
   }
@@ -109,6 +115,7 @@ function Connected({ code, me }: { code: string; me: Me }) {
 
   let dialog: ReactNode = null
   if (shown === 'addPlayer') dialog = <AddPlayer />
+  if (shown === 'rename') dialog = <Rename />
   if (shown === 'menu') dialog = <GameMenu />
   if (shown === 'scoreboard') dialog = <Standings />
   if (connection === 'connecting' || connection === 'failed') {

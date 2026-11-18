@@ -118,6 +118,8 @@ interface Acting {
 export type ClientMessage =
   | { type: 'join'; name: string }
   | { type: 'add_player'; name: string }
+  /** Yourself; the host may also rename a hot-seat player. Lobby only. */
+  | { type: 'rename'; player_id: string; name: string }
   | { type: 'remove_player'; player_id: string }
   | { type: 'leave_room' | 'close_room' }
   | { type: 'set_settings'; settings: RoomSettings }

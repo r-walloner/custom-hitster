@@ -343,6 +343,20 @@ class Room:
                 if spotify_id and self.has_spotify_player(spotify_id):
                     spotify_id = None  # the same account in a second browser plays as a guest
                 self._add_seat(name, client_id, spotify_id)
+                if spotify_id:
+                    db.set_player_name(self._s.conn, spotify_id, name)  # their name from now on
+
+            case m.Rename(player_id=player_id, name=name):
+                self._lobby_only()
+                seat = next((s for s in self.seats if s.id == player_id), None)
+                own = seat is not None and seat.client_id == client_id
+                hot_seat = seat is not None and seat.client_id is None
+                if seat is None or not (own or (hot_seat and client_id == self.host_client)):
+                    raise RoomError("You can only rename yourself")
+                self.log.info("%s is now called %s", seat.name, name)
+                seat.name = name
+                if seat.spotify_id:
+                    db.set_player_name(self._s.conn, seat.spotify_id, name)
 
             case m.AddPlayer(name=name):
                 self._host_only(client_id)
@@ -984,6 +998,14 @@ class Rooms:
 
     def get(self, code: str) -> Room | None:
         return self._rooms.get(code.upper())
+
+    def rename_spotify_player(self, spotify_id: str, name: str) -> None:
+        """A player renamed themselves on the Account page; lobbies they sit in follow."""
+        for room in self._rooms.values():
+            seat = next((s for s in room.seats if s.spotify_id == spotify_id), None)
+            if room.game is None and seat is not None and seat.name != name:
+                seat.name = name
+                room.refresh()
 
     def on_library_change(self, spotify_id: str) -> None:
         """Lobbies show each player's import progress; keep them current."""

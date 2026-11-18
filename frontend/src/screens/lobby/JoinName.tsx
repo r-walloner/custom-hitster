@@ -2,14 +2,13 @@ import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { Button, ButtonPair } from '../../components/Button.tsx'
 import { InfoHeader } from '../../components/InfoHeader.tsx'
+import { MAX_NAME } from '../../components/NameDialog.tsx'
 import { TextInput } from '../../components/Input.tsx'
 import { PlayerRow } from '../../components/Rows.tsx'
 import { Screen } from '../../components/Screen.tsx'
 import type { Player } from '../../components/types.ts'
 import { useRoomTools } from '../room/context.ts'
 import './JoinName.css'
-
-const MAX_NAME = 16
 
 /** Joining asks for a name only, with the people already at the table beside it. */
 export default function JoinName() {
@@ -47,7 +46,7 @@ export default function JoinName() {
           />
           <p className="jm-caption">
             {me.spotify
-              ? 'Your Spotify library goes into the deck.'
+              ? "Your Spotify library goes into the deck, and we'll remember this name."
               : "No account needed. You can add your Spotify library once you're in."}
           </p>
           <ButtonPair className="join__pair">

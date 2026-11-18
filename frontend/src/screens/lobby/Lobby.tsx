@@ -74,6 +74,17 @@ export default function Lobby() {
                     Music
                   </span>
                 )}
+                {(seat.id === you.player_id || local) && (
+                  <Button
+                    variant="bare"
+                    size="icon"
+                    className="lobby__rename"
+                    aria-label={seat.id === you.player_id ? 'Change your name' : `Rename ${seat.name}`}
+                    onClick={() => open('rename', seat.id)}
+                  >
+                    <Icon name="edit" />
+                  </Button>
+                )}
                 {!seat.is_host && (
                   <Button
                     variant="bare"

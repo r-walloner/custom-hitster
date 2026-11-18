@@ -83,13 +83,18 @@ def connect(path: Path | str) -> sqlite3.Connection:
 
 
 def upsert_player(conn: sqlite3.Connection, id: str, name: str, refresh_token: str) -> None:
+    """Store a login. `name` is only the first name; after that the player picks their own."""
     with conn:
         conn.execute(
             "INSERT INTO players (id, name, refresh_token) VALUES (?, ?, ?)"
-            " ON CONFLICT (id) DO UPDATE SET name = excluded.name,"
-            " refresh_token = excluded.refresh_token",
+            " ON CONFLICT (id) DO UPDATE SET refresh_token = excluded.refresh_token",
             (id, name, refresh_token),
         )
+
+
+def set_player_name(conn: sqlite3.Connection, id: str, name: str) -> None:
+    with conn:
+        conn.execute("UPDATE players SET name = ? WHERE id = ?", (name, id))
 
 
 def get_player(conn: sqlite3.Connection, id: str) -> Player | None:

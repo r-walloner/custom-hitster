@@ -4,8 +4,13 @@ export interface Me {
   spotify: { id: string; name: string; library: Library } | null
 }
 
-async function call(method: string, url: string): Promise<Response> {
-  const response = await fetch(url, { method })
+async function call(method: string, url: string, body?: unknown): Promise<Response> {
+  const response = await fetch(
+    url,
+    body === undefined
+      ? { method }
+      : { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) },
+  )
   if (!response.ok) throw new Error(`${method} ${url} failed with ${response.status}`)
   return response
 }
@@ -21,6 +26,8 @@ export async function createRoom(): Promise<string> {
 }
 
 export const startImport = () => call('POST', '/api/me/import')
+/** The name this player goes by, from now on and in every lobby they sit in. */
+export const setName = (name: string) => call('PUT', '/api/me/name', { name })
 export const logout = () => call('POST', '/auth/logout')
 export const deleteMe = () => call('DELETE', '/api/me')
 

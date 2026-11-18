@@ -32,6 +32,7 @@ const ICONS = {
       </>
     ),
   },
+  edit: { stroke: 2.4, shape: <path d="M4 20h4L19 9l-4-4L4 16zM13 7l4 4" /> },
   close: { stroke: 2.6, shape: <path d="M7 7l10 10M17 7L7 17" /> },
   pass: { stroke: 3, shape: <path d="M6 6l12 12M18 6L6 18" /> },
   check: { stroke: 3, shape: <path d="M5 12.5l4.5 4.5L19 7" /> },

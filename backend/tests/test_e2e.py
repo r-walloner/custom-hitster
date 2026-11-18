@@ -36,10 +36,10 @@ class Browser:
     def _headers(self) -> dict[str, str]:
         return {"cookie": "; ".join(f"{k}={v}" for k, v in self._cookies.items())}
 
-    def request(self, method: str, url: str):
+    def request(self, method: str, url: str, json: Any = None):
         self._client.cookies.clear()
         response = self._client.request(
-            method, url, headers=self._headers(), follow_redirects=False
+            method, url, headers=self._headers(), json=json, follow_redirects=False
         )
         self._cookies.update(response.cookies)
         self._client.cookies.clear()
@@ -141,6 +141,60 @@ def test_login_imports_the_library(client: TestClient, fake: FakeSpotify):
 
     assert alice.request("DELETE", "/api/me").status_code == 204
     assert alice.get("/api/me").json() == {"spotify": None}
+
+
+def test_a_chosen_name_outlasts_signing_in_again(client: TestClient):
+    alice = Browser(client)
+    assert alice.request("PUT", "/api/me/name", json={"name": "Al"}).status_code == 401
+    alice.login("alice")
+    assert alice.request("PUT", "/api/me/name", json={"name": "  "}).status_code == 422
+    assert alice.request("PUT", "/api/me/name", json={"name": "A" * 25}).status_code == 422
+    assert alice.request("PUT", "/api/me/name", json={"name": " Ally "}).status_code == 204
+    alice.request("POST", "/auth/logout")
+    alice.login("alice")  # Spotify still calls her Alice
+    assert alice.get("/api/me").json()["spotify"]["name"] == "Ally"
+    code = alice.request("POST", "/api/rooms").json()["code"]
+    with alice.socket(code) as a:
+        assert until(a, is_type("state"))["room"]["players"][0]["name"] == "Ally"
+        alice.request("PUT", "/api/me/name", json={"name": "Alice B"})
+        until(a, state_where(lambda r: r["players"][0]["name"] == "Alice B"))
+
+
+def test_players_rename_themselves_in_the_lobby(client: TestClient):
+    alice, bob, carol = Browser(client), Browser(client), Browser(client)
+    alice.login("alice")
+    bob.login("bob")
+    carol.get("/api/me")
+    code = alice.request("POST", "/api/rooms").json()["code"]
+
+    with alice.socket(code) as a, bob.socket(code) as b, carol.socket(code) as c:
+        b.send_json({"type": "join", "name": "Bobby"})
+        c.send_json({"type": "join", "name": "Carol"})
+        a.send_json({"type": "add_player", "name": "Dvae"})
+        room = until(a, state_where(lambda r: len(r["players"]) == 4))["room"]
+        alice_id, bob_id, carol_id, dave_id = (p["id"] for p in room["players"])
+        assert bob.get("/api/me").json()["spotify"]["name"] == "Bobby"  # joining saves it
+
+        c.send_json({"type": "rename", "player_id": carol_id, "name": "Caro"})
+        a.send_json({"type": "rename", "player_id": dave_id, "name": "Dave"})
+        a.send_json({"type": "rename", "player_id": alice_id, "name": "Ali"})
+        b.send_json({"type": "rename", "player_id": bob_id, "name": "Rob"})
+        names = ["Ali", "Rob", "Caro", "Dave"]
+        until(a, state_where(lambda r: [p["name"] for p in r["players"]] == names))
+        assert alice.get("/api/me").json()["spotify"]["name"] == "Ali"
+        assert bob.get("/api/me").json()["spotify"]["name"] == "Rob"
+
+        c.send_json({"type": "rename", "player_id": bob_id, "name": "Nope"})
+        assert until(c, is_type("error"))["message"] == "You can only rename yourself"
+        a.send_json({"type": "rename", "player_id": carol_id, "name": "Nope"})
+        assert until(a, is_type("error"))["message"] == "You can only rename yourself"
+
+        a.send_json({"type": "start_game"})
+        until(a, lambda m: m["type"] == "state" and m["room"]["game"] is not None)
+        b.send_json({"type": "rename", "player_id": bob_id, "name": "Late"})
+        assert (
+            until(b, is_type("error"))["message"] == "That is only possible before the game starts"
+        )
 
 
 def test_accounts_off_the_allowlist_are_turned_away(client: TestClient):

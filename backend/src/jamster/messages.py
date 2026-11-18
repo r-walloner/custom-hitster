@@ -2,9 +2,9 @@
 
 from typing import Annotated, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, TypeAdapter
+from pydantic import BaseModel, ConfigDict, Field, StringConstraints, TypeAdapter
 
-Name = Annotated[str, Field(min_length=1, max_length=24)]
+Name = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=24)]
 
 
 class RoomSettings(BaseModel):
@@ -37,6 +37,14 @@ class Join(_Client):
 
 class AddPlayer(_Client):
     type: Literal["add_player"]
+    name: Name
+
+
+class Rename(_Client):
+    """A player renames themselves; the host may also rename a hot-seat player. Lobby only."""
+
+    type: Literal["rename"]
+    player_id: str
     name: Name
 
 
@@ -160,6 +168,7 @@ class NextTurn(_Client):
 ClientMessage = Annotated[
     Join
     | AddPlayer
+    | Rename
     | RemovePlayer
     | LeaveRoom
     | CloseRoom

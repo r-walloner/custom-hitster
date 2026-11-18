@@ -52,6 +52,11 @@
   font: 700 11px var(--font-ui);
 }
 
+/* Rename beside Remove: the two 44px targets overlap a little, so the icons sit as a pair. */
+.jm-player .lobby__rename:not(:last-child) {
+  margin-right: -12px;
+}
+
 .lobby__players .lobby__add {
   margin-top: 2px;
   align-self: flex-start;

@@ -41,7 +41,18 @@ export default function GuestLobby() {
                 }
                 you={seat.id === you.player_id}
                 away={isAway(seat.id)}
-              />
+              >
+                {seat.id === you.player_id && (
+                  <Button
+                    variant="bare"
+                    size="icon"
+                    aria-label="Change your name"
+                    onClick={() => open('rename', seat.id)}
+                  >
+                    <Icon name="edit" />
+                  </Button>
+                )}
+              </PlayerRow>
             ))}
           </div>
           <div className="guest__wait">

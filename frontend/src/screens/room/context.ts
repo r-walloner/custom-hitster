@@ -7,7 +7,7 @@ import type { Player } from '../../components/types.ts'
 /** Screens that replace the room's screen until closed. */
 export type Subscreen = 'settings' | 'playback'
 /** Pop-ups over the room's screen. */
-export type DialogName = 'addPlayer' | 'menu' | 'scoreboard'
+export type DialogName = 'addPlayer' | 'rename' | 'menu' | 'scoreboard'
 export type ToastTone = 'right' | 'wrong' | 'heads-up'
 
 /** Everything a room screen needs: the state, a way to act, and helpers over both. */
@@ -35,7 +35,10 @@ export interface RoomTools {
   as: (id: string) => { as_player?: string }
   /** Does this device's own Spotify play the music? */
   hearsMusic: boolean
-  open: (screen: Subscreen | DialogName) => void
+  /** `player` is who the pop-up is about: the seat to rename. */
+  open: (screen: Subscreen | DialogName, player?: string) => void
+  /** The seat the rename pop-up is for. */
+  renaming: string | null
   close: () => void
   toast: (tone: ToastTone, text: string) => void
 }

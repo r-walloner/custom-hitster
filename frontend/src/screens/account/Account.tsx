@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
-import { createRoom, deleteMe, loginUrl, logout, startImport } from '../../api/http.ts'
+import { createRoom, deleteMe, loginUrl, logout, setName, startImport } from '../../api/http.ts'
 import { useMe } from '../../api/useMe.ts'
 import { Avatar } from '../../components/Avatar.tsx'
 import { Button } from '../../components/Button.tsx'
+import { Overlay } from '../../components/Dialog.tsx'
 import { Icon } from '../../components/Icon.tsx'
 import { Logo } from '../../components/Logo.tsx'
+import { NameDialog } from '../../components/NameDialog.tsx'
 import { Header, HeaderMeta, Screen, Spacer } from '../../components/Screen.tsx'
 import { Waiting } from '../../components/Waiting.tsx'
 import { Imported, Importing, NotImported } from './components/LibraryPanel.tsx'
@@ -17,6 +19,7 @@ export default function Account() {
   // The import runs on the server; poll while it does.
   const { me, failed, refresh } = useMe((loaded) => loaded.spotify?.library.status === 'running')
   const [problem, setProblem] = useState<string | null>(null)
+  const [renaming, setRenaming] = useState(false)
   const importing = me?.spotify?.library.status === 'running'
 
   // Signed out: this page is the way in, so go and sign in with Spotify.
@@ -46,8 +49,12 @@ export default function Account() {
   }
   const signOut = () => logout().then(() => navigate('/'))
   const { library } = spotify
+  const rename = (name: string) => {
+    setRenaming(false)
+    if (name !== spotify.name) act(() => setName(name), 'Changing your name')
+  }
 
-  return (
+  const screen = (
     <Screen>
       <Header>
         <Logo />
@@ -57,6 +64,14 @@ export default function Account() {
           <b>{spotify.name}</b>
           <span>via Spotify</span>
         </HeaderMeta>
+        <Button
+          variant="bare"
+          size="icon"
+          aria-label="Change your name"
+          onClick={() => setRenaming(true)}
+        >
+          <Icon name="edit" />
+        </Button>
         <Button onClick={signOut}>
           <Icon name="signOut" />
           Sign out
@@ -101,5 +116,20 @@ export default function Account() {
         </aside>
       </div>
     </Screen>
+  )
+
+  return (
+    <Overlay under={screen}>
+      {renaming && (
+        <NameDialog
+          title="Change your name"
+          initial={spotify.name}
+          color={1}
+          submitLabel={() => 'Save'}
+          onSubmit={rename}
+          onClose={() => setRenaming(false)}
+        />
+      )}
+    </Overlay>
   )
 }

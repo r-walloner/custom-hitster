@@ -11,12 +11,14 @@ import httpx
 from fastapi import FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect
 from fastapi.responses import FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel
 from starlette.middleware.sessions import SessionMiddleware
 from starlette.websockets import WebSocketState
 
 from . import db, years
 from .config import Settings
 from .importer import Importer
+from .messages import Name
 from .rooms import Rooms, Services
 from .spotify import Spotify, SpotifyError
 
@@ -25,6 +27,10 @@ SESSION_DAYS = 90
 NO_SESSION, NO_SUCH_ROOM = 4401, 4404
 
 log = logging.getLogger(__name__)
+
+
+class NewName(BaseModel):
+    name: Name
 
 
 def create_app(
@@ -141,6 +147,14 @@ def create_app(
     @app.post("/api/me/import", status_code=202)
     async def start_import(request: Request) -> None:
         services(request).importer.start(require_player(request).id)
+
+    @app.put("/api/me/name", status_code=204)
+    async def rename_me(request: Request, body: NewName) -> None:
+        """The name this player goes by, here and in every room from now on."""
+        player, s = require_player(request), services(request)
+        db.set_player_name(s.conn, player.id, body.name)
+        request.app.state.rooms.rename_spotify_player(player.id, body.name)
+        log.info("%s is now called %s", player.name, body.name)
 
     @app.delete("/api/me", status_code=204)
     async def delete_me(request: Request) -> None:
