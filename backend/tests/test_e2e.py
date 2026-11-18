@@ -458,10 +458,10 @@ def test_remote_game_with_a_hot_seat_player(
 
         # --- permissions and the end of the game ---
         stranger = next(p["id"] for p in game["players"] if p["id"] not in (bob_seat, active))
-        if game["active"] != bob_seat:
-            b.send_json({"type": "next_turn"})
-            error = until(b, is_type("error"))["message"]
-            assert error == "Only the host or the active player can do that"
+        b.send_json({"type": "next_turn"})  # only the host moves on, even on Bob's turn
+        assert until(b, is_type("error"))["message"] == "Only the host can do that"
+        b.send_json({"type": "hold_turn"})
+        assert until(b, is_type("error"))["message"] == "Only the host can do that"
         b.send_json({"type": "buy", "as_player": stranger})
         assert until(b, is_type("error"))["message"] == "Only the host can do that"
         a.send_json({"type": "buy", "as_player": bob_seat})

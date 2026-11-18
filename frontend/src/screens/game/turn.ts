@@ -11,7 +11,7 @@ export interface Turn {
   active: GamePlayerView
   /** Their timeline as songs, oldest first. */
   cards: Song[]
-  /** The host or the player on turn: may move on to the next song. */
+  /** The host or the player on turn: may restart the song. */
   referee: boolean
   /** A new song is on its way; draws wait until it is in. */
   loading: boolean

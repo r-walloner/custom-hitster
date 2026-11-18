@@ -315,7 +315,7 @@ class Room:
         return as_player
 
     def _referee_only(self, client_id: str) -> None:
-        """Moving on to the next song is for the host and the active player."""
+        """Restarting the song is for the host and the active player."""
         seat = self._seat_of(client_id)
         active = self.game.active if self.game else None
         if client_id != self.host_client and (seat is None or seat.id != active):
@@ -505,7 +505,7 @@ class Room:
                     self._start_playback(only=failed)
 
             case m.HoldTurn():
-                self._referee_only(client_id)
+                self._host_only(client_id)
                 if self._advance_left_ms() is not None:
                     seat = self._seat_of(client_id)
                     self.log.info("%s keeps listening", seat.name if seat else "the host")
@@ -546,7 +546,7 @@ class Room:
                 self._host_only(client_id)  # the player on turn could award themselves
                 self._act(engine.SetNamed(value))
             case m.NextTurn():
-                self._referee_only(client_id)
+                self._host_only(client_id)  # the player on turn could cut the listening short
                 if self.game and self.game.phase != "revealed":
                     raise engine.RuleError("The card is not revealed yet")  # before any lookup
                 await self._prepare_draw()

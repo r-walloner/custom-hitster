@@ -56,7 +56,7 @@ Jamster is a private tool and cannot become a public one.
    Otherwise the first challenger with a correct slot takes it, and if there is none the card is discarded.
 6. The host confirms whether the player on turn named the title and artist aloud, which earns 1 token (5 at most).
 7. A second countdown, 15 seconds unless the host sets another time or turns it off in the lobby, starts the next turn by itself.
-   The host or the player on turn can start it at once with "Next song", or stop the countdown with "Keep listening" and move on by hand.
+   The host can start it at once with "Next song", or stop the countdown with "Keep listening" and move on by hand.
 
 A player who leaves the lobby gives up their seat; one who leaves a game, or loses their connection, keeps it and gets it back by opening the room link again in the same browser.
 While they are away:

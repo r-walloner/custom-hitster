@@ -15,7 +15,7 @@ import { revealOutcome } from './reveal.ts'
     marks say who was right. */
 export default function Reveal({ turn }: { turn: Turn }) {
   const { room, you, name, player, send } = useRoomTools()
-  const { game, active, cards, referee, loading } = turn
+  const { game, active, cards, loading } = turn
   const result = revealOutcome(game, cards, name)
   if (!game.card || !result) return null
   const card = game.card
@@ -24,13 +24,6 @@ export default function Reveal({ turn }: { turn: Turn }) {
   const advance = loading ? null : game.advance_left_ms
 
   const who = name(game.active)
-  // Everyone but the host sees it when the host gives the token, as text. Until then it is
-  // hidden but keeps its space, so nothing moves when it appears.
-  const named = !you.is_host && (
-    <span className={game.named ? 'game__named' : 'game__named game__named--off'}>
-      {who} named the song <Token>+1</Token>
-    </span>
-  )
   const items = revealItems(before, revealed, guesses, winner, kept, at, (right, guess, edge) => (
     <Mark
       key={guess.id}
@@ -53,7 +46,7 @@ export default function Reveal({ turn }: { turn: Turn }) {
       panel={
         <MomentPanel
           phase="Reveal"
-          className={referee ? 'game__result' : 'game__result game__result--watch'}
+          className={you.is_host ? 'game__result' : 'game__result game__result--watch'}
           ring={
             advance !== null && (
               <Countdown
@@ -66,20 +59,17 @@ export default function Reveal({ turn }: { turn: Turn }) {
           }
         >
           <SongResult song={revealed} cover={card.image_url} from={from} />
-          {referee ? (
+          {/* Only the host judges and moves on, so the player on turn can neither award
+              themselves the token nor cut the others' listening short. */}
+          {you.is_host ? (
             <div className="game__outcome-actions">
-              {/* Only the host judges, so the player on turn can't award themselves the token. */}
-              {you.is_host ? (
-                <Button
-                  pressed={game.named === true}
-                  aria-label={`${who} named title and artist: 1 token`}
-                  onClick={() => send({ type: 'set_named', value: game.named !== true })}
-                >
-                  Named the song <Token>+1</Token>
-                </Button>
-              ) : (
-                named
-              )}
+              <Button
+                pressed={game.named === true}
+                aria-label={`${who} named title and artist: 1 token`}
+                onClick={() => send({ type: 'set_named', value: game.named !== true })}
+              >
+                Named the song <Token>+1</Token>
+              </Button>
               {/* Greyed out once the countdown is stopped, rather than gone, so the row
                   doesn't jump. Not there at all when there's no automatic next song. */}
               {room.settings.next_turn_seconds > 0 && (
@@ -103,8 +93,13 @@ export default function Reveal({ turn }: { turn: Turn }) {
               </Button>
             </div>
           ) : (
-            // The song stays centred in the space above this row, which is always there.
-            <div className="game__outcome-actions">{named}</div>
+            // Everyone else sees it when the host gives the token, as text. Until then it is
+            // hidden but keeps its space, so nothing moves when it appears.
+            <div className="game__outcome-actions">
+              <span className={game.named ? 'game__named' : 'game__named game__named--off'}>
+                {who} named the song <Token>+1</Token>
+              </span>
+            </div>
           )}
         </MomentPanel>
       }
