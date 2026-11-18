@@ -430,7 +430,7 @@ class Room:
                     raise RoomError("The game is already starting")
                 ids = [s.spotify_id for s in self.seats if s.spotify_id]
                 if not any(db.count_tracks(self._s.conn, pid) for pid in ids):
-                    raise RoomError("No library has been imported yet")
+                    raise RoomError("No one has picked any songs yet")
                 self._invalidate_deck()
                 order = [s.id for s in self.seats]
                 self._s.rng.shuffle(order)  # before dealing, so each card lands with its player
@@ -474,7 +474,7 @@ class Room:
                 seat, spotify_id = self._spotify_seat(client_id)
                 uri = db.random_track_uri(self._s.conn, spotify_id)
                 if uri is None:
-                    raise RoomError("Import your library first")
+                    raise RoomError("Pick songs for the deck on your account page first")
                 error = await self._play_one(seat, uri, 0)
                 self.log.info("%s tested playback: %s", seat.name, error or "it works")
                 text = error or f"Playing {TEST_PLAYBACK_SECONDS} seconds from your library"

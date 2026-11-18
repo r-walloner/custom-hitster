@@ -111,7 +111,7 @@ export default function Playback() {
               </h2>
               <p className="jm-meta">
                 {noLibrary
-                  ? 'The test plays a song from your library. Import your library first.'
+                  ? 'The test plays a song from your library. Pick songs on your account page first.'
                   : 'Turn the volume up. The test plays a song from your library.'}
               </p>
               <Button

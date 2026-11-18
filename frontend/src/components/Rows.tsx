@@ -101,7 +101,8 @@ export function OptionRow({ icon, name, detail, pressed, disabled, onClick }: Op
 
 interface CheckRowProps {
   name: string
-  detail: string
+  /** The line under the name: what it is, or how it is doing. */
+  detail: ReactNode
   count: string
   checked: boolean
   onChange: () => void

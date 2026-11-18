@@ -24,8 +24,10 @@ Jamster is a private tool and cannot become a public one.
 ### Before the game
 
 1. Choose "Host with Spotify" on the home page and sign in.
-   The server imports your saved tracks, the playlists you own or collaborate on, your top tracks and artists, and your recent plays.
-   A large library takes a minute or two.
+   The server lists your library within seconds: your liked songs, the playlists you own or collaborate on, your top songs and your recent plays.
+   On the Account page you tick which of them go into the deck, and only the ticked ones are copied, one at a time; unticking one stops its copy.
+   Recent plays, top songs and liked songs sit at the top, in that order, and are ticked to begin with; your playlists follow in the order Spotify lists them.
+   Refresh library lists the library again and imports only what changed.
 2. Create a room and share its link or four-letter code.
 3. Others join with a nickname.
    Signing in with Spotify is optional and adds their library to the deck.
@@ -77,14 +79,10 @@ The frontend follows the screens in `docs/design/screens/`, but some of what the
 Each item below says what the screen does meanwhile.
 Remove an item once the backend provides it and the screen uses it.
 
-- **Choosing what goes in the deck.**
-  The Account screen is designed as a picker of playlists, artists, liked and top songs.
-  The importer stores tracks as signals without their source, and curation uses all of them.
-  This needs the source of each signal (which playlist or artist), per-player exclusions in the database (a schema change, so the database file must be deleted), an API to list and toggle sources, and curation that honours the exclusions.
-  Meanwhile the Account screen shows how many songs were copied.
-- **When the library was copied.**
-  The Account screen's "Copied 3 days ago" needs the time of the last import, which isn't stored.
-  Meanwhile the line is left out.
+Nothing is missing at the moment.
+
+One thing is left out on purpose: the Account screen's design also lists the artists a player follows.
+Development Mode has no artist top tracks, and album tracks come without the ISRC the year lookup needs, so an artist's songs would cost many requests and still lack years.
 
 ## Setup
 

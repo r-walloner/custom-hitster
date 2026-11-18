@@ -62,11 +62,28 @@ class Browser:
             time.sleep(0.01)
         raise AssertionError("the import did not finish")
 
+    def sources(self) -> list[dict[str, Any]]:
+        return self.get("/api/me/library").json()["sources"]
+
+    def pick(self, **changes: bool) -> dict[str, Any]:
+        """Pick or unpick sources once they are listed; the library status once they're copied."""
+        self.library()
+        assert self.request("PATCH", "/api/me/sources", json=changes).status_code == 204
+        return self.library()
+
     def socket(self, code: str, **headers: str) -> WebSocketTestSession:
         self._client.cookies.clear()
         return self._client.websocket_connect(
             f"/ws/rooms/{code}", headers={**self._headers(), **headers}
         )
+
+
+def eventually(condition: Callable[[], bool]) -> None:
+    for _ in range(500):
+        if condition():
+            return
+        time.sleep(0.01)
+    raise AssertionError("it never happened")
 
 
 def until(ws: WebSocketTestSession, wanted: Callable[[State], bool]) -> State:
@@ -128,19 +145,117 @@ def client(fake: FakeSpotify, tmp_path: Path) -> Iterator[TestClient]:
         yield client
 
 
-def test_login_imports_the_library(client: TestClient, fake: FakeSpotify):
+def test_login_lists_the_library_and_copies_only_what_is_picked(
+    client: TestClient, fake: FakeSpotify
+):
     alice = Browser(client)
     assert alice.get("/api/me").json() == {"spotify": None}
     assert alice.request("POST", "/api/rooms").status_code == 401
+    assert alice.get("/api/me/library").status_code == 401
 
     response = alice.login("alice")
     assert (response.status_code, response.headers["location"]) == (307, "/")
-    # 60 saved tracks (two pages) plus 5 from her own playlist; episodes and local files dropped.
-    assert alice.library() == {"status": "done", "detail": "", "tracks": 65}
-    assert fake.playlist_reads == ["pl-alice"]  # the playlist she only follows is not requested
+    # Her own songs are picked at first: 60 liked songs, which hold her top and recent ones.
+    assert alice.library() == {"status": "done", "detail": "", "tracks": 60}
+    library = alice.get("/api/me/library").json()
+    assert library["refreshed_at"] is not None
+    assert [
+        (s["id"], s["name"], s["songs"], s["picked"], s["copied"]) for s in library["sources"]
+    ] == [
+        ("recent", "Recently played", 3, True, True),
+        ("top", "Your top songs", 5, True, True),
+        ("liked", "Liked songs", 60, True, True),
+        # Her own playlists in Spotify's order, not the one she only follows.
+        ("playlist:pl-alice", "Road trip", 8, False, False),
+        ("playlist:pl-zumba", "Zumba", 0, False, False),
+        ("playlist:pl-aardvark", "aardvark tunes", 0, False, False),
+    ]
+    # Listing asked for a single liked song; copying them took two pages. No playlist was read.
+    assert [r for r in fake.requests if r.startswith("/me/tracks")] == [
+        "/me/tracks?limit=1&offset=0",
+        "/me/tracks?limit=50&offset=0",
+        "/me/tracks?limit=50&offset=50",
+    ]
+    assert fake.playlist_reads == []
+
+    # Plus 5 from her playlist; episodes and local files dropped.
+    assert alice.pick(**{"playlist:pl-alice": True}) == {
+        "status": "done",
+        "detail": "",
+        "tracks": 65,
+    }
+    assert fake.playlist_reads == ["pl-alice"]
+    assert [s["copied"] for s in alice.sources()] == [True, True, True, True, False, False]
 
     assert alice.request("DELETE", "/api/me").status_code == 204
     assert alice.get("/api/me").json() == {"spotify": None}
+
+
+def test_unpicked_sources_leave_the_deck_and_come_back_for_free(
+    client: TestClient, fake: FakeSpotify
+):
+    alice = Browser(client)
+    alice.login("alice")
+    assert alice.pick(liked=True)["tracks"] == 60
+    asked = len(fake.requests)
+    assert alice.pick(liked=False, top=False, recent=False)["tracks"] == 0
+    code = alice.request("POST", "/api/rooms").json()["code"]
+    with alice.socket(code) as a:
+        a.send_json({"type": "start_game"})
+        assert until(a, is_type("error"))["message"] == "No one has picked any songs yet"
+    assert alice.pick(liked=True)["tracks"] == 60
+    assert len(fake.requests) == asked  # still copied, so not asked for again
+
+
+def test_unpicking_the_source_being_copied_stops_its_copy(client: TestClient, fake: FakeSpotify):
+    alice = Browser(client)
+    fake.held.add("/me/tracks?limit=50")  # copying liked songs hangs; listing them doesn't
+    alice.login("alice")
+    eventually(lambda: alice.sources()[2]["copying"])
+    eventually(lambda: fake.requests[-1].startswith("/me/tracks?limit=50"))
+    asked = len(fake.requests)
+    # 60 liked songs take two requests; the screen draws its progress bar from this.
+    assert alice.get("/api/me/library").json()["detail"] == "Copying Liked songs: 0 of 2 requests"
+    alice.request("PATCH", "/api/me/sources", json={"playlist:pl-alice": True})
+
+    alice.request("PATCH", "/api/me/sources", json={"liked": False})
+    # Top songs, recent plays and the playlist queued behind it are copied next.
+    assert alice.library() == {"status": "done", "detail": "", "tracks": 10}
+    fake.held.clear()
+    time.sleep(0.05)
+    assert [r for r in fake.requests[asked:] if r.startswith("/me/tracks")] == []
+    liked = alice.sources()[2]
+    assert (liked["picked"], liked["copied"], liked["copying"]) == (False, False, False)
+
+
+def test_importing_again_copies_only_what_changed(client: TestClient, fake: FakeSpotify):
+    alice = Browser(client)
+    alice.login("alice")
+    alice.pick(**{"playlist:pl-alice": True})
+    assert fake.playlist_reads == ["pl-alice"]
+    liked_pages = len([r for r in fake.requests if r.startswith("/me/tracks?limit=50")])
+
+    alice.request("POST", "/api/me/import")
+    assert alice.library()["tracks"] == 65
+    assert fake.playlist_reads == ["pl-alice"]  # same snapshot, nothing to copy
+    # Same count and newest song: the liked songs aren't copied again either.
+    assert len([r for r in fake.requests if r.startswith("/me/tracks?limit=50")]) == liked_pages
+
+    fake.playlists["alice"][0]["snapshot_id"] = "snap-2"
+    alice.request("POST", "/api/me/import")
+    assert alice.library()["tracks"] == 65
+    assert fake.playlist_reads == ["pl-alice", "pl-alice"]
+
+    fake.playlists["alice"].pop(0)  # she deleted it: gone with its songs
+    alice.request("POST", "/api/me/import")
+    assert alice.library()["tracks"] == 60
+    assert [s["id"] for s in alice.sources()] == [
+        "recent",
+        "top",
+        "liked",
+        "playlist:pl-zumba",
+        "playlist:pl-aardvark",
+    ]
 
 
 def test_a_chosen_name_outlasts_signing_in_again(client: TestClient):
@@ -229,7 +344,7 @@ def test_remote_game_with_a_hot_seat_player(
     alice, bob = Browser(client), Browser(client)
     alice.login("alice")
     bob.login("bob")
-    assert alice.library()["status"] == bob.library()["status"] == "done"
+    assert alice.pick(liked=True)["status"] == bob.pick(liked=True)["status"] == "done"
     code = alice.request("POST", "/api/rooms").json()["code"]
 
     with alice.socket(code) as a, bob.socket(code) as b:
@@ -351,7 +466,7 @@ def test_local_game_plays_only_on_the_host_and_recovers_from_a_playback_failure(
     alice, bob = Browser(client), Browser(client)
     alice.login("alice")
     bob.login("bob")
-    assert alice.library()["status"] == bob.library()["status"] == "done"
+    assert alice.pick(liked=True)["status"] == bob.pick(liked=True)["status"] == "done"
     code = alice.request("POST", "/api/rooms").json()["code"]
     fake.play_errors["alice"] = (404, "NO_ACTIVE_DEVICE")
 
@@ -403,7 +518,7 @@ def test_local_game_plays_only_on_the_host_and_recovers_from_a_playback_failure(
 def test_years_are_looked_up_only_when_a_card_is_drawn(client: TestClient, fake: FakeSpotify):
     alice = Browser(client)
     alice.login("alice")
-    assert alice.library()["status"] == "done"
+    assert alice.pick(liked=True)["status"] == "done"
     code = alice.request("POST", "/api/rooms").json()["code"]
     fake.lookup_allowance = 2  # just the opening deal: Alice's starting card and the first song
 
@@ -452,7 +567,7 @@ def test_years_are_looked_up_only_when_a_card_is_drawn(client: TestClient, fake:
 def test_the_challenge_window_closes_when_time_is_up(client: TestClient, fake: FakeSpotify):
     alice = Browser(client)
     alice.login("alice")
-    assert alice.library()["status"] == "done"
+    assert alice.pick(liked=True)["status"] == "done"
     code = alice.request("POST", "/api/rooms").json()["code"]
 
     with alice.socket(code) as a:
@@ -477,7 +592,7 @@ def test_the_challenge_window_closes_when_time_is_up(client: TestClient, fake: F
 def test_the_next_turn_starts_by_itself_unless_someone_keeps_listening(client: TestClient):
     alice = Browser(client)
     alice.login("alice")
-    assert alice.library()["status"] == "done"
+    assert alice.pick(liked=True)["status"] == "done"
     code = alice.request("POST", "/api/rooms").json()["code"]
 
     with alice.socket(code) as a:
@@ -552,7 +667,7 @@ def test_an_away_player_keeps_their_seat_and_the_host_may_skip_their_turn(client
     alice, bob = Browser(client), Browser(client)
     alice.login("alice")
     bob.get("/api/me")
-    assert alice.library()["status"] == "done"
+    assert alice.pick(liked=True)["status"] == "done"
     code = alice.request("POST", "/api/rooms").json()["code"]
 
     with alice.socket(code) as a:

@@ -4,11 +4,11 @@ import logging
 import random
 import secrets
 from contextlib import asynccontextmanager
-from typing import Any
+from typing import Annotated, Any
 from urllib.parse import urlsplit
 
 import httpx
-from fastapi import FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect
+from fastapi import Body, FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect
 from fastapi.responses import FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -146,7 +146,37 @@ def create_app(
 
     @app.post("/api/me/import", status_code=202)
     async def start_import(request: Request) -> None:
+        """List the library's sources again and copy the picked ones that changed."""
         services(request).importer.start(require_player(request).id)
+
+    @app.get("/api/me/library")
+    async def my_library(request: Request) -> dict[str, Any]:
+        """The library's state and its sources, for the Account screen's picker."""
+        player, importer = require_player(request), services(request).importer
+        library, copying = importer.status(player.id), importer.copying(player.id)
+        return {
+            "status": library.status,
+            "detail": library.detail,
+            "tracks": library.tracks,
+            "refreshed_at": player.refreshed_at,
+            "sources": [
+                {
+                    "id": source.id,
+                    "kind": source.kind,
+                    "name": source.name,
+                    "songs": source.songs,
+                    "picked": source.picked,
+                    "copied": source.copied,
+                    "copying": source.id == copying,
+                }
+                for source in db.list_sources(services(request).conn, player.id)
+            ],
+        }
+
+    @app.patch("/api/me/sources", status_code=204)
+    async def pick_sources(request: Request, changes: Annotated[dict[str, bool], Body()]) -> None:
+        """Pick or unpick sources by id: {"liked": true, "playlist:…": false}."""
+        services(request).importer.pick(require_player(request).id, changes)
 
     @app.put("/api/me/name", status_code=204)
     async def rename_me(request: Request, body: NewName) -> None:

@@ -10,24 +10,28 @@ import { Logo } from '../../components/Logo.tsx'
 import { NameDialog } from '../../components/NameDialog.tsx'
 import { Header, HeaderMeta, Screen, Spacer } from '../../components/Screen.tsx'
 import { Waiting } from '../../components/Waiting.tsx'
-import { Imported, Importing, NotImported } from './components/LibraryPanel.tsx'
+import { ago } from '../../words.ts'
+import { Listing, NotImported, Picker } from './components/LibraryPanel.tsx'
+import { useLibrary } from './useLibrary.ts'
 import './Account.css'
 
 /** Account and library: your library's state, host or join, and your data. */
 export default function Account() {
   const navigate = useNavigate()
-  // The import runs on the server; poll while it does.
-  const { me, failed, refresh } = useMe((loaded) => loaded.spotify?.library.status === 'running')
+  const { me, failed, refresh } = useMe()
+  // Listing and copying run on the server; the hook polls while they do.
+  const { library, failed: libraryFailed, pick, reload } = useLibrary(!!me?.spotify)
   const [problem, setProblem] = useState<string | null>(null)
   const [renaming, setRenaming] = useState(false)
-  const importing = me?.spotify?.library.status === 'running'
+  const importing = library?.status === 'running'
 
   // Signed out: this page is the way in, so go and sign in with Spotify.
   useEffect(() => {
     if (me && !me.spotify) location.assign(loginUrl('/account'))
   }, [me])
 
-  if (failed) return <Waiting text="The server can't be reached. Reload to try again." />
+  if (failed || libraryFailed)
+    return <Waiting text="The server can't be reached. Reload to try again." />
   if (!me?.spotify) return <Waiting text="Signing in with Spotify…" />
   const { spotify } = me
 
@@ -48,7 +52,10 @@ export default function Account() {
     )
   }
   const signOut = () => logout().then(() => navigate('/'))
-  const { library } = spotify
+  const startReading = (what: string) =>
+    startImport().then(reload, () => setProblem(`${what} didn't work. Try again.`))
+  const choose = (changes: Record<string, boolean>) =>
+    pick(changes).catch(() => setProblem("Changing what goes in the deck didn't work. Try again."))
   const rename = (name: string) => {
     setRenaming(false)
     if (name !== spotify.name) act(() => setName(name), 'Changing your name')
@@ -78,12 +85,15 @@ export default function Account() {
         </Button>
       </Header>
       <div className="account">
-        {library.status === 'running' ? (
-          <Importing library={library} />
-        ) : library.status === 'none' ? (
-          <NotImported onImport={() => act(startImport, 'Starting the import')} />
+        {library?.sources.length ? (
+          <Picker library={library} onPick={choose} />
+        ) : !library || library.status === 'running' ? (
+          <Listing />
         ) : (
-          <Imported library={library} />
+          <NotImported
+            problem={library.status === 'error' ? library.detail : undefined}
+            onImport={() => startReading('Importing your library')}
+          />
         )}
         <aside className="account__side">
           <Button variant="primary" size="xl" className="account__host" onClick={host}>
@@ -102,11 +112,11 @@ export default function Account() {
               Your data
             </h2>
             <p className="jm-caption">
-              Jamster keeps a copy of your library. Deleting it doesn't touch your Spotify account.
+              {library?.refreshed_at ? `Library imported ${ago(library.refreshed_at)}.` : 'Not copied yet.'}
             </p>
-            <Button disabled={importing} onClick={() => act(startImport, 'Re-importing')}>
+            <Button disabled={importing} onClick={() => startReading('Refreshing your library')}>
               <Icon name="refresh" />
-              Re-import
+              Refresh library
             </Button>
             <Button className="app-btn--danger" onClick={forget}>
               <Icon name="trash" />

@@ -4,6 +4,28 @@ export interface Me {
   spotify: { id: string; name: string; library: Library } | null
 }
 
+/** Somewhere the deck can take songs from: liked songs, top songs, recent plays, a playlist. */
+export interface Source {
+  id: string
+  kind: 'liked' | 'top' | 'recent' | 'playlist' | 'collaborative'
+  name: string
+  /** As Spotify counts them; null until known (top songs and recent plays, before a copy). */
+  songs: number | null
+  /** Its songs may go into decks. */
+  picked: boolean
+  /** Its songs are stored, as of the latest listing. */
+  copied: boolean
+  /** Its songs are being copied right now. */
+  copying: boolean
+}
+
+/** The library with its sources, for the Account screen. */
+export interface LibraryDetails extends Library {
+  /** When the sources were last listed, as an ISO time; null before the first listing. */
+  refreshed_at: string | null
+  sources: Source[]
+}
+
 async function call(method: string, url: string, body?: unknown): Promise<Response> {
   const response = await fetch(
     url,
@@ -25,6 +47,15 @@ export async function createRoom(): Promise<string> {
   return code
 }
 
+export async function getLibrary(): Promise<LibraryDetails> {
+  return (await call('GET', '/api/me/library')).json()
+}
+
+/** Pick or unpick sources by id. Picked ones are copied in the background. */
+export const pickSources = (changes: Record<string, boolean>) =>
+  call('PATCH', '/api/me/sources', changes)
+
+/** List the library again and copy the picked sources that changed. */
 export const startImport = () => call('POST', '/api/me/import')
 /** The name this player goes by, from now on and in every lobby they sit in. */
 export const setName = (name: string) => call('PUT', '/api/me/name', { name })

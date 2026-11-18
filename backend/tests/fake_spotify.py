@@ -5,6 +5,7 @@ Track n is from the year 1960 + n, so every track has its own year.
 """
 
 import asyncio
+import copy
 import json
 import re
 from dataclasses import dataclass
@@ -49,14 +50,6 @@ def year_of(uri: str) -> int:
 
 
 SAVED = {"alice": range(0, 60), "bob": range(30, 80)}
-# Alice owns one playlist and follows one she must not be able to read.
-PLAYLISTS = {
-    "alice": [
-        {"id": "pl-alice", "owner": {"id": "alice"}, "collaborative": False},
-        {"id": "pl-followed", "owner": {"id": "someone"}, "collaborative": False},
-    ],
-    "bob": [],
-}
 PLAYLIST_ITEMS: dict[str, list[dict[str, Any]]] = {
     "pl-alice": [
         *({"item": track(n), "is_local": False} for n in range(60, 65)),
@@ -64,6 +57,44 @@ PLAYLIST_ITEMS: dict[str, list[dict[str, Any]]] = {
         {"item": {"type": "track", "id": None, "is_local": True}, "is_local": True},
         {"item": None, "is_local": False},
     ]
+}
+# Alice owns one playlist and follows one she must not be able to read; only her own carries
+# its contents' count, as since February 2026.
+PLAYLISTS: dict[str, list[dict[str, Any]]] = {
+    "alice": [
+        {
+            "id": "pl-alice",
+            "name": "Road trip",
+            "snapshot_id": "snap-1",
+            "owner": {"id": "alice"},
+            "collaborative": False,
+            "items": {"total": len(PLAYLIST_ITEMS["pl-alice"])},
+        },
+        {
+            "id": "pl-zumba",
+            "name": "Zumba",
+            "snapshot_id": "snap-z",
+            "owner": {"id": "alice"},
+            "collaborative": False,
+            "items": {"total": 0},
+        },
+        {
+            "id": "pl-aardvark",
+            "name": "aardvark tunes",
+            "snapshot_id": "snap-a",
+            "owner": {"id": "alice"},
+            "collaborative": False,
+            "items": {"total": 0},
+        },
+        {
+            "id": "pl-followed",
+            "name": "Someone's mix",
+            "snapshot_id": "snap-x",
+            "owner": {"id": "someone"},
+            "collaborative": False,
+        },
+    ],
+    "bob": [],
 }
 ALLOWLIST = {"alice", "bob"}
 
@@ -78,6 +109,10 @@ class FakeSpotify:
         # How many more MusicBrainz lookups get an answer; the others wait. None: no limit.
         # A plain int, so the test thread can raise it while the app's event loop polls it.
         self.lookup_allowance: int | None = None
+        self.requests: list[str] = []  # Web API paths asked for, with their query
+        # Requests whose "path?query" starts with one of these wait while it is here.
+        self.held: set[str] = set()
+        self.playlists = copy.deepcopy(PLAYLISTS)  # a test may change a playlist's snapshot
 
     async def __call__(self, request: httpx.Request) -> httpx.Response:
         host, path = request.url.host, request.url.path
@@ -88,7 +123,12 @@ class FakeSpotify:
             return await self._musicbrainz_when_allowed(path)
         if host == "api.spotify.com":
             user = request.headers["authorization"].removeprefix("Bearer at-")
-            return self._api(request, user, path.removeprefix("/v1"))
+            path = path.removeprefix("/v1")
+            asked = f"{path}?{request.url.query.decode()}"
+            self.requests.append(asked)
+            while any(asked.startswith(held) for held in self.held):
+                await asyncio.sleep(0.005)
+            return self._api(request, user, path)
         return httpx.Response(599, text=f"unexpected request to {request.url}")
 
     def _token(self, request: httpx.Request) -> httpx.Response:
@@ -124,9 +164,13 @@ class FakeSpotify:
         if path == "/me":
             return httpx.Response(200, json={"id": user, "display_name": user.title()})
         if path == "/me/tracks":
-            return _page([{"track": track(n)} for n in SAVED[user]], params)
+            # Newest first, as Spotify lists them.
+            saved = [
+                {"track": track(n), "added_at": f"2026-01-{n % 28 + 1:02}"} for n in SAVED[user]
+            ]
+            return _page(saved, params)
         if path == "/me/playlists":
-            return _page(PLAYLISTS[user], params)
+            return _page(self.playlists[user], params)
         if match := re.fullmatch(r"/playlists/([\w-]+)/items", path):
             self.playlist_reads.append(match[1])
             if match[1] not in PLAYLIST_ITEMS:

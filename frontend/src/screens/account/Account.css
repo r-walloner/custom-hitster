@@ -46,12 +46,36 @@
 
 .account__list {
   flex: 1;
-  min-height: 0;
-  overflow-y: auto;
   margin: 0 -6px;
+}
+
+.account__list .app-scroll__box {
   padding: 0 2px;
-  scrollbar-width: thin;
-  scrollbar-color: var(--ink-subtle) var(--sand);
+}
+
+/* A source being imported: a tiny bar, then "Importing…". */
+.account__importing {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.account__importing .jm-progress {
+  flex: none;
+  width: 96px;
+  height: 8px;
+  border-width: 1.5px;
+}
+
+/* Each step slides, so the jumps read as progress. */
+.account__importing .jm-progress > span {
+  transition: width 300ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .account__importing .jm-progress > span {
+    transition: none;
+  }
 }
 
 .account__panel .account__none {
@@ -64,6 +88,12 @@
 
 .account__intro {
   max-width: 420px;
+}
+
+/* Before the sources are known: one line in the middle of the panel. */
+.account__listing {
+  align-items: center;
+  justify-content: center;
 }
 
 .account__start {
