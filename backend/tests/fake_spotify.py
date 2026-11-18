@@ -162,7 +162,7 @@ class FakeSpotify:
         if user not in ALLOWLIST:
             return _error(403, "User not registered in the Developer Dashboard")
         if path == "/me":
-            return httpx.Response(200, json={"id": user, "display_name": user.title()})
+            return httpx.Response(200, json={"id": user, "display_name": f"{user.title()} Example"})
         if path == "/me/tracks":
             # Newest first, as Spotify lists them.
             saved = [

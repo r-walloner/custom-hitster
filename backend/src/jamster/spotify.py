@@ -121,8 +121,12 @@ class Spotify:
             raise _error(resp)  # 403 here means the account is not on the app's allowlist
         me = resp.json()
         player_id = me["id"]
+        first_name = (me.get("display_name") or "").split(maxsplit=1)[:1]
         db.upsert_player(
-            self._conn, player_id, me.get("display_name") or player_id, tokens["refresh_token"]
+            self._conn,
+            player_id,
+            first_name[0] if first_name else player_id,
+            tokens["refresh_token"],
         )
         stored = db.get_player(self._conn, player_id)
         name = stored.name if stored else player_id  # the name they chose, if they chose one
