@@ -377,3 +377,26 @@ a.app-btn--danger {
   border-radius: 3px;
   background: var(--ink-subtle);
 }
+
+/* A picked option row with an extra line under its name (Rows.tsx OptionRow `children`): the
+   card moves from the row to a wrapper holding both. */
+.app-option {
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-card);
+  background: var(--turn-tint);
+  box-shadow: var(--shadow-sticker-sm);
+}
+
+.app-option > .jm-option {
+  border: 0;
+  background: none;
+  box-shadow: none;
+}
+
+/* Lined up under the name: the row's 14px padding, 22px icon and 12px gap. */
+.app-option__more {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 14px 12px 48px;
+}

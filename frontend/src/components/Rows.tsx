@@ -77,11 +77,21 @@ interface OptionRowProps {
   /** Can't be picked; `detail` says why. */
   disabled?: boolean
   onClick?: () => void
+  /** Shown inside the row, under its name, while it is picked: a Test button. */
+  children?: ReactNode
 }
 
 /** One of several: a speaker. */
-export function OptionRow({ icon, name, detail, pressed, disabled, onClick }: OptionRowProps) {
-  return (
+export function OptionRow({
+  icon,
+  name,
+  detail,
+  pressed,
+  disabled,
+  onClick,
+  children,
+}: OptionRowProps) {
+  const row = (
     <button
       type="button"
       className="jm-option"
@@ -96,6 +106,14 @@ export function OptionRow({ icon, name, detail, pressed, disabled, onClick }: Op
       </span>
       {!disabled && <span className="jm-option__dot" />}
     </button>
+  )
+  if (!pressed || !children) return row
+  // A button can't hold another button, so the card wraps both: the row, then the extra line.
+  return (
+    <div className="app-option">
+      {row}
+      <div className="app-option__more">{children}</div>
+    </div>
   )
 }
 
