@@ -49,7 +49,7 @@ Jamster is a private tool and cannot become a public one.
 3. A countdown starts, 5 seconds unless the host sets another time in the lobby.
    Until it runs out, every other player may challenge or pass, and it ends early once everyone has decided.
 4. If nobody challenged, the card is revealed.
-   Otherwise each challenger in turn, in the order they challenged, taps a free `+` where they think the card belongs and locks it in, which costs 1 token.
+   The host sees challenge and pass buttons on their own row and on every local player's row, so a hot-seat game works within the countdown; players with their own phone decide for themselves.
    The host sees challenge and pass buttons on the row of every other player who is here, so a hot-seat game works within the countdown.
 5. The card is revealed.
    A correct placement keeps the card.

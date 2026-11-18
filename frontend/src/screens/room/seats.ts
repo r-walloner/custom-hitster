@@ -27,7 +27,7 @@ export function seatHelpers(state: StateMessage): SeatHelpers {
     host: room.players.find((player) => player.is_host),
     isLocal: (id) => !!seat(id)?.local,
     isAway,
-    canActFor: (id) => id === you.player_id || (you.is_host && !isAway(id)),
+    canActFor: (id) => id === you.player_id || (you.is_host && !!seat(id)?.local),
     as: (id) => (id !== you.player_id ? { as_player: id } : {}),
     hearsMusic: !!me?.spotify && (room.settings.mode === 'remote' || you.is_host),
   }

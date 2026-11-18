@@ -29,7 +29,7 @@ export interface RoomTools {
   isLocal: (id: string) => boolean
   /** A player who has left or lost their connection; their seat waits for them. */
   isAway: (id: string) => boolean
-  /** Can this device make that player's moves? The host may act for anyone who isn't away. */
+  /** Can this device make that player's moves? Everyone plays for themselves; the host also plays for local players. */
   canActFor: (id: string) => boolean
   /** `as_player` for a move made for someone else. */
   as: (id: string) => { as_player?: string }

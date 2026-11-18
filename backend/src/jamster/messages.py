@@ -27,7 +27,7 @@ class _Client(BaseModel):
 
 
 class _Acting(_Client):
-    as_player: str | None = None  # the host may act for any player (hot seat)
+    as_player: str | None = None  # the host plays for a local (hot-seat) player
 
 
 class Join(_Client):

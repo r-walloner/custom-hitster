@@ -15,7 +15,7 @@ A web party game for one friend group: a song plays, the player on turn places i
 - Each card carries the year the song first came out, not the year of a remaster.
 - The game follows the Original rules of the card game Hitster ([rules](https://hitstergame.com/de-at/pages/spielregeln-original)): timelines, challenges in buzz order, tokens, first to 10 cards. Challenges are called during a short countdown after the lock-in (5 seconds by default, set by the host), and each challenger locks in their slot before the reveal.
 - The server starts each song on the host's Spotify (local mode) or on every connected player's Spotify (remote mode).
-- The host can act for any player, so a whole game works on one device.
+- Every player makes their own moves; the host also plays for local players, so a whole game works on one device.
 - Naming title and artist is said aloud and confirmed with a tap.
 - No Hitster name, branding or look in the app's code or design.
 
@@ -31,7 +31,7 @@ A player signs in with Spotify, and the server lists their library's sources: li
 |---|---|---|---|---|
 | Game rules | Timeline game with a buzzer for challenges | Buzzer quiz; both as modes | Matches the rules the project is modelled on | High |
 | Discord | A plain web link used during a call | Discord Activity; Discord bot | No integration to build; Spotify login inside Discord's iframe is awkward | Medium |
-| Local play | Host screen, phones optional, host can act for anyone who isn't away | One device only; phones required | Same code path as remote play | Low |
+| Local play | Host screen, phones optional, the host plays only for local players | One device only; phones required; the host plays for anyone | Same code path as remote play; a player with their own phone makes their own moves | Low |
 | Away players | Their seat stays; on their turn everyone waits, or the host skips it and the card is thrown away; an away challenger's guess is dropped for free | The host plays for them; the skipped card goes to the next player | Playing for someone absent is a third, confusing way out; the next player would have heard the song already | Low |
 | Leaving and closing | A guest leaving the lobby frees the seat; the host closes the room from the lobby | Rooms only expire after six empty hours | The lobby shows who's really coming; a closed code stops working at once | Low |
 | Backend | Python 3.14, FastAPI | TypeScript on Node | Curation work benefits from Python; matches the prototype | Very high |

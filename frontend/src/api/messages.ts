@@ -110,7 +110,7 @@ export type ServerMessage =
   | { type: 'devices'; devices: Device[] }
   | { type: 'playback_test'; ok: boolean; message: string }
 
-// The host may act for any player (hot seat) by naming them in as_player.
+// The host plays for a local (hot-seat) player by naming them in as_player.
 interface Acting {
   as_player?: string
 }

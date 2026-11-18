@@ -302,10 +302,16 @@ class Room:
             raise RoomError("That is only possible before the game starts")
 
     def _actor(self, client_id: str, as_player: str | None) -> str:
-        """The seat an action is for: the sender's own, or any seat if the host says so."""
+        """The seat an action is for: the sender's own, or a local seat if the host says so."""
         if as_player is None:
             return self._own_seat(client_id).id
+        own = self._seat_of(client_id)
+        if own is not None and own.id == as_player:
+            return as_player
         self._host_only(client_id)
+        seat = next((s for s in self.seats if s.id == as_player), None)
+        if seat is None or seat.client_id is not None:
+            raise RoomError("The host can only play for local players")
         return as_player
 
     def _referee_only(self, client_id: str) -> None:

@@ -364,6 +364,14 @@ def test_remote_game_with_a_hot_seat_player(
 
         b.send_json(settings(cards_to_win=7))
         assert until(b, is_type("error"))["message"] == "Only the host can do that"
+        bob_seat = next(p["id"] for p in room["players"] if p["name"] == "Bob")
+
+        def move(seat: str, message: State) -> None:
+            """Bob plays on his own phone; the host plays for herself and for Carol."""
+            if seat == bob_seat:
+                b.send_json(message)
+            else:
+                a.send_json({**message, "as_player": seat})
 
         b.send_json({"type": "get_devices"})
         devices = until(b, is_type("devices"))["devices"]
@@ -401,10 +409,10 @@ def test_remote_game_with_a_hot_seat_player(
 
         active = game["active"]
         others = [p["id"] for p in game["players"] if p["id"] != active]
-        a.send_json({"type": "place", "slot": right_slot(game, active, year), "as_player": active})
-        a.send_json({"type": "lock", "as_player": active})
+        move(active, {"type": "place", "slot": right_slot(game, active, year)})
+        move(active, {"type": "lock"})
         for other in others:
-            a.send_json({"type": "pass", "as_player": other})
+            move(other, {"type": "pass"})
         game = until(a, state_where(lambda r: r["game"]["phase"] == "revealed"))["room"]["game"]
         assert game["outcome"] == {"correct": True, "card_to": active}
         assert game["card"]["year"] == year
@@ -428,24 +436,23 @@ def test_remote_game_with_a_hot_seat_player(
         active = game["active"]
         thief = next(p["id"] for p in game["players"] if p["id"] != active)
         right = right_slot(game, active, year)
-        a.send_json({"type": "place", "slot": 1 - right, "as_player": active})  # the other slot
-        a.send_json({"type": "lock", "as_player": active})
-        a.send_json({"type": "buzz", "as_player": thief})
+        move(active, {"type": "place", "slot": 1 - right})  # the other slot
+        move(active, {"type": "lock"})
+        move(thief, {"type": "buzz"})
         # The only free slot is taken by this challenge, so the window closes at once.
         until(a, state_where(lambda r: r["game"]["phase"] == "picking"))
-        a.send_json({"type": "pick_slot", "slot": right, "as_player": thief})
+        move(thief, {"type": "pick_slot", "slot": right})
         marked = until(a, state_where(lambda r: r["game"]["challenges"][0]["slot"] == right))
         game = marked["room"]["game"]
         assert (game["phase"], game["card"], game["outcome"]) == ("picking", None, None)
         assert game["challenges"] == [{"player_id": thief, "slot": right, "locked": False}]
-        a.send_json({"type": "lock_pick", "as_player": thief})
+        move(thief, {"type": "lock_pick"})
         game = until(a, state_where(lambda r: r["game"]["phase"] == "revealed"))["room"]["game"]
         assert game["outcome"] == {"correct": False, "card_to": thief}
         cards = {p["id"]: len(p["timeline"]) for p in game["players"]}
         assert cards[thief] >= 2 and cards[active] <= 2
 
         # --- permissions and the end of the game ---
-        bob_seat = next(p["id"] for p in room["players"] if p["name"] == "Bob")
         stranger = next(p["id"] for p in game["players"] if p["id"] not in (bob_seat, active))
         if game["active"] != bob_seat:
             b.send_json({"type": "next_turn"})
@@ -453,6 +460,9 @@ def test_remote_game_with_a_hot_seat_player(
             assert error == "Only the host or the active player can do that"
         b.send_json({"type": "buy", "as_player": stranger})
         assert until(b, is_type("error"))["message"] == "Only the host can do that"
+        a.send_json({"type": "buy", "as_player": bob_seat})
+        error = until(a, is_type("error"))["message"]
+        assert error == "The host can only play for local players"
 
         a.send_json({"type": "end_game"})
         room = until(a, state_where(lambda r: r["game"] is None))["room"]
