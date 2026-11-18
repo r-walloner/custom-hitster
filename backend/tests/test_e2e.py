@@ -459,6 +459,27 @@ def test_remote_game_with_a_hot_seat_player(
         assert room["deck"]["status"] == "none" and room["playback"]["status"] == "idle"
 
 
+def test_stopping_the_speaker_test_pauses_at_once(
+    client: TestClient, fake: FakeSpotify, monkeypatch: pytest.MonkeyPatch
+):
+    monkeypatch.setattr(rooms, "TEST_PLAYBACK_SECONDS", 3600)
+    alice = Browser(client)
+    alice.login("alice")
+    assert alice.pick(liked=True)["status"] == "done"
+    code = alice.request("POST", "/api/rooms").json()["code"]
+
+    with alice.socket(code) as a:
+        until(a, is_type("state"))
+        a.send_json({"type": "test_playback"})
+        assert until(a, is_type("playback_test"))["ok"] is True
+        a.send_json({"type": "stop_test"})
+        for _ in range(200):
+            if fake.pauses:
+                break
+            time.sleep(0.01)
+        assert fake.pauses == ["alice"], "the music stops when the player taps Stop"
+
+
 def test_local_game_plays_only_on_the_host_and_recovers_from_a_playback_failure(
     client: TestClient, fake: FakeSpotify, caplog: pytest.LogCaptureFixture
 ):

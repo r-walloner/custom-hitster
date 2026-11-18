@@ -118,6 +118,7 @@ class Room:
         self._advance = 0  # bumped whenever the countdown to the next turn starts or stops
         self._advance_ends: float | None = None  # time.monotonic() when the next turn starts
         self._play_started = 0.0  # time.monotonic() when Spotify confirmed the song in play
+        self._tests: dict[str, int] = {}  # seat id -> bumped per speaker test, so stale stops skip
         self._sockets: dict[WebSocket, tuple[str, str | None]] = {}  # -> (client id, spotify id)
         self._sending = asyncio.Lock()
         self._tasks: set[asyncio.Task[Any]] = set()
@@ -480,7 +481,14 @@ class Room:
                 text = error or f"Playing {TEST_PLAYBACK_SECONDS} seconds from your library"
                 await self._send(ws, m.PlaybackTestMessage(ok=error is None, message=text))
                 if error is None:
-                    self._spawn(self._stop_test(seat))
+                    self._tests[seat.id] = test = self._tests.get(seat.id, 0) + 1
+                    self._spawn(self._stop_test(seat, test))
+
+            case m.StopTest():
+                seat, _ = self._spotify_seat(client_id)
+                if self.game is None and seat.id in self._tests:
+                    self._tests[seat.id] += 1  # the test's own timer has nothing left to stop
+                    await self._pause([seat])
 
             case m.RetryPlayback():
                 failed = {f.player_id for f in self.playback.failures}
@@ -905,9 +913,9 @@ class Room:
 
         await asyncio.gather(*(pause(s) for s in seats))
 
-    async def _stop_test(self, seat: Seat) -> None:
+    async def _stop_test(self, seat: Seat, test: int) -> None:
         await asyncio.sleep(TEST_PLAYBACK_SECONDS)
-        if self.game is None:
+        if self.game is None and self._tests.get(seat.id) == test:
             await self._pause([seat])
 
 

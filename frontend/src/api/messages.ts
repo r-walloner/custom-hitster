@@ -125,6 +125,8 @@ export type ClientMessage =
   | { type: 'set_settings'; settings: RoomSettings }
   | { type: 'start_game' | 'end_game' }
   | { type: 'get_devices' | 'test_playback' | 'retry_playback' | 'restart_playback' | 'hold_turn' }
+  /** Stop the speaker test before its time is up: the player tapped Stop. */
+  | { type: 'stop_test' }
   | { type: 'set_device'; device_id: string | null; name: string | null }
   | ({ type: 'place' | 'pick_slot'; slot: number } & Acting)
   | ({ type: 'lock' | 'lock_pick' | 'skip' | 'buzz' | 'pass' | 'buy' } & Acting)

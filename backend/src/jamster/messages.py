@@ -92,6 +92,12 @@ class TestPlayback(_Client):
     type: Literal["test_playback"]
 
 
+class StopTest(_Client):
+    """Stop the speaker test before its time is up: the player tapped Stop."""
+
+    type: Literal["stop_test"]
+
+
 class RetryPlayback(_Client):
     """Start the song again for the players whose playback failed, at the others' position."""
 
@@ -178,6 +184,7 @@ ClientMessage = Annotated[
     | GetDevices
     | SetDevice
     | TestPlayback
+    | StopTest
     | RetryPlayback
     | RestartPlayback
     | HoldTurn
