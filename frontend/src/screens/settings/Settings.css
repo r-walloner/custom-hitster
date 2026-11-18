@@ -35,6 +35,13 @@
   border-bottom: 0;
 }
 
+/* What a guest sees instead of a control: the value, as large as a stepper's number. */
+.settings__value {
+  flex: 0 0 auto;
+  font: 800 22px/1 var(--font-ui);
+  font-variant-numeric: tabular-nums;
+}
+
 .settings__select {
   width: 172px;
 }
