@@ -221,6 +221,49 @@ a.app-btn--danger {
   scrollbar-width: thin;
 }
 
+/* An import's progress (components/ImportProgress.tsx): "Importing…" over a small bar. */
+.app-importing {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+}
+
+.app-importing .app-importing__bar {
+  width: 96px;
+  height: 8px;
+  border-width: 1.5px;
+}
+
+/* In a setting row's value or a headline: their type, and a bar across the text column. */
+.app-importing--strong {
+  display: flex;
+  align-self: stretch;
+  gap: 4px;
+}
+
+/* In a setting row it stays as tall as the row's button, so the row doesn't grow. */
+.jm-setting__value .app-importing--strong {
+  line-height: 14px;
+}
+
+.app-importing--strong .app-importing__bar {
+  width: 100%;
+  max-width: 180px;
+  height: 10px;
+}
+
+/* Each step slides, so the jumps read as progress. */
+.app-importing__bar > span {
+  transition: width 300ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-importing__bar > span {
+    transition: none;
+  }
+}
+
 /* A waiting screen: the logo and one line, centred. */
 .app-waiting {
   flex: 1;
