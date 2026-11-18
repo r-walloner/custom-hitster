@@ -86,9 +86,6 @@ Remove an item once the backend provides it and the screen uses it.
   `PlaybackView` doesn't say when the song started, and cards carry no duration.
   The tape counts from when this browser saw the song start (a reload starts it again at 0:00), fills over a nominal 30 seconds, and shows the elapsed time without the design's "/ 0:30".
   This needs `elapsed_ms` in `PlaybackView`, and `duration_ms` for the total.
-- **A countdown while challengers guess.**
-  The design shows a ring on the guessing step, but only the challenge window has a timer.
-  Meanwhile there is no ring there, and a referee can use "Reveal now".
 - **When the library was copied.**
   The Account screen's "Copied 3 days ago" needs the time of the last import, which isn't stored.
   Meanwhile the line is left out.
