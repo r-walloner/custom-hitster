@@ -12,7 +12,8 @@ body{margin:0}
 .lib-check{appearance:none;-webkit-appearance:none;width:22px;height:22px;margin:0;flex:0 0 auto;box-sizing:border-box;border:2px solid var(--ink);border-radius:6px;background:var(--label);display:grid;place-content:center;cursor:pointer}
 .lib-check:checked{background:var(--ink)}
 .lib-check:checked::after{content:"";width:10px;height:5px;border:solid var(--paper);border-width:0 0 2.5px 2.5px;transform:translateY(-1px) rotate(-45deg)}
-.lib-check:focus-visible,.lib-search:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.lib-check:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.lib-search:focus{outline:none;border-color:var(--coral-deep)!important;box-shadow:0 0 0 1px var(--coral-deep)}
 .lib-row:hover{background:var(--paper)}
 .lib-list{scrollbar-width:thin;scrollbar-color:var(--ink-subtle) var(--sand)}
 </style>

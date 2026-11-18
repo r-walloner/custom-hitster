@@ -97,7 +97,7 @@ Inline SVG on a 24px grid: stroke 2.4, round caps and joins, `currentColor`. For
 
 - Text contrast: `ink` 14:1, `ink-muted` 7:1, `ink-subtle` 5.2:1, `coral-text` 4.9:1 on `paper`; ink on `coral` 4.6:1, on `mustard` 8.2:1, on `right` 7:1; paper on `wrong` 5.9:1. `slot-dash` and `sand-line` are decorative only.
 - Never rely on colour alone: player colour + initial or name; right and wrong are ✓ / ✕ plus an initial, and the verdict pill says *Right* in words.
-- Focus: a 2px ink outline with a 2px offset. Card halves and gaps are real buttons with labels ("Put it before 1994").
+- Focus: a 2px ink outline with a 2px offset; text fields instead turn their own border coral (see Input). Card halves and gaps are real buttons with labels ("Put it before 1994").
 
 ## Not designed yet
 

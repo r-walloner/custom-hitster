@@ -178,7 +178,9 @@ body { margin: 0; font-family: var(--font-ui); background: var(--paper); color: 
 .jm-search { position: relative; display: block; }
 .jm-search > svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--ink-subtle); pointer-events: none; }
 .jm-search > input { width: 100%; height: var(--touch-min); box-sizing: border-box; padding: 0 12px 0 34px; border: var(--stroke-control) solid var(--ink); border-radius: var(--radius-pill); background: var(--paper); color: var(--ink); font: 600 13px var(--font-ui); }
-.jm-input:focus-visible, .jm-search > input:focus-visible, .jm-check:focus-visible, .jm-option:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.jm-check:focus-visible, .jm-option:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+/* A text field in use: its own border turns coral and 1px heavier; no second ring, no browser ring. */
+.jm-input:focus, .jm-search > input:focus { outline: none; border-color: var(--coral-deep); box-shadow: 0 0 0 1px var(--coral-deep); }
 .jm-qr { display: inline-block; align-self: flex-start; width: max-content; padding: 7px; border: var(--stroke-control) solid var(--ink); border-radius: var(--radius-card); background: var(--label); color: var(--ink); line-height: 0; }
 .jm-qr svg { display: block; width: 98px; height: 98px; shape-rendering: crispEdges; }
 

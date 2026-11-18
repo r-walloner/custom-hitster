@@ -15,5 +15,5 @@ Text fields: the room code, a player's name and search, plus the QR tile that si
 
 - Every field has a real `<label>`: a `jm-label` above it, or the screen's headline as the label (*What should we call you?*).
 - Ground is `paper` inside a `label` panel, so the field reads as a hole in the panel.
-- Focus ring: 2px ink outline, 2px offset, like buttons.
+- Focus: the field's own border turns `coral-deep` and grows to 3px (a 1px shadow outside it). No outline ring, so there is never a second ring beside the border, and the browser's own ring is switched off.
 - Room codes are four letters; set `maxlength="4"`, `autocomplete="off"`, `autocapitalize="characters"`.
