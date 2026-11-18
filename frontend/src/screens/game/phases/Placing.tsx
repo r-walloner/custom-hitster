@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Button, ButtonPair, Token } from '../../../components/Button.tsx'
+import { Button, Token } from '../../../components/Button.tsx'
 import { useRoomTools } from '../../room/context.ts'
 import { pickingItems, slotRange, slotRangeShort } from '../board.ts'
 import { Board } from '../components/Board.tsx'
@@ -38,6 +38,7 @@ export default function Placing({ turn }: { turn: Turn }) {
 
   const skip = (
     <Button
+      size="xl"
       disabled={active.tokens < 1 || game.deck_remaining === 0 || loading}
       aria-label="Skip song for 1 token"
       onClick={() => turn.draw({ type: 'skip', ...as(game.active) })}
@@ -58,23 +59,19 @@ export default function Placing({ turn }: { turn: Turn }) {
       <h1 className="jm-moment__headline">
         {game.slot === null ? `${who}, where does it go?` : `${slotRange(cards, game.slot)}?`}
       </h1>
-      <Button
-        variant="primary"
-        size="xl"
-        disabled={game.slot === null}
-        onClick={() => send({ type: 'lock', ...as(game.active) })}
-      >
-        {game.slot === null ? 'Tap a gap first' : 'Lock it in'}
-      </Button>
-      {/* The player on turn may buy only after the reveal; on a shared device, the host may. */}
-      {buyer ? (
-        <ButtonPair>
-          {skip}
-          <BuyButton turn={turn} id={buyer} label={`Buy for ${name(buyer)}`} />
-        </ButtonPair>
-      ) : (
-        skip
-      )}
+      <div className="game__decide">
+        <Button
+          variant="primary"
+          size="xl"
+          disabled={game.slot === null}
+          onClick={() => send({ type: 'lock', ...as(game.active) })}
+        >
+          {game.slot === null ? 'Tap a gap first' : 'Lock it in'}
+        </Button>
+        {skip}
+        {/* The player on turn may buy only after the reveal; on a shared device, the host may. */}
+        {buyer && <BuyButton turn={turn} id={buyer} label={`Buy for ${name(buyer)}`} />}
+      </div>
     </MomentPanel>
   ) : away ? (
     <MomentPanel label={`${who} is away`} className="game__placing">

@@ -1,57 +1,54 @@
 /* The game screen's frame and the moment panel's states (game/phases/*). */
-.jm-moment.game__placing {
+/* Placing and the challenger's guess: one decision, laid out the same way. */
+.jm-moment.game__placing,
+.jm-moment.game__guess {
   gap: 5px;
 }
 
-.game__placing .jm-btn--xl {
+.game__placing .jm-btn--xl,
+.game__guess .jm-btn--xl {
   min-height: 54px;
 }
 
-.game__placing .jm-moment__sub {
+/* The challenger's Lock it in sits centred in the space under the text. */
+.game__guess .jm-btn--xl {
+  margin-block: auto;
+}
+
+.jm-moment .jm-moment__sub {
   margin: 0;
 }
 
-.jm-moment.game__guess {
-  padding: 8px 12px 12px;
+/* One decision, centred in the space under the headline: the main button and its alternative
+   side by side, the main one wider (Lock it in and Skip song), or the main one alone
+   (Challenge). A third button (the host's Buy) takes a row of its own. */
+.game__decide {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  align-content: center;
   gap: 8px;
 }
 
-.jm-screen.game--guess {
-  padding-bottom: 6px;
+.game__decide .jm-btn--xl {
+  min-height: 54px;
 }
 
-.game__guess-body {
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  gap: 10px;
-  align-items: flex-end;
+.game__decide > :nth-child(3) {
+  grid-column: 1 / -1;
 }
 
-.game__guess-order {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+.game__decide--one {
+  grid-template-columns: 1fr;
 }
 
-.game__guess-order .jm-player {
-  height: 40px;
-}
-
-.game__guess-order .jm-player--now {
-  height: 44px;
-}
-
-.game__guess-order .game__done .jm-player__name {
-  font-size: 14px;
-}
-
-.game__guess .jm-btn--xl {
-  width: 200px;
-  flex: 0 0 auto;
-  min-height: 60px;
+/* Rows keep the mock-up's height (a 44px button and the cell border) instead of
+   stretching to fill the panel, and sit centred in the space under the headline.
+   "safe" keeps the first row reachable when more rows than fit make it scroll. */
+.game__challenge .jm-players {
+  grid-auto-rows: 48px;
+  align-content: safe center;
 }
 
 .jm-moment.game__result {
