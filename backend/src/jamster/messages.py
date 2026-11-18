@@ -1,4 +1,4 @@
-"""Everything that crosses the WebSocket. Mirrored by hand in frontend/src/messages.ts."""
+"""Everything that crosses the WebSocket. Mirrored by hand in frontend/src/api/messages.ts."""
 
 from typing import Annotated, Literal
 

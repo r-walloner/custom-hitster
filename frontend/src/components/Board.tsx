@@ -1,6 +1,22 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import type { BoardItem } from './boardItems.ts'
+import type { ReactNode } from 'react'
 import { Gap, PickCard, SongCard } from './SongCard.tsx'
+import type { Song } from './types.ts'
+
+/** One thing on a board's row, left to right. */
+export type BoardItem =
+  | {
+      kind: 'card'
+      song: Song
+      isNew?: boolean
+      /** Shown where it belongs without being part of this timeline (a stolen or lost card). */
+      ghost?: boolean
+      mark?: ReactNode
+      onBefore?: () => void
+      onAfter?: () => void
+    }
+  | { kind: 'pick'; name: string; done?: boolean }
+  | { kind: 'gap'; label: string; onPick: () => void }
 
 interface BoardProps {
   /** Whose timeline: "Mara". */

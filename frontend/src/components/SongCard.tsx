@@ -1,6 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react'
-import type { Song } from '../types.ts'
 import { Icon } from './Icon.tsx'
+import type { Song } from './types.ts'
 
 interface SongCardProps {
   song: Song

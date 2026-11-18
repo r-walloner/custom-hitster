@@ -208,9 +208,9 @@ There are no frontend tests.
 | `backend/src/jamster/db.py` | The SQLite schema and every query. |
 | `backend/src/jamster/web.py` | Routes, the room WebSocket, static files. |
 | `backend/src/jamster/logs.py` | Where log records go, and from which level. |
-| `frontend/src/` | The React app: `pages/Room.tsx` picks a room's screen from its state, `room.ts` holds the helpers the screens share, `components/` wraps the design system. |
+| `frontend/src/` | The React app: `api/` talks to the backend, `components/` holds the reusable components and the design system, `screens/` has one folder per screen area (`screens/room/Room.tsx` picks a room's screen from its state). |
 
-`backend/src/jamster/messages.py` and `frontend/src/messages.ts` describe the same WebSocket messages and are kept in sync by hand.
+`backend/src/jamster/messages.py` and `frontend/src/api/messages.ts` describe the same WebSocket messages and are kept in sync by hand.
 
 There is no migration tool.
 After a change to the schema in `db.py`, delete the database file, and every player signs in again.

@@ -1,5 +1,5 @@
-import type { Score } from '../types.ts'
 import { Avatar } from './Avatar.tsx'
+import type { Score } from './types.ts'
 
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`
 

@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
-import type { Song } from '../types.ts'
 import { PickCard, SongCard } from './SongCard.tsx'
 import { Tape } from './TapePlayer.tsx'
+import type { Song } from './types.ts'
 
 export interface FloatingCard {
   /** A real song; left out for the yellow `????` pick. */

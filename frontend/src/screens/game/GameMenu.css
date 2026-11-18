@@ -1,0 +1,14 @@
+/* The game menu. */
+.jm-setting.dialog__setting {
+  gap: 10px;
+  border-top: 2px solid var(--sand-line);
+  border-bottom: 2px solid var(--sand-line);
+}
+
+.dialog__link {
+  justify-content: space-between;
+}
+
+.dialog__end {
+  margin-top: 4px;
+}

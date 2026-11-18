@@ -1,0 +1,90 @@
+/* The game screen's frame and the moment panel's states (game/phases/*). */
+.jm-moment.game__placing {
+  gap: 5px;
+}
+
+.game__placing .jm-btn--xl {
+  min-height: 54px;
+}
+
+.jm-moment.game__guess {
+  padding: 8px 12px 12px;
+  gap: 8px;
+}
+
+.jm-screen.game--guess {
+  padding-bottom: 6px;
+}
+
+.game__guess-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.game__guess-order {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.game__guess-order .jm-player {
+  height: 40px;
+}
+
+.game__guess-order .jm-player--now {
+  height: 44px;
+}
+
+.game__guess-order .game__done .jm-player__name {
+  font-size: 14px;
+}
+
+.game__guess .jm-btn--xl {
+  width: 200px;
+  flex: 0 0 auto;
+  min-height: 60px;
+}
+
+.jm-moment.game__result {
+  padding: 10px 12px 12px;
+}
+
+.game__outcome {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.game__outcome-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.game__outcome .jm-moment__headline {
+  flex: 1;
+  min-width: 0;
+  font-size: 20px;
+}
+
+.game__outcome .jm-moment__sub {
+  flex: 1;
+  min-width: 0;
+}
+
+.game__outcome-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.game__outcome-actions .jm-btn--next {
+  min-height: 50px;
+}

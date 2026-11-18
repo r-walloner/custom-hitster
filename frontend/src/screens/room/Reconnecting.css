@@ -1,0 +1,37 @@
+/* Reconnecting: the dialog that blocks the room while the socket is down. */
+.jm-dialog.reconnecting {
+  padding: 18px 20px;
+}
+
+.reconnecting__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.reconnecting__head .jm-moment__headline {
+  white-space: normal;
+}
+
+.reconnecting__badge {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  border-radius: 50%;
+  border: 2px solid var(--ink);
+  background: var(--sand);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reconnecting__trying {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.reconnecting__trying .jm-time {
+  color: var(--ink-muted);
+}

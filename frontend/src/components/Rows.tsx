@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
-import type { Player } from '../types.ts'
 import { Avatar } from './Avatar.tsx'
 import { Icon } from './Icon.tsx'
 import type { IconName } from './Icon.tsx'
+import type { Player } from './types.ts'
 
 interface SettingRowProps {
   /** The small caps name: "Music plays on". */

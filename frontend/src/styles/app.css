@@ -1,5 +1,5 @@
 /* App-level styles on top of tokens.css and jamster.css: the viewport frame, plus the few small
-   extensions the screens share. Screen layouts live next to their page (pages/*.css). */
+   extensions the screens share. Screen layouts live next to their screen (the .css files in screens/). */
 
 /* ---------- Fitting the 844 × 390 design to the viewport (components/Fit.tsx) ---------- */
 .app-fit {
@@ -35,6 +35,11 @@
 .app-overlay {
   width: var(--screen-w);
   height: var(--screen-h);
+}
+
+/* Paragraphs in a pop-up sit in the dialog's own gap. */
+.jm-dialog p {
+  margin: 0;
 }
 
 /* ---------- Small extensions the screens share ---------- */

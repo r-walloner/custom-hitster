@@ -1,0 +1,74 @@
+/* The full scoreboard. */
+.jm-dialog.standings {
+  padding: 12px 18px 16px;
+  gap: 8px;
+}
+
+.standings .jm-dialog__head > .jm-headline {
+  flex: 0 0 auto;
+}
+
+.standings__goal {
+  flex: 1;
+}
+
+.standings__grid {
+  display: grid;
+  grid-template-columns: 120px 150px 44px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+}
+
+.standings__cols {
+  padding: 0 10px;
+}
+
+.standings__cols .jm-label {
+  color: var(--ink-muted);
+}
+
+.standings__rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.standings__row {
+  min-height: 54px;
+  box-sizing: border-box;
+  padding: 6px 10px;
+  border-radius: var(--radius-card);
+  border: 2px solid var(--sand-line);
+  background: var(--paper);
+}
+
+.standings__row--turn {
+  border-color: var(--ink);
+  background: var(--turn-tint);
+}
+
+.standings__who {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.standings__cards {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: 800 15px/1 var(--font-ui);
+  font-variant-numeric: tabular-nums;
+}
+
+.standings__cards .jm-progress {
+  flex: 1;
+}
+
+.standings__row .jm-token {
+  font-size: 14px;
+}

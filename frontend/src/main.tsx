@@ -5,9 +5,9 @@ import './styles/tokens.css'
 import './styles/jamster.css'
 import './styles/app.css'
 import { Fit } from './components/Fit.tsx'
-import Account from './pages/Account.tsx'
-import Home from './pages/Home.tsx'
-import Room from './pages/Room.tsx'
+import Account from './screens/account/Account.tsx'
+import Home from './screens/home/Home.tsx'
+import Room from './screens/room/Room.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
