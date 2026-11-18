@@ -44,7 +44,7 @@ export default function Library({ onBack, backLabel }: LibraryProps) {
             onClick={() => startReading('Refreshing your library')}
           >
             <Icon name="refresh" />
-            Refresh
+            Refresh library
           </Button>
         ) : null}
         <Button onClick={onBack} variant="primary" className="library__done">
