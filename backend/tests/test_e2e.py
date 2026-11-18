@@ -422,6 +422,8 @@ def test_remote_game_with_a_hot_seat_player(
         assert game["card"]["known_by"] == ["Alice", "Bob"]
 
         # --- turn 2: a wrong placement, stolen by a challenger ---
+        b.send_json({"type": "set_named", "value": True})  # only the host judges the naming
+        assert until(b, is_type("error"))["message"] == "Only the host can do that"
         a.send_json({"type": "set_named", "value": True})
         a.send_json({"type": "next_turn"})
         room = until(

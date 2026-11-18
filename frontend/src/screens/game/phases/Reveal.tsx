@@ -14,7 +14,7 @@ import { revealOutcome } from './reveal.ts'
 /** 4 · Reveal and result: the song and its cover, and the next song on its way. The board's
     marks say who was right. */
 export default function Reveal({ turn }: { turn: Turn }) {
-  const { room, name, player, send } = useRoomTools()
+  const { room, you, name, player, send } = useRoomTools()
   const { game, active, cards, referee, loading } = turn
   const result = revealOutcome(game, cards, name)
   if (!game.card || !result) return null
@@ -60,15 +60,28 @@ export default function Reveal({ turn }: { turn: Turn }) {
         >
           <SongResult song={revealed} cover={card.image_url} from={from} />
           <div className="game__outcome-actions">
+            {/* Only the host judges, so the player on turn can't award themselves the token. */}
+            {you.is_host ? (
+              <Button
+                pressed={game.named === true}
+                aria-label={`${who} named title and artist: 1 token`}
+                onClick={() => send({ type: 'set_named', value: game.named !== true })}
+              >
+                Named the song <Token>+1</Token>
+              </Button>
+            ) : (
+              game.named && (
+                // Looks like the host's pressed toggle, without being a button.
+                <span className="game__named">
+                  <span className="app-toggle__check">
+                    <Icon name="check" />
+                  </span>
+                  {who} named the song <Token>+1</Token>
+                </span>
+              )
+            )}
             {referee ? (
               <>
-                <Button
-                  pressed={game.named === true}
-                  aria-label={`${who} named title and artist: 1 token`}
-                  onClick={() => send({ type: 'set_named', value: game.named !== true })}
-                >
-                  Named the song <Token>+1</Token>
-                </Button>
                 {advance !== null && (
                   <Button onClick={() => send({ type: 'hold_turn' })}>Keep listening</Button>
                 )}
@@ -84,20 +97,9 @@ export default function Reveal({ turn }: { turn: Turn }) {
                 </Button>
               </>
             ) : (
-              <>
-                {game.named && (
-                  // Looks like the referee's pressed toggle, without being a button.
-                  <span className="game__named">
-                    <span className="app-toggle__check">
-                      <Icon name="check" />
-                    </span>
-                    {who} named the song <Token>+1</Token>
-                  </span>
-                )}
-                <Status quiet>
-                  {loading ? 'Loading the next song…' : `${who} starts the next song.`}
-                </Status>
-              </>
+              <Status quiet>
+                {loading ? 'Loading the next song…' : `${who} starts the next song.`}
+              </Status>
             )}
           </div>
         </MomentPanel>

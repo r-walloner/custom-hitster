@@ -315,7 +315,7 @@ class Room:
         return as_player
 
     def _referee_only(self, client_id: str) -> None:
-        """Judging the answer and moving on are for the host and the active player."""
+        """Moving on to the next song is for the host and the active player."""
         seat = self._seat_of(client_id)
         active = self.game.active if self.game else None
         if client_id != self.host_client and (seat is None or seat.id != active):
@@ -543,7 +543,7 @@ class Room:
                 self._host_only(client_id)  # the player on turn could cut a challenge short
                 self._act(engine.Reveal())
             case m.SetNamed(value=value):
-                self._referee_only(client_id)
+                self._host_only(client_id)  # the player on turn could award themselves
                 self._act(engine.SetNamed(value))
             case m.NextTurn():
                 self._referee_only(client_id)
