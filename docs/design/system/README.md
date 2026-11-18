@@ -14,7 +14,7 @@ It came out of a six-round exploration (warm "Mixtape Soft" colours, the L2 pill
 
 - Talk like the friend who's hosting: short, plain, a little cheeky. "Between 1994 and 2008?" "Mara says 1994 to 2008. Is that right?" "Sam, where does it really go?" "Mara nailed it."
 - Say what just happened in one sentence, with names and years, not system words ("Placement committed" ✗, "Challenge window" ✗: just "Challenge").
-- Buttons: sentence case, verb first, one or two words. If it costs or earns tokens, put the coin and the number right after the label, with no separator: *Skip song ●1*, *Buy a card ●3*, *Named it ●+1*.
+- Buttons: sentence case, verb first, one or two words. If it costs or earns tokens, put the coin and the number right after the label, with no separator: *Skip song ●1*, *Buy a card ●3*, *Named the song ●+1*.
 - State labels: *Challenged*, *Passed*, *Guessing…*. Guesses are never secret, so don't say "hidden".
 - Never reveal anything about the song in play (title, artist, year, whose library) before the reveal.
 - Feedback and errors: say what happened, then one short fact. "Connection dropped. Your progress is safe." "Not your turn. Sam is placing." Nothing more.

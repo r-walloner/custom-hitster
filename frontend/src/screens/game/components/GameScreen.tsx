@@ -25,7 +25,7 @@ export function GameScreen({ turn, panel, board, className }: GameScreenProps) {
   const { game } = turn
   // Only the host: the player on turn could otherwise cut a challenge short.
   const revealNow = you.is_host && (game.phase === 'challenging' || game.phase === 'picking')
-  // Named it pays out when the next turn starts; show the token already.
+  // Named the song pays out when the next turn starts; show the token already.
   const bonus = (id: string) => (game.phase === 'revealed' && game.named && id === game.active ? 1 : 0)
   const scores = game.players.map((p) => ({
     player: player(p.id),

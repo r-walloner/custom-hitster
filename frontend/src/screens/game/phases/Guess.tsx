@@ -32,8 +32,7 @@ export default function Guess({ turn }: { turn: Turn }) {
 
   const panel =
     acting && picker ? (
-      <MomentPanel label={`${guesser}'s guess`} className="game__guess">
-        <span className="jm-label">Challenger's guess</span>
+      <MomentPanel phase="Challenger's guess" label={`${guesser}'s guess`} className="game__guess">
         <h1 className="jm-moment__headline">
           {picker.slot === null
             ? `${guesser}, where does it really go?`
@@ -51,8 +50,7 @@ export default function Guess({ turn }: { turn: Turn }) {
         </Button>
       </MomentPanel>
     ) : (
-      <MomentPanel label={`${guesser}'s guess`} className="game__guess">
-        <span className="jm-label">Challenger's guess</span>
+      <MomentPanel phase="Challenger's guess" label={`${guesser}'s guess`} className="game__guess">
         <h1 className="jm-moment__headline">
           {picker?.slot == null
             ? `${guesser} challenged!`

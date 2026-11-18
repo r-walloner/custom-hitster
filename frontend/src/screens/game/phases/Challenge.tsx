@@ -4,7 +4,7 @@ import { useRoomTools } from '../../room/context.ts'
 import { pickingItems, slotRangeShort } from '../board.ts'
 import { Board } from '../components/Board.tsx'
 import { GameScreen } from '../components/GameScreen.tsx'
-import { MomentHead, MomentPanel, PlayerCell } from '../components/MomentPanel.tsx'
+import { MomentPanel, PlayerCell } from '../components/MomentPanel.tsx'
 import type { Turn } from '../turn.ts'
 
 /**
@@ -65,21 +65,23 @@ export default function Challenge({ turn }: { turn: Turn }) {
     <GameScreen
       turn={turn}
       panel={
-        <MomentPanel label="Challenge" className="game__challenge">
-          <MomentHead
-            label="Challenge"
-            headline={`${who} says ${slotRangeShort(cards, slot)}. Is that right?`}
-            ring={
-              game.window_left_ms !== null && (
-                <Countdown
-                  key={game.window_left_ms}
-                  ms={game.window_left_ms}
-                  total={room.settings.challenge_seconds * 1000}
-                  label={(seconds) => `${seconds} seconds left to challenge`}
-                />
-              )
-            }
-          />
+        <MomentPanel
+          phase="Challenge"
+          className="game__challenge"
+          ring={
+            game.window_left_ms !== null && (
+              <Countdown
+                key={game.window_left_ms}
+                ms={game.window_left_ms}
+                total={room.settings.challenge_seconds * 1000}
+                label={(seconds) => `${seconds} seconds left to challenge`}
+              />
+            )
+          }
+        >
+          <h1 className="jm-moment__headline">
+            {who} says {slotRangeShort(cards, slot)}. Is that right?
+          </h1>
           {decision}
         </MomentPanel>
       }

@@ -54,8 +54,7 @@ export default function Placing({ turn }: { turn: Turn }) {
   )
 
   const panel = acting ? (
-    <MomentPanel label="Your move" className="game__placing">
-      <span className="jm-label">Guess</span>
+    <MomentPanel phase="Guess" label="Your move" className="game__placing">
       <h1 className="jm-moment__headline">
         {game.slot === null ? `${who}, where does it go?` : `${slotRange(cards, game.slot)}?`}
       </h1>
@@ -74,8 +73,7 @@ export default function Placing({ turn }: { turn: Turn }) {
       </div>
     </MomentPanel>
   ) : away ? (
-    <MomentPanel label={`${who} is away`} className="game__placing">
-      <span className="jm-label">Guess</span>
+    <MomentPanel phase="Guess" label={`${who} is away`} className="game__placing">
       <h1 className="jm-moment__headline">{who} is away.</h1>
       <p className="jm-moment__sub">Waiting for {who} to come back.</p>
       {you.is_host && (
@@ -93,8 +91,7 @@ export default function Placing({ turn }: { turn: Turn }) {
       {you.player_id && <BuyButton turn={turn} id={you.player_id} />}
     </MomentPanel>
   ) : (
-    <MomentPanel label={`${who}'s move`} className="game__placing">
-      <span className="jm-label">Guess</span>
+    <MomentPanel phase="Guess" label={`${who}'s move`} className="game__placing">
       <h1 className="jm-moment__headline">
         {game.slot === null
           ? `${who} is placing the card.`

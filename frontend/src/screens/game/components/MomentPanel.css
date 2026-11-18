@@ -1,0 +1,25 @@
+/* The moment panel's frame, the same in every phase: the phase name in the top-left corner,
+   the countdown ring pinned to the top-right corner, and one gap between the blocks. */
+.jm-moment.game__moment {
+  position: relative;
+  gap: 5px;
+}
+
+.game__moment-phase {
+  flex: 0 0 auto;
+}
+
+/* At the panel's content corner (jm-moment's padding: 8px 12px 10px). */
+.game__moment-ring {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+}
+
+/* The first block under the phase name runs beside the ring, so it leaves the ring's width
+   free (the 50px ring and a gap), and is tall enough that the next block starts below the ring
+   (50px, less the phase name and the gap). */
+.game__moment--ring > .game__moment-ring + * {
+  margin-right: 58px;
+  min-height: 31px;
+}
