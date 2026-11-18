@@ -1,7 +1,8 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import type { ReactNode } from 'react'
 import { Gap, PickCard, SongCard } from '../../../components/SongCard.tsx'
 import type { Song } from '../../../components/types.ts'
+import { useScrollBar } from '../../../components/useScrollBar.ts'
 import './Board.css'
 
 /** One thing on a board's row, left to right. */
@@ -38,28 +39,7 @@ interface BoardProps {
  */
 export function Board({ owner, count, items, spaced, label }: BoardProps) {
   const row = useRef<HTMLDivElement>(null)
-  const [scroll, setScroll] = useState({ overflows: false, share: 1, start: 0 })
-
-  useLayoutEffect(() => {
-    const element = row.current
-    if (!element) return
-    const measure = () => {
-      const { scrollWidth, clientWidth, scrollLeft } = element
-      setScroll({
-        overflows: scrollWidth > clientWidth + 1,
-        share: clientWidth / scrollWidth,
-        start: scrollLeft / scrollWidth,
-      })
-    }
-    measure()
-    const observer = new ResizeObserver(measure)
-    observer.observe(element)
-    element.addEventListener('scroll', measure, { passive: true })
-    return () => {
-      observer.disconnect()
-      element.removeEventListener('scroll', measure)
-    }
-  }, [items])
+  const scroll = useScrollBar(row, 'x')
 
   // Keep the pick being placed in the middle when it moves.
   useEffect(() => {

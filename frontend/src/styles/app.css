@@ -299,3 +299,38 @@ a.app-btn--danger {
 .app-cover__panel .app-cover__error-first {
   margin-top: 6px;
 }
+
+/* ---------- Scroll area (components/ScrollArea.tsx): the timeline's bar, standing up ---------- */
+.app-scroll {
+  display: flex;
+  gap: 4px;
+  min-height: 0;
+}
+
+.app-scroll__box {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.app-scroll__box::-webkit-scrollbar {
+  display: none;
+}
+
+.app-scroll__bar {
+  position: relative;
+  flex: 0 0 auto;
+  width: 5px;
+  margin: 4px 0;
+  border-radius: 3px;
+  background: var(--sand);
+}
+
+.app-scroll__bar > span {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-radius: 3px;
+  background: var(--ink-subtle);
+}
