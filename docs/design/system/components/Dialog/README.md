@@ -8,6 +8,7 @@ A centred pop-up over the dimmed screen: the game menu, the full scoreboard, add
 - `.jm-overlay__under` must stay: it puts the whole screen in its own layer, so things in it that raise themselves (the board's + gaps) can't show through the scrim.
 - `.jm-dialog`: 380px wide, `label` surface, ink outline, `radius-panel`, `shadow-sticker-lg`. `.jm-dialog--wide` fills the screen but 28px / 24px for content that needs room (the scoreboard).
 - `.jm-dialog__head`: the title in `headline` and a close ✕ as `.jm-btn.jm-btn--icon.jm-btn--bare`, `aria-label="Close …"`.
+  The ✕ hangs into the padding by negative margins, so the head row is only as tall as the title and the first line below it sits one gap (10px) under the title.
 
 ## Rules
 

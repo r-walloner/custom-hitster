@@ -160,6 +160,7 @@ body { margin: 0; font-family: var(--font-ui); background: var(--paper); color: 
 .jm-dialog--wide { left: 28px; right: 28px; top: 24px; bottom: 24px; width: auto; max-width: none; transform: none; }
 .jm-dialog__head { display: flex; align-items: center; gap: 8px; }
 .jm-dialog__head > .jm-headline { flex: 1; min-width: 0; }
+.jm-dialog__head > .jm-btn--icon { margin: -12px -10px -12px 0; } /* the ✕ keeps its touch size without making the head row taller */
 .jm-btn--bare { border-color: transparent; background: none; box-shadow: none; }
 
 /* ---------- Toast: one line of action feedback ---------- */
