@@ -1,38 +1,64 @@
+/* The heading and the cards form one block, centred in the space below the header and
+   lifted a little, so it sits in the visual middle of the screen. */
 .dealing {
   flex: 1;
   min-height: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
-  padding-top: 2px;
+  justify-content: center;
+  gap: var(--space-16);
+  padding-bottom: calc(2 * var(--space-16));
 }
 
-.dealing__progress {
-  width: 520px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  text-align: center;
-}
-
+/* Columns of one width, so a long name never pushes its neighbours apart. Up to six players
+   share a row; seven to ten split into two rows of smaller cards, the shorter row centred. */
 .dealing__players {
+  --column: var(--card-w);
+  --card-zoom: 1;
   display: flex;
-  gap: 22px;
-  margin-top: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-14) var(--space-16);
+  max-width: calc(var(--columns) * var(--column) + (var(--columns) - 1) * var(--space-16));
+}
+
+.dealing__players--two-rows {
+  --column: calc(var(--card-w) * 0.75);
+  --card-zoom: 0.75;
 }
 
 .dealing__player {
+  width: var(--column);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-8);
 }
 
 .dealing__name {
+  max-width: 100%;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-6);
+}
+
+.dealing__player-name {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dealing__player .jm-card,
+.dealing__waiting {
+  zoom: var(--card-zoom);
+}
+
+/* .jm-card's flex basis is its width, which in this column would make it taller than the
+   empty slot it replaces. */
+.dealing__player .jm-card {
+  flex: none;
 }
 
 .dealing__waiting {
@@ -40,20 +66,48 @@
   height: var(--card-h);
   box-sizing: border-box;
   border-radius: var(--radius-card);
-  border: 2px dashed var(--slot-dash);
+  border: var(--stroke-control) dashed var(--slot-dash);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* More players than fit in a row: they wrap, and the cards shrink a little. */
-.dealing__players {
-  flex-wrap: wrap;
-  justify-content: center;
-  row-gap: 8px;
+/* A card lands: it drops in from above with a little spin and settles. */
+.dealing__card {
+  animation: dealing-land 0.55s cubic-bezier(0.2, 0.9, 0.3, 1.25) both;
 }
 
-.dealing__players:has(> :nth-child(6)) .jm-card,
-.dealing__players:has(> :nth-child(6)) .dealing__waiting {
-  zoom: 0.6;
+@keyframes dealing-land {
+  from {
+    opacity: 0;
+    transform: translateY(-48px) rotate(-10deg) scale(0.85);
+  }
+  60% {
+    opacity: 1;
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* The empty slots breathe while they wait. */
+.dealing__waiting .jm-caption {
+  animation: dealing-wait 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes dealing-wait {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.4;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dealing__card,
+  .dealing__waiting .jm-caption {
+    animation: none;
+  }
 }

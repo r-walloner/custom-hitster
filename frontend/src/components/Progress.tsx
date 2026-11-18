@@ -6,7 +6,7 @@ interface ProgressProps {
   className?: string
 }
 
-/** A filling bar for amounts (an import, cards dealt, cards toward the goal). Never for time. */
+/** A filling bar for amounts (an import, cards toward the goal). Never for time. */
 export function Progress({ value, max, label, small, className }: ProgressProps) {
   const classes = ['jm-progress', small && 'jm-progress--sm', className].filter(Boolean).join(' ')
   return (

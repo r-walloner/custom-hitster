@@ -29,6 +29,8 @@ CODE_LETTERS = "ABCDEFGHJKLMNPQRSTUVWXYZ"  # no I or O, which read as 1 and 0
 MAX_PLAYERS = 10
 IDLE_SECONDS = 6 * 3600  # an empty room is dropped after this long
 TEST_PLAYBACK_SECONDS = 5
+DEAL_SECONDS = 1.5  # the least time between two opening cards landing, so dealing reads as work
+DEALT_SECONDS = 2.5  # how long the full deal shows before the game starts
 
 
 class RoomLog(logging.LoggerAdapter[logging.Logger]):
@@ -343,8 +345,10 @@ class Room:
                 if not any(db.count_tracks(self._s.conn, pid) for pid in ids):
                     raise RoomError("No library has been imported yet")
                 self._invalidate_deck()
-                self.deck_view = m.DeckView(status="dealing", total=len(self.seats) + 1)
-                self._spawn(self._deal(self._deck_epoch, ids))
+                order = [s.id for s in self.seats]
+                self._s.rng.shuffle(order)  # before dealing, so each card lands with its player
+                self.deck_view = m.DeckView(status="dealing", total=len(order) + 1, order=order)
+                self._spawn(self._deal(self._deck_epoch, ids, order))
 
             case m.EndGame():
                 self._host_only(client_id)
@@ -600,10 +604,11 @@ class Room:
 
     # --- deck ----------------------------------------------------------------------------
 
-    async def _deal(self, epoch: int, spotify_ids: list[str]) -> None:
-        """Start the game as soon as the opening cards have years: one per player and the first
-        card in play. Every other card's year is looked up when it is drawn."""
-        needed = len(self.seats) + 1
+    async def _deal(self, epoch: int, spotify_ids: list[str], order: list[str]) -> None:
+        """Start the game as soon as the opening cards have years: one per player, in turn
+        order, then the first card in play. Every other card's year is looked up when it is
+        drawn. Clients see each player's card as it lands, never the card in play."""
+        needed = len(order) + 1
         cards: list[Card] = []
         try:
             entries = curate(
@@ -620,6 +625,7 @@ class Room:
                 self.settings.strategy,
                 needed,
             )
+            lands = time.monotonic() + DEAL_SECONDS  # cached years would land all at once
             while entries and len(cards) < needed:
                 entry = entries.pop(0)
                 card = await to_card(self._s.resolver, entry)
@@ -628,8 +634,18 @@ class Room:
                 if card is None:
                     self.log.info("no year for %r (%s), dropped", entry.track.name, entry.track.uri)
                 if card:
+                    await asyncio.sleep(max(0.0, lands - time.monotonic()))
+                    if epoch != self._deck_epoch:
+                        return
+                    lands = time.monotonic() + DEAL_SECONDS
                     cards.append(card)
-                    self.deck_view = m.DeckView(status="dealing", done=len(cards), total=needed)
+                    self.deck_view = m.DeckView(
+                        status="dealing",
+                        done=len(cards),
+                        total=needed,
+                        order=order,
+                        dealt=[m.CardView(**_card_view(c)) for c in cards[: len(order)]],
+                    )
                     await self.broadcast()
         except Exception:
             self.log.exception("dealing failed")
@@ -645,8 +661,9 @@ class Room:
                 status="error", error="Too few songs with a known year for this many players"
             )
         else:
-            order = [s.id for s in self.seats]
-            self._s.rng.shuffle(order)
+            await asyncio.sleep(DEALT_SECONDS)
+            if epoch != self._deck_epoch:
+                return
             rules = engine.Rules(
                 cards_to_win=self.settings.cards_to_win,
                 starting_tokens=self.settings.starting_tokens,

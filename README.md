@@ -74,10 +74,6 @@ Remove an item once the backend provides it and the screen uses it.
   `PlayerView.connected` is false both for a local player and for a guest who dropped out.
   A `local` flag (the seat has no `client_id`) would tell them apart.
   Meanwhile a seat this browser has never seen online counts as local, so a browser that arrives after a guest dropped calls that guest a local player.
-- **The opening cards on the Dealing screen.**
-  `DeckView` only counts the dealt cards.
-  The design shows each player's card as it lands, which needs the seat order shuffled before dealing (today it is shuffled after) and the dealt cards in `DeckView`, never the first card in play.
-  Meanwhile dealt cards show face down.
 - **Leaving and closing a room.**
   There is no message to leave a lobby or to close a room.
   A guest's "Leave room" only goes home, and their seat stays as a dropped player until the host removes it.

@@ -32,6 +32,8 @@ export interface DeckView {
   done: number
   total: number
   error: string | null
+  order: string[] // while dealing: the player ids in turn order, shuffled up front
+  dealt: CardView[] // the starting cards so far, one per player in `order`
 }
 
 export interface PlaybackView {

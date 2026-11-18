@@ -187,15 +187,6 @@ class PlayerView(BaseModel):
     device: str | None
 
 
-class DeckView(BaseModel):
-    """Dealing: the game starts once the opening cards (one per player plus one) have years."""
-
-    status: Literal["none", "dealing", "error"] = "none"
-    done: int = 0
-    total: int = 0
-    error: str | None = None
-
-
 class PlaybackFailure(BaseModel):
     player_id: str
     message: str
@@ -214,6 +205,17 @@ class CardView(BaseModel):
     artists: list[str]
     year: int
     image_url: str | None
+
+
+class DeckView(BaseModel):
+    """Dealing: the game starts once the opening cards (one per player plus one) have years."""
+
+    status: Literal["none", "dealing", "error"] = "none"
+    done: int = 0
+    total: int = 0
+    error: str | None = None
+    order: list[str] = []  # while dealing: the player ids in turn order, shuffled up front
+    dealt: list[CardView] = []  # the starting cards so far, one per player in `order`
 
 
 class RevealedCard(CardView):

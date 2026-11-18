@@ -101,6 +101,12 @@ def right_slot(game: State, player_id: str, year: int) -> int:
     return sum(card["year"] <= year for card in timeline)
 
 
+@pytest.fixture(autouse=True)
+def instant_dealing(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(rooms, "DEAL_SECONDS", 0)
+    monkeypatch.setattr(rooms, "DEALT_SECONDS", 0)
+
+
 @pytest.fixture
 def fake() -> FakeSpotify:
     return FakeSpotify()
@@ -351,7 +357,11 @@ def test_years_are_looked_up_only_when_a_card_is_drawn(client: TestClient, fake:
         a.send_json({"type": "start_game"})
         dealing = until(a, state_where(lambda r: r["deck"]["status"] == "dealing"))["room"]
         assert dealing["deck"]["total"] == 2
+        all_dealt = until(a, state_where(lambda r: r["deck"]["done"] == 2))["room"]["deck"]
+        assert len(all_dealt["dealt"]) == 1, "the first card in play stays hidden"
         game = until(a, state_where(lambda r: r["game"] is not None))["room"]["game"]
+        assert all_dealt["order"] == [p["id"] for p in game["players"]]
+        assert all_dealt["dealt"] == game["players"][0]["timeline"], "the dealt card is kept"
         assert game["deck_remaining"] == 8, "the undrawn cards still count"
 
         # Alone in the game, locking in reveals at once.
