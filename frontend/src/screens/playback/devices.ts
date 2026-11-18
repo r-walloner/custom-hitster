@@ -1,5 +1,28 @@
-import type { Device } from '../../api/messages.ts'
+import type { Device, RoomSettings } from '../../api/messages.ts'
 import type { IconName } from '../../components/Icon.tsx'
+
+interface Mode {
+  mode: RoomSettings['mode']
+  icon: IconName
+  name: string
+  detail: string
+}
+
+// How the room hears the music, as the host picks it.
+export const MODES: Mode[] = [
+  {
+    mode: 'local',
+    icon: 'deviceSpeaker',
+    name: 'One speaker',
+    detail: "You're all in the same room. Music plays on one speaker.",
+  },
+  {
+    mode: 'remote',
+    icon: 'phone',
+    name: 'Separate speakers',
+    detail: "You're in different locations. Music plays on everyone's device at the same time.",
+  },
+]
 
 // Spotify's device types (lower-cased), as an icon and in words.
 const ICONS: Record<string, IconName> = {

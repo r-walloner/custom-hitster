@@ -1,45 +1,73 @@
+.playback__done {
+  min-width: 96px;
+  font-size: 15px;
+}
+
+/* Two columns, as on the settings screen: how the room plays, then your speaker. */
 .playback {
   flex: 1;
   min-height: 0;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 310px;
-  gap: 16px;
-  padding-top: 2px;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  column-gap: 28px;
+  padding-top: 4px;
 }
 
-.playback__devices {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.playback__devices .jm-caption {
-  margin: 2px 0 0;
-}
-
-.playback__test {
-  padding: 14px 16px 16px;
+.playback__column {
+  min-height: 0;
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.playback__test p {
+.playback__column p {
   margin: 0;
 }
 
-.playback__listening {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+.playback__column .jm-label {
+  margin: 0 0 2px;
 }
 
-.playback__listening > div:last-child {
+/* Long details wrap instead of being cut off. */
+.playback .jm-option {
+  min-height: 60px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.playback .jm-player__name {
+  gap: 2px;
+  white-space: normal;
+}
+
+.playback__devices {
+  flex: 1;
+}
+
+.playback__devices .app-scroll__box {
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 8px;
+  /* Room for the picked row's shadow. */
+  padding: 0 3px 3px 0;
 }
 
-.playback__main {
-  margin-top: auto;
+.playback__devices .jm-caption {
+  margin-top: 2px;
+}
+
+/* Test and Stop take the same width, so nothing moves when it flips. */
+.playback__test {
+  flex: 0 0 auto;
+  width: 96px;
+  min-height: 36px;
+}
+
+.playback__failure {
+  color: var(--coral-deep);
+}
+
+.playback__retry {
+  align-self: flex-start;
+  margin-top: 4px;
 }

@@ -6,7 +6,7 @@ import { Screen } from '../../components/Screen.tsx'
 import { Segmented, Stepper } from '../../components/Stepper.tsx'
 import { fmt } from '../../words.ts'
 import { useRoomTools } from '../room/context.ts'
-import { CHALLENGE, labelOf, MUSIC, NEXT, STRATEGY_NAMES } from './options.ts'
+import { CHALLENGE, labelOf, NEXT, STRATEGY_NAMES } from './options.ts'
 import './Settings.css'
 
 /** Game settings: one line each, steppers and toggles, plain numbers. Only the host gets here. */
@@ -26,19 +26,6 @@ export default function Settings() {
         </Button>
       </BackHeader>
       <div className="settings">
-        <ControlRow
-          name="Where the music plays"
-          nameId="s-music"
-          caption="One speaker for a room together. Everyone's own Spotify for a call: each phone plays the song at the same moment."
-          className="settings__music"
-        >
-          <Segmented
-            labelledBy="s-music"
-            options={Object.keys(MUSIC) as (keyof typeof MUSIC)[]}
-            value={labelOf(MUSIC, settings.mode)}
-            onChange={(label) => change({ mode: MUSIC[label] })}
-          />
-        </ControlRow>
         <div className="settings__grid">
           <ControlRow name="Cards to win" nameId="s-win" caption="First to this many wins.">
             <Stepper

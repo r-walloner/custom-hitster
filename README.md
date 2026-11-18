@@ -35,8 +35,8 @@ Jamster is a private tool and cannot become a public one.
    Anyone can change their name in the lobby, and the host can rename local players.
    A signed-in player's name is saved with their account, so it comes back in the next room; the Account pop-up on the home page can change it too.
 4. The host can add local players, who have no phone; the host's screen shows their buttons on their own rows, so one device is enough.
-5. The host chooses where the music plays in the game settings: on one speaker (the host's Spotify, same room) or on everyone's own Spotify (remote).
-6. Each player whose Spotify plays music picks a speaker and plays a 5-second test on the speaker screen.
+5. The host picks the playback mode on the speaker screen (Music plays on, in the lobby): one speaker (the host's Spotify, same room) or separate speakers (everyone's own Spotify, remote).
+6. Each player whose Spotify plays music picks a speaker and can tap Test on it to hear 10 seconds of a song from their library.
 7. The host starts the game.
    The deck is chosen at once, but each song needs its release year, which MusicBrainz gives out at about one song per second.
    So the game starts as soon as the opening cards have years, preferring songs looked up in earlier games, and every later card is looked up when its round starts, which adds about a second to "Next turn" for a song new to Jamster.

@@ -1,5 +1,4 @@
 // What the settings screen offers, as label → value. The limits follow messages.py (RoomSettings).
-export const MUSIC = { 'One speaker': 'local', "Everyone's Spotify": 'remote' } as const
 export const CHALLENGE = { '5 s': 5, '10 s': 10, '15 s': 15, '20 s': 20 } as const
 export const NEXT = { '5 s': 5, '10 s': 10, '15 s': 15, Tap: 0 } as const
 

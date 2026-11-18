@@ -18,20 +18,6 @@
   gap: 1px;
 }
 
-.settings .settings__music {
-  gap: 16px;
-  padding: 4px 0 8px;
-  border-bottom: 2px solid var(--sand-line);
-}
-
-.settings__music .jm-segmented {
-  gap: 6px;
-}
-
-.settings__music .jm-btn--toggle {
-  padding: 0 14px;
-}
-
 .settings__grid {
   flex: 1;
   display: grid;

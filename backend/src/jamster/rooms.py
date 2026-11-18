@@ -28,7 +28,7 @@ log = logging.getLogger(__name__)
 CODE_LETTERS = "ABCDEFGHJKLMNPQRSTUVWXYZ"  # no I or O, which read as 1 and 0
 MAX_PLAYERS = 10
 IDLE_SECONDS = 6 * 3600  # an empty room is dropped after this long
-TEST_PLAYBACK_SECONDS = 5
+TEST_PLAYBACK_SECONDS = 10
 DROP_GRACE_SECONDS = 10  # a challenger whose connection dropped keeps their guess this long
 # WebSocket close codes the frontend understands, besides those in web.py.
 LEFT_ROOM, ROOM_CLOSED = 4200, 4410

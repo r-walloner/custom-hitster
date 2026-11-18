@@ -121,7 +121,7 @@ export default function Lobby() {
             <ScrollArea className="lobby__rules-rows">
               <SettingRow
                 label="Music plays on"
-                value={remote ? "Everyone's Spotify" : (mine?.device ?? 'Your active Spotify device')}
+                value={remote ? 'Separate speakers' : (mine?.device ?? 'Your active Spotify device')}
                 caption={
                   silent.length > 0
                     ? `Without Spotify, ${names(silent.map((seat) => seat.name))} won't hear it.`
