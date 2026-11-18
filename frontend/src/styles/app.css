@@ -344,24 +344,24 @@ a.app-btn--danger {
 }
 
 /* ---------- Scroll area (components/ScrollArea.tsx): the timeline's bar, standing up ---------- */
-.app-scroll {
+.app-scroll-area {
   display: flex;
   gap: 4px;
   min-height: 0;
 }
 
-.app-scroll__box {
+.app-scroll-area__box {
   flex: 1;
   min-width: 0;
   overflow-y: auto;
   scrollbar-width: none;
 }
 
-.app-scroll__box::-webkit-scrollbar {
+.app-scroll-area__box::-webkit-scrollbar {
   display: none;
 }
 
-.app-scroll__bar {
+.app-scroll-area__bar {
   position: relative;
   flex: 0 0 auto;
   width: 5px;
@@ -370,7 +370,7 @@ a.app-btn--danger {
   background: var(--sand);
 }
 
-.app-scroll__bar > span {
+.app-scroll-area__bar > span {
   position: absolute;
   left: 0;
   right: 0;

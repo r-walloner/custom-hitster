@@ -44,7 +44,7 @@
   flex: 1;
 }
 
-.playback__devices .app-scroll__box {
+.playback__devices .app-scroll-area__box {
   display: flex;
   flex-direction: column;
   gap: 8px;

@@ -11,12 +11,12 @@ export function ScrollArea({ className, children, ...rest }: HTMLAttributes<HTML
   const box = useRef<HTMLDivElement>(null)
   const bar = useScrollBar(box, 'y')
   return (
-    <div className={['app-scroll', className].filter(Boolean).join(' ')}>
-      <div ref={box} className="app-scroll__box" {...rest}>
+    <div className={['app-scroll-area', className].filter(Boolean).join(' ')}>
+      <div ref={box} className="app-scroll-area__box" {...rest}>
         {children}
       </div>
       {bar.overflows && (
-        <div className="app-scroll__bar" aria-hidden="true">
+        <div className="app-scroll-area__bar" aria-hidden="true">
           <span style={{ height: `${bar.share * 100}%`, top: `${bar.start * 100}%` }} />
         </div>
       )}
