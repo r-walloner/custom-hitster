@@ -17,6 +17,7 @@ class Track:
     image_url: str | None
     release_date: str | None  # Spotify's album date: "1975", "1975-10" or "1975-10-31"
     isrc: str | None
+    duration_ms: int
 
 
 @dataclass(frozen=True, slots=True)
@@ -37,3 +38,4 @@ class Card:
     year_source: str  # musicbrainz | spotify | manual
     image_url: str | None
     known_by: tuple[str, ...]  # display names of the players with a signal for this track
+    duration_ms: int

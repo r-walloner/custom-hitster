@@ -27,7 +27,8 @@ CREATE TABLE IF NOT EXISTS tracks (
     album_name TEXT NOT NULL,
     image_url TEXT,
     release_date TEXT,
-    isrc TEXT
+    isrc TEXT,
+    duration_ms INTEGER NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS track_signals (
@@ -124,12 +125,13 @@ def delete_player(conn: sqlite3.Connection, id: str) -> None:
 def upsert_tracks(conn: sqlite3.Connection, tracks: Iterable[Track]) -> None:
     with conn:
         conn.executemany(
-            "INSERT INTO tracks (id, uri, name, artists, album_name, image_url, release_date, isrc)"
-            " VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+            "INSERT INTO tracks"
+            " (id, uri, name, artists, album_name, image_url, release_date, isrc, duration_ms)"
+            " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
             " ON CONFLICT (id) DO UPDATE SET uri = excluded.uri, name = excluded.name,"
             " artists = excluded.artists, album_name = excluded.album_name,"
             " image_url = excluded.image_url, release_date = excluded.release_date,"
-            " isrc = excluded.isrc",
+            " isrc = excluded.isrc, duration_ms = excluded.duration_ms",
             (
                 (
                     t.id,
@@ -140,6 +142,7 @@ def upsert_tracks(conn: sqlite3.Connection, tracks: Iterable[Track]) -> None:
                     t.image_url,
                     t.release_date,
                     t.isrc,
+                    t.duration_ms,
                 )
                 for t in tracks
             ),
@@ -205,7 +208,8 @@ def tracks_known_to(conn: sqlite3.Connection, player_ids: list[str]) -> dict[str
     marks = ",".join("?" * len(player_ids))
     rows = conn.execute(
         "SELECT DISTINCT t.id, t.uri, t.name, t.artists, t.album_name, t.image_url,"
-        " t.release_date, t.isrc FROM tracks t JOIN track_signals s ON s.track_id = t.id"
+        " t.release_date, t.isrc, t.duration_ms"
+        " FROM tracks t JOIN track_signals s ON s.track_id = t.id"
         f" WHERE s.player_id IN ({marks})",
         player_ids,
     )
@@ -219,8 +223,9 @@ def tracks_known_to(conn: sqlite3.Connection, player_ids: list[str]) -> dict[str
             image_url=image_url,
             release_date=release_date,
             isrc=isrc,
+            duration_ms=duration_ms,
         )
-        for id, uri, name, artists, album_name, image_url, release_date, isrc in rows
+        for id, uri, name, artists, album_name, image_url, release_date, isrc, duration_ms in rows
     }
 
 

@@ -10,7 +10,9 @@ def profile(player: str, *track_ids: str) -> TasteProfile:
 
 
 def catalog(*track_ids: str) -> dict[str, Track]:
-    return {t: Track(t, f"spotify:track:{t}", t, (), "", None, "2000", None) for t in track_ids}
+    return {
+        t: Track(t, f"spotify:track:{t}", t, (), "", None, "2000", None, 200_000) for t in track_ids
+    }
 
 
 def test_majority_prefers_widely_known_tracks_and_fills_up_with_the_rest():

@@ -22,6 +22,10 @@ class Play:
     position_ms: int
 
 
+def duration_of(n: int) -> int:
+    return 180_000 + n * 1000
+
+
 def track(n: int) -> dict[str, Any]:
     return {
         "type": "track",
@@ -36,6 +40,7 @@ def track(n: int) -> dict[str, Any]:
             "images": [{"url": f"https://img.test/{n}/640"}, {"url": f"https://img.test/{n}/300"}],
         },
         "external_ids": {"isrc": f"ISRC{n:08d}"},
+        "duration_ms": duration_of(n),
     }
 
 

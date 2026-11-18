@@ -36,7 +36,7 @@ def test_pick_year(musicbrainz: list[int], spotify: int | None, expected: tuple[
 
 def track(isrc: str | None = "GBUM71029604") -> Track:
     return Track(
-        "t1", "spotify:track:t1", "Song", (), "Album (Remastered 2011)", None, "2011", isrc
+        "t1", "spotify:track:t1", "Song", (), "Album (Remastered 2011)", None, "2011", isrc, 200_000
     )
 
 

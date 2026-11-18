@@ -204,6 +204,8 @@ class PlaybackFailure(BaseModel):
 class PlaybackView(BaseModel):
     status: Literal["idle", "starting", "playing", "failed"] = "idle"
     failures: list[PlaybackFailure] = []
+    elapsed_ms: int | None = None  # once playing or failed: how far the song is
+    duration_ms: int | None = None  # the length of the song in play
 
 
 class CardView(BaseModel):

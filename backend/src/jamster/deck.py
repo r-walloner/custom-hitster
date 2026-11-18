@@ -75,4 +75,5 @@ async def to_card(resolver: YearResolver, entry: Entry) -> Card | None:
         year_source=resolved[1],
         image_url=track.image_url,
         known_by=entry.known_by,
+        duration_ms=track.duration_ms,
     )

@@ -44,6 +44,7 @@ def parse_track(obj: dict[str, Any] | None) -> Track | None:
         image_url=image["url"] if image else None,
         release_date=album.get("release_date"),
         isrc=(obj.get("external_ids") or {}).get("isrc"),
+        duration_ms=obj.get("duration_ms") or 0,
     )
 
 

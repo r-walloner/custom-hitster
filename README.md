@@ -82,10 +82,6 @@ Remove an item once the backend provides it and the screen uses it.
   There is no message to leave a lobby or to close a room.
   A guest's "Leave room" only goes home, and their seat stays as a dropped player until the host removes it.
   The host's "Close room" is shown as "Leave room" for the same reason; the room lives on until it has been empty for six hours.
-- **How far the song is.**
-  `PlaybackView` doesn't say when the song started, and cards carry no duration.
-  The tape counts from when this browser saw the song start (a reload starts it again at 0:00), fills over a nominal 30 seconds, and shows the elapsed time without the design's "/ 0:30".
-  This needs `elapsed_ms` in `PlaybackView`, and `duration_ms` for the total.
 - **When the library was copied.**
   The Account screen's "Copied 3 days ago" needs the time of the last import, which isn't stored.
   Meanwhile the line is left out.

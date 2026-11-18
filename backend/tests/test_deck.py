@@ -5,7 +5,8 @@ from jamster.models import Track
 
 def entry(track_id: str) -> Entry:
     return Entry(
-        Track(track_id, f"spotify:track:{track_id}", track_id, (), "", None, None, None), ()
+        Track(track_id, f"spotify:track:{track_id}", track_id, (), "", None, None, None, 200_000),
+        (),
     )
 
 

@@ -104,7 +104,7 @@ class Room:
         self._window_ends = 0.0  # time.monotonic() when the open window closes
         self._advance = 0  # bumped whenever the countdown to the next turn starts or stops
         self._advance_ends: float | None = None  # time.monotonic() when the next turn starts
-        self._play_started = 0.0
+        self._play_started = 0.0  # time.monotonic() when Spotify confirmed the song in play
         self._sockets: dict[WebSocket, tuple[str, str | None]] = {}  # -> (client id, spotify id)
         self._sending = asyncio.Lock()
         self._tasks: set[asyncio.Task[Any]] = set()
@@ -221,7 +221,7 @@ class Room:
                 for s in self.seats
             ],
             deck=self.deck_view,
-            playback=self.playback,
+            playback=self.playback.model_copy(update={"elapsed_ms": self._elapsed_ms()}),
             game=_game_view(
                 self.game,
                 len(self._pending),
@@ -518,6 +518,13 @@ class Room:
             return None
         return max(0, int((self._advance_ends - time.monotonic()) * 1000))
 
+    def _elapsed_ms(self) -> int | None:
+        """How far the song in play is, counted from when Spotify confirmed it."""
+        if self.game is None or self.playback.status not in ("playing", "failed"):
+            return None
+        elapsed = int((time.monotonic() - self._play_started) * 1000)
+        return min(elapsed, self.playback.duration_ms or elapsed)
+
     def _window_left_ms(self) -> int | None:
         if self.game is None or self.game.phase != "challenging":
             return None
@@ -700,7 +707,6 @@ class Room:
         who then join at the position the others have reached."""
         assert self.game is not None
         if only is None:
-            self._play_started = time.monotonic()
             position_ms, kept = 0, []
         else:
             position_ms = int((time.monotonic() - self._play_started) * 1000)
@@ -708,27 +714,35 @@ class Room:
         targets = [s for s in self._listeners() if only is None or s.id in only]
         if not targets:
             self.log.warning("nobody in the room can play music: no seat has Spotify")
-        self.playback = m.PlaybackView(status="starting", failures=kept)
-        self._spawn(self._play(self.game.draws, self.game.card.uri, targets, position_ms, kept))
+        card = self.game.card
+        self.playback = m.PlaybackView(
+            status="starting", failures=kept, duration_ms=card.duration_ms
+        )
+        self._spawn(self._play(self.game.draws, card, targets, position_ms, kept, only is None))
 
     async def _play(
         self,
         draw: int,
-        uri: str,
+        card: Card,
         targets: list[Seat],
         position_ms: int,
         kept: list[m.PlaybackFailure],
+        from_start: bool,
     ) -> None:
-        errors = await asyncio.gather(*(self._play_one(s, uri, position_ms) for s in targets))
+        errors = await asyncio.gather(*(self._play_one(s, card.uri, position_ms) for s in targets))
         if self.game is None or self.game.draws != draw:
             return  # the song changed while Spotify was answering
+        if from_start:
+            self._play_started = time.monotonic()  # the song starts once Spotify confirms it
         failures = kept + [
             m.PlaybackFailure(player_id=seat.id, message=error)
             for seat, error in zip(targets, errors, strict=True)
             if error
         ]
         self.playback = m.PlaybackView(
-            status="failed" if failures else "playing", failures=failures
+            status="failed" if failures else "playing",
+            failures=failures,
+            duration_ms=card.duration_ms,
         )
         await self.broadcast()
 

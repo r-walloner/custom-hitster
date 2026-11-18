@@ -19,7 +19,7 @@ export interface RoomTools {
   send: Send
   devices: Device[] | null
   playbackTest: PlaybackTest | null
-  /** When this browser saw the song in play start (Date.now()). */
+  /** When the song in play started, on this browser's clock (Date.now()). */
   songStart: number
   /** A seat for the design components: name and avatar colour. */
   player: (id: string) => Player

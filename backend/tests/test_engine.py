@@ -19,6 +19,7 @@ def card(year: int) -> Card:
         year_source="spotify",
         image_url=None,
         known_by=(),
+        duration_ms=200_000,
     )
 
 

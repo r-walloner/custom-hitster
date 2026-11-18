@@ -37,6 +37,8 @@ export interface DeckView {
 export interface PlaybackView {
   status: 'idle' | 'starting' | 'playing' | 'failed'
   failures: { player_id: string; message: string }[]
+  elapsed_ms: number | null // once playing or failed: how far the song is
+  duration_ms: number | null // the length of the song in play
 }
 
 export interface CardView {

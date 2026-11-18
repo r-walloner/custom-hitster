@@ -10,7 +10,7 @@ from urllib.parse import parse_qs, urlsplit
 
 import httpx
 import pytest
-from fake_spotify import FakeSpotify, year_of
+from fake_spotify import FakeSpotify, duration_of, year_of
 from fastapi.testclient import TestClient
 from offline_settings import OfflineSettings
 from starlette.testclient import WebSocketTestSession
@@ -205,7 +205,13 @@ def test_remote_game_with_a_hot_seat_player(
 
         # --- turn 1: a correct placement, everyone else passes ---
         a.send_json({"type": "start_game"})
+        room = until(a, state_where(lambda r: r["playback"]["status"] == "starting"))["room"]
+        assert room["playback"]["elapsed_ms"] is None, "the song starts once Spotify confirms"
         room = until(a, state_where(lambda r: r["playback"]["status"] == "playing"))["room"]
+        assert room["playback"]["duration_ms"] == duration_of(
+            int(fake.plays[0].uri.removeprefix("spotify:track:track"))
+        )
+        assert 0 <= room["playback"]["elapsed_ms"] < 1000
         game = room["game"]
         assert game["card"] is None, "the card in play must stay hidden"
         assert game["deck_remaining"] == 20 - 4, "three starting cards and one in play"

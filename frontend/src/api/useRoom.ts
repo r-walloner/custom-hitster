@@ -29,8 +29,9 @@ export function useRoom(code: string) {
   const [devices, setDevices] = useState<Device[] | null>(null)
   const [notice, setNotice] = useState<Notice | null>(null)
   const [playbackTest, setPlaybackTest] = useState<PlaybackTest | null>(null)
-  // When this browser saw the song in play start: every new song, and a restart, passes through
-  // `starting`. The server doesn't say how far the song is (a backend TODO in README.md).
+  // When the song in play started, on this browser's clock. Set from the server's `elapsed_ms`
+  // only when the playback status changes (and on the first state after connecting), so the
+  // other states, late by the network's delay, don't nudge the tape back.
   const [songStart, setSongStart] = useState(() => Date.now())
   const socket = useRef<WebSocket | null>(null)
 
@@ -41,6 +42,7 @@ export function useRoom(code: string) {
     let playback = ''
 
     const connect = () => {
+      playback = ''
       const scheme = location.protocol === 'https:' ? 'wss' : 'ws'
       const ws = new WebSocket(`${scheme}://${location.host}/ws/rooms/${code}`)
       socket.current = ws
@@ -52,8 +54,8 @@ export function useRoom(code: string) {
       ws.onmessage = (event) => {
         const message = JSON.parse(event.data) as ServerMessage
         if (message.type === 'state') {
-          const status = message.room.playback.status
-          if (status === 'starting' && playback !== 'starting') setSongStart(Date.now())
+          const { status, elapsed_ms } = message.room.playback
+          if (status !== playback && elapsed_ms !== null) setSongStart(Date.now() - elapsed_ms)
           playback = status
           setState(message)
         }

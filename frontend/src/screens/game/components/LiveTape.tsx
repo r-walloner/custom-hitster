@@ -13,7 +13,7 @@ export function LiveTape({
   onRestart?: () => void
 }) {
   const { room } = useRoomTools()
-  const { progress, time, playing } = useSongClock(start, room.playback.status)
+  const { progress, time, playing } = useSongClock(start, room.playback)
   return (
     <TapePlayer
       progress={progress}
