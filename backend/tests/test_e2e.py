@@ -411,6 +411,8 @@ def test_remote_game_with_a_hot_seat_player(
         others = [p["id"] for p in game["players"] if p["id"] != active]
         move(active, {"type": "place", "slot": right_slot(game, active, year)})
         move(active, {"type": "lock"})
+        b.send_json({"type": "reveal"})  # only the host may cut the challenge short
+        assert until(b, is_type("error"))["message"] == "Only the host can do that"
         for other in others:
             move(other, {"type": "pass"})
         game = until(a, state_where(lambda r: r["game"]["phase"] == "revealed"))["room"]["game"]

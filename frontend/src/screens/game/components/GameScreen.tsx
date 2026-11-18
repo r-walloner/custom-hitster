@@ -21,9 +21,10 @@ interface GameScreenProps {
 
 /** The game screen: header, the top band (tape, moment panel, scoreboard), the board below. */
 export function GameScreen({ turn, panel, board, className }: GameScreenProps) {
-  const { room, send, open, player, songStart } = useRoomTools()
+  const { room, you, send, open, player, songStart } = useRoomTools()
   const { game } = turn
-  const revealNow = turn.referee && (game.phase === 'challenging' || game.phase === 'picking')
+  // Only the host: the player on turn could otherwise cut a challenge short.
+  const revealNow = you.is_host && (game.phase === 'challenging' || game.phase === 'picking')
   // Named it pays out when the next turn starts; show the token already.
   const bonus = (id: string) => (game.phase === 'revealed' && game.named && id === game.active ? 1 : 0)
   const scores = game.players.map((p) => ({
