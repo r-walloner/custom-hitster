@@ -7,6 +7,10 @@
   min-height: 54px;
 }
 
+.game__placing .jm-moment__sub {
+  margin: 0;
+}
+
 .jm-moment.game__guess {
   padding: 8px 12px 12px;
   gap: 8px;

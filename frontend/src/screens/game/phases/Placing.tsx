@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Button, ButtonPair, Status, Token } from '../../../components/Button.tsx'
+import { Button, ButtonPair, Token } from '../../../components/Button.tsx'
 import { useRoomTools } from '../../room/context.ts'
 import { pickingItems, slotRange, slotRangeShort } from '../board.ts'
 import { Board } from '../components/Board.tsx'
@@ -56,7 +56,7 @@ export default function Placing({ turn }: { turn: Turn }) {
     <MomentPanel label="Your move" className="game__placing">
       <span className="jm-label">Guess</span>
       <h1 className="jm-moment__headline">
-        {game.slot === null ? 'Where does it go?' : `${slotRange(cards, game.slot)}?`}
+        {game.slot === null ? `${who}, where does it go?` : `${slotRange(cards, game.slot)}?`}
       </h1>
       <Button
         variant="primary"
@@ -80,7 +80,7 @@ export default function Placing({ turn }: { turn: Turn }) {
     <MomentPanel label={`${who} is away`} className="game__placing">
       <span className="jm-label">Guess</span>
       <h1 className="jm-moment__headline">{who} is away.</h1>
-      <Status quiet>Waiting for {who} to come back.</Status>
+      <p className="jm-moment__sub">Waiting for {who} to come back.</p>
       {you.is_host && (
         <Button
           disabled={loading}
@@ -101,9 +101,9 @@ export default function Placing({ turn }: { turn: Turn }) {
       <h1 className="jm-moment__headline">
         {game.slot === null
           ? `${who} is placing the card.`
-          : `${who} is thinking ${slotRangeShort(cards, game.slot)}.`}
+          : `${who} thinks ${slotRangeShort(cards, game.slot)}.`}
       </h1>
-      <Status quiet>Listen along. You can challenge once it's locked in.</Status>
+      <p className="jm-moment__sub">You can challenge {who}'s decision after it's locked in.</p>
       {you.player_id && <BuyButton turn={turn} id={you.player_id} />}
     </MomentPanel>
   )
