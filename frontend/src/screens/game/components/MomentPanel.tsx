@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
-import { Avatar } from './Avatar.tsx'
-import type { Player, Song } from './types.ts'
+import { Avatar } from '../../../components/Avatar.tsx'
+import type { Player, Song } from '../../../components/types.ts'
 
 interface MomentPanelProps {
   /** What the panel is about, for screen readers: "Your move", "Challenge". */

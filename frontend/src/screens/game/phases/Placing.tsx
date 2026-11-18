@@ -1,10 +1,10 @@
-import { Board } from '../../../components/Board.tsx'
 import { Button, ButtonPair, Status, Token } from '../../../components/Button.tsx'
-import { MomentPanel } from '../../../components/MomentPanel.tsx'
 import { useRoomTools } from '../../room/context.ts'
 import { pickingItems, slotRange, slotRangeShort } from '../board.ts'
+import { Board } from '../components/Board.tsx'
 import { BuyButton } from '../components/BuyButton.tsx'
 import { GameScreen } from '../components/GameScreen.tsx'
+import { MomentPanel } from '../components/MomentPanel.tsx'
 import { canBuy } from '../rules.ts'
 import type { Turn } from '../turn.ts'
 

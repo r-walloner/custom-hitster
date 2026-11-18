@@ -1,0 +1,13 @@
+/* The board without gaps (challenge, reveal): a wider 10px rhythm, and room above for marks. */
+.app-board__row--spaced {
+  gap: 10px;
+}
+
+.app-board__row--marks {
+  padding-top: 14px;
+}
+
+/* "4 of 10" next to the owner's name. */
+.app-board__count {
+  font-size: 12px;
+}

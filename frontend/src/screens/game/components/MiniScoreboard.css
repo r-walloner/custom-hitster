@@ -1,0 +1,10 @@
+/* The mini scoreboard is a button that opens the full one. */
+button.app-scoreboard {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: inherit;
+  cursor: pointer;
+}

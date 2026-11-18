@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { Button, ButtonPair } from '../../components/Button.tsx'
+import { InfoHeader } from '../../components/InfoHeader.tsx'
 import { TextInput } from '../../components/Input.tsx'
-import { RoomHeader } from '../../components/RoomHeader.tsx'
 import { PlayerRow } from '../../components/Rows.tsx'
 import { Screen } from '../../components/Screen.tsx'
 import type { Player } from '../../components/types.ts'
@@ -24,7 +24,7 @@ export default function JoinName() {
 
   return (
     <Screen>
-      <RoomHeader
+      <InfoHeader
         code={room.code}
         host={host?.name}
         players={room.players.length}

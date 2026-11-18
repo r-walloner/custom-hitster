@@ -1,12 +1,12 @@
 import { useEffect } from 'react'
 import type { Device } from '../../api/messages.ts'
+import { BackHeader } from '../../components/BackHeader.tsx'
 import { Button, ButtonPair } from '../../components/Button.tsx'
 import { Countdown } from '../../components/Countdown.tsx'
 import { Icon } from '../../components/Icon.tsx'
 import { OptionRow } from '../../components/Rows.tsx'
 import { Screen } from '../../components/Screen.tsx'
 import { Verdict } from '../../components/SongCard.tsx'
-import { SubHeader } from '../../components/SubHeader.tsx'
 import { useRoomTools } from '../room/context.ts'
 import { deviceDetail, deviceIcon } from './devices.ts'
 import { TEST_SECONDS, useSpeakerTest } from './useSpeakerTest.ts'
@@ -34,7 +34,7 @@ export default function Playback() {
 
   return (
     <Screen>
-      <SubHeader
+      <BackHeader
         onBack={close}
         backLabel={inGame ? 'Back to the game' : 'Back to the lobby'}
         title="Where should the music play?"
@@ -43,7 +43,7 @@ export default function Playback() {
           <Icon name="refresh" />
           Refresh list
         </Button>
-      </SubHeader>
+      </BackHeader>
       <div className="playback">
         <section className="playback__devices app-scroll" aria-label="Spotify devices">
           {devices === null && <p className="jm-caption">Looking for your Spotify devices…</p>}

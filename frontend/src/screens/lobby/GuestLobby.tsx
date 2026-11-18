@@ -1,7 +1,7 @@
 import { loginUrl } from '../../api/http.ts'
 import { Button, Status } from '../../components/Button.tsx'
 import { Icon } from '../../components/Icon.tsx'
-import { RoomHeader } from '../../components/RoomHeader.tsx'
+import { InfoHeader } from '../../components/InfoHeader.tsx'
 import { PlayerRow, SettingRow } from '../../components/Rows.tsx'
 import { Screen } from '../../components/Screen.tsx'
 import { useRoomTools } from '../room/context.ts'
@@ -17,7 +17,7 @@ export default function GuestLobby() {
 
   return (
     <Screen>
-      <RoomHeader
+      <InfoHeader
         code={room.code}
         host={host?.name}
         players={room.players.length}

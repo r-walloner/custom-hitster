@@ -4,7 +4,7 @@ import { Icon } from './Icon.tsx'
 import { Header, Spacer } from './Screen.tsx'
 
 /** A sub-screen's header: a back arrow instead of the logo, the screen's name, its action on the right. */
-export function SubHeader({
+export function BackHeader({
   onBack,
   backLabel,
   title,

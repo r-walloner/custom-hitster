@@ -89,15 +89,6 @@ a.jm-btn--dark {
   font-size: 16px;
 }
 
-/* The board without gaps (challenge, reveal): a wider 10px rhythm, and room above for marks. */
-.app-board__row--spaced {
-  gap: 10px;
-}
-
-.app-board__row--marks {
-  padding-top: 14px;
-}
-
 /* A destructive secondary action (Close room, Delete my copy). */
 .app-btn--danger {
   color: var(--coral-text);
@@ -165,16 +156,6 @@ a.app-btn--danger {
   border: 0;
 }
 
-.app-board__count {
-  font-size: 12px;
-}
-
-.app-year-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-}
-
 /* Cover art: everything is placed by hand inside the hero box. */
 .app-hero__float {
   position: absolute;
@@ -183,6 +164,13 @@ a.app-btn--danger {
 .app-hero__tape {
   position: absolute;
   z-index: 2;
+}
+
+/* A timeline in short form: the year chips in a row that wraps. */
+.app-year-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
 }
 
 /* A mark for the gap before the first card: on that card's left edge. */
@@ -201,17 +189,6 @@ a.app-btn--danger {
 .jm-card.app-card--ghost {
   opacity: 0.6;
   border-style: dashed;
-}
-
-/* The mini scoreboard is a button that opens the full one. */
-button.app-scoreboard {
-  padding: 0;
-  border: 0;
-  background: none;
-  font: inherit;
-  color: inherit;
-  text-align: inherit;
-  cursor: pointer;
 }
 
 /* Lists that can outgrow the screen scroll inside it. */
@@ -236,4 +213,66 @@ button.app-scoreboard {
   position: relative;
   width: var(--screen-w);
   height: var(--screen-h);
+}
+
+/* ---------- Cover screens (components/CoverScreen.tsx): the art on the left, one panel on the right ---------- */
+.jm-screen.app-cover {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 316px;
+  gap: 48px;
+  align-items: center;
+  padding: 24px 40px 24px 32px;
+}
+
+.app-cover__hero {
+  height: 334px;
+}
+
+.app-cover__logo.jm-logo--xl {
+  position: absolute;
+  left: 6px;
+  top: 6px;
+  z-index: 3;
+  font-size: 28px;
+  line-height: 36px;
+  padding: 3px 18px;
+}
+
+/* The one tilted line outside the three tilted things: the slogan. */
+.app-cover__slogan {
+  position: absolute;
+  left: 14px;
+  top: 76px;
+  z-index: 3;
+  margin: 0;
+  max-width: 240px;
+  font: 800 16px/22px var(--font-ui);
+  letter-spacing: -0.01em;
+  transform: rotate(var(--tilt));
+  transform-origin: left top;
+}
+
+.app-cover__panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px 20px;
+}
+
+.app-cover__panel p {
+  margin: 0;
+}
+
+.app-cover__panel .app-cover__big-btn {
+  min-height: 46px;
+  font-size: 14px;
+}
+
+.app-cover__panel .app-cover__error-head {
+  font-size: 19px;
+  line-height: 23px;
+}
+
+.app-cover__panel .app-cover__error-first {
+  margin-top: 6px;
 }

@@ -1,9 +1,9 @@
-import { Board } from '../../../components/Board.tsx'
 import { Button, Status } from '../../../components/Button.tsx'
-import { MomentHead, MomentPanel, PlayerCell } from '../../../components/MomentPanel.tsx'
 import { useRoomTools } from '../../room/context.ts'
 import { guessPicks, pickingItems, slotRangeShort } from '../board.ts'
+import { Board } from '../components/Board.tsx'
 import { GameScreen } from '../components/GameScreen.tsx'
+import { MomentHead, MomentPanel, PlayerCell } from '../components/MomentPanel.tsx'
 import type { Turn } from '../turn.ts'
 
 /** 3 · Challengers guess, in the order they challenged. Guesses are visible, not secret. */

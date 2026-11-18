@@ -1,5 +1,5 @@
 import { Button } from '../../components/Button.tsx'
-import { HomeCover } from '../../components/HomeCover.tsx'
+import { CoverScreen } from '../../components/CoverScreen.tsx'
 import { Verdict } from '../../components/SongCard.tsx'
 
 interface Reason {
@@ -58,20 +58,20 @@ const BACKEND_CODES: Record<string, string> = {
 export function SignInError({ reason }: { reason: string }) {
   const r = REASONS[BACKEND_CODES[reason] ?? reason] ?? REASONS.network
   return (
-    <HomeCover>
-      <section className="jm-panel home__panel" role="alert" aria-labelledby="err-head">
+    <CoverScreen>
+      <section className="jm-panel app-cover__panel" role="alert" aria-labelledby="err-head">
         <Verdict right={false}>{r.tag}</Verdict>
-        <h1 id="err-head" className="jm-headline home__error-head">
+        <h1 id="err-head" className="jm-headline app-cover__error-head">
           {r.head}
         </h1>
         <p className="jm-meta">{r.body}</p>
-        <Button to={r.primary[1]} variant="primary" className="home__big-btn home__error-first">
+        <Button to={r.primary[1]} variant="primary" className="app-cover__big-btn app-cover__error-first">
           {r.primary[0]}
         </Button>
-        <Button to={r.secondary[1]} className="home__big-btn">
+        <Button to={r.secondary[1]} className="app-cover__big-btn">
           {r.secondary[0]}
         </Button>
       </section>
-    </HomeCover>
+    </CoverScreen>
   )
 }

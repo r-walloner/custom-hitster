@@ -1,7 +1,8 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
-import { Gap, PickCard, SongCard } from './SongCard.tsx'
-import type { Song } from './types.ts'
+import { Gap, PickCard, SongCard } from '../../../components/SongCard.tsx'
+import type { Song } from '../../../components/types.ts'
+import './Board.css'
 
 /** One thing on a board's row, left to right. */
 export type BoardItem =

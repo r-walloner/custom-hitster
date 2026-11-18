@@ -1,5 +1,13 @@
-import { Avatar } from './Avatar.tsx'
-import type { Score } from './types.ts'
+import { Avatar } from '../../../components/Avatar.tsx'
+import type { Player } from '../../../components/types.ts'
+import './MiniScoreboard.css'
+
+/** One player's line on the scoreboard. */
+export interface Score {
+  player: Player
+  cards: number
+  tokens: number
+}
 
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`
 
@@ -7,7 +15,7 @@ function rowLabel({ player, cards, tokens }: Score, onTurn: boolean) {
   return `${player.name}${onTurn ? ', on turn' : ''}: ${plural(cards, 'card')}, ${plural(tokens, 'token')}`
 }
 
-interface ScoreboardProps {
+interface MiniScoreboardProps {
   scores: Score[]
   /** The id of the player on turn. */
   turn: string
@@ -16,7 +24,7 @@ interface ScoreboardProps {
 }
 
 /** The mini scoreboard at the right end of the top band: initial, cards held, tokens. */
-export function Scoreboard({ scores, turn, onOpen }: ScoreboardProps) {
+export function MiniScoreboard({ scores, turn, onOpen }: MiniScoreboardProps) {
   const summary = scores.map((score) => rowLabel(score, score.player.id === turn)).join('. ')
   return (
     <button

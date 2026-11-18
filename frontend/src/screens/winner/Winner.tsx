@@ -2,7 +2,7 @@ import { Avatar } from '../../components/Avatar.tsx'
 import { Button, Status, Token } from '../../components/Button.tsx'
 import { CoverArt } from '../../components/Hero.tsx'
 import type { FloatingCard } from '../../components/Hero.tsx'
-import { RoomHeader } from '../../components/RoomHeader.tsx'
+import { InfoHeader } from '../../components/InfoHeader.tsx'
 import { Screen } from '../../components/Screen.tsx'
 import { useRoomTools } from '../room/context.ts'
 import { spread, winnerSummary } from './summary.ts'
@@ -44,7 +44,7 @@ export default function Winner() {
 
   return (
     <Screen>
-      <RoomHeader
+      <InfoHeader
         code={room.code}
         host={host?.name}
         players={room.players.length}

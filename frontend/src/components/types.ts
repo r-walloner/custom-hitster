@@ -14,9 +14,3 @@ export interface Song {
   title: string
   artist: string
 }
-
-export interface Score {
-  player: Player
-  cards: number
-  tokens: number
-}

@@ -1,11 +1,11 @@
-import { Board } from '../../../components/Board.tsx'
 import { Button, Status } from '../../../components/Button.tsx'
 import { Countdown } from '../../../components/Countdown.tsx'
 import { Icon } from '../../../components/Icon.tsx'
-import { MomentHead, MomentPanel, PlayerCell } from '../../../components/MomentPanel.tsx'
 import { useRoomTools } from '../../room/context.ts'
 import { pickingItems, slotRangeShort } from '../board.ts'
+import { Board } from '../components/Board.tsx'
 import { GameScreen } from '../components/GameScreen.tsx'
+import { MomentHead, MomentPanel, PlayerCell } from '../components/MomentPanel.tsx'
 import type { Turn } from '../turn.ts'
 
 /** 2 · Challenge: everyone else gets a few seconds to say the player on turn is wrong. */

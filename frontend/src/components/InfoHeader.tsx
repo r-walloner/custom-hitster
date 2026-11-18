@@ -3,7 +3,7 @@ import { RoomCode } from './Button.tsx'
 import { Logo } from './Logo.tsx'
 import { Header, RoomMeta, Spacer } from './Screen.tsx'
 
-interface RoomHeaderProps {
+interface InfoHeaderProps {
   code: string
   /** The host's name; "The room" without one. */
   host?: string
@@ -13,8 +13,11 @@ interface RoomHeaderProps {
   last?: ReactNode
 }
 
-/** The header around the game: logo, room code, and "Mara's room · 4 players · First to 10". */
-export function RoomHeader({ code, host, players, toWin, last }: RoomHeaderProps) {
+/**
+ * A header with the logo, a room code and a line of facts on the right:
+ * "Mara's room · 4 players · First to 10".
+ */
+export function InfoHeader({ code, host, players, toWin, last }: InfoHeaderProps) {
   return (
     <Header>
       <Logo />

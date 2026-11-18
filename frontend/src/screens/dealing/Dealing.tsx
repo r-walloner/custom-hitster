@@ -1,6 +1,6 @@
 import { Avatar } from '../../components/Avatar.tsx'
+import { InfoHeader } from '../../components/InfoHeader.tsx'
 import { Progress } from '../../components/Progress.tsx'
-import { RoomHeader } from '../../components/RoomHeader.tsx'
 import { Screen } from '../../components/Screen.tsx'
 import { PickCard } from '../../components/SongCard.tsx'
 import { plural } from '../../words.ts'
@@ -22,7 +22,7 @@ export default function Dealing() {
 
   return (
     <Screen>
-      <RoomHeader
+      <InfoHeader
         code={room.code}
         host={host?.name}
         players={room.players.length}

@@ -51,12 +51,13 @@ npm create vite@latest frontend -- --template react-ts --no-interactive
 - `backend/tests/fake_spotify.py`: stands in for Spotify and MusicBrainz in tests.
 - `frontend/src/`:
   - `api/`: talking to the backend. `messages.ts` (the socket messages), `http.ts` (REST calls), `useRoom.ts` (the room socket), `useMe.ts`.
-  - `components/`: every reusable component, props in and markup out: the design system's components (named after `docs/design/system/components/<Name>`, drawn with its `jm-` classes) and pieces several screens share. `types.ts` holds the shapes they draw (`Player`, `Song`, `Score`).
-  - `screens/`: one folder per area of the design's screen boards. `room/` is the shell: `Room.tsx` picks the screen from the room state, `context.ts` gives every room screen `useRoomTools()`. `game/` switches on the phase; `game/phases/` holds the four phase screens.
+  - `components/`: the reusable components, props in and markup out: generic building blocks (buttons, inputs, rows, year chips, dialog, toast, stepper) and anything several screen folders use. Most wrap the design system's `jm-` classes. `types.ts` holds the shapes they draw (`Player`, `Song`).
+  - `screens/`: one folder per area of the design's screen boards. `room/` is the `/room/:code` page: `Room.tsx` connects, picks the stage from the room state, and shows toasts, Reconnecting and RoomNotFound; `context.ts` gives every room screen `useRoomTools()`. `lobby/`, `dealing/`, `game/` and `winner/` are the stages it shows; `settings/` and `playback/` are its sub-screens. `game/` switches on the phase; `game/phases/` holds the four phase screens.
   - `words.ts`: numbers and lists in words.
 - Where frontend code goes:
   - A screen folder holds its screens at the top: each design board, dialogs included, with its `.css`.
-  - A component only one screen folder uses goes in that folder's `components/` subfolder (`game/components/GameScreen.tsx`). Once a second screen folder needs it, it moves to `src/components/`.
+  - A specialised composite only one screen folder uses goes in that folder's `components/` subfolder, even when the design system defines it (`game/components/` holds MomentPanel, Board and MiniScoreboard). Once a second screen folder needs it, it moves to `src/components/`. A generic building block goes in `src/components/` even with one user.
+  - Design-system components keep the name of their `docs/design/system/components/<Name>` folder wherever they live.
   - `.tsx` files render; `.ts` files hold the logic, as pure functions over the state or hooks, with no JSX. Game rules the screens need ahead of the server are in `screens/game/rules.ts`.
   - Logic stays in the folder of the screen it serves; other folders import it from there. Only app-wide code sits at the top of `src/`.
   - `src/components/` never imports from `screens/` or `api/` and never reads the room context.

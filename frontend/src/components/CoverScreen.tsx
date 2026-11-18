@@ -3,7 +3,6 @@ import { CoverArt } from './Hero.tsx'
 import type { FloatingCard } from './Hero.tsx'
 import { Logo } from './Logo.tsx'
 import { Screen } from './Screen.tsx'
-import './HomeCover.css'
 
 const CARDS: FloatingCard[] = [
   {
@@ -25,17 +24,20 @@ const CARDS: FloatingCard[] = [
   { left: 270, top: 208, rotate: -4, scale: 0.78, delay: -0.4, front: true },
 ]
 
-/** Home and the sign-in error: the cover art on the left, one panel on the right. */
-export function HomeCover({ children }: { children: ReactNode }) {
+/**
+ * A cover screen: the cover art on the left, one panel on the right. Home, a sign-in error and a
+ * missing room use it.
+ */
+export function CoverScreen({ children }: { children: ReactNode }) {
   return (
-    <Screen className="home">
+    <Screen className="app-cover">
       <CoverArt
-        className="home__hero"
+        className="app-cover__hero"
         tape={{ left: 44, top: 142, width: 200, progress: 0.38 }}
         cards={CARDS}
       >
-        <Logo size="xl" className="home__logo" />
-        <p className="home__slogan">The music game built from your own playlists.</p>
+        <Logo size="xl" className="app-cover__logo" />
+        <p className="app-cover__slogan">The music game built from your own playlists.</p>
       </CoverArt>
       {children}
     </Screen>

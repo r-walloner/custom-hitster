@@ -2,10 +2,11 @@ import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
 import { Button } from '../../components/Button.tsx'
-import { HomeCover } from '../../components/HomeCover.tsx'
+import { CoverScreen } from '../../components/CoverScreen.tsx'
 import { Icon } from '../../components/Icon.tsx'
 import { CodeInput } from '../../components/Input.tsx'
 import { SignInError } from './SignInError.tsx'
+import './Home.css'
 
 /** Home: join with the four-letter code, or host with Spotify. `?error=` shows the sign-in error. */
 export default function Home() {
@@ -27,8 +28,8 @@ function JoinOrHost() {
   }
 
   return (
-    <HomeCover>
-      <form className="jm-panel home__panel" onSubmit={join}>
+    <CoverScreen>
+      <form className="jm-panel app-cover__panel" onSubmit={join}>
         <label className="jm-label" htmlFor="room-code">
           Room code
         </label>
@@ -47,7 +48,7 @@ function JoinOrHost() {
         <div className="home__or">
           <span className="jm-caption">or</span>
         </div>
-        <Button to="/account" className="home__big-btn">
+        <Button to="/account" className="app-cover__big-btn">
           <Icon name="music" />
           Host with Spotify
         </Button>
@@ -55,6 +56,6 @@ function JoinOrHost() {
           Hosting needs Spotify Premium. Private, for one group of friends.
         </p>
       </form>
-    </HomeCover>
+    </CoverScreen>
   )
 }

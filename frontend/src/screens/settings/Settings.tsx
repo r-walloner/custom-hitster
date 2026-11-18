@@ -1,9 +1,9 @@
 import type { RoomSettings } from '../../api/messages.ts'
+import { BackHeader } from '../../components/BackHeader.tsx'
 import { Button } from '../../components/Button.tsx'
 import { ControlRow } from '../../components/Rows.tsx'
 import { Screen } from '../../components/Screen.tsx'
 import { Segmented, Stepper } from '../../components/Stepper.tsx'
-import { SubHeader } from '../../components/SubHeader.tsx'
 import { fmt } from '../../words.ts'
 import { useRoomTools } from '../room/context.ts'
 import { CHALLENGE, labelOf, MUSIC, NEXT, STRATEGY_NAMES } from './options.ts'
@@ -20,11 +20,11 @@ export default function Settings() {
 
   return (
     <Screen>
-      <SubHeader onBack={close} backLabel="Back to the lobby" title="Game settings">
+      <BackHeader onBack={close} backLabel="Back to the lobby" title="Game settings">
         <Button onClick={close} variant="primary" className="settings__done">
           Done
         </Button>
-      </SubHeader>
+      </BackHeader>
       <div className="settings">
         <ControlRow
           name="Where the music plays"

@@ -1,0 +1,32 @@
+/* Home's panel: the code field with Join, and the line between it and Spotify. */
+.home__join {
+  display: flex;
+  gap: 8px;
+}
+
+.home__join .jm-input--code {
+  flex: 1;
+  min-width: 0;
+}
+
+.home__join .jm-btn {
+  min-height: 56px;
+  padding: 0 18px;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.home__or {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 4px 0;
+}
+
+.home__or::before,
+.home__or::after {
+  content: '';
+  flex: 1;
+  height: 2px;
+  background: var(--sand-line);
+}

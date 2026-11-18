@@ -2,12 +2,12 @@ import type { ReactNode } from 'react'
 import { Button, RoomCode } from '../../../components/Button.tsx'
 import { Icon } from '../../../components/Icon.tsx'
 import { Logo } from '../../../components/Logo.tsx'
-import { Scoreboard } from '../../../components/Scoreboard.tsx'
 import { Header, HeaderMeta, Screen, Spacer } from '../../../components/Screen.tsx'
 import { useRoomTools } from '../../room/context.ts'
 import { MAX_TOKENS } from '../rules.ts'
 import type { Turn } from '../turn.ts'
 import { LiveTape } from './LiveTape.tsx'
+import { MiniScoreboard } from './MiniScoreboard.tsx'
 import './GameScreen.css'
 
 interface GameScreenProps {
@@ -65,7 +65,7 @@ export function GameScreen({ turn, panel, board, className }: GameScreenProps) {
           onRestart={turn.referee ? () => send({ type: 'restart_playback' }) : undefined}
         />
         {panel}
-        <Scoreboard scores={scores} turn={game.active} onOpen={() => open('scoreboard')} />
+        <MiniScoreboard scores={scores} turn={game.active} onOpen={() => open('scoreboard')} />
       </div>
       {board}
     </Screen>

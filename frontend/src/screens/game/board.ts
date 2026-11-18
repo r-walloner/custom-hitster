@@ -2,8 +2,8 @@
 // slot cards.length is the gap after the last card.
 import type { ReactNode } from 'react'
 import type { CardView, GameView } from '../../api/messages.ts'
-import type { BoardItem } from '../../components/Board.tsx'
 import type { Song } from '../../components/types.ts'
+import type { BoardItem } from './components/Board.tsx'
 import { fits } from './rules.ts'
 
 /** A card from the server as the design components draw it. */
