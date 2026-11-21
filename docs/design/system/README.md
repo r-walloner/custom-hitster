@@ -7,7 +7,8 @@ It came out of a six-round exploration (warm "Mixtape Soft" colours, the L2 pill
 ## Using this system
 
 - **Load** `tokens.css` and `components/bundle.css`. bundle.css imports the three Google fonts and holds every component as plain CSS classes prefixed `jm-`. There is no JavaScript bundle; the app is React, so wrap these classes in your own components.
-- **Design size**: a landscape phone, **844 × 390** CSS px. Everything is drawn at that size; scale up for laptops and TVs (see *Header*).
+- **Design size**: a landscape phone, **844 × 390** CSS px. Everything is drawn at that size and zoomed to fit (see *Header*).
+- **Desktop**: in a window at least 1000 × 640, also load `components/desktop.css` (the `dk-` classes) and lay screens out like the `Desktop*` boards (see *Desktop*).
 - **Build screens** from the components below; the screens themselves are mocked up separately, in [`../screens/`](../screens/).
 
 ## Voice
@@ -68,7 +69,15 @@ A warm paper ground with one loud colour for action, one for mystery, and a righ
 
 ### Layout
 
-Landscape phone first (844 × 390), zoomed to fit; a portrait phone is asked to turn sideways. Every screen starts with the 44px header (*Header*). In the game, a 172px top band follows (tape, moment panel, scoreboard), with the board below at full width. Lists that can outgrow the screen scroll inside it (*ScrollArea*). Touch targets are at least 44px; the only exception is the small restart icon, which is rarely used.
+Landscape phone first (844 × 390), zoomed to fit; a portrait touch screen is asked to turn sideways. Every screen starts with the 44px header (*Header*). In the game, a 172px top band follows (tape, moment panel, scoreboard), with the board below at full width. Lists that can outgrow the screen scroll inside it (*ScrollArea*). Touch targets are at least 44px; the only exception is the small restart icon, which is rarely used.
+
+In a window at least 1000 × 640 (landscape tablets, laptops and up) the screens get their own layouts instead of the zoomed phone (*Desktop*): one centred column at most 1280px wide with paper around it, bigger type, a player list with full names in the game and a timeline that wraps onto a second row instead of scrolling. Only the layout changes; the words and the parts are the same.
+
+Sizes in between get one of the two layouts, never a blend: a hard switch at `(min-width: 1000px) and (min-height: 640px)`, with each layout scaling continuously on its own side (the phone by zooming, the desktop by its fluid column and `clamp()`ed sizes). A narrow, tall window on a computer gets the phone layout zoomed to its width; only touch screens are asked to turn sideways. The reasoning, a table of common sizes and how to build it are in *Desktop*.
+
+### Hover
+
+Only with a mouse or trackpad (`@media (hover: hover) and (pointer: fine)`); touch screens never see it. A button's ink outline gets 1px heavier. Nothing lifts and no shadow is added, because shadows mark emphasis (a primary button keeps the one it has). Borderless icon buttons show a thin `ink-subtle` outline. Gaps fill with `turn-tint`, as when picked.
 
 ### Iconography
 
@@ -95,6 +104,7 @@ Inline SVG on a 24px grid: stroke 2.4, round caps and joins, `currentColor`. For
 | Progress | A bar for amounts, never for time, and an import's progress. |
 | ScrollArea | A list that scrolls inside the screen, with the timeline's bar standing up. |
 | Hero | The cover art and the cover screen: slow-bobbing tape, drifting song cards, the big winner line. |
+| Desktop | The layer for windows at least 1000 × 640 (`desktop.css`): the centred page frame, the player list, the wrapping timeline grid, and the rules for sizes in between. |
 
 ## Accessibility
 
@@ -104,4 +114,4 @@ Inline SVG on a 24px grid: stroke 2.4, round caps and joins, `currentColor`. For
 
 ## Not designed
 
-A portrait layout: portrait phones only get the prompt to turn sideways.
+A portrait layout: portrait touch screens only get the prompt to turn sideways, and a narrow, tall window on a computer gets the landscape phone layout zoomed to its width.

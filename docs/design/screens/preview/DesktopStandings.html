@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jamster scoreboard pop-up, desktop</title>
+<link rel="stylesheet" href="../../system/tokens.css">
+<link rel="stylesheet" href="../../system/components/bundle.css">
+<link rel="stylesheet" href="../../system/components/desktop.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&amp;family=Bricolage+Grotesque:opsz,wght@12..96,400..800&amp;family=DM+Mono:wght@500&amp;display=swap">
+<style>
+body{margin:0}
+.dk-overlay{min-height:100vh;background:var(--paper)}
+.dk-dialog{width:min(980px, calc(100% - 96px));max-height:calc(100% - 96px);padding:26px 32px 32px;gap:16px;border-radius:22px;overflow:hidden}
+.dk-dialog .jm-dialog__head{gap:14px}
+.dk-dialog .jm-headline{font-size:28px;line-height:32px}
+.dk-dialog .jm-caption{font-size:15px;line-height:20px}
+.dk-dialog .jm-dialog__head>.jm-btn--icon{margin:-8px -10px -8px 0;width:52px;height:52px}
+.dk-dialog .jm-btn--icon svg{width:22px;height:22px}
+.dk-dialog .jm-label{font-size:13px;line-height:16px;color:var(--ink-muted)}
+.dk-st-grid{display:grid;grid-template-columns:220px 210px 64px minmax(0,1fr);gap:20px;align-items:center}
+.dk-st-row{min-height:68px;box-sizing:border-box;padding:10px 16px;border-radius:14px;border:2px solid var(--sand-line);background:var(--paper)}
+.dk-st-row--turn{border-color:var(--ink);background:var(--turn-tint);box-shadow:var(--shadow-sticker-sm)}
+.dk-st-row .jm-avatar{width:40px;height:40px;font-size:16px}
+.dk-st-row .jm-player__name{font-size:18px;line-height:22px}
+.dk-st-row .jm-player__name small{font-size:13px;line-height:16px}
+.dk-st-cards{display:flex;align-items:center;gap:12px;font:800 18px/1 var(--font-ui);font-variant-numeric:tabular-nums}
+.dk-st-row .jm-progress{height:14px}
+.dk-st-row .jm-token{font-size:16px;gap:4px}
+.dk-st-row .jm-token::before{width:13px;height:13px}
+.dk-st-row .jm-year-chips{gap:6px}
+.dk-st-row .jm-year-chip{padding:4px 9px;font-size:15px;line-height:18px;border-radius:10px}
+@media (max-width:1100px){.dk-st-grid{grid-template-columns:180px 160px 56px minmax(0,1fr);gap:14px}}
+</style>
+</head>
+<body>
+<div id="dc-root"></div>
+<template id="dc-template"><div class="jm-overlay dk-overlay">
+  <div class="jm-overlay__under"><iframe src="DesktopGamePlacing.html?view=watching&amp;cards=7" title="DesktopGamePlacing" tabindex="-1" aria-hidden="true" style="display: block; width: 100%; height: 900px; border: 0;"></iframe></div>
+  <div class="jm-scrim"></div>
+  <section class="jm-dialog dk-dialog" role="dialog" aria-modal="true" aria-labelledby="st-head">
+    <div class="jm-dialog__head">
+      <h1 id="st-head" class="jm-headline" style="flex: 0 0 auto">Scoreboard</h1>
+      <span class="jm-caption" style="flex: 1">First to 10 cards wins</span>
+      <button type="button" class="jm-btn jm-btn--icon jm-btn--bare" aria-label="Close the scoreboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"></path></svg></button>
+    </div>
+    <div class="dk-st-grid" style="padding: 0 18px" aria-hidden="true">
+      <span class="jm-label">Player</span>
+      <span class="jm-label">Cards</span>
+      <span class="jm-label">Tokens</span>
+      <span class="jm-label">Timeline</span>
+    </div>
+    <ul class="jm-scroll" style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px">
+      <sc-for list="{{players}}" as="p" hint-placeholder-count="5">
+        <li class="dk-st-grid dk-st-row {{p.turnClass}}">
+          <div style="display: flex; align-items: center; gap: 12px; min-width: 0">
+            <span class="{{p.avatar}}" aria-hidden="true">{{p.initial}}</span>
+            <span class="jm-player__name">{{p.name}}<small>{{p.note}}</small></span>
+          </div>
+          <div class="dk-st-cards">
+            <div class="jm-progress" style="flex: 1" role="progressbar" aria-valuenow="{{p.cards}}" aria-valuemin="0" aria-valuemax="10" aria-label="{{p.name}}: {{p.cards}} of 10 cards"><span style="width: {{p.pct}}"></span></div>
+            <span>{{p.cards}}/10</span>
+          </div>
+          <span class="jm-token">{{p.tokens}}</span>
+          <div class="jm-year-chips">
+            <sc-for list="{{p.years}}" as="y" hint-placeholder-count="5"><span class="jm-year-chip">{{y}}</span></sc-for>
+          </div>
+        </li>
+      </sc-for>
+    </ul>
+  </section>
+</div></template>
+<script src="../../exploration/preview/dc-runtime.js"></script>
+<script>
+class Component extends DCLogic {
+  renderVals() {
+    // Best first: most cards, then most tokens. Seen from Lea's laptop.
+    const rows = [
+      { name: "Mara", p: 1, note: "On turn, leading", cards: 7, tokens: 3, years: [1965, 1975, 1983, 1994, 2008, 2010, 2016], turn: true },
+      { name: "Jonas", p: 2, note: "", cards: 6, tokens: 1, years: [1965, 1972, 1983, 1994, 2003, 2019] },
+      { name: "Lea", p: 3, note: "That's you", cards: 5, tokens: 2, years: [1979, 1991, 2006, 2011, 2015] },
+      { name: "Tobi", p: 4, note: "Local player", cards: 3, tokens: 2, years: [1977, 1999, 2012] },
+      { name: "Sam", p: 5, note: "Reconnecting…", cards: 2, tokens: 5, years: [1984, 2010], away: true }
+    ];
+    const players = rows.map((p) => ({
+      ...p,
+      initial: p.name.charAt(0),
+      avatar: "jm-avatar jm-p" + p.p + (p.away ? " jm-avatar--away" : ""),
+      pct: (p.cards / 10 * 100) + "%",
+      turnClass: p.turn ? "dk-st-row--turn" : ""
+    }));
+    return { players };
+  }
+}
+DCRuntime.mount(Component, document.getElementById('dc-root'), document.getElementById('dc-template').content, Object.assign({}, Object.fromEntries(new URLSearchParams(location.search))));
+</script>
+</body>
+</html>

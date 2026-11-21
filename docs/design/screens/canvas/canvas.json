@@ -165,19 +165,86 @@
       "w": 844,
       "x": 0,
       "y": 3493
+    },
+    "DesktopHome.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "title": "Home · desktop",
+      "page": "desktop",
+      "expand": "fill"
+    },
+    "DesktopLobby.dc.html": {
+      "x": 1520,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "title": "Lobby (host) · desktop",
+      "page": "desktop",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "DesktopLibrary.dc.html": {
+      "x": 3040,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "title": "Your songs · desktop",
+      "page": "desktop",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "DesktopWinner.dc.html": {
+      "x": 4560,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "title": "Winner · desktop",
+      "page": "desktop",
+      "expand": "fill"
+    },
+    "DesktopGamePlacing.dc.html": {
+      "x": 0,
+      "y": 1300,
+      "w": 1440,
+      "h": 900,
+      "title": "1 · Placing · desktop",
+      "page": "desktop",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "DesktopGameReveal.dc.html": {
+      "x": 1520,
+      "y": 1300,
+      "w": 1440,
+      "h": 900,
+      "title": "4 · Reveal · desktop",
+      "page": "desktop",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "DesktopStandings.dc.html": {
+      "x": 3040,
+      "y": 1300,
+      "w": 1440,
+      "h": 900,
+      "title": "Scoreboard pop-up · desktop",
+      "page": "desktop",
+      "expand": "fill"
     }
   },
   "createdOnFiles": {
-    "at": "2026-11-17T19:27:00Z",
-    "v": 1
+    "v": 1,
+    "at": "2026-11-21T16:10:53Z"
   },
   "designSystems": [
     {
-      "artifact": "https://claude.ai/code/artifact/192399fa-d3db-473c-a1e0-c2f142d502e0",
-      "copiedAt": "2026-11-17T19:27:00Z",
-      "namespace": "jamster",
       "title": "Jamster",
-      "version": "1794943422-2380"
+      "namespace": "jamster",
+      "artifact": null,
+      "version": null,
+      "copiedAt": "2026-11-21T16:10:53Z"
     }
   ],
   "launch": {
@@ -194,7 +261,11 @@
     "why_join",
     "why_lobby",
     "why_menu",
-    "why_after"
+    "why_after",
+    "dk_t_out",
+    "dk_t_game",
+    "dk_why",
+    "dk_why_game"
   ],
   "notes": {
     "t_after": {
@@ -278,6 +349,38 @@
       "w": 560,
       "x": 2772,
       "y": 2743
+    },
+    "dk_t_out": {
+      "kind": "title1",
+      "text": "Outside the game",
+      "x": 0,
+      "y": -260,
+      "maxW": 6000,
+      "page": "desktop"
+    },
+    "dk_t_game": {
+      "kind": "title1",
+      "text": "During the game",
+      "x": 0,
+      "y": 1040,
+      "maxW": 4480,
+      "page": "desktop"
+    },
+    "dk_why": {
+      "fill": "teal",
+      "page": "desktop",
+      "x": -680,
+      "y": 0,
+      "w": 600,
+      "text": "Desktop, laptop first\n• Same screens and copy as the phone; only the layout, type and spacing change. The phone (844×390, zoomed to fit) stays the primary design.\n• In a window at least 1000 × 640 the app switches to these layouts. Content sits in one centred column, at most 1280 px wide, with 40–56 px of paper around it; wider screens just get more margin.\n• Sizes in between get one layout or the other, never a blend: the two differ in structure (initials vs. named rows, a scrolling vs. a wrapping timeline). Each scales on its own side: the phone zooms, the desktop column is fluid. A narrow, tall computer window gets the phone layout zoomed to its width; only touch screens are asked to turn sideways.\n• Type steps up for a laptop at arm's length: body 15–16 px, headlines 22–28 px, the moment sentence 36 px, years 32 px. On a TV the centred column can be zoomed as a whole.\n• Outside the game the layouts only relax: wider columns, more air, a bigger room code and QR in the lobby. No new content.\n• Hover only with a mouse or trackpad (@media (hover: hover) and (pointer: fine)); touch screens never see it. A button's ink outline gets 1 px heavier (2 → 3 px); nothing lifts and no shadow is added, since shadows mark emphasis (primary buttons keep theirs). Borderless icon buttons show a thin outline. Scoreboard rows have no hover.\n• The design system is unchanged. These boards add a thin desktop layer (dk- classes) on top of the jm- classes."
+    },
+    "dk_why_game": {
+      "fill": "teal",
+      "page": "desktop",
+      "x": -680,
+      "y": 1300,
+      "w": 600,
+      "text": "Desktop game screen\n• Same three parts as the phone: tape, moment panel, scoreboard on top; the timeline below at full width.\n• The mini scoreboard grows into a player list: avatar, full name, status (Your turn, On turn, Leading, Local player, That's you, Reconnecting…), cards and tokens. Seat order, like the phone. Clicking it still opens the full scoreboard with everyone's timelines.\n• The timeline wraps instead of scrolling: cards flow left to right and continue on a second row, so a whole 10-card timeline with its + gaps is visible at a glance. Read it like a line of text.\n• It sits on a fixed grid of slot + card columns (30 px, 136 px), seven cards to a row on a laptop. Every row starts with a slot, so cards line up above and below each other. The pick takes a card column with an empty slot on each side; the revealed card then lands in exactly that place.\n• Cards grow to 136 × 132 with 32 px years, readable from a few metres. The + gaps are 30 px wide; when they go away (watching, challenge, reveal) an empty 30 px slot stays in their place, so no card moves between phases. A ✕ mark sits centred on its slot.\n• Pop-ups stay centred over the dimmed game, wider and roomier, never full-screen. Try the Cards tweak on Placing (4, 7, 9) to see one and two rows."
     }
   },
   "order": [
@@ -302,8 +405,24 @@
     "GameMenu.dc.html",
     "Standings.dc.html",
     "Reconnecting.dc.html",
-    "Winner.dc.html"
+    "Winner.dc.html",
+    "DesktopHome.dc.html",
+    "DesktopLobby.dc.html",
+    "DesktopLibrary.dc.html",
+    "DesktopWinner.dc.html",
+    "DesktopGamePlacing.dc.html",
+    "DesktopGameReveal.dc.html",
+    "DesktopStandings.dc.html"
   ],
-  "pages": [],
+  "pages": [
+    {
+      "id": "phone",
+      "name": "Phone (imported)"
+    },
+    {
+      "id": "desktop",
+      "name": "Desktop (responsive)"
+    }
+  ],
   "title": "Jamster Screens"
 }

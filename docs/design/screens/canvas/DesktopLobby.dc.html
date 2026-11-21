@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Jamster lobby, desktop</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/jamster/tokens.css">
+<link rel="stylesheet" href="ds/jamster/components/bundle.css">
+<link rel="stylesheet" href="ds/jamster/components/desktop.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&amp;family=Bricolage+Grotesque:opsz,wght@12..96,400..800&amp;family=DM+Mono:wght@500&amp;display=swap">
+<style>
+body{margin:0}
+.dk-frame .jm-label{font-size:13px;line-height:16px}
+.dk-frame .jm-caption{font-size:14px;line-height:20px}
+.dk-frame .jm-btn{min-height:50px;padding:0 20px;font-size:16px}
+.dk-frame .jm-btn svg{width:20px;height:20px}
+.dk-frame .jm-btn--icon{width:50px;height:50px;padding:0}
+/* Three columns: getting people in, who's in, setup */
+.dk-lobby{flex:1;min-height:0;display:grid;grid-template-columns:340px minmax(0,1fr) 400px;gap:32px}
+.dk-card{padding:24px 26px 26px;border-radius:22px;display:flex;flex-direction:column;gap:12px}
+.dk-code{font:500 72px/1 var(--font-mono);letter-spacing:0.12em}
+.dk-lobby .jm-qr{padding:12px;border-radius:14px}
+.dk-lobby .jm-qr svg{width:196px;height:196px}
+.dk-lobby .jm-section{font-size:20px;line-height:24px}
+.dk-lobby .jm-player--list{height:64px;padding:0 6px 0 14px;gap:14px;border-radius:14px}
+.dk-lobby .jm-player .jm-avatar{width:40px;height:40px;font-size:16px}
+.dk-lobby .jm-player__name{font-size:18px;line-height:22px}
+.dk-lobby .jm-player__name small{font-size:14px;line-height:18px}
+.dk-music{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:var(--radius-pill);border:2px solid var(--ink);background:var(--turn-tint);font:700 14px var(--font-ui)}
+.dk-lobby .jm-setting{gap:16px;padding:16px 0}
+.dk-lobby .jm-setting__value{font-size:18px;line-height:24px}
+.dk-lobby .jm-btn--xl{min-height:68px;font-size:22px}
+.dk-lobby .jm-status{height:64px;font-size:18px;padding:0 20px}
+@media (max-width:1180px){.dk-lobby{grid-template-columns:280px minmax(0,1fr) 340px;gap:20px}.dk-code{font-size:56px}.dk-lobby .jm-qr svg{width:150px;height:150px}}
+@media (max-width:900px){.dk-lobby{grid-template-columns:minmax(0,1fr)}}
+</style>
+</helmet>
+<main class="dk-screen">
+<div class="dk-frame" style="gap: 32px">
+  <header class="dk-header">
+    <span class="jm-logo">jamster</span>
+    <span class="jm-header__spacer"></span>
+    <span class="jm-header__meta"><span>Mara's room</span><i></i><span><b>4</b> players</span><i></i><span>First to <b>10</b></span></span>
+  </header>
+  <div class="dk-lobby">
+
+    <section class="jm-panel dk-card" aria-labelledby="code-label">
+      <span id="code-label" class="jm-label">Room code</span>
+      <span class="dk-code">LUMA</span>
+      <p class="jm-caption" style="margin: 0">Type in the code, scan it or copy the link.</p>
+      <div class="jm-qr" style="align-self: center; margin-top: 12px"><svg viewBox="0 0 21 21" width="196" height="196" shape-rendering="crispEdges" fill="currentColor" role="img" aria-label="QR code to join room LUMA"><path d="M0 0h1v1h-1zM1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1v1h-1zM6 0h1v1h-1zM10 0h1v1h-1zM11 0h1v1h-1zM12 0h1v1h-1zM14 0h1v1h-1zM15 0h1v1h-1zM16 0h1v1h-1zM17 0h1v1h-1zM18 0h1v1h-1zM19 0h1v1h-1zM20 0h1v1h-1zM0 1h1v1h-1zM6 1h1v1h-1zM8 1h1v1h-1zM9 1h1v1h-1zM10 1h1v1h-1zM12 1h1v1h-1zM14 1h1v1h-1zM20 1h1v1h-1zM0 2h1v1h-1zM2 2h1v1h-1zM3 2h1v1h-1zM4 2h1v1h-1zM6 2h1v1h-1zM10 2h1v1h-1zM11 2h1v1h-1zM12 2h1v1h-1zM14 2h1v1h-1zM16 2h1v1h-1zM17 2h1v1h-1zM18 2h1v1h-1zM20 2h1v1h-1zM0 3h1v1h-1zM2 3h1v1h-1zM3 3h1v1h-1zM4 3h1v1h-1zM6 3h1v1h-1zM8 3h1v1h-1zM9 3h1v1h-1zM12 3h1v1h-1zM14 3h1v1h-1zM16 3h1v1h-1zM17 3h1v1h-1zM18 3h1v1h-1zM20 3h1v1h-1zM0 4h1v1h-1zM2 4h1v1h-1zM3 4h1v1h-1zM4 4h1v1h-1zM6 4h1v1h-1zM9 4h1v1h-1zM12 4h1v1h-1zM14 4h1v1h-1zM16 4h1v1h-1zM17 4h1v1h-1zM18 4h1v1h-1zM20 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM8 5h1v1h-1zM11 5h1v1h-1zM14 5h1v1h-1zM20 5h1v1h-1zM0 6h1v1h-1zM1 6h1v1h-1zM2 6h1v1h-1zM3 6h1v1h-1zM4 6h1v1h-1zM5 6h1v1h-1zM6 6h1v1h-1zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM14 6h1v1h-1zM15 6h1v1h-1zM16 6h1v1h-1zM17 6h1v1h-1zM18 6h1v1h-1zM19 6h1v1h-1zM20 6h1v1h-1zM9 7h1v1h-1zM0 8h1v1h-1zM1 8h1v1h-1zM2 8h1v1h-1zM3 8h1v1h-1zM4 8h1v1h-1zM6 8h1v1h-1zM7 8h1v1h-1zM8 8h1v1h-1zM11 8h1v1h-1zM13 8h1v1h-1zM15 8h1v1h-1zM17 8h1v1h-1zM19 8h1v1h-1zM0 9h1v1h-1zM1 9h1v1h-1zM5 9h1v1h-1zM7 9h1v1h-1zM9 9h1v1h-1zM10 9h1v1h-1zM11 9h1v1h-1zM12 9h1v1h-1zM13 9h1v1h-1zM14 9h1v1h-1zM17 9h1v1h-1zM18 9h1v1h-1zM19 9h1v1h-1zM20 9h1v1h-1zM0 10h1v1h-1zM1 10h1v1h-1zM2 10h1v1h-1zM3 10h1v1h-1zM4 10h1v1h-1zM6 10h1v1h-1zM7 10h1v1h-1zM9 10h1v1h-1zM10 10h1v1h-1zM12 10h1v1h-1zM14 10h1v1h-1zM15 10h1v1h-1zM17 10h1v1h-1zM19 10h1v1h-1zM20 10h1v1h-1zM2 11h1v1h-1zM4 11h1v1h-1zM7 11h1v1h-1zM8 11h1v1h-1zM11 11h1v1h-1zM12 11h1v1h-1zM13 11h1v1h-1zM14 11h1v1h-1zM17 11h1v1h-1zM0 12h1v1h-1zM2 12h1v1h-1zM4 12h1v1h-1zM6 12h1v1h-1zM7 12h1v1h-1zM10 12h1v1h-1zM12 12h1v1h-1zM15 12h1v1h-1zM17 12h1v1h-1zM18 12h1v1h-1zM19 12h1v1h-1zM20 12h1v1h-1zM8 13h1v1h-1zM10 13h1v1h-1zM12 13h1v1h-1zM15 13h1v1h-1zM18 13h1v1h-1zM19 13h1v1h-1zM20 13h1v1h-1zM0 14h1v1h-1zM1 14h1v1h-1zM2 14h1v1h-1zM3 14h1v1h-1zM4 14h1v1h-1zM5 14h1v1h-1zM6 14h1v1h-1zM8 14h1v1h-1zM11 14h1v1h-1zM13 14h1v1h-1zM16 14h1v1h-1zM18 14h1v1h-1zM0 15h1v1h-1zM6 15h1v1h-1zM9 15h1v1h-1zM15 15h1v1h-1zM16 15h1v1h-1zM18 15h1v1h-1zM20 15h1v1h-1zM0 16h1v1h-1zM2 16h1v1h-1zM3 16h1v1h-1zM4 16h1v1h-1zM6 16h1v1h-1zM8 16h1v1h-1zM10 16h1v1h-1zM11 16h1v1h-1zM13 16h1v1h-1zM16 16h1v1h-1zM18 16h1v1h-1zM0 17h1v1h-1zM2 17h1v1h-1zM3 17h1v1h-1zM4 17h1v1h-1zM6 17h1v1h-1zM8 17h1v1h-1zM9 17h1v1h-1zM10 17h1v1h-1zM11 17h1v1h-1zM12 17h1v1h-1zM13 17h1v1h-1zM14 17h1v1h-1zM17 17h1v1h-1zM0 18h1v1h-1zM2 18h1v1h-1zM3 18h1v1h-1zM4 18h1v1h-1zM6 18h1v1h-1zM8 18h1v1h-1zM9 18h1v1h-1zM12 18h1v1h-1zM14 18h1v1h-1zM15 18h1v1h-1zM0 19h1v1h-1zM6 19h1v1h-1zM8 19h1v1h-1zM9 19h1v1h-1zM10 19h1v1h-1zM11 19h1v1h-1zM12 19h1v1h-1zM13 19h1v1h-1zM14 19h1v1h-1zM17 19h1v1h-1zM20 19h1v1h-1zM0 20h1v1h-1zM1 20h1v1h-1zM2 20h1v1h-1zM3 20h1v1h-1zM4 20h1v1h-1zM5 20h1v1h-1zM6 20h1v1h-1zM8 20h1v1h-1zM9 20h1v1h-1zM10 20h1v1h-1zM12 20h1v1h-1zM15 20h1v1h-1zM18 20h1v1h-1z"></path></svg></div>
+      <button type="button" class="jm-btn jm-btn--primary" style="margin-top: auto; width: 100%"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"></path><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"></path></svg>Copy invite link</button>
+    </section>
+
+    <section class="jm-scroll" style="display: flex; flex-direction: column; gap: 10px; min-width: 0; padding-top: 4px" aria-labelledby="players-head">
+      <h1 id="players-head" class="jm-section" style="margin-bottom: 4px">Players</h1>
+      <sc-for list="{{players}}" as="p" hint-placeholder-count="4">
+        <div class="jm-player jm-player--list">
+          <span class="{{p.avatar}}" aria-hidden="true">{{p.initial}}</span>
+          <span class="jm-player__name">{{p.name}}<small>{{p.status}}</small></span>
+          <sc-if value="{{p.music}}" hint-placeholder-val="{{false}}">
+            <span class="dk-music"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"></path><path d="M15.5 9a4 4 0 0 1 0 6"></path></svg>Music</span>
+          </sc-if>
+          <span style="flex: 0 0 50px; display: flex">
+            <sc-if value="{{p.rename}}" hint-placeholder-val="{{false}}">
+              <a href="AddPlayer.dc.html" class="jm-btn jm-btn--icon jm-btn--bare" aria-label="Change your name"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16zM13 7l4 4"></path></svg></a>
+            </sc-if>
+            <sc-if value="{{p.remove}}" hint-placeholder-val="{{false}}">
+              <button type="button" class="jm-btn jm-btn--icon jm-btn--bare" aria-label="Remove {{p.name}}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"></path></svg></button>
+            </sc-if>
+          </span>
+        </div>
+      </sc-for>
+      <sc-if value="{{host}}" hint-placeholder-val="{{true}}">
+        <a href="AddPlayer.dc.html" class="jm-btn" style="margin-top: 4px; align-self: flex-start; border-style: dashed; border-color: var(--ink-subtle)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Add local player</a>
+      </sc-if>
+    </section>
+
+    <aside style="min-height: 0; display: flex; flex-direction: column; gap: 14px">
+      <section class="jm-panel dk-card" style="padding: 6px 26px" aria-label="Game setup">
+        <div class="jm-setting">
+          <div class="jm-setting__text"><h2 class="jm-label">Music plays on</h2><span class="jm-setting__value">Living room TV</span></div>
+          <sc-if value="{{host}}" hint-placeholder-val="{{true}}"><a href="Playback.dc.html" class="jm-btn" style="min-width: 104px">Change</a></sc-if>
+        </div>
+        <div class="jm-setting">
+          <div class="jm-setting__text"><h2 class="jm-label">Your songs</h2><span class="jm-setting__value">{{songsText}}</span></div>
+          <sc-if value="{{host}}" hint-placeholder-val="{{true}}"><a href="DesktopLibrary.dc.html" class="jm-btn" style="min-width: 104px">Change</a></sc-if>
+          <sc-if value="{{guest}}" hint-placeholder-val="{{false}}"><button type="button" class="jm-btn" style="min-width: 104px">Sign in</button></sc-if>
+        </div>
+        <div class="jm-setting">
+          <div class="jm-setting__text"><h2 class="jm-label">Rules</h2><span class="jm-setting__value">First to 10 cards</span></div>
+          <a href="Settings.dc.html" class="jm-btn" style="min-width: 104px">{{rulesAction}}</a>
+        </div>
+      </section>
+      <sc-if value="{{host}}" hint-placeholder-val="{{true}}">
+        <button type="button" class="jm-btn jm-btn--danger" style="margin-top: auto; width: 100%" onClick="{{tapClose}}">{{closeLabel}}</button>
+        <a href="Dealing.dc.html" class="jm-btn jm-btn--primary jm-btn--xl">Start game</a>
+      </sc-if>
+      <sc-if value="{{guest}}" hint-placeholder-val="{{false}}">
+        <a href="DesktopHome.dc.html" class="jm-btn" style="margin-top: auto; width: 100%">Leave room</a>
+        <div style="display: flex; flex-direction: column; gap: 8px; text-align: center" role="status">
+          <span class="jm-status" style="justify-content: center">Waiting for Mara</span>
+          <span class="jm-caption">Mara starts the game when everyone's ready.</span>
+        </div>
+      </sc-if>
+    </aside>
+  </div>
+</div>
+</main>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"role":{"editor":"enum","options":["host","guest"],"default":"host"},"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const host = (this.props.role ?? "host") === "host";
+    // Mara hosts on her Spotify; Lea joined as a guest, without Spotify; Jonas has no phone.
+    const you = host ? "Mara" : "Lea";
+    const rows = [
+      { name: "Mara", color: 1, status: "Host, 1,940 songs in library", music: true },
+      { name: "Sam", color: 2, status: "Importing library…" },
+      { name: "Lea", color: 3, status: host ? "Reconnecting…" : "Guest", away: host },
+      { name: "Jonas", color: 4, status: "Local player" }
+    ];
+    const players = rows.map((p) => ({
+      name: p.name,
+      initial: p.name.charAt(0),
+      status: p.status,
+      music: !!p.music,
+      avatar: "jm-avatar jm-p" + p.color + (p.away ? " jm-avatar--away" : ""),
+      // Rename your own seat; the host removes the others.
+      rename: p.name === you,
+      remove: host && p.name !== you
+    }));
+    const closing = !!this.state.closing;
+    return {
+      host,
+      guest: !host,
+      players,
+      songsText: host ? "1,940 songs" : "Not signed in",
+      rulesAction: host ? "Change" : "View",
+      closeLabel: closing ? "Tap again to close it for everyone" : "Close room",
+      tapClose: () => this.setState({ closing: !closing })
+    };
+  }
+}
+</script>
+</body>
+</html>

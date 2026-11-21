@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jamster game screen, desktop – placing</title>
+<link rel="stylesheet" href="../../system/tokens.css">
+<link rel="stylesheet" href="../../system/components/bundle.css">
+<link rel="stylesheet" href="../../system/components/desktop.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&amp;family=Bricolage+Grotesque:opsz,wght@12..96,400..800&amp;family=DM+Mono:wght@500&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</head>
+<body>
+<div id="dc-root"></div>
+<template id="dc-template"><main class="dk-screen">
+<div class="dk-frame">
+  <header class="dk-header">
+    <span class="jm-logo">jamster</span>
+    <span class="jm-chip" aria-label="Room code QZRK">QZRK</span>
+    <span class="jm-header__meta"><span>Turn <b>7</b></span><i></i><span><b>38</b> cards left</span><i></i><span>First to <b>10</b></span></span>
+    <span class="jm-header__spacer"></span>
+    <button type="button" class="jm-btn jm-btn--icon" aria-label="Game menu: playback device, scoreboard, end game"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
+  </header>
+
+  <div class="dk-top">
+    <div class="jm-tape-player">
+      <div class="jm-tape jm-tape--bounce is-playing"><div class="jm-tape__bob"><div class="jm-tape__shell">
+        <svg viewBox="0 0 300 190" width="220" height="139" role="progressbar" aria-label="Mystery song progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="30">
+          <rect class="t-shell" x="4" y="4" width="292" height="182" rx="18" stroke-width="7"></rect>
+          <circle class="t-ink" cx="17" cy="17" r="4.5"></circle><circle class="t-ink" cx="283" cy="17" r="4.5"></circle><circle class="t-ink" cx="17" cy="173" r="4.5"></circle><circle class="t-ink" cx="283" cy="173" r="4.5"></circle>
+          <rect class="t-window" x="92" y="70" width="116" height="40" rx="20"></rect>
+          <circle class="t-pack" cx="105" cy="90" r="36" style="transform: scale(0.82)"></circle>
+          <circle class="t-pack" cx="195" cy="90" r="36" style="transform: scale(0.58)"></circle>
+          <g class="t-reel"><circle class="t-hub" cx="105" cy="90" r="13" stroke-width="4"></circle><path class="t-spoke" d="M105 80v20M96.3 85l17.4 10M96.3 95l17.4-10" stroke-width="4"></path></g>
+          <g class="t-reel"><circle class="t-hub" cx="195" cy="90" r="13" stroke-width="4"></circle><path class="t-spoke" d="M195 80v20M186.3 85l17.4 10M186.3 95l17.4-10" stroke-width="4"></path></g>
+          <path class="t-label" fill-rule="evenodd" stroke-width="5" d="M30 18H270A8 8 0 0 1 278 26V138A8 8 0 0 1 270 146H30A8 8 0 0 1 22 138V26A8 8 0 0 1 30 18Z M92 70H208A20 20 0 0 1 208 110H92A20 20 0 0 1 92 70Z"></path>
+          <text class="t-year" x="150" y="60" text-anchor="middle">????</text>
+          <rect class="t-track" x="40" y="122" width="220" height="11" rx="5.5"></rect>
+          <rect class="t-bar" x="40" y="122" width="66" height="11" rx="5.5"></rect>
+          <path class="t-foot" stroke-width="5" d="M78 186L90 156H210L222 186"></path>
+          <circle class="t-ink" cx="112" cy="174" r="6"></circle><circle class="t-ink" cx="188" cy="174" r="6"></circle>
+        </svg>
+      </div></div></div>
+      <div class="jm-tape__foot"><span class="jm-time">0:09 / 0:30</span><sc-if value="{{restart}}" hint-placeholder-val="{{true}}"><button type="button" class="jm-btn jm-btn--icon-sm" aria-label="Restart the song from the beginning"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><path d="M3 3v5h5"></path></svg></button></sc-if></div>
+    </div>
+
+    <sc-if value="{{acting}}" hint-placeholder-val="{{true}}">
+      <section class="jm-panel jm-moment dk-moment" aria-label="Your move">
+        <span class="jm-label">Guess</span>
+        <h1 class="jm-moment__headline">{{headline}}</h1>
+        <div class="jm-moment__decide">
+          <button type="button" class="jm-btn jm-btn--primary jm-btn--xl" disabled="{{noSlot}}">{{lockLabel}}</button>
+          <button type="button" class="jm-btn jm-btn--xl" aria-label="Skip song for 1 token">Skip song <span class="jm-token">1</span></button>
+          <button type="button" class="jm-btn jm-btn--xl" aria-label="Buy this card for 3 tokens">Buy this card <span class="jm-token">3</span></button>
+        </div>
+      </section>
+    </sc-if>
+    <sc-if value="{{watching}}" hint-placeholder-val="{{false}}">
+      <section class="jm-panel jm-moment dk-moment" aria-label="Mara's move">
+        <span class="jm-label">Guess</span>
+        <h1 class="jm-moment__headline">{{watchHeadline}}</h1>
+        <p class="jm-moment__sub">You can challenge Mara's decision after it's locked in.</p>
+      </section>
+    </sc-if>
+
+    <button type="button" class="dk-score" aria-label="{{scoreAria}}">
+      <span class="dk-score__grid dk-score__head" aria-hidden="true">
+        <span></span>
+        <span class="jm-label">Players</span>
+        <span class="jm-label" style="text-align: right">Cards</span>
+        <span class="jm-label" style="text-align: right">Tokens</span>
+      </span>
+      <sc-for list="{{rows}}" as="r" hint-placeholder-count="5">
+        <span class="dk-score__grid {{r.rowClass}}">
+          <span class="{{r.avatar}}" aria-hidden="true">{{r.initial}}</span>
+          <span class="dk-score__name"><span>{{r.name}}</span><sc-if value="{{r.status}}" hint-placeholder-val="{{true}}"><small>{{r.status}}</small></sc-if></span>
+          <span class="dk-score__cards">{{r.cards}}</span>
+          <span class="jm-token">{{r.tokens}}</span>
+        </span>
+      </sc-for>
+    </button>
+  </div>
+
+  <section class="dk-board" aria-label="Mara's timeline">
+    <div class="jm-board__head"><h2 class="jm-section">Mara's timeline</h2><span class="jm-meta jm-board__count">{{count}}</span></div>
+    <div class="dk-board__row">
+      <sc-for list="{{items}}" as="item" hint-placeholder-count="13">
+        <sc-if value="{{item.isGap}}" hint-placeholder-val="{{false}}">
+          <button type="button" class="jm-gap" onClick="{{item.pick}}" aria-label="{{item.aria}}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+        </sc-if>
+        <sc-if value="{{item.isSlot}}" hint-placeholder-val="{{false}}">
+          <span class="dk-slot" aria-hidden="true"></span>
+        </sc-if>
+        <sc-if value="{{item.isPick}}" hint-placeholder-val="{{false}}">
+          <div class="jm-card jm-card--mystery"><span class="jm-card__year">????</span><span class="jm-card__title">Mara's pick</span></div>
+        </sc-if>
+        <sc-if value="{{item.isCard}}" hint-placeholder-val="{{true}}">
+          <div class="jm-card"><span class="jm-card__year">{{item.year}}</span><span class="jm-card__title">{{item.title}}</span><span class="jm-card__artist">{{item.artist}}</span></div>
+        </sc-if>
+      </sc-for>
+    </div>
+  </section>
+</div>
+</main></template>
+<script src="../../exploration/preview/dc-runtime.js"></script>
+<script>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { pos: null }; }
+  renderVals() {
+    const view = this.props.view ?? "acting";
+    const acting = view === "acting";
+    const ALL = [
+      { year: 1965, title: 'Satisfaction', artist: 'The Rolling Stones' },
+      { year: 1975, title: 'Bohemian Rhapsody', artist: 'Queen' },
+      { year: 1979, title: 'Heart of Glass', artist: 'Blondie' },
+      { year: 1983, title: 'Sweet Dreams', artist: 'Eurythmics' },
+      { year: 1994, title: 'Zombie', artist: 'The Cranberries' },
+      { year: 2003, title: 'Seven Nation Army', artist: 'The White Stripes' },
+      { year: 2008, title: 'Viva la Vida', artist: 'Coldplay' },
+      { year: 2010, title: 'Dancing On My Own', artist: 'Robyn' },
+      { year: 2016, title: 'Redbone', artist: 'Childish Gambino' },
+      { year: 2019, title: 'Bad Guy', artist: 'Billie Eilish' }
+    ];
+    const SETS = {
+      "4": [1975, 1994, 2008, 2016],
+      "7": [1965, 1975, 1983, 1994, 2008, 2010, 2016],
+      "9": [1965, 1975, 1979, 1983, 1994, 2003, 2008, 2016, 2019]
+    };
+    const years = SETS[this.props.cards ?? "7"] || SETS["7"];
+    const cards = ALL.filter((c) => years.includes(c.year));
+    const n = cards.length;
+    // The pick starts between 1994 and 2008, as on the phone; tapping a gap moves it.
+    const start = cards.findIndex((c) => c.year >= 2008);
+    const pos = this.state.pos === null || this.state.pos > n ? start : this.state.pos;
+    const range = (i) => i === 0 ? 'Before ' + cards[0].year : i === n ? 'After ' + cards[n - 1].year : 'Between ' + cards[i - 1].year + ' and ' + cards[i].year;
+    const items = [];
+    for (let i = 0; i <= n; i++) {
+      // The pick takes a card column, with an empty slot either side, so the grid stays slot, card, slot, card.
+      if (i === pos) items.push({ isSlot: true }, { isPick: true }, { isSlot: true });
+      else if (acting) items.push({ isGap: true, aria: 'Put it here: ' + range(i), pick: () => this.setState({ pos: i }) });
+      // Watching: no + gaps, but the same empty space, so the cards stay where they were.
+      else items.push({ isSlot: true });
+      if (i < n) items.push(Object.assign({ isCard: true }, cards[i]));
+    }
+    const rangeText = (i) => i === 0 ? 'before ' + cards[0].year : i === n ? 'after ' + cards[n - 1].year : cards[i - 1].year + ' to ' + cards[i].year;
+    // Seat order, like the phone. Statuses: on turn, leading, local, that's you, away.
+    const leader = n > 6 ? "Mara" : "Jonas";
+    const data = [
+      { name: "Mara", p: 1, cards: n, tokens: 3, turn: true },
+      { name: "Jonas", p: 2, cards: 6, tokens: 1 },
+      { name: "Lea", p: 3, cards: 5, tokens: 2, you: !acting },
+      { name: "Tobi", p: 4, cards: 3, tokens: 2, local: true },
+      { name: "Sam", p: 5, cards: 2, tokens: 5, away: true }
+    ];
+    const rows = data.map((r) => {
+      const notes = [];
+      if (r.turn) notes.push(acting ? "Your turn" : "On turn");
+      if (r.name === leader) notes.push(notes.length ? "leading" : "Leading");
+      if (r.you) notes.push("That's you");
+      if (r.local) notes.push("Local player");
+      if (r.away) notes.push("Reconnecting…");
+      return {
+        name: r.name,
+        initial: r.name.charAt(0),
+        cards: r.cards,
+        tokens: r.tokens,
+        status: notes.join(", "),
+        avatar: "jm-avatar jm-p" + r.p + (r.away ? " jm-avatar--away" : ""),
+        rowClass: "dk-score__row" + (r.turn ? " dk-score__row--turn" : "")
+      };
+    });
+    const scoreAria = "Scoreboard. " + rows.map((r) => r.name + (r.status ? " (" + r.status + ")" : "") + ": " + r.cards + " cards, " + r.tokens + " tokens").join(". ") + ". Open the full scoreboard.";
+    return {
+      acting,
+      watching: !acting,
+      // Only the host and the player on turn may restart the song.
+      restart: acting,
+      items,
+      rows,
+      scoreAria,
+      count: n + " of 10",
+      headline: range(pos) + '?',
+      watchHeadline: 'Mara thinks ' + rangeText(pos) + '.',
+      noSlot: false,
+      lockLabel: 'Lock it in'
+    };
+  }
+}
+DCRuntime.mount(Component, document.getElementById('dc-root'), document.getElementById('dc-template').content, Object.assign({"view": "acting", "cards": "7"}, Object.fromEntries(new URLSearchParams(location.search))));
+</script>
+</body>
+</html>

@@ -31,5 +31,6 @@ A link that looks like a button is `a.jm-btn` (no underline, ink text).
 - Labels are sentence case, verb first, one or two words. If an action costs or earns tokens, end the label with the coin (`jm-token`, 14px inside a button) and the number (`+1` when it earns), with no dot or other separator; the button's gap spaces it.
 - Something you can't take back that affects everyone (*Close room*, *End game*, skipping an away player's turn) takes a second tap: the first one swaps the label to *Tap again to close it for everyone*.
 - Disabled buttons drop to 45% opacity and lose their shadow; prefer hiding an action that can't happen at all.
+- Hover, only with a mouse or trackpad (`@media (hover: hover) and (pointer: fine)`): the ink outline gets 1px heavier (an inset 1px ink ring). No lift and no added shadow; a primary button keeps its own. `--bare` buttons show a thin `ink-subtle` outline. Touch screens never see hover.
 - Focus ring: 2px ink outline, 2px offset.
 - Icons: 24px grid, round caps and joins, stroke 2.4 (3 for ✕ and ✓), drawn in `currentColor`.

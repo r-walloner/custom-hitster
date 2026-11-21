@@ -140,4 +140,30 @@ ul{margin:0;padding-left:20px;color:#5C4F44;line-height:1.5}</style></head>
       <li>Final scoreboard on the right. The host gets Play again and Back to the lobby; everyone else Waiting for Mara and Leave room.</li>
     </ul>
   </section>
+
+  <section class="item">
+    <h2>Desktop, laptop first</h2>
+    <p>The same screens in a window at least 1000 × 640, on <code>system/components/desktop.css</code>. These pages are responsive: they fill the frame below, so open one on its own and resize the window to see it adapt. Representative screens only; the others follow the nearest one (Challenge and the challenger's guess follow Placing and Reveal, the other pop-ups follow the scoreboard, the sign-in error and a room that's gone follow Home).</p>
+    <div class="grid">
+      <figure style="width:100%"><iframe src="DesktopHome.html" title="Home, desktop" style="width:100%;height:900px" loading="lazy"></iframe><figcaption><a href="DesktopHome.html">Home</a>, <a href="DesktopHome.html?state=loggedOut">logged out</a></figcaption></figure>
+      <figure style="width:100%"><iframe src="DesktopLobby.html" title="Lobby, desktop" style="width:100%;height:900px" loading="lazy"></iframe><figcaption><a href="DesktopLobby.html">Lobby, host</a>, <a href="DesktopLobby.html?role=guest">guest</a></figcaption></figure>
+      <figure style="width:100%"><iframe src="DesktopLibrary.html" title="Your songs, desktop" style="width:100%;height:900px" loading="lazy"></iframe><figcaption><a href="DesktopLibrary.html">Your songs</a>, <a href="DesktopLibrary.html?library=importing">importing</a></figcaption></figure>
+      <figure style="width:100%"><iframe src="DesktopGamePlacing.html" title="Placing, desktop" style="width:100%;height:900px" loading="lazy"></iframe><figcaption><a href="DesktopGamePlacing.html">Placing, the player on turn</a>, <a href="DesktopGamePlacing.html?view=watching">watching</a>, with <a href="DesktopGamePlacing.html?cards=4">4</a> or <a href="DesktopGamePlacing.html?cards=9">9</a> cards</figcaption></figure>
+      <figure style="width:100%"><iframe src="DesktopGameReveal.html" title="Reveal, desktop" style="width:100%;height:900px" loading="lazy"></iframe><figcaption><a href="DesktopGameReveal.html">Reveal, host</a>, <a href="DesktopGameReveal.html?view=guest&amp;named=yes">guest</a></figcaption></figure>
+      <figure style="width:100%"><iframe src="DesktopStandings.html" title="Scoreboard, desktop" style="width:100%;height:900px" loading="lazy"></iframe><figcaption><a href="DesktopStandings.html">Scoreboard pop-up</a></figcaption></figure>
+      <figure style="width:100%"><iframe src="DesktopWinner.html" title="Winner, desktop" style="width:100%;height:900px" loading="lazy"></iframe><figcaption><a href="DesktopWinner.html">Winner, host</a>, <a href="DesktopWinner.html?role=guest">guest</a></figcaption></figure>
+    </div>
+    <h2 style="margin-top: 16px">Why it looks like this</h2>
+    <ul>
+      <li>Same screens and words as the phone; only layout, type and spacing change. The phone (844 × 390, zoomed to fit) stays the primary design and covers everything smaller.</li>
+      <li>In-between sizes get one layout or the other, never a blend: a hard switch at <code>(min-width: 1000px) and (min-height: 640px)</code>, because the two layouts differ in structure. Each scales on its own side, the phone by zooming, the desktop by its fluid column. A narrow, tall computer window gets the phone layout zoomed to its width; only touch screens are asked to turn sideways.</li>
+      <li>Content sits in one centred column, at most 1280 px wide, with 40–56 px of paper around it. Wider screens just get more margin.</li>
+      <li>Type steps up for a laptop at arm's length, with the game readable from a few metres: body 15–16 px, headlines 20–28 px, the moment sentence 36 px, years 32 px.</li>
+      <li>Outside the game the layouts only relax: wider columns, more air, a bigger room code and QR in the lobby. No new content.</li>
+      <li>The mini scoreboard grows into a player list: full name, a status line (Your turn, On turn, Leading, Local player, That's you, Reconnecting…), cards and tokens, in seat order. It's still one button that opens the full scoreboard; the rows have no hover of their own.</li>
+      <li>The timeline wraps instead of scrolling, so a whole 10-card timeline is visible at a glance. It sits on a fixed grid of slot and card columns, so cards line up above and below each other. Where a + gap isn't offered an empty slot keeps its place, and the pick and the revealed card take a card column, so nothing moves between phases.</li>
+      <li>Pop-ups stay centred over the dimmed game, wider and roomier, never full screen. A ✕ closes them for mouse users.</li>
+      <li>Hover only with a mouse or trackpad: a button's ink outline gets 1 px heavier. No lift and no added shadow, since shadows mark emphasis.</li>
+    </ul>
+  </section>
 </main></body></html>

@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jamster game screen, desktop – reveal</title>
+<link rel="stylesheet" href="../../system/tokens.css">
+<link rel="stylesheet" href="../../system/components/bundle.css">
+<link rel="stylesheet" href="../../system/components/desktop.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&amp;family=Bricolage+Grotesque:opsz,wght@12..96,400..800&amp;family=DM+Mono:wght@500&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</head>
+<body>
+<div id="dc-root"></div>
+<template id="dc-template"><main class="dk-screen">
+<div class="dk-frame">
+  <header class="dk-header">
+    <span class="jm-logo">jamster</span>
+    <span class="jm-chip" aria-label="Room code QZRK">QZRK</span>
+    <span class="jm-header__meta"><span>Turn <b>7</b></span><i></i><span><b>38</b> cards left</span><i></i><span>First to <b>10</b></span></span>
+    <span class="jm-header__spacer"></span>
+    <button type="button" class="jm-btn jm-btn--icon" aria-label="Game menu: playback device, scoreboard, end game"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
+  </header>
+
+  <div class="dk-top">
+    <div class="jm-tape-player">
+      <div class="jm-tape jm-tape--bounce is-playing"><div class="jm-tape__bob"><div class="jm-tape__shell">
+        <svg viewBox="0 0 300 190" width="220" height="139" role="progressbar" aria-label="Song progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="70">
+          <rect class="t-shell" x="4" y="4" width="292" height="182" rx="18" stroke-width="7"></rect>
+          <circle class="t-ink" cx="17" cy="17" r="4.5"></circle><circle class="t-ink" cx="283" cy="17" r="4.5"></circle><circle class="t-ink" cx="17" cy="173" r="4.5"></circle><circle class="t-ink" cx="283" cy="173" r="4.5"></circle>
+          <rect class="t-window" x="92" y="70" width="116" height="40" rx="20"></rect>
+          <circle class="t-pack" cx="105" cy="90" r="36" style="transform: scale(0.55)"></circle>
+          <circle class="t-pack" cx="195" cy="90" r="36" style="transform: scale(0.85)"></circle>
+          <g class="t-reel"><circle class="t-hub" cx="105" cy="90" r="13" stroke-width="4"></circle><path class="t-spoke" d="M105 80v20M96.3 85l17.4 10M96.3 95l17.4-10" stroke-width="4"></path></g>
+          <g class="t-reel"><circle class="t-hub" cx="195" cy="90" r="13" stroke-width="4"></circle><path class="t-spoke" d="M195 80v20M186.3 85l17.4 10M186.3 95l17.4-10" stroke-width="4"></path></g>
+          <path class="t-label" fill-rule="evenodd" stroke-width="5" d="M30 18H270A8 8 0 0 1 278 26V138A8 8 0 0 1 270 146H30A8 8 0 0 1 22 138V26A8 8 0 0 1 30 18Z M92 70H208A20 20 0 0 1 208 110H92A20 20 0 0 1 92 70Z"></path>
+          <text class="t-year" x="150" y="60" text-anchor="middle">1995</text>
+          <rect class="t-track" x="40" y="122" width="220" height="11" rx="5.5"></rect>
+          <rect class="t-bar" x="40" y="122" width="154" height="11" rx="5.5"></rect>
+          <path class="t-foot" stroke-width="5" d="M78 186L90 156H210L222 186"></path>
+          <circle class="t-ink" cx="112" cy="174" r="6"></circle><circle class="t-ink" cx="188" cy="174" r="6"></circle>
+        </svg>
+      </div></div></div>
+      <div class="jm-tape__foot"><span class="jm-time">0:21 / 0:30</span><sc-if value="{{host}}" hint-placeholder-val="{{true}}"><button type="button" class="jm-btn jm-btn--icon-sm" aria-label="Restart the song from the beginning"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><path d="M3 3v5h5"></path></svg></button></sc-if></div>
+    </div>
+
+    <section class="jm-panel jm-moment jm-moment--ring dk-moment {{watchClass}}" aria-label="Reveal">
+      <span class="jm-label">Reveal</span>
+      <div class="jm-moment__ring"><div class="jm-ring" style="--p: 60" role="timer" aria-label="Next song in 6 seconds"><span>6</span></div></div>
+      <div class="jm-result">
+        <span class="jm-result__cover" style="background: linear-gradient(135deg, #3d5a80 0 45%, #e0b04a 45% 60%, #98c1d9 60%)" role="img" aria-label="Album cover"></span>
+        <div class="jm-song">
+          <h1 class="jm-song__title">Wonderwall</h1>
+          <span class="jm-song__artist">Oasis</span>
+          <span class="jm-song__library" aria-label="From Jonas's and Sam's libraries">
+            <span class="jm-song__avatars" aria-hidden="true"><span class="jm-avatar jm-p2">J</span><span class="jm-avatar jm-p5">S</span></span>
+            <span class="jm-song__credit" aria-hidden="true">From Jonas and Sam</span>
+          </span>
+        </div>
+      </div>
+      <sc-if value="{{host}}" hint-placeholder-val="{{true}}">
+        <div class="jm-moment__actions">
+          <button type="button" class="jm-btn jm-btn--toggle" aria-pressed="{{namedPressed}}" aria-label="Mara named title and artist: 1 token" onClick="{{toggleNamed}}">Named the song <span class="jm-token">+1</span></button>
+          <button type="button" class="jm-btn">Keep listening</button>
+        </div>
+      </sc-if>
+      <sc-if value="{{guest}}" hint-placeholder-val="{{false}}">
+        <div class="jm-moment__actions">
+          <span class="jm-named {{namedClass}}">Mara named the song <span class="jm-token">+1</span></span>
+        </div>
+      </sc-if>
+    </section>
+
+    <button type="button" class="dk-score" aria-label="{{scoreAria}}">
+      <span class="dk-score__grid dk-score__head" aria-hidden="true">
+        <span></span>
+        <span class="jm-label">Players</span>
+        <span class="jm-label" style="text-align: right">Cards</span>
+        <span class="jm-label" style="text-align: right">Tokens</span>
+      </span>
+      <sc-for list="{{rows}}" as="r" hint-placeholder-count="5">
+        <span class="dk-score__grid {{r.rowClass}}">
+          <span class="{{r.avatar}}" aria-hidden="true">{{r.initial}}</span>
+          <span class="dk-score__name"><span>{{r.name}}</span><sc-if value="{{r.status}}" hint-placeholder-val="{{true}}"><small>{{r.status}}</small></sc-if></span>
+          <span class="dk-score__cards">{{r.cards}}</span>
+          <span class="jm-token">{{r.tokens}}</span>
+        </span>
+      </sc-for>
+    </button>
+  </div>
+
+  <section class="dk-board" aria-label="Mara's timeline, with everyone's guesses">
+    <div class="jm-board__head"><h2 class="jm-section">Mara's timeline</h2><span class="jm-meta jm-board__count">8 of 10</span></div>
+    <div class="dk-board__row dk-board__row--marks">
+      <span class="dk-slot" aria-hidden="true"></span>
+      <div class="jm-card"><span class="jm-card__year">1965</span><span class="jm-card__title">Satisfaction</span><span class="jm-card__artist">The Rolling Stones</span></div>
+      <span class="dk-slot" aria-hidden="true"></span>
+      <div class="jm-card"><span class="jm-card__year">1975</span><span class="jm-card__title">Bohemian Rhapsody</span><span class="jm-card__artist">Queen</span></div>
+      <span class="dk-slot" aria-hidden="true"></span>
+      <div class="jm-card"><span class="jm-card__year">1983</span><span class="jm-card__title">Sweet Dreams</span><span class="jm-card__artist">Eurythmics</span></div>
+      <span class="dk-slot" aria-hidden="true"></span>
+      <div class="jm-card"><span class="jm-card__year">1994</span><span class="jm-card__title">Zombie</span><span class="jm-card__artist">The Cranberries</span></div>
+      <span class="dk-slot" aria-hidden="true"></span>
+      <div class="jm-card jm-card--new"><span class="jm-card__year">1995</span><span class="jm-card__title">Wonderwall</span><span class="jm-card__artist">Oasis</span><span class="jm-mark jm-mark--right" role="img" aria-label="Mara placed it 1994 to 2008: right"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>M</span></div>
+      <span class="dk-slot" aria-hidden="true"></span>
+      <div class="jm-card"><span class="jm-card__year">2008</span><span class="jm-card__title">Viva la Vida</span><span class="jm-card__artist">Coldplay</span><span class="jm-mark jm-mark--wrong" role="img" aria-label="Sam guessed 2008 to 2010: wrong"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>S</span></div>
+      <span class="dk-slot" aria-hidden="true"></span>
+      <div class="jm-card"><span class="jm-card__year">2010</span><span class="jm-card__title">Dancing On My Own</span><span class="jm-card__artist">Robyn</span></div>
+      <span class="dk-slot" aria-hidden="true"></span>
+      <div class="jm-card"><span class="jm-card__year">2016</span><span class="jm-card__title">Redbone</span><span class="jm-card__artist">Childish Gambino</span></div>
+      <span class="dk-slot" aria-hidden="true"></span>
+    </div>
+  </section>
+</div>
+</main></template>
+<script src="../../exploration/preview/dc-runtime.js"></script>
+<script>
+class Component extends DCLogic {
+  renderVals() {
+    const host = (this.props.view ?? "host") === "host";
+    const named = this.state.named ?? (this.props.named === "yes");
+    // Named the song pays out when the next turn starts; the scoreboard shows the token already.
+    const data = [
+      { name: "Mara", p: 1, cards: 8, tokens: 3 + (named ? 1 : 0), status: host ? "Your turn, leading" : "On turn, leading", turn: true },
+      { name: "Jonas", p: 2, cards: 6, tokens: 1, status: "" },
+      { name: "Lea", p: 3, cards: 5, tokens: 2, status: host ? "" : "That's you" },
+      { name: "Tobi", p: 4, cards: 3, tokens: 2, status: "Local player" },
+      { name: "Sam", p: 5, cards: 2, tokens: 4, status: "Challenged" }
+    ];
+    const rows = data.map((r) => ({
+      ...r,
+      initial: r.name.charAt(0),
+      avatar: "jm-avatar jm-p" + r.p,
+      rowClass: "dk-score__row" + (r.turn ? " dk-score__row--turn" : "")
+    }));
+    const scoreAria = "Scoreboard. " + rows.map((r) => r.name + (r.status ? " (" + r.status + ")" : "") + ": " + r.cards + " cards, " + r.tokens + " tokens").join(". ") + ". Open the full scoreboard.";
+    return {
+      host,
+      guest: !host,
+      watchClass: host ? "" : "jm-moment--watch",
+      namedPressed: String(named),
+      namedClass: named ? "" : "jm-named--off",
+      toggleNamed: () => this.setState({ named: !named }),
+      rows,
+      scoreAria
+    };
+  }
+}
+DCRuntime.mount(Component, document.getElementById('dc-root'), document.getElementById('dc-template').content, Object.assign({"view": "host", "named": "no"}, Object.fromEntries(new URLSearchParams(location.search))));
+</script>
+</body>
+</html>
