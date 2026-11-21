@@ -66,9 +66,10 @@
 }
 
 /* ---------- Small extensions the screens share ---------- */
-/* A toggle button (components/Button.tsx): padding on both sides wide enough for the ✓, which
-   sits in the left one when pressed. The label stays centred, and the width stays the same. */
-.jm-btn--toggle {
+/* A toggle button with a ✓ (components/Button.tsx): padding on both sides wide enough for the
+   ✓, which sits in the left one when pressed. The label stays centred, and the width stays the
+   same. */
+.app-toggle--check {
   position: relative;
   padding-inline: 32px;
 }

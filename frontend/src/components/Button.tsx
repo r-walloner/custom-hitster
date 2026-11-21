@@ -8,20 +8,28 @@ type Size = 'md' | 'xl' | 'lg' | 'next' | 'icon' | 'icon-sm'
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant
   size?: Size
-  /** A toggle: sets aria-pressed, and a pressed toggle shows a ✓ before its label. */
+  /** A toggle: sets aria-pressed, and a pressed toggle turns black. */
   pressed?: boolean
+  /** Whether a pressed toggle also shows a ✓ before its label. */
+  checkmark?: boolean
   /** Navigate instead of acting: renders a link that looks the same. */
   to?: string
   /** Like `to`, but a full page load (the Spotify sign-in goes through the server). */
   href?: string
 }
 
-function buttonClasses(variant: Variant = 'secondary', size: Size = 'md', toggle = false) {
+function buttonClasses(
+  variant: Variant = 'secondary',
+  size: Size = 'md',
+  toggle = false,
+  check = false,
+) {
   return [
     'jm-btn',
     variant !== 'secondary' && `jm-btn--${variant}`,
     size !== 'md' && `jm-btn--${size}`,
     toggle && 'jm-btn--toggle',
+    check && 'app-toggle--check',
   ]
     .filter(Boolean)
     .join(' ')
@@ -32,6 +40,7 @@ export function Button({
   variant,
   size,
   pressed,
+  checkmark = true,
   to,
   href,
   className,
@@ -40,12 +49,13 @@ export function Button({
   ...rest
 }: ButtonProps) {
   const toggle = pressed !== undefined
-  const classes = [buttonClasses(variant, size, toggle), className].filter(Boolean).join(' ')
+  const check = toggle && checkmark
+  const classes = [buttonClasses(variant, size, toggle, check), className].filter(Boolean).join(' ')
   // A toggle's ✓ sits in its left padding, which is wide enough in both states, so pressing it
   // neither moves the label nor changes the button's width.
   const content = (
     <>
-      {pressed && (
+      {check && pressed && (
         <span className="app-toggle__check">
           <Icon name="check" />
         </span>

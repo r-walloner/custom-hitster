@@ -65,6 +65,7 @@ export default function Reveal({ turn }: { turn: Turn }) {
             <div className="game__outcome-actions">
               <Button
                 pressed={game.named === true}
+                checkmark={false}
                 aria-label={`${who} named title and artist: 1 token`}
                 onClick={() => send({ type: 'set_named', value: game.named !== true })}
               >
