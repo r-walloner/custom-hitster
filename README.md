@@ -47,7 +47,7 @@ Jamster is a private tool and cannot become a public one.
 2. The player on turn taps a `+` on their timeline to place the card, then locks it in.
    Skipping to another song costs 1 token.
    Instead of locking it in, they can buy the card for 3 tokens: it goes into their timeline without guessing, nobody can challenge it, and it is revealed at once.
-3. A countdown starts, 5 seconds unless the host sets another time in the lobby.
+3. A countdown starts, 10 seconds unless the host sets another time in the lobby.
    Until it runs out, every other player may challenge on their own device; the host also decides for the local players, on their rows, so a hot-seat game works within the countdown.
    The first to challenge is the only challenger, and the countdown ends there; whoever has not challenged when it runs out has passed.
 4. If nobody challenged, the card is revealed.

@@ -60,7 +60,7 @@ body{margin:0}
 <script src="../../exploration/preview/dc-runtime.js"></script>
 <script>
 class Component extends DCLogic {
-  constructor(props) { super(props); this.state = { win: 10, tokens: 3, deck: 60, challenge: 15, next: 15 }; }
+  constructor(props) { super(props); this.state = { win: 10, tokens: 3, deck: 100, challenge: 10, next: 15 }; }
   renderVals() {
     const host = (this.props.role ?? "host") === "host";
     const st = this.state;

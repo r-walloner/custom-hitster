@@ -62,7 +62,7 @@ body{margin:0}
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"role":{"editor":"enum","options":["host","guest"],"default":"host"},"$preview":{"width":844,"height":390}}'>
 class Component extends DCLogic {
-  constructor(props) { super(props); this.state = { win: 10, tokens: 3, deck: 60, challenge: 15, next: 15 }; }
+  constructor(props) { super(props); this.state = { win: 10, tokens: 3, deck: 100, challenge: 10, next: 15 }; }
   renderVals() {
     const host = (this.props.role ?? "host") === "host";
     const st = this.state;
