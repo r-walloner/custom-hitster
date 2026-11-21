@@ -139,7 +139,7 @@ class Component extends DCLogic {
       players,
       songsText: host ? "1,940 songs" : "Not signed in",
       rulesAction: host ? "Change" : "View",
-      closeLabel: closing ? "Tap again to close it for everyone" : "Close room",
+      closeLabel: closing ? "Click again to close it for everyone" : "Close room",
       tapClose: () => this.setState({ closing: !closing })
     };
   }

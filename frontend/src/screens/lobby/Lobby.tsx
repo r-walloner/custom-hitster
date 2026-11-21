@@ -8,6 +8,7 @@ import { Logo } from '../../components/Logo.tsx'
 import { PlayerRow, SettingRow } from '../../components/Rows.tsx'
 import { Header, RoomMeta, Screen, Spacer } from '../../components/Screen.tsx'
 import { ScrollArea } from '../../components/ScrollArea.tsx'
+import { useTapWord } from '../../components/useTapWord.ts'
 import { plural } from '../../words.ts'
 import { useImport } from '../library/useImport.ts'
 import { useRoomTools } from '../room/context.ts'
@@ -27,6 +28,7 @@ export default function Lobby() {
   const mine = room.players.find((seat) => seat.id === you.player_id)
   const hostName = host?.name ?? 'The host'
   const [closing, setClosing] = useState(false)
+  const tap = useTapWord()
   const { progress } = useImport(you.spotify, mine?.library?.status)
 
   // Where this player hears it: their own speaker, or with one speaker the host's.
@@ -179,7 +181,7 @@ export default function Lobby() {
                 className="app-btn--danger lobby__leave"
                 onClick={() => (closing ? send({ type: 'close_room' }) : setClosing(true))}
               >
-                {closing ? 'Tap again to close it for everyone' : 'Close room'}
+                {closing ? `${tap} again to close it for everyone` : 'Close room'}
               </Button>
               <Button
                 variant="primary"

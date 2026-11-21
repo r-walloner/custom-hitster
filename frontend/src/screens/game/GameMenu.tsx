@@ -3,6 +3,7 @@ import { Button } from '../../components/Button.tsx'
 import { Dialog } from '../../components/Dialog.tsx'
 import { Icon } from '../../components/Icon.tsx'
 import { SettingRow } from '../../components/Rows.tsx'
+import { useTapWord } from '../../components/useTapWord.ts'
 import { useRoomTools } from '../room/context.ts'
 import './GameMenu.css'
 
@@ -10,6 +11,7 @@ import './GameMenu.css'
 export default function GameMenu() {
   const { room, you, hearsMusic, send, open, close } = useRoomTools()
   const [ending, setEnding] = useState(false)
+  const tap = useTapWord()
   const mine = room.players.find((seat) => seat.id === you.player_id)
 
   return (
@@ -37,7 +39,7 @@ export default function GameMenu() {
             close()
           }}
         >
-          {ending ? 'Tap again to end it for everyone' : 'End game'}
+          {ending ? `${tap} again to end it for everyone` : 'End game'}
         </Button>
       ) : (
         <>

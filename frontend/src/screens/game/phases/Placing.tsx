@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Button, Token } from '../../../components/Button.tsx'
+import { useTapWord } from '../../../components/useTapWord.ts'
 import { useRoomTools } from '../../room/context.ts'
 import { pickingItems, slotRange, slotRangeShort } from '../board.ts'
 import { Board } from '../components/Board.tsx'
@@ -19,6 +20,7 @@ export default function Placing({ turn }: { turn: Turn }) {
   // The tap is remembered per turn, so the next away player's turn starts with one tap again.
   const [skipTapped, setSkipTapped] = useState<number | null>(null)
   const skipping = skipTapped === game.turn_number
+  const tap = useTapWord()
   const count = `${cards.length} of ${room.settings.cards_to_win}`
 
   const items = acting
@@ -59,7 +61,7 @@ export default function Placing({ turn }: { turn: Turn }) {
           disabled={game.slot === null}
           onClick={() => send({ type: 'lock', ...as(game.active) })}
         >
-          {game.slot === null ? 'Tap a gap first' : 'Lock it in'}
+          {game.slot === null ? `${tap} a gap first` : 'Lock it in'}
         </Button>
         {skip}
         <BuyButton turn={turn} id={game.active} size="xl" />
@@ -80,7 +82,7 @@ export default function Placing({ turn }: { turn: Turn }) {
             {loading
               ? 'Loading…'
               : skipping
-                ? 'Tap again to throw the card away'
+                ? `${tap} again to throw the card away`
                 : `Skip ${who}'s turn`}
           </Button>
         )}

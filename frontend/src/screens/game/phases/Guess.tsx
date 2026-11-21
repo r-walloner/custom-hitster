@@ -1,4 +1,5 @@
 import { Button } from '../../../components/Button.tsx'
+import { useTapWord } from '../../../components/useTapWord.ts'
 import { useRoomTools } from '../../room/context.ts'
 import { guessPicks, pickingItems, slotRange, slotRangeShort } from '../board.ts'
 import { Board } from '../components/Board.tsx'
@@ -14,6 +15,7 @@ export default function Guess({ turn }: { turn: Turn }) {
   const guesser = picker ? name(picker.player_id) : '?'
   const acting = picker !== undefined && canActFor(picker.player_id)
   const tokens = game.players.find((p) => p.id === picker?.player_id)?.tokens ?? 0
+  const tap = useTapWord()
 
   // The placement and any locked guesses are done; the one guessing now moves.
   const picks = guessPicks(game, name)
@@ -46,7 +48,7 @@ export default function Guess({ turn }: { turn: Turn }) {
           title={tokens < 1 ? 'A guess costs 1 token' : undefined}
           onClick={() => send({ type: 'lock_pick', ...as(picker.player_id) })}
         >
-          {picker.slot === null ? 'Tap a gap first' : 'Lock it in'}
+          {picker.slot === null ? `${tap} a gap first` : 'Lock it in'}
         </Button>
       </MomentPanel>
     ) : (
