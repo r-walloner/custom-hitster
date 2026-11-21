@@ -146,9 +146,7 @@ def client(fake: FakeSpotify, tmp_path: Path) -> Iterator[TestClient]:
         yield client
 
 
-def test_login_lists_the_library_and_copies_only_what_is_picked(
-    client: TestClient, fake: FakeSpotify
-):
+def test_login_lists_the_library_and_copies_every_source(client: TestClient, fake: FakeSpotify):
     alice = Browser(client)
     assert alice.get("/api/me").json() == {"spotify": None}
     assert alice.request("POST", "/api/rooms").status_code == 401
@@ -156,8 +154,9 @@ def test_login_lists_the_library_and_copies_only_what_is_picked(
 
     response = alice.login("alice")
     assert (response.status_code, response.headers["location"]) == (307, "/")
-    # Her own songs are picked at first: 60 liked songs, which hold her top and recent ones.
-    assert alice.library() == {"status": "done", "detail": "", "tracks": 60}
+    # Everything is picked at first: 60 liked songs, which hold her top and recent ones, plus 5
+    # from her playlist; episodes and local files dropped.
+    assert alice.library() == {"status": "done", "detail": "", "tracks": 65}
     library = alice.get("/api/me/library").json()
     assert library["refreshed_at"] is not None
     assert [
@@ -167,26 +166,19 @@ def test_login_lists_the_library_and_copies_only_what_is_picked(
         ("top", "Your top songs", 5, True, True),
         ("liked", "Liked songs", 60, True, True),
         # Her own playlists in Spotify's order, not the one she only follows.
-        ("playlist:pl-alice", "Road trip", 8, False, False),
-        ("playlist:pl-zumba", "Zumba", 0, False, False),
-        ("playlist:pl-aardvark", "aardvark tunes", 0, False, False),
+        ("playlist:pl-alice", "Road trip", 8, True, True),
+        ("playlist:pl-zumba", "Zumba", 0, True, True),
+        ("playlist:pl-aardvark", "aardvark tunes", 0, True, True),
     ]
-    # Listing asked for a single liked song; copying them took two pages. No playlist was read.
+    # Listing asked for a single liked song; copying them took two pages.
     assert [r for r in fake.requests if r.startswith("/me/tracks")] == [
         "/me/tracks?limit=1&offset=0",
         "/me/tracks?limit=50&offset=0",
         "/me/tracks?limit=50&offset=50",
     ]
-    assert fake.playlist_reads == []
+    assert fake.playlist_reads == ["pl-alice", "pl-zumba", "pl-aardvark"]
 
-    # Plus 5 from her playlist; episodes and local files dropped.
-    assert alice.pick(**{"playlist:pl-alice": True}) == {
-        "status": "done",
-        "detail": "",
-        "tracks": 65,
-    }
-    assert fake.playlist_reads == ["pl-alice"]
-    assert [s["copied"] for s in alice.sources()] == [True, True, True, True, False, False]
+    assert alice.pick(**{"playlist:pl-alice": False})["tracks"] == 60
 
     assert alice.request("DELETE", "/api/me").status_code == 204
     assert alice.get("/api/me").json() == {"spotify": None}
@@ -197,9 +189,10 @@ def test_unpicked_sources_leave_the_deck_and_come_back_for_free(
 ):
     alice = Browser(client)
     alice.login("alice")
-    assert alice.pick(liked=True)["tracks"] == 60
+    assert alice.library()["tracks"] == 65
     asked = len(fake.requests)
-    assert alice.pick(liked=False, top=False, recent=False)["tracks"] == 0
+    everything = {s["id"]: False for s in alice.sources()}
+    assert alice.pick(**everything)["tracks"] == 0
     code = alice.request("POST", "/api/rooms").json()["code"]
     with alice.socket(code) as a:
         a.send_json({"type": "start_game"})
@@ -217,10 +210,9 @@ def test_unpicking_the_source_being_copied_stops_its_copy(client: TestClient, fa
     asked = len(fake.requests)
     # 60 liked songs take two requests; the screen draws its progress bar from this.
     assert alice.get("/api/me/library").json()["detail"] == "Copying Liked songs: 0 of 2 requests"
-    alice.request("PATCH", "/api/me/sources", json={"playlist:pl-alice": True})
 
     alice.request("PATCH", "/api/me/sources", json={"liked": False})
-    # Top songs, recent plays and the playlist queued behind it are copied next.
+    # Top songs, recent plays and the playlists queued behind it are copied next.
     assert alice.library() == {"status": "done", "detail": "", "tracks": 10}
     fake.held.clear()
     time.sleep(0.05)
@@ -232,20 +224,21 @@ def test_unpicking_the_source_being_copied_stops_its_copy(client: TestClient, fa
 def test_importing_again_copies_only_what_changed(client: TestClient, fake: FakeSpotify):
     alice = Browser(client)
     alice.login("alice")
-    alice.pick(**{"playlist:pl-alice": True})
-    assert fake.playlist_reads == ["pl-alice"]
+    assert alice.library()["tracks"] == 65
+    assert fake.playlist_reads == ["pl-alice", "pl-zumba", "pl-aardvark"]
+    fake.playlist_reads.clear()
     liked_pages = len([r for r in fake.requests if r.startswith("/me/tracks?limit=50")])
 
     alice.request("POST", "/api/me/import")
     assert alice.library()["tracks"] == 65
-    assert fake.playlist_reads == ["pl-alice"]  # same snapshot, nothing to copy
+    assert fake.playlist_reads == []  # same snapshot, nothing to copy
     # Same count and newest song: the liked songs aren't copied again either.
     assert len([r for r in fake.requests if r.startswith("/me/tracks?limit=50")]) == liked_pages
 
     fake.playlists["alice"][0]["snapshot_id"] = "snap-2"
     alice.request("POST", "/api/me/import")
     assert alice.library()["tracks"] == 65
-    assert fake.playlist_reads == ["pl-alice", "pl-alice"]
+    assert fake.playlist_reads == ["pl-alice"]
 
     fake.playlists["alice"].pop(0)  # she deleted it: gone with its songs
     alice.request("POST", "/api/me/import")

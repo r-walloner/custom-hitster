@@ -27,7 +27,8 @@ Jamster is a private tool and cannot become a public one.
    The server lists your library within seconds: your liked songs, the playlists you own or collaborate on, your top songs and your recent plays.
    On the Your songs screen you tick which of them go into the deck, and only the ticked ones are copied, one at a time; unticking one stops its copy.
    You reach it from the home page, and from the lobby, so every signed-in player can change their picks until the host starts.
-   Recent plays, top songs and liked songs sit at the top, in that order, and are ticked to begin with; your playlists follow in the order Spotify lists them.
+   Recent plays, top songs and liked songs sit at the top, in that order; your playlists follow in the order Spotify lists them.
+   Every source starts ticked, including playlists found on a later Refresh, so your whole library is copied unless you untick some of it.
    Refresh on that screen lists the library again and imports only what changed.
 2. Create a room and share its link or four-letter code.
 3. Others join with a nickname.

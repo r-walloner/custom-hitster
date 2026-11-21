@@ -30,14 +30,15 @@ def library() -> tuple[sqlite3.Connection, dict[str, db.Source]]:
     return conn, sources
 
 
-def test_the_first_listing_picks_the_players_own_songs_but_no_playlist():
+def test_the_first_listing_picks_every_source():
     conn, sources = library()
-    assert [s.id for s in sources.values() if s.picked] == ["liked", "top"]
+    assert all(s.picked for s in sources.values())
     assert db.next_source_to_copy(conn, "p") is None
     signals = {track: set(found) for track, found in db.track_signals(conn, "p").items()}
     assert signals == {
         "t1": {Signal("saved", 1), Signal("top_short", 1)},
-        "t2": {Signal("saved", 1)},
+        "t2": {Signal("saved", 1), Signal("playlist", 1)},
+        "t3": {Signal("playlist", 2)},
     }
 
 
@@ -55,7 +56,7 @@ def test_signals_add_up_across_picked_sources_only():
 
 def test_a_new_version_needs_copying_and_a_vanished_source_takes_its_signals():
     conn, _ = library()
-    db.set_picked(conn, "p", {"playlist:a": True})
+    db.set_picked(conn, "p", {"playlist:a": False})
     listed = [
         db.Listed("liked", "liked", "Liked songs", 2, "v1"),
         db.Listed("top", "top", "Your top songs", None, "v2"),
@@ -65,7 +66,8 @@ def test_a_new_version_needs_copying_and_a_vanished_source_takes_its_signals():
     db.sync_sources(conn, "p", listed, "2026-11-19T12:00:00+00:00")
     sources = {s.id: s for s in db.list_sources(conn, "p")}
     assert list(sources) == ["liked", "top", "playlist:a", "playlist:c"]
-    assert not sources["playlist:c"].picked  # new playlists start unpicked
+    assert sources["playlist:c"].picked  # new playlists start picked
+    assert not sources["playlist:a"].picked  # an unpicked one stays unpicked
     assert sources["top"].songs == 1  # the copied count survives a listing without one
     next_up = db.next_source_to_copy(conn, "p")
     assert next_up is not None and next_up.id == "top"

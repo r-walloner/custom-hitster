@@ -122,11 +122,6 @@ class Listed:
     version: str
 
 
-# Picked when a player's sources are listed for the first time: their own songs. Playlists
-# wait until the player picks them.
-PICKED_AT_FIRST = {"liked", "top", "recent"}
-
-
 def connect(path: Path | str) -> sqlite3.Connection:
     # check_same_thread=False: the connection is created on one thread and used on the loop's.
     conn = sqlite3.connect(path, check_same_thread=False)
@@ -221,12 +216,9 @@ def sync_sources(
     conn: sqlite3.Connection, player_id: str, listed: list[Listed], refreshed_at: str
 ) -> None:
     """Make the player's sources what the listing found. Picks and copies of the sources that
-    are still there are kept; new ones start unpicked, except on the very first listing; the
-    ones that are gone are deleted with their signals."""
+    are still there are kept; new ones start picked; the ones that are gone are deleted with
+    their signals."""
     with conn:
-        first = not conn.execute(
-            "SELECT 1 FROM sources WHERE player_id = ? LIMIT 1", (player_id,)
-        ).fetchone()
         conn.executemany(
             "INSERT INTO sources (player_id, id, kind, name, position, songs, picked, version)"
             " VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
@@ -241,7 +233,7 @@ def sync_sources(
                     x.name,
                     n,
                     x.songs,
-                    first and x.id in PICKED_AT_FIRST,
+                    True,
                     x.version,
                 )
                 for n, x in enumerate(listed)
