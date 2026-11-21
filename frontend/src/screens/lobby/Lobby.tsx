@@ -45,7 +45,7 @@ export default function Lobby() {
       .catch(() => toast('wrong', "Couldn't copy the link. Share the code instead."))
 
   return (
-    <Screen>
+    <Screen className="lobby__screen">
       <Header>
         <Logo />
         <Spacer />

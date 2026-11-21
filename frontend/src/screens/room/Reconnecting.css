@@ -35,3 +35,22 @@
 .reconnecting__trying .jm-time {
   color: var(--ink-muted);
 }
+
+/* Desktop (styles/desktop.css) */
+.jm-desktop .jm-dialog.reconnecting {
+  padding: 26px 32px 32px;
+}
+
+.jm-desktop .reconnecting__head {
+  gap: 16px;
+}
+
+.jm-desktop .reconnecting__head .jm-moment__headline {
+  font-size: 28px;
+  line-height: 32px;
+}
+
+.jm-desktop .reconnecting__badge {
+  width: 52px;
+  height: 52px;
+}

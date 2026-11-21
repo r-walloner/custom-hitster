@@ -116,3 +116,92 @@
 .lobby__rules .jm-setting > .jm-btn {
   min-width: 80px;
 }
+
+/* ---------- Desktop (styles/desktop.css): getting people in, who's in, setup ---------- */
+.jm-desktop .jm-screen.lobby__screen {
+  gap: 32px;
+}
+
+.jm-desktop .lobby {
+  grid-template-columns:
+    clamp(240px, 240px + 100 * var(--dkf), 340px) minmax(0, 1fr)
+    clamp(300px, 300px + 100 * var(--dkf), 400px);
+  gap: clamp(20px, 20px + 12 * var(--dkf), 32px);
+  padding-top: 0;
+}
+
+.jm-desktop .lobby__invite {
+  padding: 24px 26px 26px;
+  border-radius: 22px;
+  gap: 12px;
+}
+
+.jm-desktop .lobby__code {
+  font-size: clamp(56px, 56px + 16 * var(--dk), 78px);
+}
+
+.jm-desktop .lobby__invite .jm-qr {
+  margin-top: 12px;
+}
+
+.jm-desktop .lobby__invite .jm-qr svg {
+  width: clamp(150px, 150px + 46 * var(--dk), 213px);
+  height: clamp(150px, 150px + 46 * var(--dk), 213px);
+}
+
+.jm-desktop .lobby__players {
+  gap: 10px;
+  padding-top: 4px;
+}
+
+.jm-desktop .lobby__players > .jm-section {
+  margin-bottom: 4px;
+}
+
+.jm-desktop .lobby__music {
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  font-size: 14px;
+}
+
+.jm-desktop .lobby__music svg {
+  width: 16px;
+  height: 16px;
+}
+
+.jm-desktop .lobby__action {
+  flex-basis: 50px;
+}
+
+.jm-desktop .lobby__players .lobby__add {
+  margin-top: 4px;
+}
+
+.jm-desktop .lobby__setup {
+  gap: 14px;
+}
+
+.jm-desktop .lobby__rules {
+  padding: 6px 20px 6px 26px;
+  border-radius: 22px;
+}
+
+.jm-desktop .lobby__rules .jm-setting {
+  gap: 16px;
+  padding: 16px 0;
+}
+
+.jm-desktop .lobby__rules .jm-setting > .jm-btn {
+  min-width: 104px;
+}
+
+.jm-desktop .lobby__wait {
+  gap: 8px;
+}
+
+.jm-desktop .lobby__wait .jm-status {
+  height: 64px;
+  padding: 0 20px;
+  font-size: 18px;
+}

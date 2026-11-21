@@ -114,3 +114,61 @@
   font-size: 15px;
 }
 
+
+/* ---------- Desktop (styles/desktop.css): one list, so a narrower column ---------- */
+.jm-desktop .jm-screen.library__screen {
+  --frame: 920px;
+}
+
+.jm-desktop .library {
+  gap: 12px;
+  padding: 0;
+}
+
+.jm-desktop .library__done {
+  min-width: 120px;
+}
+
+.jm-desktop .library__panel {
+  padding: 26px 30px 22px;
+  border-radius: 22px;
+  gap: 16px;
+}
+
+.jm-desktop .library__head {
+  gap: 14px;
+}
+
+.jm-desktop .library__tools {
+  gap: 10px;
+}
+
+.jm-desktop .library__tools .jm-btn {
+  padding: 0 20px;
+}
+
+.jm-desktop .library__list {
+  margin: 0 -10px;
+}
+
+.jm-desktop .library__list .app-scroll-area__box {
+  padding: 0 4px;
+}
+
+.jm-desktop .library__importing {
+  gap: 10px;
+}
+
+.jm-desktop .library__importing .jm-progress {
+  width: 140px;
+  height: 10px;
+}
+
+.jm-desktop .library__intro {
+  max-width: 560px;
+}
+
+.jm-desktop .library__import {
+  min-width: 240px;
+  font-size: 17px;
+}

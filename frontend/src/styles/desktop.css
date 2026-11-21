@@ -1,0 +1,508 @@
+/* The desktop layer, for windows at least 1200 × 640 (components/Fit.tsx puts .jm-desktop on the app
+   there and stops zooming). It is the frontend's conversion of docs/design/system/components/desktop.css:
+   the same values, keyed off the root class over the jm- markup instead of separate dk- markup.
+   Re-convert it when the system changes. This file holds what several screens share; each screen's
+   own desktop rules sit in its .css file, under .jm-desktop.
+
+   Only layout, type sizes and spacing change. See docs/design/system/components/Desktop/README.md. */
+
+/* ---------- Scaling inside the desktop layout ---------- */
+/* Sizes that differ between a narrow and a 1440px window ramp smoothly instead of stepping: --dk is
+   0 at 1000px wide and 1px at 1440px, so `clamp(A, A + (B - A) * var(--dk), C)` goes from A at 1000
+   through the mock-ups' B at 1440 and stops at C, its value at 1600 wide. The layer starts at 1200px,
+   partway up the ramp; A is where the ramp is anchored, and the narrowest size it was checked at. */
+.jm-desktop {
+  --dk: calc((100vw - 1000px) / 440);
+  /* Columns beside a 1fr column ramp with --dkf instead: the same ramp keyed to the width of the grid
+     they're in, 0 at 952px (the page column in a 1000px window) and 1px at 1280px (the column in the
+     mock-ups). They reach the mock-up value there and stay, so the 1fr column never shrinks as the
+     window grows; past 1280px the extra width all goes to it. Its 100% is the grid's width: use it only in
+     grid-template-columns and gap of a grid that spans the page column. */
+  --dkf: calc((100% - 952px) / 328);
+  scrollbar-color: var(--ink-subtle) transparent;
+}
+
+/* ---------- Page frame: one centred column, at most 1440px wide ---------- */
+.jm-desktop .jm-screen {
+  --frame: 1440px;
+  padding-top: clamp(28px, 28px + 12 * var(--dk), 44px);
+  padding-bottom: clamp(36px, 36px + 12 * var(--dk), 52px);
+  padding-left: max(clamp(24px, 24px + 32 * var(--dk), 68px), (var(--screen-w) - var(--frame)) / 2);
+  padding-right: max(clamp(24px, 24px + 32 * var(--dk), 68px), (var(--screen-w) - var(--frame)) / 2);
+  gap: 28px;
+}
+
+/* ---------- Header: 56px, bigger lettering ---------- */
+.jm-desktop .jm-header {
+  height: 56px;
+  gap: 16px;
+}
+
+.jm-desktop .jm-header .jm-logo {
+  font-size: 22px;
+  line-height: 30px;
+  padding: 2px 14px 3px;
+}
+
+.jm-desktop .jm-chip {
+  font-size: 15px;
+  line-height: 20px;
+  padding: 5px 12px;
+}
+
+.jm-desktop .jm-header__meta {
+  font-size: 16px;
+  line-height: 20px;
+  gap: 10px;
+}
+
+.jm-desktop .jm-header__meta i {
+  width: 5px;
+  height: 5px;
+}
+
+/* A sub-screen's name, beside the back arrow. */
+.jm-desktop .jm-header .jm-headline {
+  font-size: 28px;
+  line-height: 32px;
+}
+
+/* ---------- Text ---------- */
+.jm-desktop .jm-label {
+  font-size: 13px;
+  line-height: 16px;
+}
+
+.jm-desktop .jm-caption {
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.jm-desktop .jm-section {
+  font-size: 20px;
+  line-height: 24px;
+}
+
+.jm-desktop .jm-meta {
+  font-size: 16px;
+  line-height: 22px;
+}
+
+.jm-desktop .jm-time {
+  font-size: 15px;
+  line-height: 20px;
+}
+
+.jm-desktop .jm-token {
+  font-size: 16px;
+  gap: 4px;
+}
+
+.jm-desktop .jm-token::before {
+  width: 13px;
+  height: 13px;
+}
+
+.jm-desktop .jm-verdict {
+  height: 36px;
+  padding: 0 14px 0 10px;
+  font-size: 16px;
+}
+
+.jm-desktop .jm-verdict svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* The moment's sentence, also the one big line of a few other screens (dealing, joining). */
+.jm-desktop .jm-moment__headline {
+  font-size: clamp(30px, 30px + 6 * var(--dk), 38px);
+  line-height: clamp(36px, 36px + 6 * var(--dk), 44px);
+  /* There's room for a second line here, so a long sentence wraps once before it is cut. */
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.jm-desktop .jm-moment__sub {
+  font-size: 17px;
+  line-height: 24px;
+}
+
+/* ---------- Buttons: the base size first, then the variants that differ from it ---------- */
+.jm-desktop .jm-btn {
+  min-height: 50px;
+  padding: 0 20px;
+  font-size: 16px;
+}
+
+.jm-desktop .jm-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.jm-desktop .jm-btn .jm-token {
+  font-size: 16px;
+}
+
+.jm-desktop .jm-btn--icon {
+  width: 52px;
+  height: 52px;
+  padding: 0;
+}
+
+.jm-desktop .jm-btn--icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.jm-desktop .jm-btn--icon-sm {
+  width: 44px;
+  height: 44px;
+  min-height: 44px;
+  padding: 0;
+}
+
+.jm-desktop .jm-btn--icon-sm svg {
+  width: 18px;
+  height: 18px;
+}
+
+.jm-desktop .jm-btn--xl {
+  min-height: 68px;
+  font-size: 22px;
+}
+
+.jm-desktop .jm-btn--next {
+  min-height: 64px;
+  font-size: 21px;
+}
+
+.jm-desktop .jm-segmented .jm-btn--toggle {
+  padding: 0 14px;
+}
+
+.jm-desktop .jm-status {
+  height: 44px;
+  padding: 0 16px;
+  font-size: 16px;
+}
+
+.jm-desktop .jm-select {
+  height: 50px;
+  padding: 0 12px;
+  font-size: 16px;
+}
+
+/* ---------- Inputs ---------- */
+.jm-desktop .jm-input {
+  height: 60px;
+  padding: 0 18px;
+  font-size: 24px;
+}
+
+.jm-desktop .jm-input--code {
+  height: 64px;
+  font-size: 32px;
+}
+
+.jm-desktop .jm-search > input {
+  height: 50px;
+  padding-left: 44px;
+  font-size: 16px;
+}
+
+.jm-desktop .jm-search > svg {
+  left: 16px;
+  width: 20px;
+  height: 20px;
+}
+
+.jm-desktop .jm-qr {
+  padding: 12px;
+  border-radius: 14px;
+}
+
+/* ---------- Rows ---------- */
+.jm-desktop .jm-setting {
+  gap: 16px;
+  padding: 16px 0;
+}
+
+.jm-desktop .jm-setting__value {
+  font-size: 18px;
+  line-height: 24px;
+}
+
+.jm-desktop .jm-player {
+  gap: 14px;
+  padding: 0 6px 0 14px;
+  border-radius: 14px;
+}
+
+.jm-desktop .jm-player--list {
+  height: 64px;
+}
+
+.jm-desktop .jm-player .jm-avatar {
+  width: 40px;
+  height: 40px;
+  font-size: 16px;
+}
+
+.jm-desktop .jm-player__name {
+  font-size: 18px;
+  line-height: 22px;
+}
+
+.jm-desktop .jm-player__name small {
+  font-size: 14px;
+  line-height: 18px;
+}
+
+.jm-desktop .jm-player .jm-btn--icon {
+  width: 50px;
+  height: 50px;
+}
+
+.jm-desktop .jm-option {
+  min-height: 64px;
+  gap: 16px;
+  padding: 0 18px;
+  border-radius: 14px;
+}
+
+.jm-desktop .jm-option > svg {
+  width: 26px;
+  height: 26px;
+}
+
+.jm-desktop .jm-option__dot {
+  width: 24px;
+  height: 24px;
+}
+
+.jm-desktop .app-option {
+  border-radius: 14px;
+}
+
+.jm-desktop .app-option__more {
+  gap: 14px;
+  padding: 0 18px 14px 60px;
+}
+
+.jm-desktop .jm-check-row {
+  min-height: 64px;
+  gap: 16px;
+  padding: 6px 14px;
+  border-radius: 14px;
+}
+
+.jm-desktop .jm-check {
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+}
+
+.jm-desktop .jm-check:checked::after {
+  width: 12px;
+  height: 6px;
+}
+
+.jm-desktop .app-check-row__name {
+  font-size: 18px;
+  line-height: 23px;
+}
+
+.jm-desktop .jm-check-row__count {
+  font-size: 16px;
+}
+
+.jm-desktop .jm-stepper {
+  gap: 8px;
+}
+
+.jm-desktop .jm-stepper__value {
+  min-width: 56px;
+  font-size: 28px;
+}
+
+.jm-desktop .app-scroll-area__bar {
+  width: 6px;
+}
+
+/* ---------- Cards at desktop size: the timeline and the dealt cards ---------- */
+.jm-desktop .jm-board,
+.jm-desktop .dealing__players {
+  --card-w: 136px;
+  --card-h: 132px;
+  --gap-w: 30px;
+}
+
+.jm-desktop .jm-board .jm-card,
+.jm-desktop .dealing__players .jm-card {
+  padding: 10px 12px;
+  border-radius: 14px;
+}
+
+.jm-desktop .jm-board .jm-card__year,
+.jm-desktop .dealing__players .jm-card__year {
+  font-size: 32px;
+  line-height: 32px;
+}
+
+.jm-desktop .jm-board .jm-card__title,
+.jm-desktop .dealing__players .jm-card__title {
+  margin-top: 6px;
+  font-size: 16px;
+  line-height: 19px;
+}
+
+.jm-desktop .jm-board .jm-card__artist,
+.jm-desktop .dealing__players .jm-card__artist {
+  font-size: 14px;
+  line-height: 17px;
+}
+
+/* ---------- Pop-ups: centred, wider, never full screen ---------- */
+.jm-desktop .jm-dialog {
+  width: 480px;
+  max-width: calc(100% - 96px);
+  max-height: calc(100% - 96px);
+  padding: 26px 32px 32px;
+  gap: 16px;
+  border-radius: 22px;
+}
+
+/* The scoreboard: up to 980px wide, centred like the others instead of filling the screen. */
+.jm-desktop .jm-dialog--wide {
+  left: 50%;
+  top: 50%;
+  right: auto;
+  bottom: auto;
+  transform: translate(-50%, -50%);
+  width: min(980px, calc(100% - 96px));
+  overflow: hidden;
+}
+
+.jm-desktop .jm-dialog__head {
+  gap: 14px;
+}
+
+.jm-desktop .jm-dialog .jm-headline {
+  font-size: 28px;
+  line-height: 32px;
+}
+
+.jm-desktop .jm-dialog .jm-caption {
+  font-size: 15px;
+  line-height: 20px;
+}
+
+.jm-desktop .jm-dialog__head > .jm-btn--icon {
+  margin: -8px -10px -8px 0;
+}
+
+.jm-desktop .jm-dialog .jm-setting {
+  gap: 14px;
+}
+
+.jm-desktop .app-name-dialog {
+  gap: 14px;
+}
+
+.jm-desktop .app-name-dialog__name {
+  gap: 14px;
+}
+
+.jm-desktop .app-name-dialog__name .jm-input {
+  height: 56px;
+}
+
+.jm-desktop .app-avatar--xl {
+  width: 52px;
+  height: 52px;
+  font-size: 20px;
+}
+
+/* ---------- Toast ---------- */
+.jm-desktop .app-toast-dock {
+  bottom: 32px;
+}
+
+.jm-desktop .jm-toast {
+  min-height: 60px;
+  gap: 12px;
+  padding: 8px 20px 8px 10px;
+  font-size: 16px;
+  line-height: 22px;
+}
+
+.jm-desktop .jm-toast--action {
+  padding: 6px 6px 6px 10px;
+}
+
+.jm-desktop .jm-toast__badge {
+  width: 38px;
+  height: 38px;
+}
+
+.jm-desktop .jm-toast__badge svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* ---------- Waiting screens ---------- */
+.jm-desktop .app-waiting {
+  gap: 24px;
+}
+
+/* ---------- Cover screens (components/CoverScreen.tsx): Home, the sign-in error, a room that's gone ---------- */
+/* The art and the panel, at most 1180px wide, centred both ways. */
+.jm-desktop .jm-screen.app-cover {
+  --frame: 1180px;
+  /* Keyed to the cover's own width, 952px to 1180px, like --dkf (see above). */
+  grid-template-columns: minmax(0, 1fr) clamp(380px, 380px + 40 * (100% - 952px) / 228, 420px);
+  gap: clamp(48px, 48px + 40 * (100% - 952px) / 228, 88px);
+  padding-top: 48px;
+  padding-bottom: 48px;
+}
+
+.jm-desktop .app-cover__hero {
+  height: min(560px, var(--screen-h) - 96px);
+}
+
+.jm-desktop .app-cover__logo.jm-logo--xl {
+  left: 8px;
+  top: 8px;
+  font-size: 44px;
+  line-height: 54px;
+  padding: 4px 28px 5px;
+}
+
+.jm-desktop .app-cover__slogan {
+  left: 18px;
+  top: 112px;
+  max-width: 380px;
+  font-size: 26px;
+  line-height: 34px;
+  letter-spacing: -0.015em;
+}
+
+.jm-desktop .app-cover__panel {
+  gap: 14px;
+  padding: 32px 36px 34px;
+  border-radius: 22px;
+  box-shadow: var(--shadow-sticker-lg);
+}
+
+.jm-desktop .app-cover__panel .app-cover__big-btn {
+  min-height: 56px;
+  font-size: 17px;
+}
+
+.jm-desktop .app-cover__panel .app-cover__error-head {
+  font-size: 26px;
+  line-height: 32px;
+}

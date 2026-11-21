@@ -9,7 +9,7 @@ import './Standings.css'
 
 /** The full scoreboard: progress to the goal, tokens, and each timeline in short form. */
 export default function Standings() {
-  const { room, you, player, isLocal, close } = useRoomTools()
+  const { room, you, player, isLocal, isAway, close } = useRoomTools()
   const game = room.game
   if (!game) return null
   const goal = room.settings.cards_to_win
@@ -46,11 +46,13 @@ export default function Standings() {
           return (
             <li
               key={p.id}
-              className={
-                p.id === game.active
-                  ? 'standings__grid standings__row standings__row--turn'
-                  : 'standings__grid standings__row'
-              }
+              className={[
+                'standings__grid standings__row',
+                p.id === game.active && 'standings__row--turn',
+                isAway(p.id) && 'standings__row--away',
+              ]
+                .filter(Boolean)
+                .join(' ')}
             >
               <div className="standings__who">
                 <Avatar player={who} size="lg" />

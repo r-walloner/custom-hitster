@@ -13,7 +13,8 @@
   display: none;
 }
 
-@media (orientation: portrait) {
+/* Only touch screens are asked to turn; a narrow window on a computer shows the phone layout. */
+@media (orientation: portrait) and (pointer: coarse) {
   .app-fit__stage {
     display: none;
   }

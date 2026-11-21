@@ -70,3 +70,60 @@
 .join__you .jm-player__name {
   color: var(--ink-muted);
 }
+
+/* ---------- Desktop (styles/desktop.css): laid out like the lobby ---------- */
+.jm-desktop .join {
+  grid-template-columns: minmax(0, 1fr) clamp(300px, 300px + 100 * var(--dkf), 400px);
+  gap: clamp(20px, 20px + 12 * var(--dkf), 32px);
+  padding: 0;
+}
+
+.jm-desktop .join__panel {
+  padding: 24px 26px 26px;
+  border-radius: 22px;
+  gap: 14px;
+}
+
+.jm-desktop .join__panel .join__name {
+  height: 64px;
+  padding: 0 20px;
+  font-size: 28px;
+}
+
+.jm-desktop .join__pair {
+  gap: 12px;
+}
+
+.jm-desktop .join__pair .jm-btn {
+  min-height: 56px;
+  font-size: 17px;
+}
+
+.jm-desktop .join__table {
+  gap: 10px;
+}
+
+.jm-desktop .join__table .jm-section {
+  margin-bottom: 4px;
+}
+
+.jm-desktop .join__table .jm-player--list {
+  height: 64px;
+  gap: 14px;
+  padding: 0 14px;
+}
+
+.jm-desktop .join__table .jm-avatar {
+  width: 40px;
+  height: 40px;
+  font-size: 16px;
+}
+
+/* The panel keeps its own height instead of stretching down a tall window. */
+.jm-desktop .join__panel {
+  align-self: start;
+}
+
+.jm-desktop .join__pair {
+  margin-top: 14px;
+}

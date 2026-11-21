@@ -33,7 +33,7 @@ export default function Library({ onBack, backLabel }: LibraryProps) {
     pick(changes).catch(() => setProblem("Changing what goes in the deck didn't work. Try again."))
 
   return (
-    <Screen>
+    <Screen className="library__screen">
       <BackHeader onBack={onBack} backLabel={backLabel} title="Your songs">
         {library?.refreshed_at && (
           <span className="jm-caption">Imported {ago(library.refreshed_at)}</span>

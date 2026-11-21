@@ -72,3 +72,80 @@
 .standings__row .jm-token {
   font-size: 14px;
 }
+
+/* ---------- Desktop (styles/desktop.css) ---------- */
+.jm-desktop .jm-dialog.standings {
+  padding: 26px 32px 32px;
+  gap: 16px;
+}
+
+/* The pop-up stops growing in a 1076px window (980px wide), so its columns finish their ramp there
+   (76px of window is 0.173 of --dk): the timeline column never shrinks as the window grows. */
+.jm-desktop .standings__grid {
+  grid-template-columns:
+    clamp(180px, 180px + 231 * var(--dk), 220px) clamp(160px, 160px + 289 * var(--dk), 210px)
+    clamp(56px, 56px + 46 * var(--dk), 64px) minmax(0, 1fr);
+  gap: clamp(14px, 14px + 35 * var(--dk), 20px);
+}
+
+.jm-desktop .standings__cols {
+  padding: 0 18px;
+}
+
+.jm-desktop .standings__rows {
+  gap: 8px;
+}
+
+.jm-desktop .standings__row {
+  min-height: 68px;
+  padding: 10px 16px;
+  border-radius: 14px;
+}
+
+.jm-desktop .standings__row--turn {
+  box-shadow: var(--shadow-sticker-sm);
+}
+
+.jm-desktop .standings__who {
+  gap: 12px;
+}
+
+.jm-desktop .standings__row .app-avatar--lg {
+  width: 40px;
+  height: 40px;
+  font-size: 16px;
+}
+
+.jm-desktop .standings__row .jm-player__name small {
+  font-size: 13px;
+  line-height: 16px;
+}
+
+.jm-desktop .standings__cards {
+  gap: 12px;
+  font-size: 18px;
+}
+
+.jm-desktop .standings__cards .jm-progress {
+  height: 14px;
+}
+
+.jm-desktop .standings__row .jm-token {
+  font-size: 16px;
+}
+
+.jm-desktop .standings__row .app-year-chips {
+  gap: 6px;
+}
+
+.jm-desktop .standings__row .jm-year-chip {
+  padding: 4px 9px;
+  font-size: 15px;
+  line-height: 18px;
+  border-radius: 10px;
+}
+
+/* Reconnecting: the dashed avatar, as in the player list. */
+.jm-desktop .standings__row--away .jm-avatar {
+  border-style: dashed;
+}

@@ -3,6 +3,7 @@ import { CoverArt } from './Hero.tsx'
 import type { FloatingCard } from './Hero.tsx'
 import { Logo } from './Logo.tsx'
 import { Screen } from './Screen.tsx'
+import { useDesktop } from './useDesktop.ts'
 
 const CARDS: FloatingCard[] = [
   {
@@ -33,17 +34,52 @@ const CARDS: FloatingCard[] = [
   { left: 270, top: 208, rotate: -4, scale: 0.78, delay: -0.4, front: true },
 ]
 
+/** The same art in the desktop's bigger box. */
+const DESKTOP_CARDS: FloatingCard[] = [
+  {
+    song: { year: 1994, title: 'Zombie', artist: 'The Cranberries' },
+    left: 420,
+    top: 64,
+    rotate: 7,
+    scale: 1.15,
+    delay: -1.2,
+  },
+  {
+    song: { year: 2010, title: 'Dancing On My Own', artist: 'Robyn' },
+    left: 24,
+    top: 404,
+    rotate: -11,
+    scale: 0.98,
+    delay: -2.4,
+  },
+  {
+    song: { year: 1983, title: 'Sweet Dreams', artist: 'Eurythmics' },
+    left: 236,
+    top: 430,
+    rotate: 9,
+    scale: 0.86,
+    delay: -3.1,
+    duration: 4.4,
+  },
+  { left: 420, top: 330, rotate: -4, scale: 1.22, delay: -0.4, front: true },
+]
+
 /**
  * A cover screen: the cover art on the left, one panel on the right. Home, the sign-in error and
  * a missing room use it.
  */
 export function CoverScreen({ children }: { children: ReactNode }) {
+  const desktop = useDesktop()
   return (
     <Screen className="app-cover">
       <CoverArt
         className="app-cover__hero"
-        tape={{ left: 44, top: 142, width: 200, progress: 0.38 }}
-        cards={CARDS}
+        tape={
+          desktop
+            ? { left: 64, top: 206, width: 300, progress: 0.38 }
+            : { left: 44, top: 142, width: 200, progress: 0.38 }
+        }
+        cards={desktop ? DESKTOP_CARDS : CARDS}
       >
         <Logo size="xl" className="app-cover__logo" />
         <p className="app-cover__slogan">The music game built from your own playlists.</p>

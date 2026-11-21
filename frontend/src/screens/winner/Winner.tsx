@@ -4,6 +4,7 @@ import { CoverArt } from '../../components/Hero.tsx'
 import type { FloatingCard } from '../../components/Hero.tsx'
 import { InfoHeader } from '../../components/InfoHeader.tsx'
 import { Screen } from '../../components/Screen.tsx'
+import { useDesktop } from '../../components/useDesktop.ts'
 import { useRoomTools } from '../room/context.ts'
 import { spread, winnerSummary } from './summary.ts'
 import './Winner.css'
@@ -26,9 +27,24 @@ const FRONT: Omit<FloatingCard, 'song'> = {
   front: true,
 }
 
+// The same places in the desktop's bigger art box.
+const DESKTOP_PLACES: Omit<FloatingCard, 'song'>[] = [
+  { left: 330, top: 20, rotate: -14, scale: 0.95, delay: -1.2, duration: 3.1 },
+  { left: 500, top: 6, rotate: 11, scale: 1.05, delay: -2.6, duration: 4.2 },
+  { left: 650, top: 80, rotate: -3, scale: 0.9, delay: -0.6, duration: 3.7 },
+  { left: 530, top: 176, rotate: 17, scale: 0.95, delay: -1.9, duration: 4.8 },
+]
+const DESKTOP_FRONT: Omit<FloatingCard, 'song'> = {
+  ...FRONT,
+  left: 370,
+  top: 170,
+  scale: 1.12,
+}
+
 /** The winner: the one big line, the near misses, the final scoreboard. */
 export default function Winner() {
   const { room, you, host, name, player, send } = useRoomTools()
+  const desktop = useDesktop()
   const game = room.game
   if (!game) return null
 
@@ -37,13 +53,15 @@ export default function Winner() {
     room.settings.cards_to_win,
     name,
   )
+  const places = desktop ? DESKTOP_PLACES : PLACES
+  const front = desktop ? DESKTOP_FRONT : FRONT
   const cards: FloatingCard[] = [
-    ...spread(rest, PLACES.length).map((song, i) => ({ ...PLACES[i], song })),
-    ...(deciding ? [{ ...FRONT, song: deciding }] : []),
+    ...spread(rest, places.length).map((song, i) => ({ ...places[i], song })),
+    ...(deciding ? [{ ...front, song: deciding }] : []),
   ]
 
   return (
-    <Screen>
+    <Screen className="winner__screen">
       <InfoHeader
         code={room.code}
         host={host?.name}
@@ -62,7 +80,11 @@ export default function Winner() {
           </div>
           <CoverArt
             className="winner__art"
-            tape={{ left: 22, top: 14, width: 170, progress: 0.9, year: deciding?.year }}
+            tape={
+              desktop
+                ? { left: 24, top: 48, width: 260, progress: 0.9, year: deciding?.year }
+                : { left: 22, top: 14, width: 170, progress: 0.9, year: deciding?.year }
+            }
             cards={cards}
           />
           <div className="winner__actions">

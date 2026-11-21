@@ -90,3 +90,49 @@
 .home__delete-actions {
   margin-top: 6px;
 }
+
+/* ---------- Desktop (styles/desktop.css) ---------- */
+.jm-desktop .home__join {
+  gap: 10px;
+}
+
+.jm-desktop .home__join .jm-btn {
+  min-height: 64px;
+  padding: 0 26px;
+  font-size: 19px;
+}
+
+.jm-desktop .home__or {
+  gap: 14px;
+  margin: 6px 0;
+}
+
+.jm-desktop .app-cover__panel.home--in {
+  gap: 14px;
+}
+
+.jm-desktop .home__you {
+  gap: 14px;
+  padding-bottom: 14px;
+}
+
+.jm-desktop .home__you .app-avatar--lg {
+  width: 48px;
+  height: 48px;
+  font-size: 19px;
+}
+
+.jm-desktop .home__name {
+  font-size: 19px;
+}
+
+.jm-desktop .home__you .jm-btn {
+  min-height: 48px;
+  padding: 0 18px;
+  font-size: 15px;
+}
+
+.jm-desktop .home__songs {
+  justify-content: flex-start;
+  padding: 0 20px;
+}

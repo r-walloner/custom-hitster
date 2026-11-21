@@ -111,3 +111,31 @@
     animation: none;
   }
 }
+
+/* ---------- Desktop (styles/desktop.css): the cards at the timeline's desktop size ---------- */
+.jm-desktop .dealing {
+  gap: 32px;
+}
+
+.jm-desktop .dealing__players {
+  gap: 24px 28px;
+  max-width: calc(var(--columns) * var(--column) + (var(--columns) - 1) * 28px);
+}
+
+.jm-desktop .dealing__player {
+  gap: 12px;
+}
+
+.jm-desktop .dealing__name {
+  gap: 10px;
+}
+
+.jm-desktop .dealing__name .jm-avatar {
+  width: 36px;
+  height: 36px;
+  font-size: 15px;
+}
+
+.jm-desktop .dealing__waiting {
+  border-radius: 14px;
+}

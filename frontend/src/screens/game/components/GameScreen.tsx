@@ -5,6 +5,7 @@ import { Logo } from '../../../components/Logo.tsx'
 import { Header, HeaderMeta, Screen, Spacer } from '../../../components/Screen.tsx'
 import { useRoomTools } from '../../room/context.ts'
 import { MAX_TOKENS } from '../rules.ts'
+import { scoreStatus } from '../scores.ts'
 import type { Turn } from '../turn.ts'
 import { LiveTape } from './LiveTape.tsx'
 import { MiniScoreboard } from './MiniScoreboard.tsx'
@@ -21,16 +22,26 @@ interface GameScreenProps {
 
 /** The game screen: header, the top band (tape, moment panel, scoreboard), the board below. */
 export function GameScreen({ turn, panel, board, className }: GameScreenProps) {
-  const { room, you, send, open, player, songStart } = useRoomTools()
+  const { room, you, send, open, player, songStart, canActFor, isLocal, isAway } = useRoomTools()
   const { game } = turn
   // Only the host: the player on turn could otherwise cut a challenge short.
   const revealNow = you.is_host && (game.phase === 'challenging' || game.phase === 'picking')
   // Named the song pays out when the next turn starts; show the token already.
   const bonus = (id: string) => (game.phase === 'revealed' && game.named && id === game.active ? 1 : 0)
+  const facts = {
+    game,
+    you: you.player_id,
+    acting: canActFor(game.active),
+    isLocal,
+    isAway,
+    most: Math.max(...game.players.map((p) => p.timeline.length)),
+  }
   const scores = game.players.map((p) => ({
     player: player(p.id),
     cards: p.timeline.length,
     tokens: Math.min(MAX_TOKENS, p.tokens + bonus(p.id)),
+    status: scoreStatus({ id: p.id, cards: p.timeline.length }, facts),
+    away: isAway(p.id),
   }))
 
   return (

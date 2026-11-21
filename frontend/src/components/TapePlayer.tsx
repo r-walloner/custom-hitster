@@ -66,7 +66,7 @@ export function Tape({
             viewBox="0 0 300 190"
             width={width}
             height={Math.round((width * 190) / 300)}
-            style={{ width }}
+            style={{ '--tape-w': `${width}px` } as CSSProperties}
             {...a11y}
           >
             <rect

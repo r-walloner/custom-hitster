@@ -8,3 +8,109 @@ button.app-scoreboard {
   text-align: inherit;
   cursor: pointer;
 }
+
+/* The head row and the names only show on desktop. */
+.app-scoreboard__head,
+.app-scoreboard__name {
+  display: none;
+}
+
+/* ---------- Desktop (styles/desktop.css): the player list ---------- */
+/* Full name, a status line, cards and tokens, in seat order. The whole list is one button that
+   opens the full scoreboard; the rows have no hover of their own. More players than fit the band
+   scroll. */
+.jm-desktop .jm-scoreboard {
+  width: auto;
+  min-height: 0;
+  gap: 8px;
+  justify-content: flex-start;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.jm-desktop .app-scoreboard__head,
+.jm-desktop .jm-scoreboard__row {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr) 44px 48px;
+  align-items: center;
+  column-gap: 12px;
+  padding: 0 14px 0 8px;
+}
+
+.jm-desktop .app-scoreboard__head {
+  flex: 0 0 auto;
+}
+
+.jm-desktop .app-scoreboard__head .jm-label {
+  color: var(--ink-muted);
+}
+
+.jm-desktop .app-scoreboard__head .jm-label:nth-child(n + 3) {
+  text-align: right;
+}
+
+.jm-desktop .jm-scoreboard__row {
+  height: 54px;
+  border-radius: 14px;
+}
+
+.jm-desktop .jm-scoreboard__row .jm-avatar {
+  width: 36px;
+  height: 36px;
+  font-size: 15px;
+}
+
+.jm-desktop .app-scoreboard__row--away .jm-avatar {
+  border-style: dashed;
+}
+
+.jm-desktop .app-scoreboard__name {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  font: 800 18px/21px var(--font-ui);
+  white-space: nowrap;
+}
+
+.jm-desktop .app-scoreboard__name > span,
+.jm-desktop .app-scoreboard__name small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.jm-desktop .app-scoreboard__name small {
+  font: 600 13px/16px var(--font-ui);
+  color: var(--ink-muted);
+}
+
+.jm-desktop .jm-scoreboard__score {
+  font-size: 24px;
+  text-align: right;
+}
+
+.jm-desktop .jm-scoreboard__row .jm-token {
+  justify-content: flex-end;
+}
+
+.jm-desktop .app-scoreboard__head .jm-label {
+  font-size: 11px;
+  line-height: 14px;
+}
+
+/* Below 1440px wide the list is compact, as on the phone: avatar, cards and tokens, no head row and
+   no names, so the moment panel beside it gets the room (GameScreen.css). */
+@media (max-width: 1439.98px) {
+  .jm-desktop .app-scoreboard__head,
+  .jm-desktop .app-scoreboard__name {
+    display: none;
+  }
+
+  .jm-desktop .jm-scoreboard__row {
+    grid-template-columns: 36px minmax(0, 1fr) auto;
+  }
+
+  /* The card count sits in the middle of the space between the avatar and the tokens. */
+  .jm-desktop .jm-scoreboard__score {
+    text-align: center;
+  }
+}

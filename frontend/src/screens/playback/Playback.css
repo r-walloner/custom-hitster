@@ -71,3 +71,40 @@
   align-self: flex-start;
   margin-top: 4px;
 }
+
+/* ---------- Desktop (styles/desktop.css): a sub-screen like Your songs ---------- */
+.jm-desktop .playback__done {
+  min-width: 120px;
+}
+
+.jm-desktop .playback {
+  column-gap: clamp(32px, 32px + 24 * var(--dk), 65px);
+  padding-top: 0;
+}
+
+.jm-desktop .playback__column {
+  gap: 12px;
+}
+
+.jm-desktop .playback__column .jm-label {
+  margin-bottom: 4px;
+}
+
+.jm-desktop .playback .jm-option {
+  min-height: 72px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.jm-desktop .playback .jm-player__name {
+  gap: 3px;
+}
+
+.jm-desktop .playback__devices .app-scroll-area__box {
+  gap: 10px;
+}
+
+.jm-desktop .playback__test {
+  width: 112px;
+  min-height: 44px;
+}

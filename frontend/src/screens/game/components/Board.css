@@ -11,3 +11,107 @@
 .app-board__count {
   font-size: 12px;
 }
+
+/* An empty slot keeps a gap's place on the desktop grid; the phone has no use for it. */
+.app-board__slot {
+  display: none;
+}
+
+/* ---------- Desktop (styles/desktop.css): the timeline wraps instead of scrolling ---------- */
+.jm-desktop .jm-board {
+  gap: 14px;
+}
+
+.jm-desktop .jm-board__head {
+  gap: 12px;
+}
+
+.jm-desktop .app-board__count {
+  font-size: 16px;
+}
+
+/* A fixed grid of slot + card columns, as many as fit (seven cards a row at 1280px). Every row
+   starts with a slot, so cards line up above and below each other. */
+.jm-desktop .jm-board__row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 30px 136px);
+  align-content: start;
+  align-items: center;
+  gap: 20px 8px;
+  padding: 6px 4px 8px;
+}
+
+/* A window too short for every row: the row scrolls down (marks at its right edge may then be
+   cut off, so it only scrolls when it must). */
+.jm-desktop .jm-board__row.app-board__row--tall {
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.jm-desktop .jm-board__row.app-board__row--marks {
+  row-gap: 32px;
+  padding-top: 20px;
+}
+
+.jm-desktop .app-board__slot {
+  display: block;
+  width: 30px;
+  height: 132px;
+}
+
+.jm-desktop .jm-board .jm-card--mystery {
+  gap: 6px;
+  margin: 0;
+}
+
+.jm-desktop .jm-board .jm-card--mystery .jm-card__year {
+  font-size: 34px;
+}
+
+.jm-desktop .jm-board .jm-card--mystery .jm-card__title {
+  margin: 0;
+  font-size: 15px;
+}
+
+.jm-desktop .jm-board .jm-gap svg {
+  width: 18px;
+  height: 18px;
+}
+
+.jm-desktop .jm-board .jm-mark {
+  top: -17px;
+  height: 32px;
+  padding: 0 11px 0 8px;
+  gap: 4px;
+  font-size: 16px;
+}
+
+.jm-desktop .jm-board .jm-mark svg {
+  width: 15px;
+  height: 15px;
+}
+
+.jm-desktop .jm-board .jm-mark--right {
+  right: -10px;
+}
+
+/* A ✕ sits centred on the slot between two cards (the 8px gap and half the 30px slot). */
+.jm-desktop .jm-board .jm-mark--wrong {
+  right: -23px;
+}
+
+/* For the slot before the first card: mirrored, on that card's left. */
+.jm-desktop .jm-board .jm-mark.app-mark--before {
+  right: auto;
+  left: -23px;
+}
+
+.jm-desktop .jm-board .jm-mark--right.app-mark--before {
+  left: -10px;
+}
+
+/* The phone's sideways bar isn't needed: the row wraps. */
+.jm-desktop .jm-board__scrollbar {
+  display: none;
+}

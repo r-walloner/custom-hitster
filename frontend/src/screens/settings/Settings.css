@@ -45,3 +45,32 @@
 .settings__select {
   width: 172px;
 }
+
+/* ---------- Desktop (styles/desktop.css): a sub-screen like Your songs ---------- */
+/* The rows keep their own height at the top instead of stretching over a tall window. */
+.jm-desktop .settings__done {
+  min-width: 120px;
+}
+
+.jm-desktop .settings__grid {
+  flex: 0 0 auto;
+  column-gap: clamp(32px, 32px + 24 * var(--dk), 65px);
+}
+
+.jm-desktop .settings__grid .jm-setting {
+  gap: 16px;
+  min-height: 96px;
+  padding: 16px 0;
+}
+
+.jm-desktop .settings .jm-setting__text {
+  gap: 4px;
+}
+
+.jm-desktop .settings__value {
+  font-size: 28px;
+}
+
+.jm-desktop .settings__select {
+  width: 220px;
+}

@@ -61,7 +61,8 @@ npm create vite@latest frontend -- --template react-ts --no-interactive
   - `.tsx` files render; `.ts` files hold the logic, as pure functions over the state or hooks, with no JSX. Game rules the screens need ahead of the server are in `screens/game/rules.ts`.
   - Logic stays in the folder of the screen it serves; other folders import it from there. Only app-wide code sits at the top of `src/`.
   - `src/components/` never imports from `screens/` or `api/` and never reads the room context.
-- `frontend/src/styles/`: `tokens.css` and `jamster.css` are copies of `docs/design/system/tokens.css` and `components/bundle.css`; re-copy them when the system changes. `app.css` holds the app's own additions.
+- `frontend/src/styles/`: `tokens.css` and `jamster.css` are copies of `docs/design/system/tokens.css` and `components/bundle.css`; re-copy them when the system changes. `app.css` holds the app's own additions. `desktop.css` is the app's conversion of the system's `components/desktop.css`: the shared desktop rules, keyed off the `.jm-desktop` root class over the `jm-` markup.
+- Desktop layouts: `components/Fit.tsx` switches to them in a window at least 1200 × 640 (no zoom, `.jm-desktop` on the app; `useDesktop()` for the rare script that needs to know). Each screen's desktop rules go at the end of its own `.css`, under `.jm-desktop`; markup only desktop shows is rendered always and hidden on the phone. See `docs/design/system/components/Desktop/README.md`.
 - `docs/design/`: the design system and the screen mock-ups the frontend is built from.
 
 ## Rules

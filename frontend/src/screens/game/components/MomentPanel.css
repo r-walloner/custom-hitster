@@ -23,3 +23,30 @@
   margin-right: 58px;
   min-height: 31px;
 }
+
+/* Desktop (styles/desktop.css): the ring at the bigger panel's corner, and 64px; the first block
+   clears it (the ring, less the phase name and the gap). */
+.jm-desktop .game__moment-ring {
+  top: 18px;
+  right: 24px;
+}
+
+.jm-desktop .game__moment-ring .jm-ring {
+  width: 64px;
+  height: 64px;
+}
+
+.jm-desktop .game__moment-ring .jm-ring > span {
+  width: 46px;
+  height: 46px;
+  font-size: 22px;
+}
+
+.jm-desktop .game__moment--ring > .game__moment-ring + * {
+  margin-right: 80px;
+  min-height: 38px;
+}
+
+.jm-desktop .jm-moment.game__moment {
+  gap: 10px;
+}

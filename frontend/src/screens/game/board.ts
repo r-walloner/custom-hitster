@@ -69,6 +69,33 @@ export function pickingItems(cards: Song[], picks: Pick[], active?: ActivePick):
   return items
 }
 
+/** A row's item, or an empty slot that keeps a gap's place on the desktop grid. */
+export type GridItem = BoardItem | { kind: 'slot' }
+
+/**
+ * The row on the desktop's fixed grid of slot and card columns: slot, card, slot, card … slot.
+ * A gap fills a slot; where none is offered an empty slot keeps its place, and a pick takes a
+ * card column with a slot on each side. So cards line up across rows and nothing moves between
+ * phases: the revealed card lands where the pick was. The phone hides the empty slots.
+ */
+export function withSlots(items: BoardItem[]): GridItem[] {
+  const grid: GridItem[] = []
+  let slotNext = true
+  for (const item of items) {
+    if (item.kind === 'gap') {
+      if (!slotNext) grid.push({ kind: 'slot' })
+      grid.push(item)
+      slotNext = false
+      continue
+    }
+    if (slotNext) grid.push({ kind: 'slot' })
+    grid.push(item)
+    slotNext = true
+  }
+  if (slotNext) grid.push({ kind: 'slot' })
+  return grid
+}
+
 /** While challengers guess: the placement and the guesses already locked in, all done. */
 export function guessPicks(game: GameView, name: (id: string) => string): Pick[] {
   return [

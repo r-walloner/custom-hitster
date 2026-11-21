@@ -7,12 +7,16 @@ export interface Score {
   player: Player
   cards: number
   tokens: number
+  /** "Your turn, leading": shown under the name on desktop only. */
+  status: string
+  /** Reconnecting: a dashed avatar on desktop. */
+  away: boolean
 }
 
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`
 
-function rowLabel({ player, cards, tokens }: Score, onTurn: boolean) {
-  return `${player.name}${onTurn ? ', on turn' : ''}: ${plural(cards, 'card')}, ${plural(tokens, 'token')}`
+function rowLabel({ player, cards, tokens, status }: Score) {
+  return `${player.name}${status ? ` (${status})` : ''}: ${plural(cards, 'card')}, ${plural(tokens, 'token')}`
 }
 
 interface MiniScoreboardProps {
@@ -23,9 +27,13 @@ interface MiniScoreboardProps {
   onOpen: () => void
 }
 
-/** The mini scoreboard at the right end of the top band: initial, cards held, tokens. */
+/**
+ * The mini scoreboard at the right end of the top band: initial, cards held, tokens. In a desktop
+ * window at least 1440px wide it grows into a player list with a head row, full names and a status
+ * line; the phone and narrower desktop windows hide those.
+ */
 export function MiniScoreboard({ scores, turn, onOpen }: MiniScoreboardProps) {
-  const summary = scores.map((score) => rowLabel(score, score.player.id === turn)).join('. ')
+  const summary = scores.map(rowLabel).join('. ')
   return (
     <button
       type="button"
@@ -33,20 +41,30 @@ export function MiniScoreboard({ scores, turn, onOpen }: MiniScoreboardProps) {
       className="jm-scoreboard app-scoreboard"
       aria-label={`Scoreboard. ${summary}. Open the full scoreboard.`}
     >
-      {scores.map((score) => (
-        <span
-          key={score.player.id}
-          className={
-            score.player.id === turn
-              ? 'jm-scoreboard__row jm-scoreboard__row--turn'
-              : 'jm-scoreboard__row'
-          }
-        >
-          <Avatar player={score.player} />
-          <span className="jm-scoreboard__score">{score.cards}</span>
-          <span className="jm-token">{score.tokens}</span>
-        </span>
-      ))}
+      <span className="app-scoreboard__head" aria-hidden="true">
+        <span />
+        <span className="jm-label">Players</span>
+        <span className="jm-label">Cards</span>
+        <span className="jm-label">Tokens</span>
+      </span>
+      {scores.map((score) => {
+        const classes = [
+          'jm-scoreboard__row',
+          score.player.id === turn && 'jm-scoreboard__row--turn',
+          score.away && 'app-scoreboard__row--away',
+        ]
+        return (
+          <span key={score.player.id} className={classes.filter(Boolean).join(' ')}>
+            <Avatar player={score.player} />
+            <span className="app-scoreboard__name">
+              <span>{score.player.name}</span>
+              {score.status && <small>{score.status}</small>}
+            </span>
+            <span className="jm-scoreboard__score">{score.cards}</span>
+            <span className="jm-token">{score.tokens}</span>
+          </span>
+        )
+      })}
     </button>
   )
 }

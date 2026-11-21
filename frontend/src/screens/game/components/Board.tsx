@@ -2,7 +2,9 @@ import { useEffect, useRef } from 'react'
 import type { ReactNode } from 'react'
 import { Gap, PickCard, SongCard } from '../../../components/SongCard.tsx'
 import type { Song } from '../../../components/types.ts'
+import { useDesktop } from '../../../components/useDesktop.ts'
 import { useScrollBar } from '../../../components/useScrollBar.ts'
+import { withSlots } from '../board.ts'
 import { useWheelScrollsSideways } from '../../../components/useWheelScrollsSideways.ts'
 import './Board.css'
 
@@ -38,22 +40,37 @@ interface BoardProps {
  */
 export function Board({ owner, count, items, spaced, label }: BoardProps) {
   const row = useRef<HTMLDivElement>(null)
-  const scroll = useScrollBar(row, 'x')
+  // On desktop the row wraps instead of scrolling sideways; only a window too short for every row
+  // scrolls it down.
+  const desktop = useDesktop()
+  const x = useScrollBar(row, 'x')
+  const y = useScrollBar(row, 'y')
+  const scroll = desktop ? { ...x, overflows: false } : x
+  const tall = desktop && y.overflows
   useWheelScrollsSideways(row)
 
-  // Keep the pick being placed in the middle when it moves.
+  // Keep the pick being placed in the middle when it moves: sideways on the phone, and up or down
+  // on a desktop window too short for every row.
   useEffect(() => {
     const element = row.current
     const pick = element?.querySelector<HTMLElement>('.jm-card--mystery:not(.jm-card--pick-done)')
-    if (!element || !pick || element.scrollWidth <= element.clientWidth) return
-    const target = pick.offsetLeft + pick.offsetWidth / 2 - element.clientWidth / 2
-    element.scrollTo({ left: target, behavior: 'smooth' })
-  }, [items])
+    if (!element || !pick) return
+    if (!desktop && element.scrollWidth > element.clientWidth) {
+      const left = pick.offsetLeft + pick.offsetWidth / 2 - element.clientWidth / 2
+      element.scrollTo({ left, behavior: 'smooth' })
+    } else if (desktop && element.scrollHeight > element.clientHeight + 1) {
+      const box = element.getBoundingClientRect()
+      const card = pick.getBoundingClientRect()
+      const top = element.scrollTop + card.top - box.top + card.height / 2 - box.height / 2
+      element.scrollTo({ top, behavior: 'smooth' })
+    }
+  }, [items, desktop])
 
   const hasMarks = items.some((item) => item.kind === 'card' && item.mark !== undefined)
   const rowClasses = [
     'jm-board__row',
     scroll.overflows && 'jm-board__row--scroll',
+    tall && 'app-board__row--tall',
     spaced && 'app-board__row--spaced',
     hasMarks && 'app-board__row--marks',
   ]
@@ -70,8 +87,10 @@ export function Board({ owner, count, items, spaced, label }: BoardProps) {
         tabIndex={scroll.overflows ? 0 : undefined}
         aria-label={scroll.overflows ? 'Timeline, scrolls sideways' : undefined}
       >
-        {items.map((item, index) => {
+        {withSlots(items).map((item, index) => {
           switch (item.kind) {
+            case 'slot':
+              return <span key={`slot-${index}`} className="app-board__slot" aria-hidden="true" />
             case 'card':
               return (
                 <SongCard

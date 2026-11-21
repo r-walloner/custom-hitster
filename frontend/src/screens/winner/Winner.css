@@ -102,3 +102,103 @@
   font: 800 15px/1 var(--font-ui);
   font-variant-numeric: tabular-nums;
 }
+
+/* ---------- Desktop (styles/desktop.css) ---------- */
+.jm-desktop .jm-screen.winner__screen {
+  gap: 32px;
+}
+
+.jm-desktop .winner {
+  grid-template-columns: minmax(0, 1fr) clamp(360px, 360px + 60 * var(--dkf), 420px);
+  gap: clamp(32px, 32px + 24 * var(--dkf), 56px);
+  padding-top: 0;
+}
+
+.jm-desktop .winner__main {
+  gap: 18px;
+}
+
+.jm-desktop .winner__text {
+  gap: 14px;
+  padding: 8px 0 0 4px;
+}
+
+.jm-desktop .winner__big.jm-big-moment {
+  font-size: clamp(48px, 48px + 16 * var(--dk), 70px);
+  line-height: clamp(56px, 56px + 16 * var(--dk), 78px);
+}
+
+.jm-desktop .winner__sentence {
+  max-width: 560px;
+  font-size: 22px;
+  line-height: 30px;
+  letter-spacing: -0.015em;
+}
+
+/* The art sits centred in whatever room is left between the line and the buttons. */
+.jm-desktop .winner__art {
+  flex: 0 0 330px;
+  margin-block: auto;
+}
+
+.jm-desktop .winner__actions {
+  gap: 14px;
+  align-items: center;
+}
+
+.jm-desktop .winner__actions .winner__again {
+  flex: 0 0 280px;
+}
+
+.jm-desktop .winner__lobby {
+  min-height: 56px;
+  padding: 0 24px;
+  font-size: 17px;
+}
+
+.jm-desktop .winner__actions .jm-status {
+  height: 56px;
+  padding: 0 24px;
+  font-size: 17px;
+}
+
+.jm-desktop .winner__final {
+  padding: 24px 26px 26px;
+  border-radius: 22px;
+  gap: 10px;
+}
+
+.jm-desktop .winner__final > .jm-label {
+  margin: 0 0 4px;
+}
+
+.jm-desktop .winner__rows {
+  gap: 10px;
+}
+
+.jm-desktop .winner__row {
+  gap: 14px;
+  height: 64px;
+  padding: 0 16px;
+  border-radius: 14px;
+}
+
+.jm-desktop .winner__row .app-avatar--lg {
+  width: 40px;
+  height: 40px;
+  font-size: 16px;
+}
+
+.jm-desktop .winner__place {
+  width: 20px;
+  font-size: 20px;
+}
+
+.jm-desktop .winner__cards {
+  font-size: 20px;
+}
+
+.jm-desktop .winner__row .jm-token {
+  width: 40px;
+  justify-content: flex-end;
+}
