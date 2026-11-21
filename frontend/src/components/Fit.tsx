@@ -39,8 +39,7 @@ export function Fit() {
       </div>
       <div className="app-rotate">
         <Logo size="xl" />
-        <p className="jm-headline">Turn your phone sideways.</p>
-        <p className="jm-meta">Jamster is played in landscape.</p>
+        <p className="jm-headline app-rotate__line">Turn your phone sideways.</p>
       </div>
     </div>
   )

@@ -24,10 +24,16 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: var(--space-16);
+    gap: 32px;
     padding: var(--space-16);
     box-sizing: border-box;
     text-align: center;
+  }
+
+  /* The line leans with the logo above it. */
+  .app-rotate__line {
+    margin: 0;
+    transform: rotate(var(--tilt));
   }
 }
 
