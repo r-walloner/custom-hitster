@@ -8,22 +8,21 @@ interface BuyButtonProps {
   turn: Pick<Turn, 'game' | 'loading' | 'draw'>
   /** Who buys. */
   id: string
-  label?: string
   size?: 'xl'
 }
 
 /** The player on turn trades 3 tokens for the card in play. Greyed out if they can't. */
-export function BuyButton({ turn, id, label, size }: BuyButtonProps) {
+export function BuyButton({ turn, id, size }: BuyButtonProps) {
   const { as, canActFor } = useRoomTools()
   if (!canActFor(id) || !buyable(turn.game, id)) return null
   return (
     <Button
       size={size}
       disabled={!canBuy(turn.game, id, turn.loading)}
-      aria-label={`${label ?? 'Buy this card'} for ${BUY_COST} tokens`}
+      aria-label={`Buy this card for ${BUY_COST} tokens`}
       onClick={() => turn.draw({ type: 'buy', ...as(id) })}
     >
-      {label ?? 'Buy this card'} <Token>{BUY_COST}</Token>
+      Buy this card <Token>{BUY_COST}</Token>
     </Button>
   )
 }
