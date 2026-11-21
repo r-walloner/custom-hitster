@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Jamster – home, desktop</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/jamster/tokens.css">
+<link rel="stylesheet" href="ds/jamster/components/bundle.css">
+<link rel="stylesheet" href="ds/jamster/components/desktop.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&amp;family=Bricolage+Grotesque:opsz,wght@12..96,400..800&amp;family=DM+Mono:wght@500&amp;display=swap">
+<style>
+body{margin:0}
+.dk-cover{width:100%;max-width:1180px;display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:88px;align-items:center}
+.dk-cover__art{position:relative;height:560px}
+.dk-cover__art .jm-logo--xl{position:absolute;left:8px;top:8px;z-index:3;font-size:44px;line-height:54px;padding:4px 28px 5px}
+.dk-cover__slogan{position:absolute;left:18px;top:112px;z-index:3;margin:0;max-width:380px;font:800 26px/34px var(--font-ui);letter-spacing:-0.015em;transform:rotate(var(--tilt));transform-origin:left top}
+.dk-cover__art .jm-tape__shell>svg{width:300px}
+.dk-panel{display:flex;flex-direction:column;gap:14px;padding:32px 36px 34px;border-radius:22px;box-shadow:var(--shadow-sticker-lg)}
+.dk-panel p{margin:0}
+.dk-panel .jm-label{font-size:13px;line-height:16px}
+.dk-panel .jm-caption{font-size:14px;line-height:20px}
+.dk-panel .jm-input--code{height:64px;font-size:32px}
+.dk-panel .dk-join{min-height:64px;padding:0 26px;font-size:19px;font-weight:800}
+.dk-panel .dk-big{min-height:56px;font-size:17px}
+.dk-panel .jm-btn svg{width:20px;height:20px}
+.dk-panel .jm-avatar--xl{width:48px;height:48px;font-size:19px}
+@media (max-width:1100px){.dk-cover{grid-template-columns:minmax(0,1fr) 380px;gap:48px}}
+@media (max-width:900px){.dk-cover{grid-template-columns:minmax(0,1fr)}.dk-cover__art{height:420px}}
+</style>
+</helmet>
+<main class="dk-screen dk-screen--center">
+<div class="dk-cover">
+  <div class="jm-hero dk-cover__art">
+    <span class="jm-logo jm-logo--xl">jamster</span>
+    <p class="dk-cover__slogan">The music game built from your own playlists.</p>
+    <div class="jm-float jm-hero__float" style="left: 420px; top: 64px; animation-delay: -1.2s" aria-hidden="true"><div class="jm-card" style="transform: rotate(7deg) scale(1.15)"><span class="jm-card__year">1994</span><span class="jm-card__title">Zombie</span><span class="jm-card__artist">The Cranberries</span></div></div>
+    <div class="jm-float jm-hero__float" style="left: 24px; top: 404px; animation-delay: -2.4s" aria-hidden="true"><div class="jm-card" style="transform: rotate(-11deg) scale(0.98)"><span class="jm-card__year">2010</span><span class="jm-card__title">Dancing On My Own</span><span class="jm-card__artist">Robyn</span></div></div>
+    <div class="jm-float jm-hero__float" style="left: 236px; top: 430px; animation-delay: -3.1s; animation-duration: 4.4s" aria-hidden="true"><div class="jm-card" style="transform: rotate(9deg) scale(0.86)"><span class="jm-card__year">1983</span><span class="jm-card__title">Sweet Dreams</span><span class="jm-card__artist">Eurythmics</span></div></div>
+    <div class="jm-float jm-hero__float" style="left: 420px; top: 330px; z-index: 3; animation-delay: -0.4s" aria-hidden="true"><div class="jm-card jm-card--mystery" style="transform: rotate(-4deg) scale(1.22)"><span class="jm-card__year">????</span></div></div>
+    <div class="jm-tape jm-tape--bounce jm-tape--slow is-playing jm-hero__tape" style="left: 64px; top: 206px" aria-hidden="true"><div class="jm-tape__bob"><div class="jm-tape__shell">
+        <svg viewBox="0 0 300 190" width="300" height="190">
+          <rect class="t-shell" x="4" y="4" width="292" height="182" rx="18" stroke-width="7"></rect>
+          <circle class="t-ink" cx="17" cy="17" r="4.5"></circle><circle class="t-ink" cx="283" cy="17" r="4.5"></circle><circle class="t-ink" cx="17" cy="173" r="4.5"></circle><circle class="t-ink" cx="283" cy="173" r="4.5"></circle>
+          <rect class="t-window" x="92" y="70" width="116" height="40" rx="20"></rect>
+          <circle class="t-pack" cx="105" cy="90" r="36" style="transform: scale(0.77)"></circle>
+          <circle class="t-pack" cx="195" cy="90" r="36" style="transform: scale(0.63)"></circle>
+          <g class="t-reel"><circle class="t-hub" cx="105" cy="90" r="13" stroke-width="4"></circle><path class="t-spoke" d="M105 80v20M96.3 85l17.4 10M96.3 95l17.4-10" stroke-width="4"></path></g>
+          <g class="t-reel"><circle class="t-hub" cx="195" cy="90" r="13" stroke-width="4"></circle><path class="t-spoke" d="M195 80v20M186.3 85l17.4 10M186.3 95l17.4-10" stroke-width="4"></path></g>
+          <path class="t-label" fill-rule="evenodd" stroke-width="5" d="M30 18H270A8 8 0 0 1 278 26V138A8 8 0 0 1 270 146H30A8 8 0 0 1 22 138V26A8 8 0 0 1 30 18Z M92 70H208A20 20 0 0 1 208 110H92A20 20 0 0 1 92 70Z"></path>
+          <text class="t-year" x="150" y="60" text-anchor="middle">????</text>
+          <rect class="t-track" x="40" y="122" width="220" height="11" rx="5.5"></rect>
+          <rect class="t-bar" x="40" y="122" width="84" height="11" rx="5.5"></rect>
+          <path class="t-foot" stroke-width="5" d="M78 186L90 156H210L222 186"></path>
+          <circle class="t-ink" cx="112" cy="174" r="6"></circle><circle class="t-ink" cx="188" cy="174" r="6"></circle>
+        </svg>
+      </div></div></div>
+  </div>
+
+  <form class="jm-panel dk-panel" onSubmit="{{noop}}">
+    <sc-if value="{{in}}" hint-placeholder-val="{{false}}">
+      <div style="display: flex; align-items: center; gap: 14px; padding-bottom: 14px; border-bottom: 2px solid var(--sand-line)">
+        <span class="jm-avatar jm-avatar--xl jm-p1" aria-hidden="true">M</span>
+        <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; font-size: 19px"><b>Mara</b><span class="jm-caption">via Spotify</span></span>
+        <a href="Account.dc.html" class="jm-btn" style="min-height: 48px; padding: 0 18px; font-size: 15px">Account</a>
+      </div>
+    </sc-if>
+    <label class="jm-label" for="room-code">Room code</label>
+    <div style="display: flex; gap: 10px">
+      <input id="room-code" type="text" class="jm-input jm-input--code" style="flex: 1; min-width: 0" value="LUMA" placeholder="ABCD" maxlength="4" autocomplete="off" autocapitalize="characters" spellcheck="false">
+      <button type="submit" class="jm-btn jm-btn--primary dk-join">Join</button>
+    </div>
+    <sc-if value="{{out}}" hint-placeholder-val="{{true}}">
+      <p class="jm-caption">No account needed. Ask the host for the four letters.</p>
+    </sc-if>
+    <div style="display: flex; align-items: center; gap: 14px; margin: 6px 0">
+      <span style="flex: 1; height: 2px; background: var(--sand-line)"></span>
+      <span class="jm-caption">or</span>
+      <span style="flex: 1; height: 2px; background: var(--sand-line)"></span>
+    </div>
+    <sc-if value="{{out}}" hint-placeholder-val="{{true}}">
+      <button type="button" class="jm-btn dk-big"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V6l10-2v12"></path><circle cx="6.5" cy="18" r="2.5"></circle><circle cx="16.5" cy="16" r="2.5"></circle></svg>Log in with Spotify</button>
+      <p class="jm-caption">Hosting needs Spotify Premium. Private, for one group of friends.</p>
+    </sc-if>
+    <sc-if value="{{in}}" hint-placeholder-val="{{false}}">
+      <a href="DesktopLobby.dc.html" class="jm-btn jm-btn--primary dk-big">Host a game</a>
+      <a href="DesktopLibrary.dc.html" class="jm-btn dk-big" style="justify-content: flex-start; padding: 0 20px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V6l10-2v12"></path><circle cx="6.5" cy="18" r="2.5"></circle><circle cx="16.5" cy="16" r="2.5"></circle></svg>
+        Your songs
+        <span style="margin-left: auto; color: var(--ink-muted); font-variant-numeric: tabular-nums">1,940</span>
+      </a>
+    </sc-if>
+  </form>
+</div>
+</main>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"state":{"editor":"enum","options":["loggedOut","loggedIn"],"default":"loggedIn"},"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const signedIn = (this.props.state ?? "loggedIn") === "loggedIn";
+    return {
+      in: signedIn,
+      out: !signedIn,
+      noop: (e) => e.preventDefault()
+    };
+  }
+}
+</script>
+</body>
+</html>

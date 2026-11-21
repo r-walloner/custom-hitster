@@ -23,4 +23,5 @@ The 44px row at the top of every screen: logo, room code, one line of where you 
 ## Scaling
 
 - The 844 × 390 design is zoomed to fit the viewport both ways; whatever is left over goes to the screen in design pixels, so a wider phone gets a wider middle and a taller one a taller screen.
+- From about 1024px wide the zoom stops and the desktop layouts take over: a 56px header row (`.dk-header`) in a centred column at most 1280px wide. See *Desktop*.
 - Portrait phones get no layout of their own: the logo and *Turn your phone sideways.* *Jamster is played in landscape.*

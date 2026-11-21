@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Jamster – winner, desktop</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/jamster/tokens.css">
+<link rel="stylesheet" href="ds/jamster/components/bundle.css">
+<link rel="stylesheet" href="ds/jamster/components/desktop.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&amp;family=Bricolage+Grotesque:opsz,wght@12..96,400..800&amp;family=DM+Mono:wght@500&amp;display=swap">
+<style>
+body{margin:0}
+.dk-win{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:56px}
+.dk-win .jm-big-moment{font-size:64px;line-height:72px}
+.dk-win__line{margin:0;max-width:560px;font:800 22px/30px var(--font-ui);letter-spacing:-0.015em}
+/* The art sits centred in whatever space is left between the line and the buttons */
+.dk-win__art{flex:1;min-height:340px;display:flex;flex-direction:column;justify-content:center}
+.dk-win__stage{position:relative;height:330px}
+.dk-win__art .jm-tape__shell>svg{width:260px}
+.dk-win .jm-btn--next{flex:0 0 280px;min-height:64px;font-size:21px}
+.dk-win .dk-btn{min-height:56px;padding:0 24px;font-size:17px}
+.dk-win .jm-status{height:56px;padding:0 24px;font-size:17px}
+.dk-final{padding:24px 26px 26px;border-radius:22px;display:flex;flex-direction:column;gap:10px}
+.dk-final .jm-label{font-size:13px;line-height:16px}
+.dk-final__row{display:flex;align-items:center;gap:14px;height:64px;padding:0 16px;box-sizing:border-box;border-radius:14px;border:2px solid var(--sand-line);background:var(--paper)}
+.dk-final__row--win{border-color:var(--ink);background:var(--turn-tint);box-shadow:var(--shadow-sticker-sm)}
+.dk-final__row .jm-avatar{width:40px;height:40px;font-size:16px}
+.dk-final__row .jm-player__name{font-size:18px;line-height:22px}
+.dk-final__num{font:800 20px/1 var(--font-ui);font-variant-numeric:tabular-nums}
+@media (max-width:1180px){.dk-win{grid-template-columns:minmax(0,1fr) 360px;gap:32px}.dk-win .jm-big-moment{font-size:48px;line-height:56px}}
+@media (max-width:900px){.dk-win{grid-template-columns:minmax(0,1fr)}}
+</style>
+</helmet>
+<main class="dk-screen">
+<div class="dk-frame" style="gap: 32px">
+  <header class="dk-header">
+    <span class="jm-logo">jamster</span>
+    <span class="jm-chip" aria-label="Room code LUMA">LUMA</span>
+    <span class="jm-header__spacer"></span>
+    <span class="jm-header__meta"><span>Mara's room</span><i></i><span><b>4</b> players</span><i></i><span>Game over</span></span>
+  </header>
+  <div class="dk-win">
+    <section style="display: flex; flex-direction: column; gap: 18px; min-width: 0" aria-labelledby="win-head">
+      <div style="position: relative; z-index: 3; display: flex; flex-direction: column; gap: 14px; padding: 8px 0 0 4px">
+        <h1 id="win-head" class="jm-big-moment">Mara wins!</h1>
+        <p class="dk-win__line">Sam was one card behind. Lea had 3 tokens left over.</p>
+      </div>
+      <div class="dk-win__art">
+      <div class="jm-hero dk-win__stage">
+        <div class="jm-float jm-hero__float" style="left: 330px; top: 20px; animation-delay: -1.2s; animation-duration: 3.1s" aria-hidden="true"><div class="jm-card" style="transform: rotate(-14deg) scale(0.95)"><span class="jm-card__year">1965</span><span class="jm-card__title">Satisfaction</span><span class="jm-card__artist">The Rolling Stones</span></div></div>
+        <div class="jm-float jm-hero__float" style="left: 500px; top: 6px; animation-delay: -2.6s; animation-duration: 4.2s" aria-hidden="true"><div class="jm-card" style="transform: rotate(11deg) scale(1.05)"><span class="jm-card__year">1983</span><span class="jm-card__title">Sweet Dreams</span><span class="jm-card__artist">Eurythmics</span></div></div>
+        <div class="jm-float jm-hero__float" style="left: 650px; top: 80px; animation-delay: -0.6s; animation-duration: 3.7s" aria-hidden="true"><div class="jm-card" style="transform: rotate(-3deg) scale(0.9)"><span class="jm-card__year">1994</span><span class="jm-card__title">Zombie</span><span class="jm-card__artist">The Cranberries</span></div></div>
+        <div class="jm-float jm-hero__float" style="left: 530px; top: 176px; animation-delay: -1.9s; animation-duration: 4.8s" aria-hidden="true"><div class="jm-card" style="transform: rotate(17deg) scale(0.95)"><span class="jm-card__year">2003</span><span class="jm-card__title">Seven Nation Army</span><span class="jm-card__artist">The White Stripes</span></div></div>
+        <div class="jm-float jm-hero__float" style="left: 370px; top: 170px; z-index: 3; animation-delay: -0.2s; animation-duration: 3.4s" aria-hidden="true"><div class="jm-card jm-card--new" style="transform: rotate(-4deg) scale(1.12)"><span class="jm-card__year">2019</span><span class="jm-card__title">Bad Guy</span><span class="jm-card__artist">Billie Eilish</span></div></div>
+        <div class="jm-tape jm-tape--bounce jm-tape--slow is-playing jm-hero__tape" style="left: 24px; top: 48px" aria-hidden="true"><div class="jm-tape__bob"><div class="jm-tape__shell">
+          <svg viewBox="0 0 300 190" width="260" height="165">
+            <rect class="t-shell" x="4" y="4" width="292" height="182" rx="18" stroke-width="7"></rect>
+            <circle class="t-ink" cx="17" cy="17" r="4.5"></circle><circle class="t-ink" cx="283" cy="17" r="4.5"></circle><circle class="t-ink" cx="17" cy="173" r="4.5"></circle><circle class="t-ink" cx="283" cy="173" r="4.5"></circle>
+            <rect class="t-window" x="92" y="70" width="116" height="40" rx="20"></rect>
+            <circle class="t-pack" cx="105" cy="90" r="36" style="transform: scale(0.6)"></circle>
+            <circle class="t-pack" cx="195" cy="90" r="36" style="transform: scale(0.8)"></circle>
+            <g class="t-reel"><circle class="t-hub" cx="105" cy="90" r="13" stroke-width="4"></circle><path class="t-spoke" d="M105 80v20M96.3 85l17.4 10M96.3 95l17.4-10" stroke-width="4"></path></g>
+            <g class="t-reel"><circle class="t-hub" cx="195" cy="90" r="13" stroke-width="4"></circle><path class="t-spoke" d="M195 80v20M186.3 85l17.4 10M186.3 95l17.4-10" stroke-width="4"></path></g>
+            <path class="t-label" fill-rule="evenodd" stroke-width="5" d="M30 18H270A8 8 0 0 1 278 26V138A8 8 0 0 1 270 146H30A8 8 0 0 1 22 138V26A8 8 0 0 1 30 18Z M92 70H208A20 20 0 0 1 208 110H92A20 20 0 0 1 92 70Z"></path>
+            <text class="t-year" x="150" y="60" text-anchor="middle">2019</text>
+            <rect class="t-track" x="40" y="122" width="220" height="11" rx="5.5"></rect>
+            <rect class="t-bar" x="40" y="122" width="130" height="11" rx="5.5"></rect>
+            <path class="t-foot" stroke-width="5" d="M78 186L90 156H210L222 186"></path>
+            <circle class="t-ink" cx="112" cy="174" r="6"></circle><circle class="t-ink" cx="188" cy="174" r="6"></circle>
+          </svg>
+        </div></div></div>
+      </div>
+      </div>
+      <div style="display: flex; gap: 14px; align-items: center">
+        <sc-if value="{{host}}" hint-placeholder-val="{{true}}">
+          <a href="Dealing.dc.html" class="jm-btn jm-btn--primary jm-btn--next">Play again</a>
+          <a href="DesktopLobby.dc.html" class="jm-btn dk-btn">Back to the lobby</a>
+        </sc-if>
+        <sc-if value="{{guest}}" hint-placeholder-val="{{false}}">
+          <span class="jm-status">Waiting for Mara</span>
+          <a href="DesktopHome.dc.html" class="jm-btn dk-btn">Leave room</a>
+        </sc-if>
+      </div>
+    </section>
+    <aside class="jm-panel dk-final" aria-labelledby="final-head">
+      <h2 id="final-head" class="jm-label" style="margin: 0 0 4px">Final scoreboard</h2>
+      <ol class="jm-scroll" style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px">
+        <sc-for list="{{rows}}" as="r" hint-placeholder-count="4">
+          <li class="{{r.cls}}">
+            <span class="dk-final__num" style="width: 20px">{{r.place}}</span>
+            <span class="jm-avatar {{r.color}}" aria-hidden="true">{{r.initial}}</span>
+            <span class="jm-player__name">{{r.name}}</span>
+            <span class="dk-final__num" aria-label="{{r.cards}} cards">{{r.cards}}</span>
+            <span class="jm-token" style="width: 40px; justify-content: flex-end">{{r.tokens}}</span>
+          </li>
+        </sc-for>
+      </ol>
+    </aside>
+  </div>
+</div>
+</main>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"role":{"editor":"enum","options":["host","guest"],"default":"host"},"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const host = (this.props.role ?? "host") === "host";
+    const data = [
+      { name: "Mara", color: "jm-p1", cards: 10, tokens: 1, first: true },
+      { name: "Sam", color: "jm-p2", cards: 9, tokens: 2 },
+      { name: "Lea", color: "jm-p3", cards: 7, tokens: 3 },
+      { name: "Jonas", color: "jm-p4", cards: 5, tokens: 0 }
+    ];
+    const rows = data.map((r, i) => ({
+      ...r,
+      place: i + 1,
+      initial: r.name.charAt(0),
+      // Everyone who won is highlighted; more than one on a tie.
+      cls: "dk-final__row" + (r.first ? " dk-final__row--win" : "")
+    }));
+    return { host, guest: !host, rows };
+  }
+}
+</script>
+</body>
+</html>
