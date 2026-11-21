@@ -4,6 +4,7 @@ from pathlib import Path
 import pytest
 
 from jamster import db
+from jamster.curation import STRATEGIES
 from jamster.curation.__main__ import main
 from jamster.models import Artist, Track
 
@@ -39,6 +40,8 @@ def test_the_command_writes_a_markdown_report_and_json_lines_and_prints_where(
     assert (md, jsonl) == (tmp_path / "runs" / "try.md", tmp_path / "runs" / "try.jsonl")
     text = md.read_text()
     assert "## Deck" in text and "## Summary" in text and "## Familiarity" in text
+    assert "## How the deck was picked" in text and "## How to read the deck" in text
+    assert all(f"  - `{reason}`: " in text for reason in STRATEGIES[strategy].scores())
     assert "`weights.saved` = 0.5" in text and "| Ann |" in text
     deck, *songs = [json.loads(line) for line in jsonl.read_text().splitlines()]
     assert deck["type"] == "deck" and deck["parameters"]["weights.saved"] == 0.5

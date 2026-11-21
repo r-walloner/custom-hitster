@@ -6,7 +6,17 @@ from dataclasses import dataclass, field
 from typing import ClassVar
 
 from .base import Candidate, CurationStrategy, Pool
-from .songs import Knowledge, Ranking, Selection, Weights, cap_of, fill, ranked, year_quotas
+from .songs import (
+    Knowledge,
+    Ranking,
+    Selection,
+    Weights,
+    cap_of,
+    common_rules,
+    fill,
+    ranked,
+    year_quotas,
+)
 
 
 @dataclass(frozen=True)
@@ -43,3 +53,28 @@ class Wildcards(CurationStrategy):
             rankings.append((p, ranked(scored, rng, self.jitter)))
         fill(selection, rankings, size, "wildcard")
         return selection.picked
+
+    def rules(self, size: int) -> list[str]:
+        return [
+            f"**Wildcards**, all {size} songs: only songs exactly one library has. Every "
+            "library in turn brings its deepest cuts, best score first.",
+            *common_rules(
+                size=size,
+                year_power=self.year_power,
+                year_span=self.year_span,
+                artist_cap=self.artist_cap,
+                jitter=self.jitter,
+            ),
+        ]
+
+    def scores(self) -> dict[str, str]:
+        most = 1 + self.lone_bonus + self.stranger_bonus
+        return {
+            "wildcard": (
+                "A song only the owner's library has. Score: how deep a cut it is, 1 minus the "
+                f"owner's familiarity, so the less they know it, the higher; plus "
+                f"{self.lone_bonus:g} when it is the owner's only song by that artist, plus "
+                f"{self.stranger_bonus:g} when no other player knows the song or its artist at "
+                f"all. From 0 to {most:g}."
+            ),
+        }

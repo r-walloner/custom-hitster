@@ -529,7 +529,7 @@ def test_local_game_plays_only_on_the_host_and_recovers_from_a_playback_failure(
         assert (md_file.suffix, jsonl_file.with_suffix(".md")) == (".md", md_file)
         lines = [json.loads(line) for line in jsonl_file.read_text().splitlines()]
         assert lines[0]["room"] == code and lines[0]["strategy"] == "balanced"
-        assert len(lines) == 11 and {line["reason"] for line in lines[1:]} <= {"core", "wildcard"}
+        assert len(lines) == 11 and {line["reason"] for line in lines[1:]} <= {"core", "signature"}
         # Drawn in this order: a starting card for each of the two players, then the first song.
         assert f'playing "{lines[3]["title"]}"' in turn
         report = md_file.read_text()

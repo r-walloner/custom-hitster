@@ -203,7 +203,7 @@ def test_balanced_tops_up_with_classics_when_the_libraries_run_short():
     assert [c.why.reason for c in picked].count("classic") == 15
 
 
-def test_balanced_prefers_songs_more_players_know_and_keeps_a_few_wildcards():
+def test_balanced_prefers_songs_more_players_know_and_keeps_a_few_signature_songs():
     shared = [track(f"shared{n}", artist=f"s{n}", year=1970 + n) for n in range(30)]
     anns = [track(f"ann{n}", artist=f"a{n}", year=1970 + n) for n in range(30)]
     favourite = {t.id: (*SAVED, Signal("top_long", 1 + n)) for n, t in enumerate(anns)}
@@ -214,12 +214,12 @@ def test_balanced_prefers_songs_more_players_know_and_keeps_a_few_wildcards():
         ],
         shared + anns,
     )
-    picked = Balanced(classics_share=0, wildcard_share=0.2).curate(p, 20, random.Random(0))
+    picked = Balanced(classics_share=0, signature_share=0.2).curate(p, 20, random.Random(0))
 
     core = [c for c in picked if c.why.reason == "core"]
-    wild = [c for c in picked if c.why.reason == "wildcard"]
+    signature = [c for c in picked if c.why.reason == "signature"]
     assert len(core) == 16 and all(c.track_id.startswith("shared") for c in core)
-    assert len(wild) == 4 and all(c.known_by == ("ann",) for c in wild)
+    assert len(signature) == 4 and all(c.known_by == ("ann",) for c in signature)
 
 
 def test_show_and_tell_brings_each_players_own_songs_rather_than_shared_ones():
@@ -254,6 +254,7 @@ def test_every_pick_explains_itself():
     for strategy in STRATEGIES.values():
         picked = strategy.curate(p, 6, random.Random(0))
         assert [c.why.pick for c in picked] == list(range(1, len(picked) + 1))
+        assert {c.why.reason for c in picked} <= set(strategy.scores()), "scores explained"
         for c in picked:
             assert c.why.strategy == strategy.key and c.why.knowers
             assert c.why.owner in ("Ann", "Ben") and c.known_by[0] == c.why.owner.lower()

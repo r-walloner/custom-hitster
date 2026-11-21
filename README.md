@@ -232,7 +232,7 @@ The host chooses one in the lobby settings.
 
 | Strategy | What it picks |
 |---|---|
-| Balanced (the default) | Songs the group knows, preferring those several players know. Each library gets an equal share, the years are spread out, 10 % are wildcards one player knows well and the others don't, and 10 % are well-known classics, aimed at the decades the libraries leave thin. |
+| Balanced (the default) | Songs the group knows, preferring those several players know. Each library gets an equal share, the years are spread out, 10 % are signature songs, one player's own that they know well and the others don't, and 10 % are well-known classics, aimed at the decades the libraries leave thin. |
 | Show & Tell | Each library brings an equal share of the songs that are most its own: its player knows them well, the others hardly do. |
 | Wildcards | The deep cuts: songs only one library has and its player barely knows, by artists nobody else knows, spread evenly over the years. |
 
@@ -251,14 +251,14 @@ How they work:
   That searches Spotify for every song without a `track` yet, one search a second, and writes the tracks into the file. A song Spotify doesn't have gets `"track": null` and is left out of decks; `--again` searches for those again. Correct a wrong match by editing or deleting its `track`.
 
 The code follows the Strategy pattern.
-`CurationStrategy` in `backend/src/jamster/curation/base.py` is the interface, with one method, `curate(pool, size, rng)`.
+`CurationStrategy` in `backend/src/jamster/curation/base.py` is the interface: `curate(pool, size, rng)` picks the songs, and `rules(size)` and `scores()` say in words how it picks and what its scores mean, which the Markdown report prints.
 `Balanced`, `ShowAndTell` and `Wildcards` are the concrete strategies, each a dataclass whose fields are its parameters.
 `deck.curate` is the context: it loads the pool, runs the strategy the settings name and turns its picks into cards.
 The shared building blocks (merging, familiarity, year shares, the turn-taking) are in `curation/songs.py`.
 To add a strategy, subclass `CurationStrategy`, add an instance to `STRATEGIES` in `curation/__init__.py`, and give it a name in `frontend/src/screens/settings/options.ts`.
 Strategies stay pure: no network, no database, no clock.
 
-Every pick carries a `Why`: the reason (core, wildcard or classic), the library that brought it, the strategy's score, and each player's familiarity with the evidence for it.
+Every pick carries a `Why`: the reason (core, signature, wildcard or classic), the library that brought it, the strategy's score, and each player's familiarity with the evidence for it.
 
 #### Try a strategy
 
@@ -280,7 +280,7 @@ It opens `data/jamster.db` read-only, so it is safe while the server runs, and i
 | `--report familiarity` | Add each player's familiarity percentiles, to tune the weights. |
 | `--out runs/try` | Write `runs/try.md` and `runs/try.jsonl`. By default the files go to `data/curation/`, named after the time, the strategy and the seed. |
 
-The Markdown lists the parameters, the players, every song with its year, reason, owner, score and who knows it, and a summary: songs per decade, per reason and per owner, and the most frequent artists.
+The Markdown says how the strategy picked the deck, with its numbers, and what each column and score means, then lists the parameters, the players, every song with its year, reason, owner, score and who knows it, and a summary: songs per decade, per reason and per owner, and the most frequent artists.
 The JSON lines have the format of the deck files: a first line with the strategy, its parameters, the seed and the players, then one line per song.
 The classics come straight from the list; songs not looked up yet stand in without a track.
 

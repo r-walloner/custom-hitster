@@ -437,6 +437,30 @@ def fill(selection: Selection, rankings: Sequence[Ranking], n: int, reason: str)
     return took
 
 
+def common_rules(
+    *, size: int, year_power: float, year_span: int, artist_cap: float, jitter: float
+) -> list[str]:
+    """The rules every strategy follows, in words, with these parameters."""
+    shape = {1.0: "as the libraries have them", 0.5: "the square root", 0.0: "flat"}
+    return [
+        "**One card per song.** Releases of a song count as one: the same ISRC, or the same "
+        'title by the same main artist once tags like "Remastered 2011" or "feat. X" are '
+        "dropped. Remixes, live versions and covers stay songs of their own.",
+        f"**Years.** The deck is spread over spans of {year_span} years. Each span's share "
+        f"follows its number of candidate songs to the power {year_power:g}"
+        + (f" ({shape[year_power]})" if year_power in shape else "")
+        + ". A year is MusicBrainz's when an earlier game looked it up, else Spotify's, which "
+        "is sometimes a remaster's. Songs before 1900 or from the future are left out.",
+        "**Equal shares.** The libraries take turns, one song each. A library with no song "
+        "left that fits its span's share and the artist limit takes its best song anyway, so "
+        "every library gets an equal share while it has songs.",
+        f"**Artist limit.** At most {cap_of(artist_cap, size)} songs "
+        f"({artist_cap * 100:g} % of the deck) by one main artist, unless the songs run out.",
+        f"**Noise.** Every score gets up to ±{jitter:g} of random noise before the ranking, "
+        "so the same group gets a different deck each game.",
+    ]
+
+
 def ranked(
     scored: list[tuple[int, float]], rng: random.Random, amount: float
 ) -> list[tuple[int, float]]:

@@ -6,7 +6,17 @@ from dataclasses import dataclass, field
 from typing import ClassVar
 
 from .base import Candidate, CurationStrategy, Pool
-from .songs import Knowledge, Ranking, Selection, Weights, cap_of, fill, jitter, year_quotas
+from .songs import (
+    Knowledge,
+    Ranking,
+    Selection,
+    Weights,
+    cap_of,
+    common_rules,
+    fill,
+    jitter,
+    year_quotas,
+)
 
 
 @dataclass(frozen=True)
@@ -43,3 +53,27 @@ class ShowAndTell(CurationStrategy):
             rankings.append((p, [(i, score) for _, _, i, score in keyed]))
         fill(selection, rankings, size, "core")
         return selection.picked
+
+    def rules(self, size: int) -> list[str]:
+        return [
+            f"**Core**, all {size} songs: every library in turn brings the songs that are most "
+            f"its own. Songs its player knows at least {self.own_min:g} come first, best score "
+            "first, then the rest.",
+            *common_rules(
+                size=size,
+                year_power=self.year_power,
+                year_span=self.year_span,
+                artist_cap=self.artist_cap,
+                jitter=self.jitter,
+            ),
+        ]
+
+    def scores(self) -> dict[str, str]:
+        return {
+            "core": (
+                "Any song in the owner's library. Score: how much it is the owner's own, their "
+                f"familiarity minus {self.others_weight:g} × the best familiarity of anyone "
+                "else. Up to 1 when the owner knows it well and nobody else does; below 0 when "
+                "others know it better."
+            ),
+        }

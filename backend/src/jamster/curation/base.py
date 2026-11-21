@@ -62,3 +62,13 @@ class CurationStrategy(ABC):
     @abstractmethod
     def curate(self, pool: Pool, size: int, rng: random.Random) -> list[Candidate]:
         """Up to `size` candidates from `pool`, in the order they were picked."""
+
+    @abstractmethod
+    def rules(self, size: int) -> list[str]:
+        """How a deck of `size` is picked, one rule per item, for the people reading a deck
+        report. Name the parameters' current values; `songs.common_rules` has the shared ones."""
+
+    @abstractmethod
+    def scores(self) -> dict[str, str]:
+        """Per reason (core, signature, wildcard, classic): which songs qualify and what the
+        score means, for the people reading a deck report."""

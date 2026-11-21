@@ -98,6 +98,39 @@ def markdown(
         f"{len(pool.classics)} classics.",
     ]
 
+    out += ["", "## How the deck was picked", ""]
+    out += [f"- {rule}" for rule in strategy.rules(size)]
+
+    out += ["", "## How to read the deck", ""]
+    if drawn:
+        out.append("- **Order**: when the card is drawn; the first ones are the starting cards.")
+    guide = strategy.scores()
+    out += [
+        "- **#**: the order the strategy picked the songs in.",
+        "- **Year**, **From**: the year the strategy went by, and where it came from: `cached`"
+        " (MusicBrainz, from an earlier game), `spotify` (the album's date, sometimes a"
+        " remaster's) or `list` (the classics list). A card's year can still change when it"
+        " is drawn and looked up.",
+        "- **Owner**: the library that brought the song in.",
+        "- **Reason** and **Score**: why the song qualified, and what the strategy ranked it"
+        " by"
+        + (
+            ", which means something else for each reason, so scores of different reasons"
+            " don't compare:"
+            if len(guide) > 1
+            else ":"
+        ),
+    ]
+    out += [f"  - `{reason}`: {text}" for reason, text in guide.items()]
+    out += [
+        "- **Knowers**: each player's familiarity with the song, from 0 (unknown) to 1 (knows"
+        " it for sure), and the evidence for it. Each piece of evidence adds to the score"
+        " without taking it past 1: top lists (`top_long` about a year, `top_medium` six"
+        " months, `top_short` four weeks, with the rank), `saved` (a liked song), `playlists"
+        " ×n`, `recent ×n` (plays among the last 50), `top artist`, and `artist: n other"
+        " songs` (how many more songs by the artist the player has).",
+    ]
+
     out += [
         "",
         "## Deck",

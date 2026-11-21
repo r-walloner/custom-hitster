@@ -44,7 +44,7 @@ class Why:
     changed after, so a deck can be explained after the game."""
 
     strategy: str  # the strategy's key
-    reason: str  # core | wildcard | classic
+    reason: str  # core | signature | wildcard | classic
     owner: str | None  # the name of the library that brought the song in
     score: float  # the strategy's own score; its meaning depends on the strategy
     pick: int  # 1-based position in the order the strategy picked
