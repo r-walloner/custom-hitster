@@ -76,7 +76,12 @@ If the deck runs out first, the player with the most cards wins.
 
 The Spotify app on the playing device shows the title, so nobody should look at it.
 
-## Backend TODOs for the designed screens
+## To-dos
+
+What is planned but not built yet, by topic.
+Remove an item once it is done.
+
+### Backend TODOs for the designed screens
 
 The frontend follows the screens in `docs/design/screens/`, but some of what they show has no data behind it yet.
 Each item below says what the screen does meanwhile.
@@ -84,7 +89,87 @@ Remove an item once the backend provides it and the screen uses it.
 
 Nothing is missing at the moment.
 
-## Planned deck modes
+### Home screen
+
+- **Cover cards from your own songs.**
+  The song cards floating around the Jamster logo are three fixed songs (`CARDS` and `DESKTOP_CARDS` in `frontend/src/components/CoverScreen.tsx`).
+  Once a player is logged in, they could be songs from that player's library, taken from the import while it runs, so the menu already shows songs the player knows.
+  No REST call returns a player's songs yet, so it needs one that returns a few, with title, artist and year (the cached year, else Spotify's).
+  `CoverScreen` would take the songs as a prop, since `src/components/` doesn't call the API, and keep the fixed songs when logged out or before the first import.
+
+### Game screen
+
+- **Show the winning card's reveal before the winner screen.**
+  When a reveal gives a player the last card they need, `_check_win` in `engine.py` sets the phase to `finished` straight away, so nobody sees the song's details on the Reveal panel.
+  The host can't give the token for naming the song then either.
+  Instead the game should stay `revealed` and finish when the countdown runs out or the host taps the button, as it already does when the deck runs out.
+  That button and the countdown's label say "Next song", which is wrong after the last card in both cases; they should say something like "See the winner".
+  This changes a game rule, so it needs a test in `tests/test_engine.py`.
+- **Change the timers from the in-game menu.**
+  The host should be able to change some settings during a game, from the menu (`frontend/src/screens/game/GameMenu.tsx`).
+  Today `set_settings` is refused outside the lobby (`_lobby_only` in `rooms.py`).
+  Two settings are safe to change mid-game: `next_turn_seconds` (the countdown on the reveal before the next song starts by itself) and `challenge_seconds`.
+  Both are read when their countdown starts, so a change applies from the next countdown.
+  The rest stay locked, and the server should refuse them rather than trust the screen: `deck_size` and `strategy` rebuild the deck, `mode` moves the playback, and `cards_to_win` and `starting_tokens` are copied into the engine's rules when the game starts.
+- **Anyone can press Keep listening.**
+  Only the host sees Keep listening on the Reveal panel (`phases/Reveal.tsx`), and the server refuses `hold_turn` from anyone else (`_host_only` in `rooms.py`).
+  It only stops the countdown to the next song, so any player in the room should be able to press it; Next song and the token for naming the song stay with the host.
+  The others' row then gets the button next to the "named the song" text, and the log names whoever pressed it.
+- **Where the song came from, in a pop-up.**
+  The Reveal panel already shows which players have the song in their library (`known_by`).
+  Tapping that line, or a Details button next to it, should open a dialog that tells the whole story in plain words, per player: liked, in which playlists (by name), how high in their top songs and over which time span, and how often played lately, or only that they know other songs by the artist.
+  It should also say why the deck mix picked it: as one of the songs the group knows, as a signature song of one player, as a wildcard, or as a classic to fill a thin decade.
+  The server has all of this already: the card's `Why` from curation (`models.py`), with every player's familiarity and evidence.
+  Only the playlist names are missing; the signals keep just the number of playlists, so the names need a lookup in `db.py`, from `track_signals` and `sources`.
+  `RevealedCard` in `messages.py` and `messages.ts` would carry the details, and only after the reveal, since a playlist's name can give the year away.
+  Never show the strategy's raw score; it means nothing to the players.
+- **A small celebration at the reveal.**
+  When the Reveal phase starts (`frontend/src/screens/game/phases/Reveal.tsx`), confetti could fly across the screen, with a small pop-up that says the outcome of the round, such as who was right, the player on turn or the challenger, and goes away after about 1.5 seconds.
+  No sound, because the song is still playing.
+  `revealOutcome` in `phases/reveal.ts` already works out who was right, so this is frontend only.
+  The winner screen (`frontend/src/screens/winner/Winner.tsx`) should get the same confetti when it opens.
+  Since both `game/` and `winner/` use it, the confetti goes in `src/components/`.
+  Turn the confetti off when the device asks for reduced motion.
+
+### Settings screen
+
+- **A face for every deck mix.**
+  The deck mix (the curation strategy) is a plain drop-down on the settings screen (`frontend/src/screens/settings/Settings.tsx`), with only the names from `STRATEGY_NAMES` in `options.ts`.
+  It should be the most prominent setting, at the top, picked from a row of cards: one card per mix with its own icon or picture, its name and a short line on what to expect, or a small fanned deck instead of a single card.
+  The picture should give an impression of the mix, for example scales or an evenly fanned deck for Balanced, a spotlight for Show & Tell, a joker for Wildcards; the planned Deep Dive and Nostalgia need one too.
+  The short lines can come from each strategy's docstring in `curation/`.
+  Players who aren't the host see the chosen card, without the choice.
+  It needs a design first, a board in `docs/design/screens/` and the card as a design-system component, since the frontend is built from those.
+- **A limit on how long a song plays.**
+  A new setting, such as `play_seconds` in `RoomSettings` (`messages.py` and `messages.ts`), to make the game harder: the whole song by default, or only the first 10, 20 or 30 seconds.
+  The server would pause every listener that long after `_play_started` in `rooms.py`, with the `_pause` it already has; a restart plays the clip again, and a player who joins late on a retry stops at the same moment as the others.
+  The tape should count down the clip, not the whole song, so `duration_ms` in the playback view would be the clip's length.
+  The song could play on from where it stopped once it is revealed, so everyone gets to hear it.
+  Like the timers, it doesn't touch the deck, so it could be one of the settings the in-game menu may change (see Game screen).
+
+### Winner screen
+
+Something fun to do on the winner screen before the host takes everyone back to the lobby: stay and party.
+
+- **The tape plays the winning song.**
+  The cassette on the winner screen is drawn at a fixed 90 % (`progress: 0.9` in `frontend/src/screens/winner/Winner.tsx`), though the song that won the game keeps playing.
+  It should show that song's real progress and spin its reels while it plays, as the game's tape does.
+  `TapePlayer` is already in `src/components/`; the winner screen can feed it from `useSongClock` in `screens/game/songClock.ts`.
+  Restarting the song could be allowed there too; the server refuses `restart_playback` once the game is finished.
+- **Tap for confetti.**
+  With the confetti from the reveal celebration (see Game screen), a tap or click anywhere on the winner screen bursts confetti at that spot, in the tapper's player color.
+  It could stay on each device, or be sent to the room so every screen shows everyone's bursts, which needs a new socket message in `messages.py` and `messages.ts`.
+
+### Logging
+
+- **One log file per room.**
+  Every room's lines should also go to a file of their own in the data directory, such as `rooms/2026-11-21-1930-ABCD.log`, so a game can be read back without the rest of the server's chatter.
+  The time goes in the name because room codes repeat.
+  `RoomLog` in `rooms.py` already tags each room's records with its code, so a handler can pick them out by that.
+  Keep the last 100 files: when a room opens, delete the oldest beyond that.
+  The main log stays as it is, and this works with `JAMSTER_LOG_TO=stdout` too, so the container keeps the room files.
+
+### Planned deck modes
 
 Two more deck strategies are designed but not built yet.
 
