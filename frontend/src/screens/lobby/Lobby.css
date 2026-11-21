@@ -65,6 +65,15 @@
   border-color: var(--ink-subtle);
 }
 
+/* Hover turns the dashes solid, same colour and width, instead of drawing the buttons' 1px ring
+   inside them. */
+@media (hover: hover) and (pointer: fine) {
+  .lobby__players .lobby__add:not(:disabled):hover {
+    box-shadow: none;
+    border-style: solid;
+  }
+}
+
 .lobby__setup {
   min-height: 0;
   display: flex;
