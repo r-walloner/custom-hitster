@@ -107,18 +107,6 @@ def write_deck_files(
     return md_path, jsonl_path
 
 
-def cached_first(conn: sqlite3.Connection, entries: list[Entry], count: int) -> list[Entry]:
-    """`entries` with up to `count` tracks whose year is already cached moved to the front, so
-    the opening deal needs as few lookups as possible. The rest keep their order."""
-    front: list[Entry] = []
-    for entry in entries:
-        if len(front) == count:
-            break
-        if db.get_year(conn, entry.track.id):
-            front.append(entry)
-    return front + [e for e in entries if e not in front]
-
-
 async def to_card(resolver: YearResolver, entry: Entry) -> Card | None:
     """The card for an entry, or None if no source knows a plausible year for it."""
     resolved = await resolver.resolve(entry.track)

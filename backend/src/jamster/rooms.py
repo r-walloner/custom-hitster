@@ -18,7 +18,7 @@ from starlette.websockets import WebSocket
 from . import db, engine
 from . import messages as m
 from .curation import STRATEGIES
-from .deck import Entry, cached_first, curate, to_card, write_deck_files
+from .deck import Entry, curate, to_card, write_deck_files
 from .importer import Importer
 from .models import Card
 from .spotify import Spotify, SpotifyError
@@ -761,7 +761,6 @@ class Room:
                 self.settings.deck_size,
                 self._s.rng,
             )
-            entries = cached_first(self._s.conn, entries, needed)
             written = ""
             if self._s.decks_dir:
                 try:

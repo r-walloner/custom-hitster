@@ -41,7 +41,7 @@ Jamster is a private tool and cannot become a public one.
 6. Each player whose Spotify plays music picks a speaker and can tap Test on it to hear 10 seconds of a song from their library.
 7. The host starts the game.
    The deck is chosen at once, but each song needs its release year, which MusicBrainz gives out at about one song per second.
-   So the game starts as soon as the opening cards have years, preferring songs looked up in earlier games, and every later card is looked up when its round starts, which adds about a second to "Next turn" for a song new to Jamster.
+   So the game starts as soon as the opening cards have years, and every later card is looked up when its round starts, which adds about a second to "Next turn" for a song new to Jamster.
 
 ### A turn
 
