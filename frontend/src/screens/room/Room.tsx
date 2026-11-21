@@ -38,7 +38,7 @@ export default function Room() {
   const { me, failed } = useMe()
 
   if (failed) return <Waiting text="The server can't be reached. Reload to try again." />
-  if (!me) return <Waiting text="Loading…" />
+  if (!me) return <Waiting text="Loading…" splash />
   return <Connected code={code.toUpperCase()} me={me} />
 }
 
@@ -83,7 +83,7 @@ function Connected({ code, me }: { code: string; me: Me }) {
         </Waiting>
       )
     }
-    return <Waiting text={`Joining room ${code}…`} />
+    return <Waiting text={`Joining room ${code}…`} splash />
   }
 
   const kind = pickScreen(state)

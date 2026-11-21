@@ -16,7 +16,9 @@ body{margin:0}
 <template id="dc-template"><main class="jm-screen">
   <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-16)">
     <span class="jm-logo jm-logo--xl">jamster</span>
-    <p class="jm-meta" style="margin: 0" role="status">{{text}}</p>
+    <sc-if value="{{shown}}" hint-placeholder-val="{{true}}">
+      <p class="jm-meta" style="margin: 0" role="status">{{text}}</p>
+    </sc-if>
     <sc-if value="{{reload}}" hint-placeholder-val="{{false}}">
       <button type="button" class="jm-btn jm-btn--primary">Reload</button>
     </sc-if>
@@ -33,7 +35,8 @@ class Component extends DCLogic {
       offline: "The server can't be reached. Reload to try again."
     };
     const w = this.props.wait ?? "joining";
-    return { text: T[w] || T.joining, reload: w === "failed" };
+    // Joining is a brief splash: only the logo shows (the app keeps the line for screen readers).
+    return { text: T[w] || T.joining, shown: w !== "joining", reload: w === "failed" };
   }
 }
 DCRuntime.mount(Component, document.getElementById('dc-root'), document.getElementById('dc-template').content, Object.assign({"wait": "joining"}, Object.fromEntries(new URLSearchParams(location.search))));
