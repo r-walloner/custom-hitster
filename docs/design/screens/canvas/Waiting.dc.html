@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Jamster – waiting</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/jamster/tokens.css">
+<link rel="stylesheet" href="ds/jamster/components/bundle.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&amp;family=Bricolage+Grotesque:opsz,wght@12..96,400..800&amp;family=DM+Mono:wght@500&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<main class="jm-screen">
+  <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-16)">
+    <span class="jm-logo jm-logo--xl">jamster</span>
+    <p class="jm-meta" style="margin: 0" role="status">{{text}}</p>
+    <sc-if value="{{reload}}" hint-placeholder-val="{{false}}">
+      <button type="button" class="jm-btn jm-btn--primary">Reload</button>
+    </sc-if>
+  </div>
+</main>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"wait":{"editor":"enum","options":["joining","signingIn","failed","offline"],"default":"joining"},"$preview":{"width":844,"height":390}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const T = {
+      joining: "Joining room LUMA…",
+      signingIn: "Signing in with Spotify…",
+      failed: "Couldn't reach the room.",
+      offline: "The server can't be reached. Reload to try again."
+    };
+    const w = this.props.wait ?? "joining";
+    return { text: T[w] || T.joining, reload: w === "failed" };
+  }
+}
+</script>
+</body>
+</html>

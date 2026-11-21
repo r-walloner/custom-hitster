@@ -6,23 +6,30 @@
 <link rel="stylesheet" href="../components/bundle.css">
 <meta charset="utf-8"><title>Toast — preview</title></head>
 <body>
-<div class="jm-stage" style="flex-direction: column; align-items: flex-start; gap: 12px">
-  <div class="jm-toast" role="status">
-    <span class="jm-toast__badge jm-toast__badge--right"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span>
-    <span class="jm-toast__text">Invite link copied.</span>
+<div class="jm-stage" style="flex-direction: column; align-items: flex-start; gap: 16px">
+  <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 12px">
+    <div class="jm-toast" role="status">
+      <span class="jm-toast__badge jm-toast__badge--right"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"></path></svg></span>
+      <span class="jm-toast__text">Invite link copied.</span>
+    </div>
+    <div class="jm-toast" role="status">
+      <span class="jm-toast__badge jm-toast__badge--wrong"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></span>
+      <span class="jm-toast__text">Couldn't copy the link. Share the code instead.</span>
+    </div>
+    <div class="jm-toast" role="status">
+      <span class="jm-toast__badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 11v6"></path><path d="M12 7.5h.01"></path></svg></span>
+      <span class="jm-toast__text">Lea is away. The seat is kept for them.</span>
+    </div>
   </div>
-  <div class="jm-toast" role="status">
-    <span class="jm-toast__badge jm-toast__badge--wrong"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></span>
-    <span class="jm-toast__text">Not enough tokens. A card costs <span class="jm-token">3</span>.</span>
-  </div>
-  <div class="jm-toast" role="status">
-    <span class="jm-toast__badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6"></path><path d="M12 7.5h.01"></path></svg></span>
-    <span class="jm-toast__text">Lea's connection dropped. Her seat is safe.</span>
-  </div>
-  <div class="jm-toast jm-toast--action" role="alert" style="width: 340px">
-    <span class="jm-toast__badge jm-toast__badge--wrong"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"></path><path d="M16 9l5 6M21 9l-5 6"></path></svg></span>
-    <span class="jm-toast__text">Sam's music dropped.</span>
-    <button type="button" class="jm-btn jm-btn--primary">Retry</button>
+  <div style="position: relative; width: 844px; height: 150px; border-radius: 12px; border: 2px dashed var(--sand-line)">
+    <span class="jm-caption" style="position: absolute; left: 12px; top: 10px">.jm-toast-dock: bottom centre of an 844px screen</span>
+    <div class="jm-toast-dock">
+      <div class="jm-toast jm-toast--action" role="alert">
+        <span class="jm-toast__badge jm-toast__badge--wrong"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"></path><path d="M16 9l5 6M21 9l-5 6"></path></svg></span>
+        <span class="jm-toast__text">Sam's music didn't start. Spotify Premium is required to control playback.</span>
+        <button type="button" class="jm-btn jm-btn--primary">Retry</button>
+      </div>
+    </div>
   </div>
 </div>
 </body>

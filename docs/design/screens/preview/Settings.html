@@ -3,120 +3,90 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Game settings</title>
+<title>Jamster – game settings</title>
 <link rel="stylesheet" href="../../system/tokens.css">
 <link rel="stylesheet" href="../../system/components/bundle.css">
-<link href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&amp;family=Bricolage+Grotesque:opsz,wght@12..96,400..800&amp;family=DM+Mono:wght@500&amp;display=swap" rel="stylesheet">
-<style>body{margin:0}</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&amp;family=Bricolage+Grotesque:opsz,wght@12..96,400..800&amp;family=DM+Mono:wght@500&amp;display=swap">
+<style>
+body{margin:0}
+.settings-row{display:flex;align-items:center;gap:12px;padding:0;border-bottom:2px solid var(--sand-line)}
+.settings-row:nth-last-child(-n+2){border-bottom:0}
+.settings-row .jm-setting__text{gap:1px}
+.settings-value{flex:0 0 auto;font:800 22px/1 var(--font-ui);font-variant-numeric:tabular-nums}
+</style>
 </head>
 <body>
 <div id="dc-root"></div>
-<template id="dc-template"><main class="jm-screen" style="font-family: var(--font-ui); color: var(--ink);">
+<template id="dc-template"><main class="jm-screen">
   <header class="jm-header">
-    <a href="Lobby.dc.html" class="jm-btn jm-btn--icon" aria-label="Back to the lobby" style="text-decoration: none;">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
-    </a>
+    <a href="Lobby.dc.html" class="jm-btn jm-btn--icon" aria-label="Back to the lobby"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg></a>
     <h1 class="jm-headline">Game settings</h1>
     <span class="jm-header__spacer"></span>
-    <a href="Lobby.dc.html" class="jm-btn jm-btn--primary" style="min-width: 96px; text-decoration: none; font-size: 15px;">Done</a>
+    <sc-if value="{{guest}}" hint-placeholder-val="{{false}}"><span class="jm-caption">The host sets these.</span></sc-if>
+    <a href="Lobby.dc.html" class="jm-btn jm-btn--primary" style="min-width: 96px; font-size: 15px">Done</a>
   </header>
 
-  <div style="flex: 1; min-height: 0; display: flex; flex-direction: column;">
-    <div style="display: flex; align-items: center; gap: 16px; padding: 4px 0 8px; border-bottom: 2px solid var(--sand-line);">
-      <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px;">
-        <span id="s-music" class="jm-section">Where the music plays</span>
-        <span class="jm-caption">One speaker for a room together. Everyone's own Spotify for a call: each phone plays the song at the same moment.</span>
+  <div style="flex: 1; min-height: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 28px">
+    <sc-for list="{{rows}}" as="r" hint-placeholder-count="6">
+      <div class="settings-row">
+        <div class="jm-setting__text">
+          <span id="{{r.id}}" class="jm-section">{{r.name}}</span>
+          <span class="jm-caption">{{r.caption}}</span>
+        </div>
+        <sc-if value="{{r.stepper}}" hint-placeholder-val="{{true}}">
+          <div class="jm-stepper" role="group" aria-labelledby="{{r.id}}">
+            <button type="button" class="jm-btn jm-btn--icon" aria-label="{{r.less}}" disabled="{{r.atMin}}" onClick="{{r.dec}}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path></svg></button>
+            <output class="jm-stepper__value">{{r.value}}</output>
+            <button type="button" class="jm-btn jm-btn--icon" aria-label="{{r.more}}" disabled="{{r.atMax}}" onClick="{{r.inc}}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+          </div>
+        </sc-if>
+        <sc-if value="{{r.select}}" hint-placeholder-val="{{false}}">
+          <select class="jm-select" style="width: 172px" aria-labelledby="{{r.id}}"><option>Songs most know</option></select>
+        </sc-if>
+        <sc-if value="{{r.segmented}}" hint-placeholder-val="{{false}}">
+          <div class="jm-segmented" role="group" aria-labelledby="{{r.id}}">
+            <sc-for list="{{r.options}}" as="o" hint-placeholder-count="4">
+              <button type="button" class="jm-btn jm-btn--toggle" aria-pressed="{{o.pressed}}" onClick="{{o.pick}}">{{o.label}}</button>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{r.readOnly}}" hint-placeholder-val="{{false}}">
+          <output class="settings-value" aria-labelledby="{{r.id}}">{{r.shown}}</output>
+        </sc-if>
       </div>
-      <div role="group" aria-labelledby="s-music" style="display: flex; gap: 6px;">
-        <button class="jm-btn jm-btn--toggle" aria-pressed="true">One speaker</button>
-        <button class="jm-btn jm-btn--toggle" aria-pressed="false">Everyone's Spotify</button>
-      </div>
-    </div>
-
-    <div style="flex: 1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 28px;">
-
-      <div style="display: flex; align-items: center; gap: 12px; border-bottom: 2px solid var(--sand-line);">
-        <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px;">
-          <span id="s-win" class="jm-section">Cards to win</span>
-          <span class="jm-caption">First to this many wins.</span>
-        </div>
-        <div role="group" aria-labelledby="s-win" style="display: flex; align-items: center; gap: 6px;">
-          <button class="jm-btn jm-btn--icon" aria-label="Fewer cards"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg></button>
-          <output style="min-width: 44px; text-align: center; font: 800 22px/1 var(--font-ui); font-variant-numeric: tabular-nums;">10</output>
-          <button class="jm-btn jm-btn--icon" aria-label="More cards"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
-        </div>
-      </div>
-
-      <div style="display: flex; align-items: center; gap: 12px; border-bottom: 2px solid var(--sand-line);">
-        <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px;">
-          <span id="s-tokens" class="jm-section">Starting tokens</span>
-          <span class="jm-caption">For challenges and skips. Three buy a card.</span>
-        </div>
-        <div role="group" aria-labelledby="s-tokens" style="display: flex; align-items: center; gap: 6px;">
-          <button class="jm-btn jm-btn--icon" aria-label="Fewer tokens"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg></button>
-          <output style="min-width: 44px; text-align: center; font: 800 22px/1 var(--font-ui); font-variant-numeric: tabular-nums;">2</output>
-          <button class="jm-btn jm-btn--icon" aria-label="More tokens"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
-        </div>
-      </div>
-
-      <div style="display: flex; align-items: center; gap: 12px; border-bottom: 2px solid var(--sand-line);">
-        <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px;">
-          <span id="s-deck" class="jm-section">Deck size</span>
-          <span class="jm-caption">Picked from 3,402 songs in 2 libraries.</span>
-        </div>
-        <div role="group" aria-labelledby="s-deck" style="display: flex; align-items: center; gap: 6px;">
-          <button class="jm-btn jm-btn--icon" aria-label="Smaller deck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg></button>
-          <output style="min-width: 44px; text-align: center; font: 800 22px/1 var(--font-ui); font-variant-numeric: tabular-nums;">120</output>
-          <button class="jm-btn jm-btn--icon" aria-label="Bigger deck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
-        </div>
-      </div>
-
-      <div style="display: flex; align-items: center; gap: 12px; border-bottom: 2px solid var(--sand-line);">
-        <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px;">
-          <label for="s-strategy" class="jm-section">Deck mix</label>
-          <span class="jm-caption">How songs are picked from each library.</span>
-        </div>
-        <select id="s-strategy" class="jm-select" style="width: 172px;">
-          <option>Even mix of libraries</option>
-          <option>Spread across decades</option>
-        </select>
-      </div>
-
-      <div style="display: flex; align-items: center; gap: 12px;">
-        <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px;">
-          <span id="s-challenge" class="jm-section">Time to challenge</span>
-          <span class="jm-caption">After the placement is locked in.</span>
-        </div>
-        <div role="group" aria-labelledby="s-challenge" style="display: flex; gap: 4px;">
-          <button class="jm-btn jm-btn--toggle" aria-pressed="false" style="padding: 0 9px;">10 s</button>
-          <button class="jm-btn jm-btn--toggle" aria-pressed="false" style="padding: 0 9px;">15 s</button>
-          <button class="jm-btn jm-btn--toggle" aria-pressed="true" style="padding: 0 9px;">20 s</button>
-          <button class="jm-btn jm-btn--toggle" aria-pressed="false" style="padding: 0 9px;">30 s</button>
-        </div>
-      </div>
-
-      <div style="display: flex; align-items: center; gap: 12px;">
-        <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px;">
-          <span id="s-next" class="jm-section">Next song starts</span>
-          <span class="jm-caption">After the reveal. Anyone can keep listening.</span>
-        </div>
-        <div role="group" aria-labelledby="s-next" style="display: flex; gap: 4px;">
-          <button class="jm-btn jm-btn--toggle" aria-pressed="false" style="padding: 0 9px;">5 s</button>
-          <button class="jm-btn jm-btn--toggle" aria-pressed="true" style="padding: 0 9px;">10 s</button>
-          <button class="jm-btn jm-btn--toggle" aria-pressed="false" style="padding: 0 9px;">20 s</button>
-          <button class="jm-btn jm-btn--toggle" aria-pressed="false" style="padding: 0 9px;">Tap</button>
-        </div>
-      </div>
-
-    </div>
+    </sc-for>
   </div>
 </main></template>
 <script src="../../exploration/preview/dc-runtime.js"></script>
 <script>
 class Component extends DCLogic {
-  renderVals() { return {}; }
+  constructor(props) { super(props); this.state = { win: 10, tokens: 3, deck: 60, challenge: 15, next: 15 }; }
+  renderVals() {
+    const host = (this.props.role ?? "host") === "host";
+    const st = this.state;
+    const set = (k, v) => () => this.setState({ [k]: v });
+    const stepper = (id, key, name, caption, step, min, max, less, more) => ({
+      id, name, caption, stepper: host, readOnly: !host, shown: st[key], value: st[key], less, more,
+      atMin: st[key] - step < min, atMax: st[key] + step > max,
+      dec: set(key, st[key] - step), inc: set(key, st[key] + step)
+    });
+    const seg = (id, key, name, caption, opts) => ({
+      id, name, caption, segmented: host, readOnly: !host,
+      shown: (opts.find((o) => o[1] === st[key]) || [""])[0],
+      options: opts.map(([label, value]) => ({ label, pressed: String(value === st[key]), pick: set(key, value) }))
+    });
+    const rows = [
+      stepper("s-win", "win", "Cards to win", "First to this many wins.", 1, 3, 20, "Fewer cards", "More cards"),
+      stepper("s-tokens", "tokens", "Starting tokens", "For challenges and skips. Three buy a card.", 1, 0, 5, "Fewer tokens", "More tokens"),
+      stepper("s-deck", "deck", "Deck size", "Picked from 3,402 songs in 2 libraries.", 10, 20, 300, "Smaller deck", "Bigger deck"),
+      { id: "s-strategy", name: "Deck mix", caption: "How songs are picked from each library.", select: host, readOnly: !host, shown: "Songs most know" },
+      seg("s-challenge", "challenge", "Time to challenge", "After the placement is locked in.", [["5 s", 5], ["10 s", 10], ["15 s", 15], ["20 s", 20]]),
+      seg("s-next", "next", "Next song starts", "After the reveal. Tap: only when someone taps Next song.", [["5 s", 5], ["10 s", 10], ["15 s", 15], ["Tap", 0]])
+    ];
+    return { guest: !host, rows };
+  }
 }
-DCRuntime.mount(Component, document.getElementById('dc-root'), document.getElementById('dc-template').content, {});
+DCRuntime.mount(Component, document.getElementById('dc-root'), document.getElementById('dc-template').content, Object.assign({"role": "host"}, Object.fromEntries(new URLSearchParams(location.search))));
 </script>
 </body>
 </html>

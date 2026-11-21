@@ -13,22 +13,28 @@ figcaption{font-size:14px} a{color:#B83A20}
 ul{margin:0;padding-left:20px;color:#5C4F44;line-height:1.5}</style></head>
 <body><main>
   <h1>Jamster — screens</h1>
-  <p>The app's screens, designed on the design system, on a landscape phone (844 × 390). Boards with working controls are live: tap gaps and card halves on Placing and Challengers guess, toggle Named it on the reveal, and pick playlists on the account screen.</p>
+  <p>The app's screens as built, on the design system, on a landscape phone (844 × 390). A board shows the variants that look different side by side (host and guest, the player on turn and the others). Smaller differences (a caption, one more button, another sentence) stay in the board's props, the canvas's Tweaks; in a preview, pass them as a query: <code>RoomGone.html?reason=closed</code>, <code>AddPlayer.html?kind=rename</code>, <code>Reconnecting.html?state=failed</code>. Boards with working controls are live: tap gaps on Placing and Challenger's guess, toggle Named the song on the reveal, pick sources on Your songs, step the settings, and pick a speaker.</p>
 
   <section class="item">
     <h2>Entry</h2>
     <div class="grid">
-      <figure><iframe src="Main.html" title="Home" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="Main.html">Home</a></figcaption></figure>
+      <figure><iframe src="Main.html" title="Home, logged out" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="Main.html">Home, logged out</a></figcaption></figure>
+      <figure><iframe src="Main.html?state=loggedIn" title="Home, logged in" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="Main.html?state=loggedIn">Home, logged in</a></figcaption></figure>
       <figure><iframe src="SignInError.html" title="Sign-in error" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="SignInError.html">Sign-in error</a></figcaption></figure>
-      <figure><iframe src="Account.html" title="Account &amp; library" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="Account.html">Account &amp; library</a></figcaption></figure>
+      <figure><iframe src="Account.html" title="Your account" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="Account.html">Your account</a></figcaption></figure>
+      <figure><iframe src="Account.html?popup=delete" title="Delete your account?" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="Account.html?popup=delete">Delete your account?</a></figcaption></figure>
+      <figure><iframe src="Library.html" title="Your songs" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="Library.html">Your songs</a></figcaption></figure>
+      <figure><iframe src="Library.html?library=none" title="Your songs, before the first import" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="Library.html?library=none">Your songs, before the first import</a></figcaption></figure>
+      <figure><iframe src="Rotate.html" title="Portrait: turn your phone" style="width:390px;height:844px" loading="lazy"></iframe><figcaption><a href="Rotate.html">Portrait: turn your phone</a></figcaption></figure>
     </div>
     <h2 style="margin-top: 16px">Why it looks like this</h2>
     <ul>
       <li>Home is the first impression, so it borrows the cover art: the bobbing cassette from the design system with song cards floating around it.</li>
-      <li>One panel, two paths: join with the four-letter code (no account), or host with Spotify.</li>
-      <li>The sign-in error keeps the Home art and only swaps the panel. It says what happened in plain words and offers the next step. One board covers every reason.</li>
-      <li>Account: the library panel is for choosing what feeds the deck. Liked songs pinned on top, search, All / None, one checkbox per playlist or artist.</li>
-      <li>Re-import and Delete sit together under Your data, out of the way of picking.</li>
+      <li>Home is the one menu outside a room. Logged out: join with the four-letter code (no account), or log in with Spotify. Logged in: who you are with Account, the code, Host a game, and Your songs with its song count (or the import's bar).</li>
+      <li>The sign-in error keeps the Home art and only swaps the panel. It says what happened in plain words and offers the next step. One board covers every reason (see Tweaks).</li>
+      <li>Account is a pop-up over Home: your name (Change), Sign out, and Delete my account, which asks once more in its own pop-up.</li>
+      <li>Your songs picks what feeds the deck: liked songs, top songs, recent plays and playlists, with search and All / None. Picking a source imports it; its row shows a bar while it does. Refresh library and when it was imported sit in the header.</li>
+      <li>Portrait phones get one line asking to turn the phone sideways.</li>
       <li>Only the logo, the tape and the pick cards tilt. The Home slogan is the one exception, cover only.</li>
     </ul>
   </section>
@@ -37,15 +43,17 @@ ul{margin:0;padding-left:20px;color:#5C4F44;line-height:1.5}</style></head>
     <h2>Joining a room</h2>
     <div class="grid">
       <figure><iframe src="JoinName.html" title="Join: your name" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="JoinName.html">Join: your name</a></figcaption></figure>
-      <figure><iframe src="GuestLobby.html" title="Lobby (guest)" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="GuestLobby.html">Lobby (guest)</a></figcaption></figure>
+      <figure><iframe src="RoomGone.html" title="No such room, room closed" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="RoomGone.html">No such room, room closed</a></figcaption></figure>
+      <figure><iframe src="Waiting.html" title="Waiting" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="Waiting.html">Waiting</a></figcaption></figure>
       <figure><iframe src="Feedback.html" title="Action feedback" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="Feedback.html">Action feedback</a></figcaption></figure>
     </div>
     <h2 style="margin-top: 16px">Why it looks like this</h2>
     <ul>
-      <li>Joining asks for a name only. The people already at the table show beside it, so you know you're in the right room.</li>
+      <li>Joining asks for a name only. The people already at the table show beside it, so you know you're in the right room. Signed in, the field starts with the first word of your Spotify name.</li>
       <li>Every screen around the game says where you are in the header: Mara's room, players, First to N.</li>
-      <li>Guests can add their library later from the lobby. It's optional and says the account needs the host's approval.</li>
-      <li>Action feedback is one toast at a time, bottom centre, gone after 4 seconds. Playback problems are toasts too (music dropped → Retry, speaker failed → Change), not screens of their own.</li>
+      <li>A code that leads nowhere, or a room the host closed, gets the Home art with what happened and Back.</li>
+      <li>While there's nothing else to show (joining, signing in, the server gone), the logo and one line.</li>
+      <li>Action feedback is one toast at a time, bottom centre, gone after 4 seconds. Music that didn't start is a toast with Retry, not a screen of its own.</li>
       <li>Toast wording: what happened, then one short fact. Nothing more.</li>
     </ul>
   </section>
@@ -53,53 +61,67 @@ ul{margin:0;padding-left:20px;color:#5C4F44;line-height:1.5}</style></head>
   <section class="item">
     <h2>Before the game</h2>
     <div class="grid">
-      <figure><iframe src="Lobby.html" title="Lobby (host)" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="Lobby.html">Lobby (host)</a></figcaption></figure>
+      <figure><iframe src="Lobby.html" title="Lobby, host" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="Lobby.html">Lobby, host</a></figcaption></figure>
+      <figure><iframe src="Lobby.html?role=guest" title="Lobby, guest" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="Lobby.html?role=guest">Lobby, guest</a></figcaption></figure>
       <figure><iframe src="Settings.html" title="Game settings" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="Settings.html">Game settings</a></figcaption></figure>
-      <figure><iframe src="Playback.html" title="Speaker &amp; playback test" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="Playback.html">Speaker &amp; playback test</a></figcaption></figure>
-      <figure><iframe src="AddPlayer.html" title="Add a player" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="AddPlayer.html">Add a player</a></figcaption></figure>
+      <figure><iframe src="Settings.html?role=guest" title="Game settings, guest" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="Settings.html?role=guest">Game settings, guest</a></figcaption></figure>
+      <figure><iframe src="Playback.html" title="Speaker &amp; playback mode" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="Playback.html">Speaker &amp; playback mode</a></figcaption></figure>
+      <figure><iframe src="AddPlayer.html" title="Add local player, change your name" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="AddPlayer.html">Add local player, change your name</a></figcaption></figure>
       <figure><iframe src="Dealing.html" title="Dealing" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="Dealing.html">Dealing</a></figcaption></figure>
     </div>
     <h2 style="margin-top: 16px">Why it looks like this</h2>
     <ul>
-      <li>Host lobby in three columns: getting people in (code, QR, copy link), who's in, and setup with Start game.</li>
+      <li>One lobby for everyone, in three columns: getting people in (code, QR, copy link), who's in, and setup. The host gets Close room and Start game; a guest gets Leave room and Waiting for Mara.</li>
+      <li>Each player renames their own seat (pencil); the host removes the others (✕). The Music badge marks whose Spotify plays.</li>
       <li>Local players have no phone. The host adds them here and plays their turns on this device.</li>
-      <li>Music and Rules are two matching rows with the same Change button. The details live on their own screens.</li>
-      <li>The speaker gets its own screen because it's the most common thing to go wrong: pick a device, play 5 seconds, confirm you heard it.</li>
-      <li>Settings are one line each: steppers and toggles, plain numbers, no coins.</li>
-      <li>Dealing shows each opening card as it lands, so the wait reads as work.</li>
-      <li>Middle dots only in the header; everywhere else commas and full stops.</li>
+      <li>Music plays on, Your songs and Rules are matching rows with the same button: Change (View for a guest's rules, Sign in without Spotify). The details live on their own screens.</li>
+      <li>The speaker screen picks how the room hears the music (one speaker or everyone's own) and your device; the picked device has Test, which plays 10 seconds of one of your songs.</li>
+      <li>Settings are one line each: steppers and toggles, plain numbers, no coins. A guest sees the values.</li>
+      <li>Dealing shows each opening card face up as it lands, so the wait reads as work.</li>
+      <li>Closing the room takes a second tap. Middle dots only in the header; everywhere else commas and full stops.</li>
     </ul>
   </section>
 
   <section class="item">
     <h2>During the game</h2>
-    <p>One round, in order, then the menu and the pop-ups over it.</p>
+    <p>One round, in order, then the menu and the pop-ups over it. Each phase is shown for the device that acts and for the ones that watch.</p>
     <div class="grid">
-      <figure><iframe src="GamePlacing.html" title="1 · Placing" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="GamePlacing.html">1 · Placing</a></figcaption></figure>
-      <figure><iframe src="GameChallenge.html" title="2 · Challenge" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="GameChallenge.html">2 · Challenge</a></figcaption></figure>
-      <figure><iframe src="GameGuess.html" title="3 · Challengers guess" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="GameGuess.html">3 · Challengers guess</a></figcaption></figure>
-      <figure><iframe src="GameReveal.html" title="4 · Reveal &amp; result" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="GameReveal.html">4 · Reveal &amp; result</a></figcaption></figure>
-      <figure><iframe src="GameMenu.html" title="Game menu" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="GameMenu.html">Game menu</a></figcaption></figure>
+      <figure><iframe src="GamePlacing.html" title="1 · Placing, the player on turn" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="GamePlacing.html">1 · Placing, the player on turn</a></figcaption></figure>
+      <figure><iframe src="GamePlacing.html?view=watching" title="1 · Placing, watching" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="GamePlacing.html?view=watching">1 · Placing, watching</a></figcaption></figure>
+      <figure><iframe src="GamePlacing.html?view=away" title="1 · Placing, the player on turn is away (host)" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="GamePlacing.html?view=away">1 · Placing, the player on turn is away (host)</a></figcaption></figure>
+      <figure><iframe src="GameChallenge.html" title="2 · Challenge, on your own phone" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="GameChallenge.html">2 · Challenge, on your own phone</a></figcaption></figure>
+      <figure><iframe src="GameChallenge.html?view=several" title="2 · Challenge, the host for several local players" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="GameChallenge.html?view=several">2 · Challenge, the host for several local players</a></figcaption></figure>
+      <figure><iframe src="GameGuess.html" title="3 · Challenger&#x27;s guess, the challenger" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="GameGuess.html">3 · Challenger&#x27;s guess, the challenger</a></figcaption></figure>
+      <figure><iframe src="GameReveal.html" title="4 · Reveal, host" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="GameReveal.html">4 · Reveal, host</a></figcaption></figure>
+      <figure><iframe src="GameReveal.html?view=guest&amp;named=yes" title="4 · Reveal, everyone else, song named" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="GameReveal.html?view=guest&amp;named=yes">4 · Reveal, everyone else, song named</a></figcaption></figure>
+      <figure><iframe src="GameReveal.html?outcome=stolen" title="4 · Reveal, the card stolen" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="GameReveal.html?outcome=stolen">4 · Reveal, the card stolen</a></figcaption></figure>
+      <figure><iframe src="GameMenu.html" title="Game menu, host" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="GameMenu.html">Game menu, host</a></figcaption></figure>
+      <figure><iframe src="GameMenu.html?role=guest" title="Game menu, guest" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="GameMenu.html?role=guest">Game menu, guest</a></figcaption></figure>
       <figure><iframe src="Standings.html" title="Scoreboard" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="Standings.html">Scoreboard</a></figcaption></figure>
+      <figure><iframe src="Playback.html?view=game" title="Speaker, during the game" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="Playback.html?view=game">Speaker, during the game</a></figcaption></figure>
       <figure><iframe src="Reconnecting.html" title="Reconnecting" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="Reconnecting.html">Reconnecting</a></figcaption></figure>
     </div>
     <h2 style="margin-top: 16px">Why it looks like this</h2>
     <ul>
-      <li>Landscape keeps cards near-square, like real cards; the whole round fits one screen.</li>
-      <li>The timeline owns the full width at the bottom. Fixed 112px cards with dashed + gaps; tap a gap or either half of a card. Too many cards: it scrolls sideways, with a bar.</li>
-      <li>One centre panel holds the only decision right now: Lock it in, Challenge / Pass, Lock guess, Next song. Big targets for tipsy thumbs.</li>
-      <li>The host plays for local players inside the UI, on each player's own row. No "play as" dropdown.</li>
-      <li>The tape is always visible: reels and bounce show music is playing. Restart is a small icon beside the timer, since it's rarely used.</li>
-      <li>A compact scoreboard on every screen: initial, cards, tokens. Tapping it opens the full scoreboard.</li>
-      <li>Every pick is the same yellow card with a name. Locked picks turn tinted; the one guessing now stays bright, and so does their row.</li>
-      <li>Challengers guess in the order they challenged; guesses are visible, not secret.</li>
-      <li>Reveal: green ✓ and red ✕ marks with initials, same size and height. Library credit up front; the year shows only on the tape and the timeline.</li>
+      <li>Landscape phone (844×390). Cards stay near-square, like real cards; the whole round fits one screen.</li>
+      <li>Timeline owns the full width at the bottom. Fixed 112px cards; tap a dashed + gap to place the pick. Too many cards: it scrolls sideways (the mouse wheel too), with a bar.</li>
+      <li>One centre panel holds the only decision right now, with the phase name top left and the countdown ring top right. Every button in it has the same height and lettering.</li>
+      <li>Placing: Lock it in, Skip song ●1 and Buy this card ●3 (the player on turn buys the card in play instead of guessing). An away player's turn can be skipped by the host, with a second tap.</li>
+      <li>Challenge: the first to challenge is the only challenger. One device, one decision: a single Challenge ●1 for your own player, a row each when the host decides for several local players.</li>
+      <li>The host plays only for local players, inside the UI (per-player rows). No "play as" dropdown.</li>
+      <li>Only the host reveals early and judges Named the song; the host and the player on turn may restart the song.</li>
+      <li>Tape always visible: reels and bounce show music is playing.</li>
+      <li>Compact scoreboard on every screen: initial, cards, tokens. Tap it for the full scoreboard.</li>
+      <li>Every pick is the same yellow card with a name; a locked pick turns tinted.</li>
+      <li>Reveal: the cover, title, artist and whose libraries it came from; the board's ✓ / ✕ marks say who was right. A card that went elsewhere shows dashed where it belongs.</li>
+      <li>Only the host moves on: Named the song ●+1, Keep listening, Next song. Everyone else sees "Mara named the song ●+1" once it's given.</li>
       <li>One countdown style everywhere: the filling ring.</li>
-      <li>Named it is a single toggle. Buy a card stays (3 tokens, from the rules).</li>
-      <li>Wording is plain and short: "Challenge", "Guessing…", "Is that right?".</li>
-      <li>The gear menu is a centred pop-up, like the others, with only what's needed mid-game: where the music plays (Change), Scoreboard, End game.</li>
-      <li>Restart stays on the tape. Dropped playback is handled by a toast with Retry.</li>
-      <li>The scoreboard shows progress to the goal, tokens and each player's timeline in short form. The player on turn is highlighted.</li>
+    </ul>
+    <h2 style="margin-top: 16px">The menu and its pop-ups</h2>
+    <ul>
+      <li>The gear menu is a centred pop-up, like the others, with only what's needed mid-game: where the music plays (Change), Scoreboard, and End game (second tap) for the host or Leave game for a guest.</li>
+      <li>No "play as" option: the board already follows whose turn it is.</li>
+      <li>Scoreboard: best first, progress to the goal, tokens and each player's timeline in short form. On turn, Leading, Local player and That's you as notes; the player on turn is highlighted.</li>
       <li>Reconnecting says what happened, then reassures: "Connection dropped. Your progress is safe." The game stays visible behind a dim layer.</li>
     </ul>
   </section>
@@ -107,15 +129,15 @@ ul{margin:0;padding-left:20px;color:#5C4F44;line-height:1.5}</style></head>
   <section class="item">
     <h2>After the game</h2>
     <div class="grid">
-      <figure><iframe src="Winner.html" title="Winner" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="Winner.html">Winner</a></figcaption></figure>
+      <figure><iframe src="Winner.html" title="Winner, host" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="Winner.html">Winner, host</a></figcaption></figure>
+      <figure><iframe src="Winner.html?role=guest" title="Winner, guest" style="width:844px;height:390px" loading="lazy"></iframe><figcaption><a href="Winner.html?role=guest">Winner, guest</a></figcaption></figure>
     </div>
     <h2 style="margin-top: 16px">Why it looks like this</h2>
     <ul>
       <li>It reuses the Home art, but the floating cards are the winner's own timeline. The card that won it sits in front, in the card-just-won style.</li>
-      <li>"Mara wins!" is the one big line in Rubik Mono One. One sentence below names the near misses.</li>
+      <li>"Mara wins!" is the one big line in Rubik Mono One ("Mara and Sam win!" on a tie). One sentence below names the near misses.</li>
       <li>The text has its own block, so a long name pushes the art down instead of covering it.</li>
-      <li>Final scoreboard on the right; Play again and Back to the lobby at the bottom.</li>
+      <li>Final scoreboard on the right. The host gets Play again and Back to the lobby; everyone else Waiting for Mara and Leave room.</li>
     </ul>
-    <p style="margin-top: 10px">Not designed yet: a guest's in-game menu (leaving a running game), and portrait phones.</p>
   </section>
 </main></body></html>

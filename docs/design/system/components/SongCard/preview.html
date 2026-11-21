@@ -1,15 +1,15 @@
-<!-- @dsCard group="Board" height=170 subtitle="card · gap · pick now / locked · won with ✓ · wrong guess ✕" -->
+<!-- @dsCard group="Board" height=170 subtitle="card · gap · pick now / locked · won with ✓ · wrong guess ✕ · went elsewhere" -->
 <!doctype html>
 <html lang="en">
 <head><meta charset="utf-8"><title>SongCard — preview</title></head>
 <body>
 <div class="jm-stage" style="gap: 10px; padding-top: 28px">
-  <div class="jm-card"><span class="jm-mark jm-mark--wrong" role="img" aria-label="Jonas guessed between 1975 and 1994: wrong"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>J</span><span class="jm-card__year">1975</span><span class="jm-card__title">Bohemian Rhapsody</span><span class="jm-card__artist">Queen</span></div>
-  <button type="button" class="jm-gap" aria-label="Put it here"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
-  <button type="button" class="jm-gap" aria-label="Selected" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+  <div class="jm-card"><span class="jm-mark jm-mark--wrong jm-mark--before" role="img" aria-label="Jonas guessed before 1975: wrong"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>J</span><span class="jm-card__year">1975</span><span class="jm-card__title">Bohemian Rhapsody</span><span class="jm-card__artist">Queen</span><span class="jm-mark jm-mark--wrong" role="img" aria-label="Sam guessed 1975 to 1995: wrong"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>S</span></div>
+  <button type="button" class="jm-gap" aria-label="Put it here: between 1975 and 1995"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
   <div class="jm-card jm-card--mystery"><span class="jm-card__year">????</span><span class="jm-card__title">Sam's pick</span></div>
-  <div class="jm-card jm-card--mystery jm-card--pick-done"><span class="jm-card__year">????</span><span class="jm-card__title">Jonas's pick</span></div>
-  <div class="jm-card jm-card--new"><span class="jm-mark jm-mark--right" role="img" aria-label="Mara placed it here: right"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>M</span><span class="jm-card__year">1995</span><span class="jm-card__title">Wonderwall</span><span class="jm-card__artist">Oasis</span></div>
+  <div class="jm-card jm-card--mystery jm-card--pick-done"><span class="jm-card__year">????</span><span class="jm-card__title">Mara's pick</span></div>
+  <div class="jm-card jm-card--new"><span class="jm-card__year">1995</span><span class="jm-card__title">Wonderwall</span><span class="jm-card__artist">Oasis</span><span class="jm-mark jm-mark--right" role="img" aria-label="Mara placed it 1975 to 2008: right"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>M</span></div>
+  <div class="jm-card jm-card--ghost"><span class="jm-card__year">1995</span><span class="jm-card__title">Wonderwall</span><span class="jm-card__artist">Oasis</span><span class="jm-mark jm-mark--right" role="img" aria-label="Sam guessed 1975 to 2008: right"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>S</span></div>
 </div>
 </body>
 </html>

@@ -82,7 +82,7 @@ Remove an item once the backend provides it and the screen uses it.
 
 Nothing is missing at the moment.
 
-One thing is left out on purpose: the Account screen's design also lists the artists a player follows.
+One thing is left out on purpose: the deck can't be fed from the artists a player follows.
 Development Mode has no artist top tracks, and album tracks come without the ISRC the year lookup needs, so an artist's songs would cost many requests and still lack years.
 
 ## Setup

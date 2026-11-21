@@ -8,22 +8,28 @@
 <body>
 <div class="jm-stage" style="flex-direction: column; align-items: stretch; gap: 14px">
   <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center">
-    <button type="button" class="jm-btn jm-btn--primary">Challenge</button>
+    <button type="button" class="jm-btn jm-btn--primary">Challenge <span class="jm-token">1</span></button>
     <button type="button" class="jm-btn">Skip song <span class="jm-token">1</span></button>
-    <button type="button" class="jm-btn jm-btn--toggle" aria-pressed="false">Named it <span class="jm-token">+1</span></button>
-    <button type="button" class="jm-btn jm-btn--toggle" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>Named it <span class="jm-token">+1</span></button>
-    <button type="button" class="jm-btn jm-btn--icon" aria-label="Pass"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
-    <button type="button" class="jm-btn jm-btn--icon-sm" aria-label="Restart the song"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><path d="M3 3v5h5"></path></svg></button>
-    <button type="button" class="jm-btn jm-btn--icon" aria-label="Game menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
-    <button type="button" class="jm-btn jm-btn--icon jm-btn--bare" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"></path></svg></button>
+    <button type="button" class="jm-btn jm-btn--toggle" aria-pressed="false">Named the song <span class="jm-token">+1</span></button>
+    <button type="button" class="jm-btn jm-btn--toggle" aria-pressed="true">Named the song <span class="jm-token">+1</span></button>
+    <button type="button" class="jm-btn jm-btn--toggle jm-btn--check" aria-pressed="true"><span class="jm-btn__check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"></path></svg></span>On</button>
+    <button type="button" class="jm-btn jm-btn--danger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"></path></svg>Delete my account</button>
+    <button type="button" class="jm-btn jm-btn--dark">End game</button>
+  </div>
+  <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center">
+    <button type="button" class="jm-btn jm-btn--nav" style="width: 220px">Scoreboard <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
+    <button type="button" class="jm-btn jm-btn--icon" aria-label="Game menu: playback device, scoreboard, end game"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
+    <button type="button" class="jm-btn jm-btn--icon" aria-label="Back to the lobby"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg></button>
+    <button type="button" class="jm-btn jm-btn--icon-sm" aria-label="Restart the song from the beginning"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><path d="M3 3v5h5"></path></svg></button>
+    <button type="button" class="jm-btn jm-btn--icon jm-btn--bare" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"></path></svg></button>
+    <button type="button" class="jm-btn jm-btn--icon jm-btn--bare" aria-label="Change your name"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16zM13 7l4 4"></path></svg></button>
     <span class="jm-chip">QZRK</span>
-    <span class="jm-status">Guessing…</span>
+    <span class="jm-status">Waiting for Mara</span>
     <span class="jm-status jm-status--quiet">Passed</span>
   </div>
-  <div style="display: flex; gap: 10px; width: 520px">
-    <button type="button" class="jm-btn jm-btn--primary jm-btn--xl" style="width: 240px">Lock it in</button>
-    <button type="button" class="jm-btn jm-btn--lg">Keep listening</button>
-    <button type="button" class="jm-btn jm-btn--primary jm-btn--next"><span style="display: inline-flex; align-items: center; gap: 6px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 5l10 7-10 7z" fill="currentColor"></path><path d="M19 5v14"></path></svg>Next song</span></button>
+  <div style="display: flex; gap: 10px; width: 620px">
+    <button type="button" class="jm-btn jm-btn--primary jm-btn--xl" style="width: 240px">Start game</button>
+    <button type="button" class="jm-btn jm-btn--primary jm-btn--next" style="flex: 0 0 200px">Play again</button>
   </div>
 </div>
 </body>

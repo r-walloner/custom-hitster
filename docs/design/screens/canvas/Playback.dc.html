@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Speaker and playback test</title>
+<title>Jamster – where the music plays</title>
 <script src="./support.js"></script>
 <link rel="stylesheet" href="ds/jamster/tokens.css">
 <link rel="stylesheet" href="ds/jamster/components/bundle.css">
@@ -10,97 +10,135 @@
 <body>
 <x-dc>
 <helmet>
-<link href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&amp;family=Bricolage+Grotesque:opsz,wght@12..96,400..800&amp;family=DM+Mono:wght@500&amp;display=swap" rel="stylesheet">
-<style>body{margin:0}</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&amp;family=Bricolage+Grotesque:opsz,wght@12..96,400..800&amp;family=DM+Mono:wght@500&amp;display=swap">
+<style>
+body{margin:0}
+.pb-col{min-height:0;display:flex;flex-direction:column;gap:8px}
+.pb-col p{margin:0}
+.pb-col .jm-label{margin:0 0 2px}
+.pb .jm-option{min-height:60px;padding-top:8px;padding-bottom:8px}
+.pb .jm-player__name{gap:2px;white-space:normal}
+</style>
 </helmet>
-<main class="jm-screen" style="font-family: var(--font-ui); color: var(--ink);">
+<main class="jm-screen">
   <header class="jm-header">
-    <a href="Lobby.dc.html" class="jm-btn jm-btn--icon" aria-label="Back to the lobby" style="text-decoration: none;">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
-    </a>
+    <a href="{{backTo}}" class="jm-btn jm-btn--icon" aria-label="{{backLabel}}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg></a>
     <h1 class="jm-headline">Where should the music play?</h1>
     <span class="jm-header__spacer"></span>
-    <button class="jm-btn">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7"></path><path d="M4 4v4.5h4.5"></path></svg>
-      Refresh list
-    </button>
+    <button type="button" class="jm-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7"></path><path d="M4 4v4.5h4.5"></path></svg>Refresh devices</button>
+    <a href="{{backTo}}" class="jm-btn jm-btn--primary" style="min-width: 96px; font-size: 15px">Done</a>
   </header>
-  <div style="flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) 310px; gap: 16px; padding-top: 2px;">
-    <section style="display: flex; flex-direction: column; gap: 6px;" aria-label="Spotify devices">
-      <button aria-pressed="true" style="display: flex; align-items: center; gap: 12px; height: 52px; padding: 0 14px; box-sizing: border-box; border: 2px solid var(--ink); border-radius: var(--radius-card); background: var(--turn-tint); box-shadow: var(--shadow-sticker-sm); color: var(--ink); text-align: left; cursor: pointer; font-family: var(--font-ui);">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="12" rx="2"></rect><path d="M8 21h8"></path></svg>
-        <span class="jm-player__name">Living room TV<small>Spotify on the TV</small></span>
-        <span style="width: 20px; height: 20px; box-sizing: border-box; border-radius: 50%; border: 2px solid var(--ink); background: var(--ink); box-shadow: inset 0 0 0 3px var(--turn-tint);"></span>
-      </button>
-      <button aria-pressed="false" style="display: flex; align-items: center; gap: 12px; height: 52px; padding: 0 14px; box-sizing: border-box; border: 2px solid var(--sand-line); border-radius: var(--radius-card); background: var(--label); color: var(--ink); text-align: left; cursor: pointer; font-family: var(--font-ui);">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="1.5"></rect><path d="M2 19h20"></path></svg>
-        <span class="jm-player__name">This browser<small>Mara's laptop</small></span>
-        <span style="width: 20px; height: 20px; box-sizing: border-box; border-radius: 50%; border: 2px solid var(--ink-subtle);"></span>
-      </button>
-      <button aria-pressed="false" style="display: flex; align-items: center; gap: 12px; height: 52px; padding: 0 14px; box-sizing: border-box; border: 2px solid var(--sand-line); border-radius: var(--radius-card); background: var(--label); color: var(--ink); text-align: left; cursor: pointer; font-family: var(--font-ui);">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2"></rect><path d="M11 18.5h2"></path></svg>
-        <span class="jm-player__name">Mara's iPhone<small>Phone</small></span>
-        <span style="width: 20px; height: 20px; box-sizing: border-box; border-radius: 50%; border: 2px solid var(--ink-subtle);"></span>
-      </button>
-      <button disabled aria-pressed="false" style="display: flex; align-items: center; gap: 12px; height: 52px; padding: 0 14px; box-sizing: border-box; border: 2px dashed var(--slot-dash); border-radius: var(--radius-card); background: none; color: var(--ink-muted); text-align: left; font-family: var(--font-ui); cursor: not-allowed;">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="3" width="12" height="18" rx="2"></rect><circle cx="12" cy="14" r="3"></circle><path d="M12 7h.01"></path></svg>
-        <span class="jm-player__name" style="color: var(--ink-muted);">Kitchen speaker<small>Asleep. Open Spotify on it to wake it.</small></span>
-      </button>
-      <p class="jm-caption" style="margin: 2px 0 0;">Don't see your speaker? Play anything on it from Spotify once, then refresh.</p>
+
+  <div class="pb" style="flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); column-gap: 28px; padding-top: 4px">
+    <section class="pb-col" aria-labelledby="p-left">
+      <sc-if value="{{modes}}" hint-placeholder-val="{{true}}">
+        <h2 id="p-left" class="jm-label">Playback mode</h2>
+        <sc-for list="{{modeRows}}" as="m" hint-placeholder-count="2">
+          <button type="button" class="jm-option" aria-pressed="{{m.pressed}}" onClick="{{m.pick}}">
+            <sc-if value="{{m.one}}" hint-placeholder-val="{{true}}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="3" width="12" height="18" rx="2"></rect><circle cx="12" cy="14" r="3"></circle><path d="M12 7h.01"></path></svg></sc-if>
+            <sc-if value="{{m.many}}" hint-placeholder-val="{{false}}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2"></rect><path d="M11 18.5h2"></path></svg></sc-if>
+            <span class="jm-player__name">{{m.name}}<small>{{m.detail}}</small></span>
+            <span class="jm-option__dot"></span>
+          </button>
+        </sc-for>
+      </sc-if>
+      <sc-if value="{{modeText}}" hint-placeholder-val="{{false}}">
+        <h2 id="p-left" class="jm-label">Playback mode</h2>
+        <p class="jm-section">One speaker</p>
+        <p class="jm-caption">You're all in the same room. Music plays on one speaker. The host picks this.</p>
+      </sc-if>
+      <sc-if value="{{inGame}}" hint-placeholder-val="{{false}}">
+        <h2 id="p-left" class="jm-label">Next song</h2>
+        <p class="jm-section">Plays on {{deviceName}}</p>
+        <p class="jm-caption">{{nextCaption}}</p>
+        <sc-if value="{{failed}}" hint-placeholder-val="{{false}}">
+          <button type="button" class="jm-btn jm-btn--primary" style="align-self: flex-start; margin-top: 4px">Play it there now</button>
+        </sc-if>
+      </sc-if>
     </section>
 
-    <section class="jm-panel" style="padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 8px;" aria-labelledby="test-head">
-      <span class="jm-label">Playback test</span>
-
-      <sc-if value="{{ready}}" hint-placeholder-val="{{false}}">
-        <h2 id="test-head" class="jm-headline">Play 5 seconds on Living room TV?</h2>
-        <p class="jm-meta" style="margin: 0;">Turn the volume up. We play a song nobody holds, so nothing gets spoiled.</p>
-        <button class="jm-btn jm-btn--primary jm-btn--xl" style="margin-top: auto;">Play a test</button>
-      </sc-if>
-
-      <sc-if value="{{playing}}" hint-placeholder-val="{{true}}">
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <span class="jm-ring" style="--p: 40;"><span>3</span></span>
-          <div style="display: flex; flex-direction: column; gap: 1px;">
-            <h2 class="jm-headline">Can you hear it?</h2>
-            <span class="jm-moment__sub">Playing on Living room TV</span>
-          </div>
+    <section class="pb-col" aria-labelledby="p-speaker">
+      <h2 id="p-speaker" class="jm-label">Your speaker</h2>
+      <div class="jm-scroll-area" style="flex: 1">
+        <div class="jm-scroll-area__box" style="display: flex; flex-direction: column; gap: 8px; padding: 0 3px 3px 0">
+          <sc-for list="{{devices}}" as="d" hint-placeholder-count="4">
+            <sc-if value="{{d.plain}}" hint-placeholder-val="{{true}}">
+              <button type="button" class="jm-option" aria-pressed="{{d.pressed}}" onClick="{{d.pick}}">
+                <sc-if value="{{d.tv}}" hint-placeholder-val="{{true}}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="12" rx="2"></rect><path d="M8 21h8"></path></svg></sc-if><sc-if value="{{d.laptop}}" hint-placeholder-val="{{false}}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="1.5"></rect><path d="M2 19h20"></path></svg></sc-if><sc-if value="{{d.phone}}" hint-placeholder-val="{{false}}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2"></rect><path d="M11 18.5h2"></path></svg></sc-if><sc-if value="{{d.music}}" hint-placeholder-val="{{false}}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V6l10-2v12"></path><circle cx="6.5" cy="18" r="2.5"></circle><circle cx="16.5" cy="16" r="2.5"></circle></svg></sc-if>
+                <span class="jm-player__name">{{d.name}}<small>{{d.detail}}</small></span>
+                <span class="jm-option__dot"></span>
+              </button>
+            </sc-if>
+            <sc-if value="{{d.boxed}}" hint-placeholder-val="{{false}}">
+              <div class="jm-option-box">
+                <button type="button" class="jm-option" aria-pressed="true">
+                  <sc-if value="{{d.tv}}" hint-placeholder-val="{{true}}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="12" rx="2"></rect><path d="M8 21h8"></path></svg></sc-if><sc-if value="{{d.laptop}}" hint-placeholder-val="{{false}}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="1.5"></rect><path d="M2 19h20"></path></svg></sc-if><sc-if value="{{d.phone}}" hint-placeholder-val="{{false}}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2"></rect><path d="M11 18.5h2"></path></svg></sc-if><sc-if value="{{d.music}}" hint-placeholder-val="{{false}}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V6l10-2v12"></path><circle cx="6.5" cy="18" r="2.5"></circle><circle cx="16.5" cy="16" r="2.5"></circle></svg></sc-if>
+                  <span class="jm-player__name">{{d.name}}<small>{{d.detail}}</small></span>
+                  <span class="jm-option__dot"></span>
+                </button>
+                <div class="jm-option-box__more">
+                  <button type="button" class="jm-btn" style="flex: 0 0 auto; width: 96px; min-height: 36px" aria-pressed="{{testing}}" onClick="{{toggleTest}}">
+                    <sc-if value="{{idle}}" hint-placeholder-val="{{true}}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"></path><path d="M15.5 9a4 4 0 0 1 0 6"></path></svg>Test</sc-if>
+                    <sc-if value="{{playing}}" hint-placeholder-val="{{false}}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"></path><path d="M16 9l5 6M21 9l-5 6"></path></svg>Stop</sc-if>
+                  </button>
+                  <span class="jm-caption">Plays 10 seconds of a song from your library.</span>
+                </div>
+              </div>
+            </sc-if>
+          </sc-for>
+          <p class="jm-caption" style="margin: 2px 0 0">Don't see your device? Play anything on it from Spotify, then refresh.</p>
         </div>
-        <p class="jm-meta" style="margin: 0;">If nothing comes out, check the TV's volume and that Spotify is open on it.</p>
-        <div class="jm-pair" style="margin-top: auto;">
-          <button class="jm-btn">Nothing</button>
-          <button class="jm-btn jm-btn--primary">Yes, I hear it</button>
-        </div>
-      </sc-if>
-
-      <sc-if value="{{heard}}" hint-placeholder-val="{{false}}">
-        <span class="jm-verdict">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
-          Sound works
-        </span>
-        <h2 class="jm-headline">Living room TV is ready.</h2>
-        <p class="jm-meta" style="margin: 0;">Every song in this game plays there.</p>
-        <a href="Lobby.dc.html" class="jm-btn jm-btn--primary jm-btn--xl" style="margin-top: auto; text-decoration: none;">Use this speaker</a>
-      </sc-if>
-
-      <sc-if value="{{failed}}" hint-placeholder-val="{{false}}">
-        <span class="jm-verdict jm-verdict--wrong">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
-          No sound
-        </span>
-        <h2 class="jm-headline">Nothing came out of Living room TV.</h2>
-        <p class="jm-meta" style="margin: 0;">Open Spotify on the TV so it wakes up, check the volume, then try again. Or pick another speaker.</p>
-        <button class="jm-btn jm-btn--primary jm-btn--xl" style="margin-top: auto;">Try again</button>
-      </sc-if>
+        <div class="jm-scroll-area__bar" aria-hidden="true"><span style="top: 0; height: 72%"></span></div>
+      </div>
     </section>
   </div>
 </main>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"test":{"editor":"enum","options":["ready","playing","heard","failed"],"default":"playing"},"$preview":{"width":844,"height":390}}'>
+<script type="text/x-dc" data-dc-script data-props='{"view":{"editor":"enum","options":["host","testing","guest","game","gameFailed"],"default":"host"},"$preview":{"width":844,"height":390}}'>
 class Component extends DCLogic {
   renderVals() {
-    const t = this.props.test ?? "playing";
-    return { ready: t === "ready", playing: t === "playing", heard: t === "heard", failed: t === "failed" };
+    const v = this.props.view ?? "host";
+    const inGame = v === "game" || v === "gameFailed";
+    const st = this.state || {};
+    const picked = st.picked ?? "tv";
+    const mode = st.mode ?? "local";
+    const testing = st.testing ?? (v === "testing");
+    const LIST = [
+      { id: "tv", icon: "tv", name: "Living room TV", detail: "TV, playing now" },
+      { id: "mac", icon: "laptop", name: "Mara's MacBook", detail: "Computer" },
+      { id: "phone", icon: "phone", name: "Mara's iPhone", detail: "Phone" },
+      { id: "any", icon: "music", name: "Whichever device is active", detail: "The one Spotify last played on" }
+    ];
+    const devices = LIST.map((d) => {
+      const on = d.id === picked;
+      // The test plays a song, so the picked row holds it only before the game.
+      const boxed = on && !inGame;
+      return { ...d, tv: d.icon === "tv", laptop: d.icon === "laptop", phone: d.icon === "phone", music: d.icon === "music", pressed: String(on), plain: !boxed, boxed,
+        pick: () => this.setState({ picked: d.id, testing: false }) };
+    });
+    const MODES = [
+      { mode: "local", name: "One speaker", detail: "You're all in the same room. Music plays on one speaker." },
+      { mode: "remote", name: "Separate speakers", detail: "You're in different locations. Music plays on everyone's device at the same time." }
+    ];
+    return {
+      backTo: inGame ? "GamePlacing.dc.html" : "Lobby.dc.html",
+      backLabel: inGame ? "Back to the game" : "Back to the lobby",
+      modes: v === "host" || v === "testing",
+      modeText: v === "guest",
+      inGame,
+      failed: v === "gameFailed",
+      deviceName: LIST.find((d) => d.id === picked).name,
+      nextCaption: v === "gameFailed"
+        ? "The song didn't start: No Spotify device found. Open Spotify on a device and choose it here."
+        : "The song playing now stays where it is.",
+      modeRows: MODES.map((m) => ({ ...m, one: m.mode === "local", many: m.mode === "remote",
+        pressed: String(m.mode === mode), pick: () => this.setState({ mode: m.mode }) })),
+      devices,
+      testing: String(testing),
+      idle: !testing,
+      playing: testing,
+      toggleTest: () => this.setState({ testing: !testing })
+    };
   }
 }
 </script>

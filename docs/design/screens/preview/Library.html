@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jamster – your songs</title>
+<link rel="stylesheet" href="../../system/tokens.css">
+<link rel="stylesheet" href="../../system/components/bundle.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&amp;family=Bricolage+Grotesque:opsz,wght@12..96,400..800&amp;family=DM+Mono:wght@500&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</head>
+<body>
+<div id="dc-root"></div>
+<template id="dc-template"><main class="jm-screen">
+  <header class="jm-header">
+    <a href="Main.dc.html" class="jm-btn jm-btn--icon" aria-label="Back to the start"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg></a>
+    <h1 class="jm-headline">Your songs</h1>
+    <span class="jm-header__spacer"></span>
+    <sc-if value="{{hasSources}}" hint-placeholder-val="{{true}}">
+      <span class="jm-caption">Imported 3 days ago</span>
+      <button type="button" class="jm-btn" disabled="{{importing}}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7"></path><path d="M4 4v4.5h4.5"></path></svg>Refresh library</button>
+    </sc-if>
+    <a href="Main.dc.html" class="jm-btn jm-btn--primary" style="min-width: 96px; font-size: 15px">Done</a>
+  </header>
+
+  <div style="flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 6px; padding: 6px 0 2px">
+    <sc-if value="{{hasSources}}" hint-placeholder-val="{{true}}">
+      <section class="jm-panel" style="flex: 1; min-height: 0; padding: 12px 14px 10px; display: flex; flex-direction: column; gap: 8px" aria-labelledby="lib-head">
+        <div style="display: flex; align-items: baseline; gap: 10px">
+          <h1 id="lib-head" class="jm-section">What goes in the deck</h1>
+          <span class="jm-caption" style="margin-left: auto" aria-live="polite">{{summary}}</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 6px">
+          <div class="jm-search" style="flex: 1; min-width: 0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="M20 20l-4.2-4.2"></path></svg><input type="search" placeholder="Search your playlists" aria-label="Search your playlists" value="{{query}}" onInput="{{onSearch}}"></div>
+          <button type="button" class="jm-btn" style="padding: 0 12px" onClick="{{selectAll}}">All</button>
+          <button type="button" class="jm-btn" style="padding: 0 12px" onClick="{{selectNone}}">None</button>
+        </div>
+        <div class="jm-scroll-area" style="flex: 1; margin: 0 -6px">
+          <div class="jm-scroll-area__box" style="padding: 0 2px" role="group" aria-label="Library sources">
+            <sc-for list="{{items}}" as="it" hint-placeholder-count="6">
+              <label class="jm-check-row {{it.cls}}">
+                <input class="jm-check" type="checkbox" checked="{{it.on}}" onChange="{{it.toggle}}">
+                <span class="jm-check-row__text">
+                  <span class="jm-check-row__name">{{it.name}}</span>
+                  <sc-if value="{{it.importing}}" hint-placeholder-val="{{false}}">
+                    <span class="jm-caption" style="display: flex; align-items: center; gap: 8px"><span class="jm-progress jm-progress--sm" style="flex: none; width: 96px; height: 8px; border-width: 1.5px" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" aria-label="Importing {{it.name}}"><span style="width: 40%"></span></span>Importing…</span>
+                  </sc-if>
+                  <sc-if value="{{it.still}}" hint-placeholder-val="{{true}}">
+                    <span class="jm-caption">{{it.detail}}</span>
+                  </sc-if>
+                </span>
+                <span class="jm-check-row__count">{{it.count}}</span>
+              </label>
+            </sc-for>
+            <sc-if value="{{noMatch}}" hint-placeholder-val="{{false}}">
+              <p class="jm-caption" style="margin: 12px 6px">Nothing called that in your library.</p>
+            </sc-if>
+          </div>
+          <div class="jm-scroll-area__bar" aria-hidden="true"><span style="top: 0; height: 62%"></span></div>
+        </div>
+      </section>
+    </sc-if>
+
+    <sc-if value="{{listing}}" hint-placeholder-val="{{false}}">
+      <section class="jm-panel" style="flex: 1; display: flex; align-items: center; justify-content: center" aria-live="polite">
+        <p class="jm-meta" style="margin: 0">Looking through your library…</p>
+      </section>
+    </sc-if>
+
+    <sc-if value="{{empty}}" hint-placeholder-val="{{false}}">
+      <section class="jm-panel" style="flex: 1; padding: 12px 14px 10px; display: flex; flex-direction: column; gap: 8px" aria-labelledby="lib-head-2">
+        <span class="jm-label">Your library</span>
+        <h1 id="lib-head-2" class="jm-moment__headline">{{emptyHead}}</h1>
+        <p class="jm-meta" style="margin: 0; max-width: 420px">{{emptyBody}}</p>
+        <div style="margin-top: auto; display: flex; align-items: center; gap: 12px">
+          <button type="button" class="jm-btn jm-btn--primary" style="min-width: 180px; font-size: 15px">{{emptyAction}}</button>
+          <span class="jm-caption">Takes a few seconds.</span>
+        </div>
+      </section>
+    </sc-if>
+  </div>
+</main></template>
+<script src="../../exploration/preview/dc-runtime.js"></script>
+<script>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.props.library ?? "picker";
+    const SOURCES = [
+      { id: "liked", name: "Liked songs", kind: "Everything you've hearted", songs: 1206 },
+      { id: "top", name: "Your top songs", kind: "Your most played songs", songs: 50 },
+      { id: "recent", name: "Recently played", kind: "Your last 50 plays", songs: 50 },
+      { id: "p1", name: "Car karaoke", kind: "Playlist", songs: 84 },
+      { id: "p2", name: "90s forever", kind: "Playlist", songs: 132 },
+      { id: "p3", name: "Wedding dance floor", kind: "Collaborative playlist", songs: 158 },
+      { id: "p4", name: "Sunday morning", kind: "Playlist", songs: 41 },
+      { id: "p5", name: "Running", kind: "Playlist", songs: 66 },
+      { id: "p6", name: "Lo-fi to study to", kind: "Playlist", songs: 210 }
+    ];
+    const fallback = { liked: true, top: true, p1: true, p2: true, p3: true };
+    const st = this.state || {};
+    const sel = st.sel || fallback;
+    const query = st.query || "";
+    const q = query.trim().toLowerCase();
+    const setSel = (next) => this.setState({ sel: next });
+    const fmt = (n) => n.toLocaleString("en-US");
+    const shown = SOURCES.filter((x) => !q || x.name.toLowerCase().includes(q) || x.kind.toLowerCase().includes(q));
+    const items = shown.map((x) => {
+      const on = !!sel[x.id];
+      // While importing: the top songs are being copied (Spotify gives no count before), Car karaoke waits its turn.
+      const importing = s === "importing" && x.id === "top" && on;
+      return {
+        name: x.name,
+        on,
+        importing,
+        still: !importing,
+        detail: s === "importing" && x.id === "p1" && on ? "Waiting to import" : x.kind,
+        count: importing ? "" : fmt(x.songs),
+        cls: on ? "" : "jm-check-row--off",
+        toggle: () => setSel({ ...sel, [x.id]: !on })
+      };
+    });
+    const picked = SOURCES.filter((x) => sel[x.id]);
+    const songs = picked.reduce((a, x) => a + x.songs, 0);
+    const hasSources = s === "picker" || s === "importing";
+    return {
+      hasSources,
+      importing: s === "importing",
+      listing: s === "listing",
+      empty: s === "none" || s === "error",
+      emptyHead: s === "error" ? "Your library couldn't be read." : "Your library isn't in yet.",
+      emptyBody: s === "error"
+        ? "Spotify's request limit is used up. Try again in a little while."
+        : "We list your liked songs, playlists and top songs. You pick which go into the deck.",
+      emptyAction: s === "error" ? "Try again" : "Import my library",
+      items,
+      query,
+      noMatch: shown.length === 0,
+      summary: picked.length + " of " + SOURCES.length + " selected, " + fmt(songs) + " songs in total",
+      onSearch: (e) => this.setState({ query: e.target.value }),
+      selectAll: () => setSel(Object.fromEntries(SOURCES.map((x) => [x.id, true]))),
+      selectNone: () => setSel({})
+    };
+  }
+}
+DCRuntime.mount(Component, document.getElementById('dc-root'), document.getElementById('dc-template').content, Object.assign({"library": "picker"}, Object.fromEntries(new URLSearchParams(location.search))));
+</script>
+</body>
+</html>

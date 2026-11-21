@@ -6,13 +6,16 @@
 <link rel="stylesheet" href="../components/bundle.css">
 <meta charset="utf-8"><title>Progress — preview</title></head>
 <body>
-<div class="jm-stage" style="flex-direction: column; align-items: stretch; gap: 12px; width: 420px">
-  <div class="jm-progress" role="progressbar" aria-label="Import progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="42"><span style="width: 42%"></span></div>
-  <span class="jm-meta"><b style="color: var(--ink)">812 of 1,940 songs</b>, checking release years on MusicBrainz</span>
-  <div style="display: flex; align-items: center; gap: 8px; width: 180px">
-    <div class="jm-progress jm-progress--sm" style="flex: 1" role="progressbar" aria-label="Mara's cards" aria-valuemin="0" aria-valuemax="10" aria-valuenow="6"><span style="width: 60%"></span></div>
-    <span style="font: 800 15px/1 var(--font-ui); font-variant-numeric: tabular-nums">6/10</span>
+<div class="jm-stage" style="align-items: flex-start; flex-wrap: nowrap; gap: 32px">
+  <div style="display: flex; flex-direction: column; gap: 12px; width: 300px">
+    <div class="jm-progress" role="progressbar" aria-label="Cards dealt" aria-valuemin="0" aria-valuemax="4" aria-valuenow="2"><span style="width: 50%"></span></div>
+    <div style="display: flex; align-items: center; gap: 8px; width: 180px">
+      <div class="jm-progress jm-progress--sm" style="flex: 1" role="progressbar" aria-label="Mara: 6 of 10 cards" aria-valuemin="0" aria-valuemax="10" aria-valuenow="6"><span style="width: 60%"></span></div>
+      <span style="font: 800 15px/1 var(--font-ui); font-variant-numeric: tabular-nums">6/10</span>
+    </div>
   </div>
+  <span class="jm-importing"><span class="jm-caption">Importing…</span><span class="jm-progress jm-progress--sm" role="progressbar" aria-label="Importing your songs" aria-valuemin="0" aria-valuemax="100" aria-valuenow="42"><span style="width: 42%"></span></span></span>
+  <div class="jm-setting" style="width: 240px; border: 0"><div class="jm-setting__text"><span class="jm-label">Your songs</span><span class="jm-setting__value"><span class="jm-importing jm-importing--strong"><span>Importing…</span><span class="jm-progress jm-progress--sm" role="progressbar" aria-label="Importing your songs" aria-valuemin="0" aria-valuemax="100" aria-valuenow="42"><span style="width: 42%"></span></span></span></span></div></div>
 </div>
 </body>
 </html>

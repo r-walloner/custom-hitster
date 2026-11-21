@@ -9,7 +9,7 @@ import re
 from pathlib import Path
 
 SYSTEM = Path(__file__).resolve().parent.parent / "system"
-ORDER = ["Cover", "Logo", "Button", "TapePlayer", "SongCard", "Board", "MomentPanel", "Scoreboard", "YearChip", "Header", "Dialog", "Toast", "Input", "Rows", "Stepper", "Progress", "Hero"]
+ORDER = ["Cover", "Logo", "Button", "TapePlayer", "SongCard", "Board", "MomentPanel", "Scoreboard", "YearChip", "Header", "Dialog", "Toast", "Input", "Rows", "Stepper", "Progress", "ScrollArea", "Hero"]
 LINKS = '<meta name="viewport" content="width=device-width, initial-scale=1">\n<link rel="stylesheet" href="../tokens.css">\n<link rel="stylesheet" href="../components/bundle.css">\n'
 
 INDEX_HEAD = """<!doctype html>

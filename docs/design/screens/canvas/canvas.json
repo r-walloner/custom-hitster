@@ -4,18 +4,18 @@
   "boards": {
     "Account.dc.html": {
       "h": 390,
-      "is_interactive": true,
-      "title": "Account & library",
+      "title": "Your account (pop-up)",
       "w": 844,
       "x": 1848,
       "y": 0
     },
     "AddPlayer.dc.html": {
       "h": 390,
-      "title": "Add a player",
+      "title": "Add a player, change a name",
       "w": 844,
       "x": 2772,
-      "y": 1500
+      "y": 1500,
+      "is_interactive": true
     },
     "Dealing.dc.html": {
       "h": 390,
@@ -28,7 +28,7 @@
       "h": 390,
       "title": "Action feedback",
       "w": 844,
-      "x": 1848,
+      "x": 2772,
       "y": 750
     },
     "GameChallenge.dc.html": {
@@ -40,55 +40,59 @@
     },
     "GameGuess.dc.html": {
       "h": 390,
-      "is_interactive": true,
-      "title": "3 · Challengers guess",
+      "title": "3 · Challenger's guess",
       "w": 844,
       "x": 1848,
-      "y": 2250
+      "y": 2250,
+      "is_interactive": true
     },
     "GameMenu.dc.html": {
       "h": 390,
       "title": "Game menu",
       "w": 844,
       "x": 0,
-      "y": 2743
+      "y": 2743,
+      "is_interactive": true
     },
     "GamePlacing.dc.html": {
       "h": 390,
-      "is_interactive": true,
       "title": "1 · Placing",
       "w": 844,
       "x": 0,
-      "y": 2250
+      "y": 2250,
+      "is_interactive": true
     },
     "GameReveal.dc.html": {
       "h": 390,
-      "is_interactive": true,
       "title": "4 · Reveal & result",
       "w": 844,
       "x": 2772,
-      "y": 2250
-    },
-    "GuestLobby.dc.html": {
-      "h": 390,
-      "title": "Lobby (guest)",
-      "w": 844,
-      "x": 924,
-      "y": 750
+      "y": 2250,
+      "is_interactive": true
     },
     "JoinName.dc.html": {
       "h": 390,
       "title": "Join: your name",
       "w": 844,
       "x": 0,
-      "y": 750
+      "y": 750,
+      "is_interactive": true
+    },
+    "Library.dc.html": {
+      "h": 390,
+      "title": "Your songs",
+      "w": 844,
+      "x": 2772,
+      "y": 0,
+      "is_interactive": true
     },
     "Lobby.dc.html": {
       "h": 390,
-      "title": "Lobby (host)",
+      "title": "Lobby (host and guest)",
       "w": 844,
       "x": 0,
-      "y": 1500
+      "y": 1500,
+      "is_interactive": true
     },
     "Main.dc.html": {
       "h": 390,
@@ -99,10 +103,11 @@
     },
     "Playback.dc.html": {
       "h": 390,
-      "title": "Speaker & playback test",
+      "title": "Speaker & playback mode",
       "w": 844,
       "x": 1848,
-      "y": 1500
+      "y": 1500,
+      "is_interactive": true
     },
     "Reconnecting.dc.html": {
       "h": 390,
@@ -111,12 +116,27 @@
       "x": 1848,
       "y": 2743
     },
+    "RoomGone.dc.html": {
+      "h": 390,
+      "title": "Room not found or closed",
+      "w": 844,
+      "x": 924,
+      "y": 750
+    },
+    "Rotate.dc.html": {
+      "h": 844,
+      "title": "Portrait: turn your phone",
+      "w": 390,
+      "x": 3696,
+      "y": 0
+    },
     "Settings.dc.html": {
       "h": 390,
       "title": "Game settings",
       "w": 844,
       "x": 924,
-      "y": 1500
+      "y": 1500,
+      "is_interactive": true
     },
     "SignInError.dc.html": {
       "h": 390,
@@ -131,6 +151,13 @@
       "w": 844,
       "x": 924,
       "y": 2743
+    },
+    "Waiting.dc.html": {
+      "h": 390,
+      "title": "Waiting",
+      "w": 844,
+      "x": 1848,
+      "y": 750
     },
     "Winner.dc.html": {
       "h": 390,
@@ -180,7 +207,7 @@
     },
     "t_entry": {
       "kind": "title1",
-      "maxW": 2692,
+      "maxW": 4086,
       "text": "Entry",
       "w": 240,
       "x": 0,
@@ -196,7 +223,7 @@
     },
     "t_join": {
       "kind": "title1",
-      "maxW": 2692,
+      "maxW": 3616,
       "text": "Joining a room",
       "w": 240,
       "x": 0,
@@ -212,42 +239,42 @@
     },
     "why": {
       "fill": "orange",
-      "text": "• Landscape phone (844×390). Cards stay near-square, like real cards; the whole round fits one screen.\n• Timeline owns the full width at the bottom. Fixed 112px cards, dashed + gaps; tap a gap or either half of a card. Too many cards: it scrolls sideways, with a bar.\n• One centre panel holds the only decision right now: Lock it in, Challenge / Pass, Lock guess, Next song. Big targets for tipsy thumbs.\n• The host plays for local players inside the UI (per-player buttons). No \"play as\" dropdown.\n• Tape always visible: reels and bounce show music is playing. Restart is a small icon beside the timer, since it's rarely used.\n• Compact scoreboard on every screen: initial, cards, tokens.\n• Every pick is the same yellow card with a name. Locked picks turn tinted; the one guessing now stays bright, and so does their row.\n• Challengers guess in the order they challenged; guesses are visible, not secret.\n• Reveal: green ✓ and red ✕ chips with initials, same size and height. Library credit up front; the year shows only on tape and timeline.\n• One countdown style everywhere: the filling ring.\n• Named it is a single toggle. Buy a card stays (3 tokens, from the rules).\n• Wording: plain and short. \"Challenge\", \"Guessing…\", \"Is that right?\".",
+      "text": "• Landscape phone (844×390). Cards stay near-square, like real cards; the whole round fits one screen.\n• Timeline owns the full width at the bottom. Fixed 112px cards; tap a dashed + gap to place the pick. Too many cards: it scrolls sideways (the mouse wheel too), with a bar.\n• One centre panel holds the only decision right now, with the phase name top left and the countdown ring top right. Every button in it has the same height and lettering.\n• Placing: Lock it in, Skip song ●1 and Buy this card ●3 (the player on turn buys the card in play instead of guessing). An away player's turn can be skipped by the host, with a second tap.\n• Challenge: the first to challenge is the only challenger. One device, one decision: a single Challenge ●1 for your own player, a row each when the host decides for several local players.\n• The host plays only for local players, inside the UI (per-player rows). No \"play as\" dropdown.\n• Only the host reveals early and judges Named the song; the host and the player on turn may restart the song.\n• Tape always visible: reels and bounce show music is playing.\n• Compact scoreboard on every screen: initial, cards, tokens. Tap it for the full scoreboard.\n• Every pick is the same yellow card with a name; a locked pick turns tinted.\n• Reveal: the cover, title, artist and whose libraries it came from; the board's ✓ / ✕ marks say who was right. A card that went elsewhere shows dashed where it belongs.\n• Only the host moves on: Named the song ●+1, Keep listening, Next song. Everyone else sees \"Mara named the song ●+1\" once it's given.\n• One countdown style everywhere: the filling ring.",
       "w": 560,
       "x": -640,
       "y": 2250
     },
     "why_after": {
       "fill": "orange",
-      "text": "• It reuses the Home art, but the floating cards are the winner's own timeline. The card that won it sits in front, in the card-just-won style.\n• \"Mara wins!\" is the one big line in Rubik Mono One. One sentence below names the near misses.\n• The text has its own block, so a long name pushes the art down instead of covering it.\n• Final scoreboard on the right; Play again and Back to the lobby at the bottom.",
+      "text": "• It reuses the Home art, but the floating cards are the winner's own timeline. The card that won it sits in front, in the card-just-won style.\n• \"Mara wins!\" is the one big line in Rubik Mono One (\"Mara and Sam win!\" on a tie). One sentence below names the near misses.\n• The text has its own block, so a long name pushes the art down instead of covering it.\n• Final scoreboard on the right. The host gets Play again and Back to the lobby; everyone else Waiting for Mara and Leave room.",
       "w": 560,
       "x": -640,
       "y": 3493
     },
     "why_entry": {
       "fill": "orange",
-      "text": "• Home is the first impression, so it borrows the cover art: the bobbing cassette from the design system with song cards floating around it.\n• One panel, two paths: join with the four-letter code (no account), or host with Spotify.\n• The sign-in error keeps the Home art and only swaps the panel. It says what happened in plain words and offers the next step. One board covers every reason (see Tweaks).\n• Account: the library panel is for choosing what feeds the deck. Liked songs pinned on top, search, All / None, one checkbox per playlist or artist.\n• Re-import and Delete sit together under Your data, out of the way of picking.\n• Only the logo, the tape and the pick cards tilt. The Home slogan is the one exception, cover only.",
+      "text": "• Home is the first impression, so it borrows the cover art: the bobbing cassette from the design system with song cards floating around it.\n• Home is the one menu outside a room. Logged out: join with the four-letter code (no account), or log in with Spotify. Logged in: who you are with Account, the code, Host a game, and Your songs with its song count (or the import's bar).\n• The sign-in error keeps the Home art and only swaps the panel. It says what happened in plain words and offers the next step. One board covers every reason (see Tweaks).\n• Account is a pop-up over Home: your name (Change), Sign out, and Delete my account, which asks once more in its own pop-up.\n• Your songs picks what feeds the deck: liked songs, top songs, recent plays and playlists, with search and All / None. Picking a source imports it; its row shows a bar while it does. Refresh library and when it was imported sit in the header.\n• Portrait phones get one line asking to turn the phone sideways.\n• Only the logo, the tape and the pick cards tilt. The Home slogan is the one exception, cover only.",
       "w": 560,
       "x": -640,
       "y": 0
     },
     "why_join": {
       "fill": "orange",
-      "text": "• Joining asks for a name only. The people already at the table show beside it, so you know you're in the right room.\n• Every screen around the game says where you are in the header: Mara's room, players, First to N.\n• Guests can add their library later from the lobby. It's optional and says the account needs the host's approval.\n• Action feedback is one toast at a time, bottom centre, gone after 4 seconds. Playback problems are toasts too (music dropped → Retry, speaker failed → Change), not screens of their own.\n• Toast wording: what happened, then one short fact. Nothing more.",
+      "text": "• Joining asks for a name only. The people already at the table show beside it, so you know you're in the right room. Signed in, the field starts with the first word of your Spotify name.\n• Every screen around the game says where you are in the header: Mara's room, players, First to N.\n• A code that leads nowhere, or a room the host closed, gets the Home art with what happened and Back.\n• While there's nothing else to show (joining, signing in, the server gone), the logo and one line.\n• Action feedback is one toast at a time, bottom centre, gone after 4 seconds. Music that didn't start is a toast with Retry, not a screen of its own.\n• Toast wording: what happened, then one short fact. Nothing more.",
       "w": 560,
       "x": -640,
       "y": 750
     },
     "why_lobby": {
       "fill": "orange",
-      "text": "• Host lobby in three columns: getting people in (code, QR, copy link), who's in, and setup with Start game.\n• Local players have no phone. The host adds them here and plays their turns on this device.\n• Music and Rules are two matching rows with the same Change button. The details live on their own screens.\n• The speaker gets its own screen because it's the most common thing to go wrong: pick a device, play 5 seconds, confirm you heard it.\n• Settings are one line each: steppers and toggles, plain numbers, no coins.\n• Dealing shows each opening card as it lands, so the wait reads as work.\n• Middle dots only in the header; everywhere else commas and full stops.",
+      "text": "• One lobby for everyone, in three columns: getting people in (code, QR, copy link), who's in, and setup. The host gets Close room and Start game; a guest gets Leave room and Waiting for Mara.\n• Each player renames their own seat (pencil); the host removes the others (✕). The Music badge marks whose Spotify plays.\n• Local players have no phone. The host adds them here and plays their turns on this device.\n• Music plays on, Your songs and Rules are matching rows with the same button: Change (View for a guest's rules, Sign in without Spotify). The details live on their own screens.\n• The speaker screen picks how the room hears the music (one speaker or everyone's own) and your device; the picked device has Test, which plays 10 seconds of one of your songs.\n• Settings are one line each: steppers and toggles, plain numbers, no coins. A guest sees the values.\n• Dealing shows each opening card face up as it lands, so the wait reads as work.\n• Closing the room takes a second tap. Middle dots only in the header; everywhere else commas and full stops.",
       "w": 560,
       "x": -640,
       "y": 1500
     },
     "why_menu": {
       "fill": "orange",
-      "text": "• The gear menu is a centred pop-up, like the others, with only what's needed mid-game: where the music plays (Change), Scoreboard, End game.\n• No \"play as\" option: the board already follows whose turn it is.\n• Restart stays on the tape. Dropped playback is handled by a toast with Retry.\n• Scoreboard: progress to the goal, tokens and each player's timeline in short form. The player on turn is highlighted.\n• Tapping the mini scoreboard on the right of the game screen opens the full scoreboard too.\n• Reconnecting says what happened, then reassures: \"Connection dropped. Your progress is safe.\" The game stays visible behind a dim layer.",
+      "text": "• The gear menu is a centred pop-up, like the others, with only what's needed mid-game: where the music plays (Change), Scoreboard, and End game (second tap) for the host or Leave game for a guest.\n• No \"play as\" option: the board already follows whose turn it is.\n• Scoreboard: best first, progress to the goal, tokens and each player's timeline in short form. On turn, Leading, Local player and That's you as notes; the player on turn is highlighted.\n• Reconnecting says what happened, then reassures: \"Connection dropped. Your progress is safe.\" The game stays visible behind a dim layer.",
       "w": 560,
       "x": 2772,
       "y": 2743
@@ -257,9 +284,11 @@
     "Main.dc.html",
     "SignInError.dc.html",
     "Account.dc.html",
+    "Library.dc.html",
+    "Rotate.dc.html",
     "JoinName.dc.html",
-    "GuestLobby.dc.html",
-    "Reconnecting.dc.html",
+    "RoomGone.dc.html",
+    "Waiting.dc.html",
     "Feedback.dc.html",
     "Lobby.dc.html",
     "Settings.dc.html",
@@ -272,6 +301,7 @@
     "GameReveal.dc.html",
     "GameMenu.dc.html",
     "Standings.dc.html",
+    "Reconnecting.dc.html",
     "Winner.dc.html"
   ],
   "pages": [],

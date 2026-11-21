@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Add a player</title>
+<title>Jamster – add a player</title>
 <script src="./support.js"></script>
 <link rel="stylesheet" href="ds/jamster/tokens.css">
 <link rel="stylesheet" href="ds/jamster/components/bundle.css">
@@ -10,34 +10,53 @@
 <body>
 <x-dc>
 <helmet>
-<link href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&amp;family=Bricolage+Grotesque:opsz,wght@12..96,400..800&amp;family=DM+Mono:wght@500&amp;display=swap" rel="stylesheet">
-<style>body{margin:0}</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&amp;family=Bricolage+Grotesque:opsz,wght@12..96,400..800&amp;family=DM+Mono:wght@500&amp;display=swap">
+<style>
+body{margin:0}
+</style>
 </helmet>
-<div style="position: relative; width: 844px; height: 390px; overflow: hidden; font-family: var(--font-ui); color: var(--ink); background: var(--paper);">
-  <div style="position: relative; z-index: 0;"><dc-import name="Lobby" hint-size="844px,390px"></dc-import></div>
-  <div style="position: absolute; inset: 0; background: rgba(42, 33, 28, 0.55);"></div>
-  <section class="jm-panel" role="dialog" aria-modal="true" aria-labelledby="add-head" style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 400px; padding: 14px 18px 18px; display: flex; flex-direction: column; gap: 10px; box-shadow: var(--shadow-sticker-lg);">
-    <div style="display: flex; align-items: center; gap: 8px;">
-      <h1 id="add-head" class="jm-headline" style="flex: 1;">Add local player</h1>
-      <button class="jm-btn jm-btn--icon" aria-label="Close" style="border-color: transparent; background: none; margin: -12px -10px -12px 0;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"></path></svg>
-      </button>
+<div class="jm-overlay" style="width: 844px; height: 390px">
+  <div class="jm-overlay__under"><dc-import name="Lobby" hint-size="844px,390px"></dc-import></div>
+  <div class="jm-scrim"></div>
+  <section class="jm-dialog" role="dialog" aria-modal="true" aria-labelledby="name-head">
+    <div class="jm-dialog__head">
+      <h1 id="name-head" class="jm-headline">{{title}}</h1>
+      <button type="button" class="jm-btn jm-btn--icon jm-btn--bare" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"></path></svg></button>
     </div>
-    <p class="jm-meta" style="margin: 0;">Plays on this device. No phone needed.</p>
-    <div style="display: flex; align-items: center; gap: 10px;">
-      <span class="jm-avatar jm-p5" style="width: 44px; height: 44px; font-size: 17px;">I</span>
-      <input id="new-name" type="text" class="jm-input" aria-label="Name" value="Ilse" maxlength="16" style="flex: 1; min-width: 0; height: 48px; box-sizing: border-box; border-radius: var(--radius-card); background: var(--paper); padding: 0 14px; font: 800 20px/1 var(--font-ui); color: var(--ink);">
-    </div>
-    <div class="jm-pair" style="margin-top: 6px;">
-      <button class="jm-btn">Cancel</button>
-      <button class="jm-btn jm-btn--primary">Add Ilse</button>
-    </div>
+    <form style="display: flex; flex-direction: column; gap: 10px" onSubmit="{{noop}}">
+      <sc-if value="{{add}}" hint-placeholder-val="{{true}}">
+        <p class="jm-meta">Plays on this device. No phone needed.</p>
+      </sc-if>
+      <div class="jm-dialog__name">
+        <span class="jm-avatar jm-avatar--xl {{color}}" aria-hidden="true">{{initial}}</span>
+        <input type="text" class="jm-input" aria-label="Name" value="{{name}}" onInput="{{onName}}" maxlength="16" autocomplete="nickname">
+      </div>
+      <div class="jm-pair" style="margin-top: 6px">
+        <button type="button" class="jm-btn">Cancel</button>
+        <button type="submit" class="jm-btn jm-btn--primary" disabled="{{empty}}">{{submit}}</button>
+      </div>
+    </form>
   </section>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":844,"height":390}}'>
+<script type="text/x-dc" data-dc-script data-props='{"kind":{"editor":"enum","options":["add","rename"],"default":"add"},"$preview":{"width":844,"height":390}}'>
 class Component extends DCLogic {
-  renderVals() { return {}; }
+  renderVals() {
+    const add = (this.props.kind ?? "add") === "add";
+    const name = this.state.name ?? (add ? "Ilse" : "Mara");
+    const shown = name.trim();
+    return {
+      add,
+      title: add ? "Add local player" : "Change your name",
+      color: add ? "jm-p5" : "jm-p1",
+      name,
+      initial: (shown || "?").charAt(0).toUpperCase(),
+      empty: !shown,
+      submit: add ? (shown ? "Add " + shown : "Add") : "Save",
+      onName: (e) => this.setState({ name: e.target.value.slice(0, 16) }),
+      noop: (e) => e.preventDefault()
+    };
+  }
 }
 </script>
 </body>

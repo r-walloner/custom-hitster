@@ -24,7 +24,6 @@ body { margin: 0; font-family: var(--font-ui); background: var(--paper); color: 
 .jm-btn--dark { background: var(--ink); color: var(--paper); }
 .jm-btn--icon { width: var(--touch-min); height: var(--touch-min); padding: 0; border-radius: 50%; }
 .jm-btn--icon-sm { width: 36px; height: 36px; min-height: 36px; padding: 0; border-radius: 50%; }
-.jm-btn--square { width: var(--touch-min); height: var(--touch-min); padding: 0; border-radius: var(--radius-card); }
 .jm-btn--xl { width: 100%; min-height: 56px; font: 800 19px/1 var(--font-ui); }
 .jm-btn--xl.jm-btn--primary { box-shadow: var(--shadow-sticker); }
 .jm-btn--lg { min-height: 52px; padding: 0 12px; font: 700 13px/1 var(--font-ui); }
@@ -33,12 +32,20 @@ body { margin: 0; font-family: var(--font-ui); background: var(--paper); color: 
 .jm-btn--next svg { width: 18px; height: 18px; }
 .jm-btn--toggle { font-size: 14px; }
 .jm-btn--toggle[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+/* A toggle with a ✓: both paddings wide enough for the ✓, which sits in the left one when pressed, so the label and the width stay put. */
+.jm-btn--check { position: relative; padding-inline: 32px; }
+.jm-btn__check { position: absolute; left: 10px; top: 50%; translate: 0 -50%; display: flex; }
+.jm-btn--danger { color: var(--coral-text); }
+.jm-btn--nav { justify-content: space-between; }
+a.jm-btn { text-decoration: none; color: var(--ink); }
+a.jm-btn--dark { color: var(--paper); }
+a.jm-btn--danger { color: var(--coral-text); }
 .jm-btn svg { width: 16px; height: 16px; flex: 0 0 auto; }
 .jm-btn > .jm-token { margin-left: 2px; }
+.jm-btn .jm-token { font-size: 14px; }
 .jm-btn:disabled, .jm-btn[aria-disabled="true"] { opacity: 0.45; cursor: not-allowed; box-shadow: none; transform: none; }
-.jm-btn:focus-visible, .jm-select:focus-visible, .jm-gap:focus-visible, .jm-card__half:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.jm-btn:focus-visible, .jm-select:focus-visible, .jm-gap:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 .jm-select { height: var(--touch-min); box-sizing: border-box; padding: 0 8px; border-radius: var(--radius-card); border: var(--stroke-control) solid var(--ink); background: var(--label); color: var(--ink); font: 600 13px var(--font-ui); }
-.jm-field { display: inline-flex; align-items: center; gap: 6px; font: 600 13px var(--font-ui); }
 .jm-chip { display: inline-flex; align-items: center; box-sizing: border-box; padding: 3px 8px; border-radius: var(--radius-chip); border: var(--stroke-control) solid var(--ink); background: var(--label); font: 500 12px/16px var(--font-mono); letter-spacing: 0.14em; }
 .jm-status { display: inline-flex; align-items: center; height: 36px; padding: 0 12px; border-radius: var(--radius-pill); background: var(--ink); color: var(--paper); font: 700 13px var(--font-ui); white-space: nowrap; }
 .jm-status--quiet { background: none; color: var(--ink-subtle); font-weight: 500; }
@@ -49,6 +56,9 @@ body { margin: 0; font-family: var(--font-ui); background: var(--paper); color: 
 .jm-panel { box-sizing: border-box; background: var(--label); border: var(--stroke-control) solid var(--ink); border-radius: var(--radius-panel); box-shadow: var(--shadow-sticker); padding: 8px 10px; }
 .jm-avatar { width: var(--avatar); height: var(--avatar); flex: 0 0 auto; box-sizing: border-box; border-radius: 50%; border: var(--stroke-control) solid var(--ink); display: inline-flex; align-items: center; justify-content: center; font: 800 11px var(--font-ui); color: var(--ink); background: var(--player-1); }
 .jm-avatar--sm { width: 22px; height: 22px; font-size: 10px; }
+.jm-avatar--lg { width: 28px; height: 28px; font-size: 12px; }
+.jm-avatar--xl { width: 44px; height: 44px; font-size: 17px; }
+.jm-avatar--away { border-style: dashed; } /* reconnecting: a dashed outline, never a colour change */
 .jm-p1 { --pc: var(--player-1); } .jm-p2 { --pc: var(--player-2); } .jm-p3 { --pc: var(--player-3); } .jm-p4 { --pc: var(--player-4); } .jm-p5 { --pc: var(--player-5); }
 .jm-avatar[class*="jm-p"] { background: var(--pc); }
 .jm-token { display: inline-flex; align-items: center; gap: 3px; font: 700 12px var(--font-ui); }
@@ -89,9 +99,7 @@ body { margin: 0; font-family: var(--font-ui); background: var(--paper); color: 
 .jm-card--mystery .jm-card__title { margin: 0; }
 .jm-card--pick-done { background: var(--turn-tint); }
 .jm-card--new { background: var(--turn-tint); box-shadow: var(--shadow-sticker-lg); }
-.jm-card__half { position: absolute; top: -6px; bottom: -8px; width: 50%; background: none; border: 0; padding: 0; cursor: pointer; border-radius: var(--radius-card); }
-.jm-card__half--l { left: 0; } .jm-card__half--r { right: 0; }
-.jm-card__half:hover { background: rgba(251, 227, 196, 0.6); }
+.jm-card--ghost { opacity: 0.6; border-style: dashed; } /* the revealed card where it belongs, on a timeline it did not join */
 .jm-gap { position: relative; z-index: 1; flex: 0 0 var(--gap-w); width: var(--gap-w); height: var(--card-h); box-sizing: border-box; border-radius: var(--radius-card); border: 2px dashed var(--slot-dash); background: none; padding: 0; cursor: pointer; color: var(--ink-muted); display: flex; align-items: center; justify-content: center; }
 .jm-gap::before { content: ""; position: absolute; top: -8px; bottom: -8px; left: -3px; right: -3px; }
 .jm-gap:hover, .jm-gap[aria-pressed="true"] { border-style: solid; border-color: var(--ink); background: var(--turn-tint); color: var(--ink); }
@@ -100,6 +108,9 @@ body { margin: 0; font-family: var(--font-ui); background: var(--paper); color: 
 .jm-mark svg { width: 12px; height: 12px; }
 .jm-mark--right { right: -8px; background: var(--right); color: var(--ink); }
 .jm-mark--wrong { right: -5px; transform: translateX(50%); background: var(--wrong); color: var(--paper); }
+/* A guess for the gap before the first card: on that card's left edge. */
+.jm-mark--before { right: auto; left: -5px; transform: translateX(-50%); }
+.jm-mark--right.jm-mark--before { left: -8px; transform: none; }
 .jm-verdict { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; height: 32px; padding: 0 12px 0 8px; border-radius: var(--radius-pill); border: 2px solid var(--ink); font: 800 14px var(--font-ui); background: var(--right); }
 .jm-verdict--wrong { background: var(--wrong); color: var(--paper); }
 .jm-verdict svg { width: 16px; height: 16px; }
@@ -107,19 +118,32 @@ body { margin: 0; font-family: var(--font-ui); background: var(--paper); color: 
 /* ---------- Board: the active player's timeline ---------- */
 .jm-board { flex: 1; min-height: 0; display: flex; flex-direction: column; }
 .jm-board__head { display: flex; align-items: baseline; gap: 8px; }
+.jm-board__count { font-size: 12px; }
 .jm-board__row { flex: 1; min-height: 0; display: flex; align-items: center; gap: 6px; padding: 4px 4px 8px 2px; }
 .jm-board__row--scroll { overflow-x: auto; overflow-y: hidden; scrollbar-width: none; padding: 6px 4px 4px 2px; }
 .jm-board__row--scroll::-webkit-scrollbar { display: none; }
+.jm-board__row--spaced { gap: 10px; } /* no gaps (challenge, reveal): the wider rhythm */
+.jm-board__row--marks { padding-top: 14px; } /* room above the cards for ✓ / ✕ marks */
 .jm-board__scrollbar { position: relative; flex: 0 0 auto; height: 5px; margin: 2px 4px 0; border-radius: 3px; background: var(--sand); }
 .jm-board__scrollbar > span { position: absolute; top: 0; bottom: 0; left: 0; border-radius: 3px; background: var(--ink-subtle); }
 
 /* ---------- Moment panel: the one decision of the moment ---------- */
-.jm-moment { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; padding: 8px 12px 10px; border-radius: 18px; }
-.jm-moment__head { display: flex; align-items: center; gap: 10px; }
-.jm-moment__head > div:not(.jm-ring) { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+/* The frame is the same in every phase: the phase name (jm-label) first, in the top-left corner; the countdown ring
+   pinned to the top-right corner; one 5px gap between the blocks. */
+.jm-moment { position: relative; flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 5px; padding: 8px 12px 10px; border-radius: 18px; }
+.jm-moment > .jm-label { flex: 0 0 auto; }
+.jm-moment__ring { position: absolute; top: 8px; right: 12px; }
+/* The first block after the ring runs beside it: it leaves the ring's width free and reaches below it. */
+.jm-moment--ring > .jm-moment__ring + * { margin-right: 58px; min-height: 31px; }
 .jm-moment__headline { margin: 0; font: 800 22px/25px var(--font-ui); letter-spacing: -0.015em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.jm-moment__sub { font: 600 13px/17px var(--font-ui); color: var(--ink-muted); }
-.jm-players { flex: 1; min-height: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+.jm-moment__sub { margin: 0; font: 600 13px/17px var(--font-ui); color: var(--ink-muted); }
+/* One decision, centred in the space under the headline: the main button across the full width, its alternatives
+   side by side below it (or the main one alone with --one). */
+.jm-moment__decide { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; align-content: center; gap: 8px; }
+.jm-moment__decide > :first-child { grid-column: 1 / -1; }
+.jm-moment__decide--one { grid-template-columns: 1fr; }
+.jm-moment > .jm-btn--xl { margin-block: auto; } /* a lone main button, centred in the space left */
+.jm-players { flex: 1; min-height: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 48px; align-content: safe center; gap: 6px; overflow-y: auto; scrollbar-width: thin; }
 .jm-player { box-sizing: border-box; display: flex; align-items: center; gap: 7px; padding: 0 4px 0 8px; border-radius: var(--radius-card); background: var(--paper); border: 2px solid transparent; }
 .jm-player--now { background: var(--mustard); border-color: var(--ink); }
 .jm-player .jm-avatar { width: 26px; height: 26px; font-size: 11px; }
@@ -128,19 +152,44 @@ body { margin: 0; font-family: var(--font-ui); background: var(--paper); color: 
 .jm-player .jm-btn { min-height: 44px; font-size: 14px; padding: 0 12px; }
 .jm-player .jm-btn--icon { width: 44px; padding: 0; }
 .jm-player .jm-status { height: 32px; font-size: 12px; }
-.jm-result { flex: 1; min-height: 0; display: flex; gap: 12px; }
-.jm-song { width: 156px; flex: 0 0 auto; box-sizing: border-box; display: flex; flex-direction: column; gap: 1px; padding: 2px 12px 0 0; border-right: 2px solid var(--sand-line); }
-.jm-song__title { margin-top: 2px; font: 800 20px/23px var(--font-ui); }
-.jm-song__artist { font: 600 15px/19px var(--font-ui); color: var(--ink-muted); }
-.jm-song__library { margin-top: auto; display: flex; align-items: center; gap: 6px; font: 700 14px/17px var(--font-ui); }
-.jm-song__library .jm-avatar { width: 26px; height: 26px; font-size: 11px; }
-.jm-song__library small { display: block; font: 500 11px/13px var(--font-ui); color: var(--ink-muted); }
+/* Every button in the panel has the same height and lettering, whatever the phase. */
+.jm-moment .jm-btn { min-height: var(--touch-min); padding: 0 14px; font: 800 15px/1 var(--font-ui); }
+/* The result: the album cover, then the song (title, artist, library credit, a line each, never taller than the cover). */
+.jm-result { flex: 0 0 auto; min-height: 0; display: flex; gap: 12px; }
+.jm-result__cover { flex: 0 0 auto; width: 82px; height: 82px; box-sizing: border-box; border: var(--stroke-control) solid var(--ink); border-radius: 8px; object-fit: cover; background: var(--sand); }
+.jm-result__cover--none { display: flex; align-items: center; justify-content: center; color: var(--ink-subtle); }
+.jm-result__cover--none svg { width: 32px; height: 32px; }
+.jm-song { flex: 1; min-width: 0; max-height: 82px; box-sizing: border-box; display: flex; flex-direction: column; gap: 1px; }
+.jm-song > * { flex-shrink: 0; }
+.jm-song::after { content: ""; order: 1; flex: 0 1 10px; } /* the 10px before the credit: the only part that gives way */
+.jm-song__title { margin: 0; font: 800 18px/20px var(--font-ui); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.jm-song__artist { font: 600 14px/16px var(--font-ui); color: var(--ink-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.jm-song__library { order: 2; display: flex; align-items: center; gap: 6px; font: 700 14px/17px var(--font-ui); }
+/* Up to three avatars, overlapping like stacked stickers, then a "+2" bubble for the rest. */
+.jm-song__avatars { flex: 0 0 auto; display: flex; }
+.jm-song__avatars .jm-avatar { width: 22px; height: 22px; font-size: 11px; }
+.jm-song__avatars > .jm-avatar + .jm-avatar { margin-left: -6px; }
+.jm-song__more { background: var(--sand); font-size: 10px; letter-spacing: -0.02em; }
+.jm-song__credit { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } /* cut short, never wrapped */
+.jm-song__credit-more { flex: 0 0 auto; margin-left: -2px; white-space: nowrap; } /* "and 2 more", never cut */
+/* The row under the result: Named the song, then Keep listening and Next song sharing the rest half each. */
+.jm-moment__actions { flex: 0 0 auto; min-height: var(--touch-min); display: flex; align-items: center; gap: 8px; }
+.jm-moment__actions > .jm-btn + .jm-btn { flex: 1 1 0; min-width: 0; }
+.jm-moment__actions > .jm-btn--primary { box-shadow: var(--shadow-sticker); }
+/* Without buttons, the row holds only "Mara named the song ●+1", hidden until it's true but keeping its space. */
+.jm-named { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 6px; min-height: var(--touch-min); font: 700 14px/16px var(--font-ui); color: var(--ink); white-space: nowrap; }
+.jm-named > .jm-token { margin-left: 2px; }
+.jm-named--off { visibility: hidden; }
+.jm-moment--watch > .jm-result { margin-top: 10px; }
+.jm-moment--watch .jm-moment__actions, .jm-moment--watch .jm-named { min-height: 0; }
+.jm-moment--watch .jm-moment__actions { margin-top: 3px; }
 
 /* ---------- Scoreboard ---------- */
 .jm-scoreboard { width: 76px; flex: 0 0 auto; display: flex; flex-direction: column; gap: 5px; justify-content: center; }
 .jm-scoreboard__row { height: 29px; flex: 0 0 auto; box-sizing: border-box; display: flex; align-items: center; gap: 5px; padding: 0 8px 0 2px; border-radius: var(--radius-pill); background: var(--label); border: 2px solid var(--sand-line); }
 .jm-scoreboard__row--turn { background: var(--turn-tint); border-color: var(--ink); box-shadow: var(--shadow-sticker-sm); }
 .jm-scoreboard__row .jm-avatar { width: 22px; height: 22px; font-size: 10px; }
+button.jm-scoreboard { padding: 0; border: 0; background: none; font: inherit; color: inherit; text-align: inherit; cursor: pointer; } /* tapping it opens the full scoreboard */
 .jm-scoreboard__score { flex: 1; font: 800 15px/1 var(--font-ui); font-variant-numeric: tabular-nums; }
 
 /* ---------- Header and screen frame (landscape phone, 844 × 390) ---------- */
@@ -162,6 +211,12 @@ body { margin: 0; font-family: var(--font-ui); background: var(--paper); color: 
 .jm-dialog__head > .jm-headline { flex: 1; min-width: 0; }
 .jm-dialog__head > .jm-btn--icon { margin: -12px -10px -12px 0; } /* the ✕ keeps its touch size without making the head row taller */
 .jm-btn--bare { border-color: transparent; background: none; box-shadow: none; }
+.jm-dialog p { margin: 0; }
+/* A setting row in a pop-up (Music plays on, Your name) sits between two lines. */
+.jm-dialog .jm-setting { gap: 10px; border-top: 2px solid var(--sand-line); border-bottom: 2px solid var(--sand-line); }
+/* A name pop-up: the avatar it will get beside the field. */
+.jm-dialog__name { display: flex; align-items: center; gap: 10px; }
+.jm-dialog__name .jm-input { flex: 1; min-width: 0; height: 48px; }
 
 /* ---------- Toast: one line of action feedback ---------- */
 .jm-toast { display: inline-flex; align-items: center; gap: 10px; min-height: 52px; max-width: 100%; box-sizing: border-box; padding: 6px 14px 6px 8px; border: var(--stroke-control) solid var(--ink); border-radius: var(--radius-pill); background: var(--label); color: var(--ink); box-shadow: var(--shadow-sticker); font: 600 13px/18px var(--font-ui); }
@@ -171,6 +226,7 @@ body { margin: 0; font-family: var(--font-ui); background: var(--paper); color: 
 .jm-toast__badge svg { width: 16px; height: 16px; }
 .jm-toast__badge--right { background: var(--right); }
 .jm-toast__badge--wrong { background: var(--wrong); color: var(--paper); }
+.jm-toast-dock { position: absolute; left: 50%; bottom: var(--space-16); z-index: 10; transform: translateX(-50%); max-width: calc(100% - 32px); } /* bottom centre of the screen, above the board */
 
 /* ---------- Inputs ---------- */
 .jm-input { width: 100%; height: 52px; box-sizing: border-box; padding: 0 14px; border: var(--stroke-control) solid var(--ink); border-radius: var(--radius-card); background: var(--paper); color: var(--ink); font: 800 20px/1 var(--font-ui); }
@@ -194,14 +250,23 @@ body { margin: 0; font-family: var(--font-ui); background: var(--paper); color: 
 .jm-option[aria-pressed="true"] { border-color: var(--ink); background: var(--turn-tint); box-shadow: var(--shadow-sticker-sm); }
 .jm-option:disabled { border-style: dashed; border-color: var(--slot-dash); background: none; color: var(--ink-muted); cursor: not-allowed; }
 .jm-option__dot { width: 20px; height: 20px; flex: 0 0 auto; box-sizing: border-box; border-radius: 50%; border: 2px solid var(--ink-subtle); }
+.jm-option-box { border: 2px solid var(--ink); border-radius: var(--radius-card); background: var(--turn-tint); box-shadow: var(--shadow-sticker-sm); } /* a picked option with an extra line inside */
+.jm-option-box > .jm-option { border: 0; background: none; box-shadow: none; }
+.jm-option-box__more { display: flex; align-items: center; gap: 12px; padding: 0 14px 12px 48px; } /* lined up under the name */
 .jm-option[aria-pressed="true"] .jm-option__dot { border-color: var(--ink); background: var(--ink); box-shadow: inset 0 0 0 3px var(--turn-tint); }
 .jm-check-row { display: flex; align-items: center; gap: 12px; min-height: 44px; box-sizing: border-box; padding: 3px 8px; border-radius: var(--radius-card); cursor: pointer; }
 .jm-check-row:hover { background: var(--paper); }
+.jm-check-row__text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.jm-check-row__name { font: 700 14px/18px var(--font-ui); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.jm-check-row--off .jm-check-row__name { color: var(--ink-muted); }
+.jm-check-row--pinned { border-bottom: 2px solid var(--sand-line); border-radius: var(--radius-card) var(--radius-card) 0 0; margin-bottom: 2px; }
+.jm-check-row--pinned .jm-check-row__name { font-weight: 800; }
 .jm-check-row__count { font: 700 13px/1 var(--font-ui); font-variant-numeric: tabular-nums; color: var(--ink-muted); }
 .jm-check { appearance: none; -webkit-appearance: none; width: 22px; height: 22px; margin: 0; flex: 0 0 auto; box-sizing: border-box; border: 2px solid var(--ink); border-radius: 6px; background: var(--label); display: grid; place-content: center; cursor: pointer; }
 .jm-check:checked { background: var(--ink); }
 .jm-check:checked::after { content: ""; width: 10px; height: 5px; border: solid var(--paper); border-width: 0 0 2.5px 2.5px; transform: translateY(-1px) rotate(-45deg); }
 .jm-player--list { height: 48px; background: var(--label); border-color: var(--sand-line); }
+.jm-player--list.jm-player--you { background: var(--turn-tint); border-color: var(--ink); } /* the player looking at the screen */
 
 /* ---------- Stepper and segmented toggles ---------- */
 .jm-stepper { display: inline-flex; align-items: center; gap: 6px; }
@@ -213,8 +278,16 @@ body { margin: 0; font-family: var(--font-ui); background: var(--paper); color: 
 .jm-progress { height: 14px; box-sizing: border-box; border: var(--stroke-control) solid var(--ink); border-radius: var(--radius-pill); background: var(--sand); overflow: hidden; }
 .jm-progress > span { display: block; height: 100%; background: var(--coral); }
 .jm-progress--sm { height: 12px; }
+/* An import: "Importing…" over a small bar. --strong where a row's value or a headline goes: their type, a longer bar. */
+.jm-importing { display: inline-flex; flex-direction: column; align-items: flex-start; gap: 3px; }
+.jm-importing .jm-progress { width: 96px; height: 8px; border-width: 1.5px; }
+.jm-importing > .jm-progress > span { transition: width 300ms ease-out; } /* each step slides, so the jumps read as progress */
+.jm-importing--strong { display: flex; align-self: stretch; gap: 4px; }
+.jm-importing--strong .jm-progress { width: 100%; max-width: 180px; height: 10px; }
+.jm-setting__value .jm-importing--strong { line-height: 14px; } /* as tall as the row's button, so the row doesn't grow */
 
 /* ---------- Year chip: a timeline in short form ---------- */
+.jm-year-chips { display: flex; flex-wrap: wrap; gap: 4px; }
 .jm-year-chip { display: inline-flex; align-items: center; padding: 3px 6px; border-radius: var(--radius-chip); border: 2px solid var(--sand-line); background: var(--label); font: 800 12px/14px var(--font-ui); font-variant-numeric: tabular-nums; }
 
 /* ---------- Hero: the cover art on Home, sign-in error and the winner ---------- */
@@ -222,9 +295,29 @@ body { margin: 0; font-family: var(--font-ui); background: var(--paper); color: 
 .jm-tape--slow.is-playing .jm-tape__bob { animation-duration: 1200ms; }
 .jm-float { animation: jm-float 3.6s ease-in-out infinite alternate; }
 @keyframes jm-float { from { transform: translateY(0); } to { transform: translateY(-6px); } }
+/* A cover screen (Home, the sign-in error, a room that's gone): the art on the left, one panel on the right. */
+.jm-screen.jm-cover-screen { display: grid; grid-template-columns: minmax(0, 1fr) 316px; gap: 48px; align-items: center; padding: 24px 40px 24px 32px; }
+.jm-cover-screen__art { height: 334px; }
+.jm-hero__float { position: absolute; }
+.jm-hero__tape { position: absolute; z-index: 2; }
+.jm-cover-screen__logo.jm-logo--xl { position: absolute; left: 6px; top: 6px; z-index: 3; font-size: 28px; line-height: 36px; padding: 3px 18px; }
+.jm-cover-screen__slogan { position: absolute; left: 14px; top: 76px; z-index: 3; margin: 0; max-width: 240px; font: 800 16px/22px var(--font-ui); letter-spacing: -0.01em; transform: rotate(var(--tilt)); transform-origin: left top; }
+.jm-cover-screen__panel { display: flex; flex-direction: column; gap: 10px; padding: 18px 20px; }
+.jm-cover-screen__panel p { margin: 0; }
+.jm-cover-screen__panel .jm-cover-screen__btn { min-height: 46px; font-size: 14px; } /* the panel's big buttons */
+.jm-cover-screen__panel .jm-headline { font-size: 19px; line-height: 23px; }
 .jm-big-moment { margin: 0; font: 400 40px/46px var(--font-display); color: var(--ink); overflow-wrap: anywhere; }
+
+/* ---------- Scroll area: a list that outgrows the screen ---------- */
+.jm-scroll { min-height: 0; overflow-y: auto; scrollbar-width: thin; }
+/* With the timeline's own bar standing up beside it (sand track, ink-subtle thumb) instead of the browser's. */
+.jm-scroll-area { display: flex; gap: 4px; min-height: 0; }
+.jm-scroll-area__box { flex: 1; min-width: 0; overflow-y: auto; scrollbar-width: none; }
+.jm-scroll-area__box::-webkit-scrollbar { display: none; }
+.jm-scroll-area__bar { position: relative; flex: 0 0 auto; width: 5px; margin: 4px 0; border-radius: 3px; background: var(--sand); }
+.jm-scroll-area__bar > span { position: absolute; left: 0; right: 0; border-radius: 3px; background: var(--ink-subtle); }
 
 @media (prefers-reduced-motion: reduce) {
   .jm-tape .t-reel, .jm-tape__bob, .jm-float { animation: none !important; }
-  .jm-tape .t-pack, .jm-tape .t-bar { transition: none; }
+  .jm-tape .t-pack, .jm-tape .t-bar, .jm-importing > .jm-progress > span { transition: none; }
 }

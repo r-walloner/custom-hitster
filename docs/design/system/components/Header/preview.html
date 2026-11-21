@@ -1,4 +1,4 @@
-<!-- @dsCard group="Layout" height=130 width=844 subtitle="in the game · outside the game" -->
+<!-- @dsCard group="Layout" height=190 width=844 subtitle="in the game · outside the game · a sub-screen" -->
 <!doctype html>
 <html lang="en">
 <head><meta charset="utf-8"><title>Header — preview</title></head>
@@ -6,17 +6,25 @@
 <div class="jm-stage" style="flex-direction: column; align-items: stretch; flex-wrap: nowrap; gap: 10px; width: 844px; box-sizing: border-box">
   <header class="jm-header">
     <span class="jm-logo">jamster</span>
-    <span class="jm-chip">LUMA</span>
-    <span class="jm-header__meta">Turn <b>7</b><i></i><b>38</b> cards left<i></i>First to <b>10</b></span>
+    <span class="jm-chip" aria-label="Room code QZRK">QZRK</span>
+    <span class="jm-header__meta"><span>Turn <b>7</b></span><i></i><span><b>38</b> cards left</span><i></i><span>First to <b>10</b></span></span>
     <span class="jm-header__spacer"></span>
-    <button type="button" class="jm-btn" style="font-size: 13px">Reveal now</button>
-    <button type="button" class="jm-btn jm-btn--icon" aria-label="Game menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
+    <button type="button" class="jm-btn">Reveal now</button>
+    <button type="button" class="jm-btn jm-btn--icon" aria-label="Game menu: playback device, scoreboard, end game"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
   </header>
   <header class="jm-header">
     <span class="jm-logo">jamster</span>
-    <span class="jm-chip">LUMA</span>
+    <span class="jm-chip" aria-label="Room code LUMA">LUMA</span>
     <span class="jm-header__spacer"></span>
-    <span class="jm-header__meta">Mara's room<i></i><b>4</b> players<i></i>First to <b>10</b></span>
+    <span class="jm-header__meta"><span>Mara's room</span><i></i><span><b>4</b> players</span><i></i><span>First to <b>10</b></span></span>
+  </header>
+  <header class="jm-header">
+    <button type="button" class="jm-btn jm-btn--icon" aria-label="Back to the start"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg></button>
+    <h1 class="jm-headline">Your songs</h1>
+    <span class="jm-header__spacer"></span>
+    <span class="jm-caption">Imported 3 days ago</span>
+    <button type="button" class="jm-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7"></path><path d="M4 4v4.5h4.5"></path></svg>Refresh library</button>
+    <button type="button" class="jm-btn jm-btn--primary" style="min-width: 96px; font-size: 15px">Done</button>
   </header>
 </div>
 </body>

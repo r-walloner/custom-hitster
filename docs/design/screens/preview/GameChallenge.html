@@ -13,14 +13,14 @@ body{margin:0}
 </head>
 <body>
 <div id="dc-root"></div>
-<template id="dc-template"><div class="jm-screen" style="font-family: var(--font-ui); color: #2a211c">
+<template id="dc-template"><main class="jm-screen">
   <header class="jm-header">
     <span class="jm-logo">jamster</span>
     <span class="jm-chip" aria-label="Room code QZRK">QZRK</span>
-    <span class="jm-header__meta">Turn <b>7</b><i></i><b>38</b> cards left<i></i>First to <b>10</b></span>
-    <span style="flex: 1"></span>
-    <button type="button" class="jm-btn" style="font-size: 13px">Reveal now</button>
-    <button type="button" class="jm-btn jm-btn--icon" aria-label="Game menu: settings, playback device, players, end game"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
+    <span class="jm-header__meta"><span>Turn <b>7</b></span><i></i><span><b>38</b> cards left</span><i></i><span>First to <b>10</b></span></span>
+    <span class="jm-header__spacer"></span>
+    <sc-if value="{{revealNow}}" hint-placeholder-val="{{false}}"><button type="button" class="jm-btn">Reveal now</button></sc-if>
+    <button type="button" class="jm-btn jm-btn--icon" aria-label="Game menu: playback device, scoreboard, end game"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
   </header>
 
   <div class="jm-screen__top">
@@ -42,34 +42,47 @@ body{margin:0}
           <circle class="t-ink" cx="112" cy="174" r="6"></circle><circle class="t-ink" cx="188" cy="174" r="6"></circle>
         </svg>
       </div></div></div>
-      <div class="jm-tape__foot"><span class="jm-time">0:14 / 0:30</span><button type="button" class="jm-btn jm-btn--icon-sm" aria-label="Restart the song from the beginning"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><path d="M3 3v5h5"></path></svg></button></div>
+      <div class="jm-tape__foot"><span class="jm-time">0:14 / 0:30</span><sc-if value="{{restart}}" hint-placeholder-val="{{true}}"><button type="button" class="jm-btn jm-btn--icon-sm" aria-label="Restart the song from the beginning"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><path d="M3 3v5h5"></path></svg></button></sc-if></div>
     </div>
 
-    <section class="jm-panel jm-moment" style="padding: 8px 12px 10px" aria-label="Challenge">
-      <div class="jm-moment__head">
-        <div><span class="jm-label">Challenge</span><h1 class="jm-moment__headline">Mara says 1994 to 2008. Is that right?</h1></div>
-        <div class="jm-ring" style="--p: 60; width: 50px; height: 50px; flex: 0 0 auto" role="timer" aria-label="6 seconds left"><span style="width: 36px; height: 36px; font-size: 18px">6</span></div>
-      </div>
-      <div class="jm-players">
-        <div class="jm-player"><span class="jm-avatar jm-p2">J</span><span class="jm-player__name">Jonas</span><span class="jm-status">Challenged</span></div>
-        <div class="jm-player"><span class="jm-avatar jm-p3">L</span><span class="jm-player__name">Lea</span><button type="button" class="jm-btn jm-btn--primary">Challenge</button><button type="button" class="jm-btn jm-btn--icon" aria-label="Pass for Lea"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
-        <div class="jm-player"><span class="jm-avatar jm-p4">T</span><span class="jm-player__name">Tobi</span><span class="jm-status jm-status--quiet">Passed</span></div>
-        <div class="jm-player"><span class="jm-avatar jm-p5">S</span><span class="jm-player__name">Sam</span><button type="button" class="jm-btn jm-btn--primary">Challenge</button><button type="button" class="jm-btn jm-btn--icon" aria-label="Pass for Sam"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
-      </div>
+    <section class="jm-panel jm-moment jm-moment--ring" aria-label="Challenge">
+      <span class="jm-label">Challenge</span>
+      <div class="jm-moment__ring"><div class="jm-ring" style="--p: 60" role="timer" aria-label="6 seconds left to challenge"><span>6</span></div></div>
+      <h1 class="jm-moment__headline">Mara says 1994 to 2008. Is that right?</h1>
+      <sc-if value="{{single}}" hint-placeholder-val="{{true}}">
+        <div class="jm-moment__decide jm-moment__decide--one">
+          <button type="button" class="jm-btn jm-btn--primary jm-btn--xl" aria-label="Challenge for 1 token">Challenge <span class="jm-token">1</span></button>
+        </div>
+      </sc-if>
+      <sc-if value="{{deciding}}" hint-placeholder-val="{{false}}">
+        <p class="jm-moment__sub">Deciding for Tobi.</p>
+        <div class="jm-moment__decide jm-moment__decide--one">
+          <button type="button" class="jm-btn jm-btn--primary jm-btn--xl" aria-label="Challenge for Tobi, 1 token">Challenge <span class="jm-token">1</span></button>
+        </div>
+      </sc-if>
+      <sc-if value="{{several}}" hint-placeholder-val="{{false}}">
+        <div class="jm-players">
+          <div class="jm-player"><span class="jm-avatar jm-p4" aria-hidden="true">T</span><span class="jm-player__name">Tobi</span><button type="button" class="jm-btn jm-btn--primary" aria-label="Challenge for Tobi, 1 token">Challenge <span class="jm-token">1</span></button></div>
+          <div class="jm-player"><span class="jm-avatar jm-p5" aria-hidden="true">S</span><span class="jm-player__name">Sam</span><button type="button" class="jm-btn jm-btn--primary" aria-label="Challenge for Sam, 1 token">Challenge <span class="jm-token">1</span></button></div>
+        </div>
+      </sc-if>
+      <sc-if value="{{onTurn}}" hint-placeholder-val="{{false}}">
+        <p class="jm-moment__sub">The others can challenge until the time runs out.</p>
+      </sc-if>
     </section>
 
-    <aside class="jm-scoreboard" aria-label="Scoreboard">
-      <div class="jm-scoreboard__row jm-scoreboard__row--turn" aria-label="Mara, on turn: 4 cards, 3 tokens"><span class="jm-avatar jm-p1">M</span><span class="jm-scoreboard__score">4</span><span class="jm-token">3</span></div>
-      <div class="jm-scoreboard__row" aria-label="Jonas: 6 cards, 0 tokens"><span class="jm-avatar jm-p2">J</span><span class="jm-scoreboard__score">6</span><span class="jm-token">0</span></div>
-      <div class="jm-scoreboard__row" aria-label="Lea: 5 cards, 2 tokens"><span class="jm-avatar jm-p3">L</span><span class="jm-scoreboard__score">5</span><span class="jm-token">2</span></div>
-      <div class="jm-scoreboard__row" aria-label="Tobi: 3 cards, 2 tokens"><span class="jm-avatar jm-p4">T</span><span class="jm-scoreboard__score">3</span><span class="jm-token">2</span></div>
-      <div class="jm-scoreboard__row" aria-label="Sam: 2 cards, 5 tokens"><span class="jm-avatar jm-p5">S</span><span class="jm-scoreboard__score">2</span><span class="jm-token">5</span></div>
-    </aside>
+    <button type="button" class="jm-scoreboard" aria-label="Scoreboard. Mara, on turn: 4 cards, 3 tokens. Jonas: 6 cards, 1 token. Lea: 5 cards, 2 tokens. Tobi: 3 cards, 2 tokens. Sam: 2 cards, 5 tokens. Open the full scoreboard.">
+      <span class="jm-scoreboard__row jm-scoreboard__row--turn"><span class="jm-avatar jm-p1" aria-hidden="true">M</span><span class="jm-scoreboard__score">4</span><span class="jm-token">3</span></span>
+      <span class="jm-scoreboard__row"><span class="jm-avatar jm-p2" aria-hidden="true">J</span><span class="jm-scoreboard__score">6</span><span class="jm-token">1</span></span>
+      <span class="jm-scoreboard__row"><span class="jm-avatar jm-p3" aria-hidden="true">L</span><span class="jm-scoreboard__score">5</span><span class="jm-token">2</span></span>
+      <span class="jm-scoreboard__row"><span class="jm-avatar jm-p4" aria-hidden="true">T</span><span class="jm-scoreboard__score">3</span><span class="jm-token">2</span></span>
+      <span class="jm-scoreboard__row"><span class="jm-avatar jm-p5" aria-hidden="true">S</span><span class="jm-scoreboard__score">2</span><span class="jm-token">5</span></span>
+    </button>
   </div>
 
   <section class="jm-board" aria-label="Mara's timeline">
-    <div class="jm-board__head"><h2 class="jm-section">Mara's timeline</h2><span class="jm-meta" style="font-size: 12px">4 of 10</span></div>
-    <div class="jm-board__row" style="gap: 10px">
+    <div class="jm-board__head"><h2 class="jm-section">Mara's timeline</h2><span class="jm-meta jm-board__count">4 of 10</span></div>
+    <div class="jm-board__row jm-board__row--spaced">
       <div class="jm-card"><span class="jm-card__year">1975</span><span class="jm-card__title">Bohemian Rhapsody</span><span class="jm-card__artist">Queen</span></div>
       <div class="jm-card"><span class="jm-card__year">1994</span><span class="jm-card__title">Zombie</span><span class="jm-card__artist">The Cranberries</span></div>
       <div class="jm-card jm-card--mystery"><span class="jm-card__year">????</span><span class="jm-card__title">Mara's pick</span></div>
@@ -77,13 +90,27 @@ body{margin:0}
       <div class="jm-card"><span class="jm-card__year">2016</span><span class="jm-card__title">Redbone</span><span class="jm-card__artist">Childish Gambino</span></div>
     </div>
   </section>
-</div></template>
+</main></template>
 <script src="../../exploration/preview/dc-runtime.js"></script>
 <script>
 class Component extends DCLogic {
-  renderVals() { return {}; }
+  renderVals() {
+    // single: Jonas on his own phone. deciding: the host, for one local player.
+    // several: the host, for two local players. onTurn: Mara, the host, waiting on her own card.
+    const view = this.props.view ?? "single";
+    const host = view !== "single";
+    return {
+      single: view === "single",
+      deciding: view === "deciding",
+      several: view === "several",
+      onTurn: view === "onTurn",
+      // Only the host can cut the challenge short; the host and the player on turn may restart the song.
+      revealNow: host,
+      restart: host
+    };
+  }
 }
-DCRuntime.mount(Component, document.getElementById('dc-root'), document.getElementById('dc-template').content, {});
+DCRuntime.mount(Component, document.getElementById('dc-root'), document.getElementById('dc-template').content, Object.assign({"view": "single"}, Object.fromEntries(new URLSearchParams(location.search))));
 </script>
 </body>
 </html>

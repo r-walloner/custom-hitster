@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Join: your name</title>
+<title>Jamster – join: your name</title>
 <script src="./support.js"></script>
 <link rel="stylesheet" href="ds/jamster/tokens.css">
 <link rel="stylesheet" href="ds/jamster/components/bundle.css">
@@ -10,54 +10,58 @@
 <body>
 <x-dc>
 <helmet>
-<link href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&amp;family=Bricolage+Grotesque:opsz,wght@12..96,400..800&amp;family=DM+Mono:wght@500&amp;display=swap" rel="stylesheet">
-<style>body{margin:0}</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&amp;family=Bricolage+Grotesque:opsz,wght@12..96,400..800&amp;family=DM+Mono:wght@500&amp;display=swap">
+<style>
+body{margin:0}
+</style>
 </helmet>
-<main class="jm-screen" style="font-family: var(--font-ui); color: var(--ink);">
+<main class="jm-screen">
   <header class="jm-header">
     <span class="jm-logo">jamster</span>
-    <span class="jm-chip">LUMA</span>
+    <span class="jm-chip" aria-label="Room code LUMA">LUMA</span>
     <span class="jm-header__spacer"></span>
-    <span class="jm-header__meta">Mara's room<i></i><b>3</b> players<i></i>First to <b>10</b></span>
+    <span class="jm-header__meta"><span>Mara's room</span><i></i><span><b>3</b> players</span><i></i><span>First to <b>10</b></span></span>
   </header>
-  <div style="flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) 270px; gap: 16px; padding: 6px 0 2px;">
-    <section class="jm-panel" style="padding: 16px 20px 18px; display: flex; flex-direction: column; gap: 10px;">
+  <div style="flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) 270px; gap: 16px; padding: 6px 0 2px">
+    <form class="jm-panel" style="padding: 16px 20px 18px; display: flex; flex-direction: column; gap: 10px" onSubmit="{{noop}}">
       <span class="jm-label">Joining room LUMA</span>
-      <label for="player-name" class="jm-moment__headline" style="display: block;">What should we call you?</label>
-      <input id="player-name" type="text" class="jm-input" value="Jonas" maxlength="16" autocomplete="nickname" style="height: 56px; box-sizing: border-box; border-radius: var(--radius-card); background: var(--paper); padding: 0 16px; font: 800 24px/1 var(--font-ui); color: var(--ink);">
-      <p class="jm-caption" style="margin: 0;">No account needed. You can add your Spotify library once you're in.</p>
-      <div class="jm-pair" style="margin-top: auto;">
-        <a href="Main.dc.html" class="jm-btn" style="min-height: 52px; font-size: 15px; text-decoration: none;">Back</a>
-        <button class="jm-btn jm-btn--primary" style="min-height: 52px; font-size: 16px; font-weight: 800;">Take a seat</button>
+      <label for="player-name" class="jm-moment__headline">What should we call you?</label>
+      <input id="player-name" type="text" class="jm-input" style="height: 56px; padding: 0 16px; font-size: 24px" value="{{name}}" onInput="{{onName}}" maxlength="16" autocomplete="nickname">
+      <p class="jm-caption" style="margin: 0">{{caption}}</p>
+      <div class="jm-pair" style="margin-top: auto">
+        <a href="Main.dc.html" class="jm-btn" style="min-height: 52px; font-size: 15px">Back</a>
+        <button type="submit" class="jm-btn jm-btn--primary" style="min-height: 52px; font-size: 16px; font-weight: 800" disabled="{{empty}}">Take a seat</button>
       </div>
-    </section>
-    <aside style="display: flex; flex-direction: column; gap: 8px; padding-top: 4px;">
-      <h2 class="jm-section">Already at the table</h2>
-      <div style="display: flex; flex-direction: column; gap: 6px;">
-        <div style="display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 10px; border-radius: var(--radius-card); background: var(--label); border: 2px solid var(--sand-line);">
-          <span class="jm-avatar jm-p1" style="width: 28px; height: 28px; font-size: 12px;">M</span>
-          <span class="jm-player__name">Mara<small>Host</small></span>
-        </div>
-        <div style="display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 10px; border-radius: var(--radius-card); background: var(--label); border: 2px solid var(--sand-line);">
-          <span class="jm-avatar jm-p2" style="width: 28px; height: 28px; font-size: 12px;">S</span>
-          <span class="jm-player__name">Sam</span>
-        </div>
-        <div style="display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 10px; border-radius: var(--radius-card); background: var(--label); border: 2px solid var(--sand-line);">
-          <span class="jm-avatar jm-p3" style="width: 28px; height: 28px; font-size: 12px;">L</span>
-          <span class="jm-player__name">Lea</span>
-        </div>
-        <div style="display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 10px; border-radius: var(--radius-card); border: 2px dashed var(--slot-dash);">
-          <span class="jm-avatar jm-p4" style="width: 28px; height: 28px; font-size: 12px;">J</span>
-          <span class="jm-player__name" style="color: var(--ink-muted);">Jonas<small>That's you</small></span>
-        </div>
-      </div>
+    </form>
+    <aside class="jm-scroll" style="display: flex; flex-direction: column; gap: 6px; padding-top: 4px">
+      <h2 class="jm-section" style="margin-bottom: 2px">Already at the table</h2>
+      <div class="jm-player jm-player--list" style="height: 44px; gap: 10px; padding: 0 10px"><span class="jm-avatar jm-avatar--lg jm-p1" aria-hidden="true">M</span><span class="jm-player__name">Mara<small>Host</small></span></div>
+      <div class="jm-player jm-player--list" style="height: 44px; gap: 10px; padding: 0 10px"><span class="jm-avatar jm-avatar--lg jm-p2" aria-hidden="true">S</span><span class="jm-player__name">Sam</span></div>
+      <div class="jm-player jm-player--list" style="height: 44px; gap: 10px; padding: 0 10px"><span class="jm-avatar jm-avatar--lg jm-p3" aria-hidden="true">L</span><span class="jm-player__name">Lea</span></div>
+      <div class="jm-player jm-player--list" style="height: 44px; gap: 10px; padding: 0 10px; background: none; border: 2px dashed var(--slot-dash)"><span class="jm-avatar jm-avatar--lg jm-p4" aria-hidden="true">{{initial}}</span><span class="jm-player__name" style="color: var(--ink-muted)">{{shown}}<small>That's you</small></span></div>
     </aside>
   </div>
 </main>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":844,"height":390}}'>
+<script type="text/x-dc" data-dc-script data-props='{"account":{"editor":"enum","options":["guest","spotify"],"default":"guest"},"$preview":{"width":844,"height":390}}'>
 class Component extends DCLogic {
-  renderVals() { return {}; }
+  renderVals() {
+    const spotify = (this.props.account ?? "guest") === "spotify";
+    // Signed in, the field starts with the Spotify name's first word.
+    const name = this.state.name ?? (spotify ? "Jonas" : "Jonas");
+    const shown = name.trim();
+    return {
+      name,
+      shown: shown || "?",
+      initial: (shown || "?").charAt(0).toUpperCase(),
+      empty: !shown,
+      caption: spotify
+        ? "Your Spotify library goes into the deck, and we'll remember this name."
+        : "No account needed. You can add your Spotify library once you're in.",
+      onName: (e) => this.setState({ name: e.target.value.slice(0, 16) }),
+      noop: (e) => e.preventDefault()
+    };
+  }
 }
 </script>
 </body>

@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jamster – room gone</title>
+<link rel="stylesheet" href="../../system/tokens.css">
+<link rel="stylesheet" href="../../system/components/bundle.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&amp;family=Bricolage+Grotesque:opsz,wght@12..96,400..800&amp;family=DM+Mono:wght@500&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</head>
+<body>
+<div id="dc-root"></div>
+<template id="dc-template"><main class="jm-screen jm-cover-screen">
+  <div class="jm-hero jm-cover-screen__art">
+    <span class="jm-logo jm-logo--xl jm-cover-screen__logo">jamster</span>
+    <p class="jm-cover-screen__slogan">The music game built from your own playlists.</p>
+    <div class="jm-float jm-hero__float" style="left: 266px; top: 40px; animation-delay: -1.2s" aria-hidden="true"><div class="jm-card" style="transform: rotate(7deg) scale(0.74)"><span class="jm-card__year">1994</span><span class="jm-card__title">Zombie</span><span class="jm-card__artist">The Cranberries</span></div></div>
+    <div class="jm-float jm-hero__float" style="left: 4px; top: 262px; animation-delay: -2.4s" aria-hidden="true"><div class="jm-card" style="transform: rotate(-11deg) scale(0.62)"><span class="jm-card__year">2010</span><span class="jm-card__title">Dancing On My Own</span><span class="jm-card__artist">Robyn</span></div></div>
+    <div class="jm-float jm-hero__float" style="left: 270px; top: 208px; z-index: 3; animation-delay: -0.4s" aria-hidden="true"><div class="jm-card jm-card--mystery" style="transform: rotate(-4deg) scale(0.78)"><span class="jm-card__year">????</span></div></div>
+    <div class="jm-tape jm-tape--bounce jm-tape--slow is-playing jm-hero__tape" style="left: 44px; top: 142px" aria-hidden="true"><div class="jm-tape__bob"><div class="jm-tape__shell">
+        <svg viewBox="0 0 300 190" width="200" height="127">
+          <rect class="t-shell" x="4" y="4" width="292" height="182" rx="18" stroke-width="7"></rect>
+          <circle class="t-ink" cx="17" cy="17" r="4.5"></circle><circle class="t-ink" cx="283" cy="17" r="4.5"></circle><circle class="t-ink" cx="17" cy="173" r="4.5"></circle><circle class="t-ink" cx="283" cy="173" r="4.5"></circle>
+          <rect class="t-window" x="92" y="70" width="116" height="40" rx="20"></rect>
+          <circle class="t-pack" cx="105" cy="90" r="36" style="transform: scale(0.77)"></circle>
+          <circle class="t-pack" cx="195" cy="90" r="36" style="transform: scale(0.63)"></circle>
+          <g class="t-reel"><circle class="t-hub" cx="105" cy="90" r="13" stroke-width="4"></circle><path class="t-spoke" d="M105 80v20M96.3 85l17.4 10M96.3 95l17.4-10" stroke-width="4"></path></g>
+          <g class="t-reel"><circle class="t-hub" cx="195" cy="90" r="13" stroke-width="4"></circle><path class="t-spoke" d="M195 80v20M186.3 85l17.4 10M186.3 95l17.4-10" stroke-width="4"></path></g>
+          <path class="t-label" fill-rule="evenodd" stroke-width="5" d="M30 18H270A8 8 0 0 1 278 26V138A8 8 0 0 1 270 146H30A8 8 0 0 1 22 138V26A8 8 0 0 1 30 18Z M92 70H208A20 20 0 0 1 208 110H92A20 20 0 0 1 92 70Z"></path>
+          <text class="t-year" x="150" y="60" text-anchor="middle">????</text>
+          <rect class="t-track" x="40" y="122" width="220" height="11" rx="5.5"></rect>
+          <rect class="t-bar" x="40" y="122" width="84" height="11" rx="5.5"></rect>
+          <path class="t-foot" stroke-width="5" d="M78 186L90 156H210L222 186"></path>
+          <circle class="t-ink" cx="112" cy="174" r="6"></circle><circle class="t-ink" cx="188" cy="174" r="6"></circle>
+        </svg>
+      </div></div></div>
+  </div>
+
+  <section class="jm-panel jm-cover-screen__panel" role="alert" aria-labelledby="gone-head">
+    <span class="jm-verdict jm-verdict--wrong"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>{{tag}}</span>
+    <h1 id="gone-head" class="jm-headline">{{head}}</h1>
+    <p class="jm-meta">{{body}}</p>
+    <a href="Main.dc.html" class="jm-btn jm-btn--primary jm-cover-screen__btn" style="margin-top: 6px">Back</a>
+  </section>
+</main></template>
+<script src="../../exploration/preview/dc-runtime.js"></script>
+<script>
+class Component extends DCLogic {
+  renderVals() {
+    const R = {
+      notFound: {
+        tag: "No such room",
+        head: "There's no room LUMA.",
+        body: "Check the four letters with the host. Rooms close when the server restarts, so the host may need to open a new one."
+      },
+      closed: {
+        tag: "Room closed",
+        head: "Mara closed room LUMA.",
+        body: "Ask the host for a new code to play again."
+      }
+    };
+    return R[this.props.reason ?? "notFound"] || R.notFound;
+  }
+}
+DCRuntime.mount(Component, document.getElementById('dc-root'), document.getElementById('dc-template').content, Object.assign({"reason": "notFound"}, Object.fromEntries(new URLSearchParams(location.search))));
+</script>
+</body>
+</html>

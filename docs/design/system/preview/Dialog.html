@@ -6,24 +6,38 @@
 <link rel="stylesheet" href="../components/bundle.css">
 <meta charset="utf-8"><title>Dialog — preview</title></head>
 <body>
-<div class="jm-stage">
+<div class="jm-stage" style="flex-wrap: nowrap">
   <div class="jm-overlay" style="width: 560px; height: 270px; border-radius: 12px; background: var(--paper)">
     <div class="jm-overlay__under" style="padding: 16px; display: flex; gap: 10px">
       <div class="jm-card"><span class="jm-card__year">1975</span><span class="jm-card__title">Bohemian Rhapsody</span><span class="jm-card__artist">Queen</span></div>
-      <button type="button" class="jm-gap" aria-label="Put it after 1975"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+      <button type="button" class="jm-gap" aria-label="Put it after 1975"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
       <div class="jm-card"><span class="jm-card__year">1994</span><span class="jm-card__title">Zombie</span><span class="jm-card__artist">The Cranberries</span></div>
     </div>
     <div class="jm-scrim"></div>
     <section class="jm-dialog" role="dialog" aria-modal="true" aria-labelledby="dlg-head" style="width: 340px">
       <div class="jm-dialog__head">
         <h2 id="dlg-head" class="jm-headline">Menu</h2>
-        <button type="button" class="jm-btn jm-btn--icon jm-btn--bare" aria-label="Close menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"></path></svg></button>
+        <button type="button" class="jm-btn jm-btn--icon jm-btn--bare" aria-label="Close menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"></path></svg></button>
       </div>
-      <div class="jm-setting" style="border-top: 2px solid var(--sand-line)">
+      <div class="jm-setting">
         <div class="jm-setting__text"><span class="jm-label">Music plays on</span><span class="jm-setting__value">Living room TV</span></div>
         <button type="button" class="jm-btn">Change</button>
       </div>
-      <button type="button" class="jm-btn jm-btn--dark">End game</button>
+      <button type="button" class="jm-btn jm-btn--nav">Scoreboard <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
+      <button type="button" class="jm-btn jm-btn--dark" style="margin-top: 4px">End game</button>
+    </section>
+  </div>
+  <div class="jm-overlay" style="width: 560px; height: 270px; border-radius: 12px; background: var(--paper)">
+    <div class="jm-overlay__under" style="padding: 16px"><span class="jm-logo">jamster</span></div>
+    <div class="jm-scrim"></div>
+    <section class="jm-dialog" role="dialog" aria-modal="true" aria-labelledby="dlg-name">
+      <div class="jm-dialog__head">
+        <h2 id="dlg-name" class="jm-headline">Add local player</h2>
+        <button type="button" class="jm-btn jm-btn--icon jm-btn--bare" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"></path></svg></button>
+      </div>
+      <p class="jm-meta">Plays on this device. No phone needed.</p>
+      <div class="jm-dialog__name"><span class="jm-avatar jm-avatar--xl jm-p5" aria-hidden="true">I</span><input type="text" class="jm-input" aria-label="Name" value="Ilse"></div>
+      <div class="jm-pair" style="margin-top: 6px"><button type="button" class="jm-btn">Cancel</button><button type="button" class="jm-btn jm-btn--primary">Add Ilse</button></div>
     </section>
   </div>
 </div>

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jamster – turn your phone</title>
+<link rel="stylesheet" href="../../system/tokens.css">
+<link rel="stylesheet" href="../../system/components/bundle.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&amp;family=Bricolage+Grotesque:opsz,wght@12..96,400..800&amp;family=DM+Mono:wght@500&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</head>
+<body>
+<div id="dc-root"></div>
+<template id="dc-template"><main style="width: 390px; height: 844px; box-sizing: border-box; padding: var(--space-16); background: var(--paper); color: var(--ink); font-family: var(--font-ui); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-16); text-align: center">
+  <span class="jm-logo jm-logo--xl">jamster</span>
+  <p class="jm-headline" style="margin: 0">Turn your phone sideways.</p>
+  <p class="jm-meta" style="margin: 0">Jamster is played in landscape.</p>
+</main></template>
+<script src="../../exploration/preview/dc-runtime.js"></script>
+<script>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+DCRuntime.mount(Component, document.getElementById('dc-root'), document.getElementById('dc-template').content, Object.assign({}, Object.fromEntries(new URLSearchParams(location.search))));
+</script>
+</body>
+</html>
