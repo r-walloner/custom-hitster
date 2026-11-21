@@ -21,6 +21,15 @@ const CARDS: FloatingCard[] = [
     scale: 0.62,
     delay: -2.4,
   },
+  {
+    song: { year: 1983, title: 'Sweet Dreams', artist: 'Eurythmics' },
+    left: 150,
+    top: 270,
+    rotate: 9,
+    scale: 0.55,
+    delay: -3.1,
+    duration: 4.4,
+  },
   { left: 270, top: 208, rotate: -4, scale: 0.78, delay: -0.4, front: true },
 ]
 

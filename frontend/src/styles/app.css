@@ -316,6 +316,12 @@ a.app-btn--danger {
   height: 334px;
 }
 
+/* "Sweet Dreams" only just fits one line of a card, so as the zoom changes it would jump between one
+   line and two. A little less room keeps it on two. */
+.app-cover__hero .jm-card__title {
+  padding-right: 6px;
+}
+
 .app-cover__logo.jm-logo--xl {
   position: absolute;
   left: 6px;
