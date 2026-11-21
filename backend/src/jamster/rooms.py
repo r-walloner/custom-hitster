@@ -44,8 +44,14 @@ class RoomLog(logging.LoggerAdapter[logging.Logger]):
         return f"[{self.extra['room'] if self.extra else '?'}] {msg}", kwargs
 
 
+def song(card: Card) -> str:
+    """A card as title and artist, without the year, for the log while the card is in play."""
+    return f'"{card.name}" by {", ".join(card.artists)}'
+
+
 def describe(card: Card) -> str:
-    return f'"{card.name}" by {", ".join(card.artists)} ({card.year})'
+    """A card with its year, for the log once the year is no secret."""
+    return f"{song(card)} ({card.year})"
 
 
 def _count(n: int, noun: str) -> str:
@@ -672,7 +678,8 @@ class Room:
             case engine.Lock(player):
                 return f"{name(player)} locks in"
             case engine.Skip(player):
-                return f"{name(player)} pays a token to skip {describe(before.card)}"
+                # The card is thrown away unrevealed and the turn goes on: no year.
+                return f"{name(player)} pays a token to skip {song(before.card)}"
             case engine.Buzz(player):
                 return f"{name(player)} challenges"
             case engine.PickSlot(player, slot):
@@ -693,8 +700,11 @@ class Room:
             case engine.NextTurn():
                 return ""  # the new card's line says it all
             case engine.SkipTurn():
-                skipped = name(before.active)
-                return f"the host skips {skipped}'s turn and throws {describe(before.card)} away"
+                card, skipped = before.card, name(before.active)
+                return (
+                    f"{song(card)} is from {card.year}: "
+                    f"the host skips {skipped}'s turn and throws the card away"
+                )
             case engine.Withdraw(player):
                 return f"{name(player)} is away, so their challenge is dropped"
 
@@ -709,7 +719,7 @@ class Room:
             result = f"{active} was wrong, {self._name(game.outcome.card_to)} takes the card"
         else:
             result = f"{active} was wrong, the card is discarded"
-        return f"it was {describe(game.card)}: {result}"
+        return f"{song(game.card)} is from {game.card.year}: {result}"
 
     def _standings(self, game: engine.Game) -> str:
         return "; ".join(
@@ -720,10 +730,9 @@ class Room:
     def _log_new_card(self, game: engine.Game) -> None:
         why = game.card.why if game.card else None
         self.log.info(
-            "turn %d, %s's turn: playing %s | %s | %s",
-            game.turn_number,
+            "%s's turn: playing %s | %s | %s",
             self._name(game.active),
-            describe(game.card),
+            song(game.card),  # the year waits for the reveal
             why.short() if why else "no reason recorded",
             self._standings(game),
         )

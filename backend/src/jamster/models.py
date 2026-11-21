@@ -54,10 +54,10 @@ class Why:
     knowers: tuple[Knower, ...]  # every player with any familiarity, best first
 
     def short(self) -> str:
-        """One line for the game log."""
+        """One line for the game log, logged while the card is in play, so without its year."""
         head = f"{self.strategy} {self.reason}"
         if self.reason == "classic" and not self.knowers:
-            return f"{head}, {self.year} from the classics list"
+            return f"{head}, from the classics list"
         known = ", ".join(
             f"{k.name} {k.familiarity:.2f} ({', '.join(k.evidence)})" for k in self.knowers[:3]
         )

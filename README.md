@@ -141,7 +141,9 @@ It also records players coming and going, settings changes, logins and imports.
 Failures the game survives, such as a song Spotify refuses to play, are `WARNING` lines with Spotify's reason.
 `DEBUG` adds every Spotify and MusicBrainz call and every refused request.
 Only Jamster's own lines are logged below `WARNING`, so the web server's request lines stay out.
-The log names the song in play, so don't watch it during a game.
+The log names the song in play but keeps its year back until the turn is over, when the reveal line gives it with the result, such as `"Africa" by Toto is from 1982: Robin was wrong, the card is discarded`.
+A skipped song is thrown away unrevealed, so its year isn't logged either.
+The song's name still gives it away, so don't watch the log during a game.
 The log file rotates at 10 MB and keeps five old files.
 
 Each turn's log line also says why its song is in the deck, such as `balanced core, score 1.42: Robin 0.82 (saved, top_medium #12), Ben 0.30 (artist: 7 other songs)`.

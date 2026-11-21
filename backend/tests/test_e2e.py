@@ -520,7 +520,7 @@ def test_local_game_plays_only_on_the_host_and_recovers_from_a_playback_failure(
         assert "NO_ACTIVE_DEVICE" in failure.getMessage()
         messages = [r.getMessage() for r in caplog.records]
         assert any(m.startswith(f"[{code}] game started in local mode") for m in messages)
-        turn = next(m for m in messages if m.startswith(f"[{code}] turn 1, "))
+        turn = next(m for m in messages if "'s turn: playing " in m)
         assert 'playing "Song' in turn and "| balanced core, score " in turn and "saved" in turn
         dealing = next(m for m in messages if m.startswith(f"[{code}] dealing: "))
         md_file, jsonl_file = map(
@@ -563,7 +563,10 @@ def test_local_game_plays_only_on_the_host_and_recovers_from_a_playback_failure(
         assert until(b, is_type("state"))["you"]["player_id"] is not None
 
 
-def test_years_are_looked_up_only_when_a_card_is_drawn(client: TestClient, fake: FakeSpotify):
+def test_years_are_looked_up_only_when_a_card_is_drawn(
+    client: TestClient, fake: FakeSpotify, caplog: pytest.LogCaptureFixture
+):
+    caplog.set_level(logging.INFO, logger="jamster")
     alice = Browser(client)
     alice.login("alice")
     assert alice.pick(liked=True)["status"] == "done"
@@ -589,6 +592,14 @@ def test_years_are_looked_up_only_when_a_card_is_drawn(client: TestClient, fake:
         a.send_json({"type": "lock"})
         until(a, state_where(lambda r: r["game"]["phase"] == "revealed"))
         assert len(fake.lookups) == 2, "nothing is looked up in the background"
+        # The log keeps the year of the card in play to itself until the reveal.
+        messages = [r.getMessage() for r in caplog.records]
+        turn = next(m for m in messages if "'s turn: playing " in m)
+        assert str(year) not in turn
+        played = turn.split("playing ", 1)[1].split(" | ")[0]
+        reveal = next(m for m in messages if " is from " in m)
+        assert reveal.startswith(f"[{code}] {played} is from {year}: ")
+        assert reveal.endswith(" was right")
 
         # The next song's year is looked up now; the turn waits for it instead of ending the game.
         # A second tab is a second connection, which the server serves while the first waits.
