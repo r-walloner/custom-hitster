@@ -12,7 +12,7 @@ class RoomSettings(BaseModel):
     cards_to_win: int = Field(default=10, ge=2, le=30)
     starting_tokens: int = Field(default=3, ge=0, le=5)
     deck_size: int = Field(default=100, ge=10, le=300)
-    strategy: str = "majority"
+    strategy: str = "balanced"  # a key of curation.STRATEGIES
     # How long the others may challenge after the active player locked in.
     challenge_seconds: int = Field(default=10, ge=1, le=60)
     # How long the revealed card stays before the next turn starts by itself; 0 turns it off.

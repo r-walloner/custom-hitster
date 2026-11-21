@@ -23,7 +23,7 @@ A web party game for one friend group: a song plays, the player on turn places i
 
 ## How it works
 
-A player signs in with Spotify, and the server lists their library's sources: liked songs, top songs, recent plays and the playlists they own or collaborate on, which costs one request plus one per 50 playlists. The player ticks the sources that go into the deck, and a background copy fetches only the ticked ones, one source at a time, into the database as tracks plus taste signals ("saved", "rank 3 of top tracks"), each tagged with its source. Unticking a source drops its signals from curation without deleting them, and unticking the one being copied cancels its remaining requests. A host creates a room and others join by link, with or without Spotify. When the host starts the game, the curation strategy picks the deck from the players' signals at once. The year resolver looks up each card's first release year and caches it, but only for the opening cards before the game starts (one per player plus the first song, preferring cached ones). Every later card is resolved when it is drawn, so MusicBrainz is asked only about songs that are actually played; the draw waits for that one lookup. The game itself is a pure state machine held in server memory: clients send intents over a WebSocket, the server applies them and sends every client the full new state. The card in play is never sent to clients before the reveal. Whenever the card in play changes, the server tells Spotify to play it on the right accounts, and a failure there shows up in the room as something to retry, without stopping the game.
+A player signs in with Spotify, and the server lists their library's sources: liked songs, top songs, recent plays and the playlists they own or collaborate on, which costs one request plus one per 50 playlists. The player ticks the sources that go into the deck, and a background copy fetches only the ticked ones, one source at a time, into the database as tracks plus taste signals ("saved", "rank 3 of top tracks"), each tagged with its source. Unticking a source drops its signals from curation without deleting them, and unticking the one being copied cancels its remaining requests. A host creates a room and others join by link, with or without Spotify. When the host starts the game, the curation strategy the host chose picks the deck from the players' signals at once, using only years already known: MusicBrainz's where cached, else Spotify's. Balanced also mixes in classics from a hand-written list that holds each song's year and Spotify track; the server copies it into the database at startup. Every pick records why it was made, and the dealt deck is written to a file with those reasons. The year resolver looks up each card's first release year and caches it, but only for the opening cards before the game starts (one per player plus the first song, preferring cached ones). Every later card is resolved when it is drawn, so MusicBrainz is asked only about songs that are actually played; the draw waits for that one lookup. The game itself is a pure state machine held in server memory: clients send intents over a WebSocket, the server applies them and sends every client the full new state. The card in play is never sent to clients before the reveal. Whenever the card in play changes, the server tells Spotify to play it on the right accounts, and a failure there shows up in the room as something to retry, without stopping the game.
 
 ## Decisions
 
@@ -44,7 +44,9 @@ A player signs in with Spotify, and the server lists their library's sources: li
 | When years are looked up | Opening cards before the start, every later card when it is drawn | The whole deck before the start; the whole deck in the background during the game | At one lookup per second a fresh 60-card deck kept everyone waiting a minute, and most of a background run is wasted on songs never played | Low |
 | Library copy | List the sources at sign-in, copy only the ticked ones, liked songs, top songs and recent plays ticked at first, playlists in the order Spotify lists them | Copy the whole library at sign-in | A large library took minutes and much of the shared request quota, mostly for songs that never reach a deck | Low |
 | Artists as sources | Left out of the picker; top artists stay a signal of the top songs | Followed artists with their discographies | No artist top tracks in Development Mode, and album tracks carry no ISRC for the year lookup | Low |
-| Curation | Strategy interface plus a "known to 65 % of players" default | A designed strategy now | The real strategy is deliberately left open | Low |
+| Curation | Three strategies behind one interface (Strategy pattern), chosen in the lobby: Balanced (default), Show & Tell, Wildcards. Familiarity per player from all signals and the artist; songs merged by ISRC or title and main artist; year shares by square root; equal shares per library | A "known to 65 % of players" rule; one fixed strategy | Track ids rarely match across libraries, the libraries lean heavily to recent years, and different groups want different decks | Low |
+| Classics | A hand-written list of about 380 songs with their original years and Spotify tracks, looked up once by a developer command and kept in the repository; 10 % of a Balanced deck | Spotify popularity or editorial playlists; search by year; searching at every startup | Development Mode has neither popularity nor other people's playlists; a written list has trustworthy years; searching 390 songs at startup took 7 minutes of the shared request quota | Low |
+| Explaining decks | Each pick carries a `Why`; the deck goes to a JSON-lines file, and each turn's log line says why its song came up | Nothing recorded | Tuning a strategy after a playtest needs to know why a song was in the deck | Low |
 | Answers | Said aloud, confirmed by host or active player | Typed and fuzzy-matched | No matching code; fits a party game | Low |
 | Access | Spotify sign-in to host, guests join by link | Site password; no restriction | Spotify's allowlist already limits who can sign in | Low |
 | Hosting | One container on the existing VM, behind its existing Caddy | Laptop plus tunnel; managed host | User's VM and proxy already exist | Low |
@@ -77,7 +79,7 @@ Deliberately left out:
 
 ## Open questions
 
-- **The real curation strategy.** The default treats any signal as "knows it" and does not merge remasters or duplicates of one song. Settled by writing a strategy in `curation.py`.
+- **Tuning the strategies.** The familiarity weights were tuned against one real library. Retune them with `python -m jamster.curation --report familiarity` once several are in.
 - **Titles are visible in the Spotify app.** Whoever looks at the playing device sees the answer. The Web Playback SDK would hide it; decide after playing a few games.
 - **Wrong years.** There is no screen to correct one; today it takes an SQL update with source `manual`. Decide whether the host needs a button after seeing how often it happens.
 - **`httpx` or `httpx2`.** FastAPI's test client now uses `httpx2`, the successor maintained by the Pydantic team. The app still uses `httpx` 0.28. Migrate when `httpx` stops getting fixes.
@@ -85,16 +87,16 @@ Deliberately left out:
 
 ## State of the scaffold
 
-**Level.** Beyond level 3: everything is implemented. Only the real curation strategy is left open, by design.
+**Level.** Beyond level 3: everything is implemented, including three deck strategies. Deep Dive and Nostalgia are planned (see the README).
 
 **Built.**
 
-- Backend: Spotify login and token refresh, library listing and copying of picked sources, MusicBrainz year resolver, curation interface with the default strategy, deck builder, rules engine, rooms with playback control, HTTP and WebSocket layer, SQLite store.
+- Backend: Spotify login and token refresh, library listing and copying of picked sources, MusicBrainz year resolver, three curation strategies with a command to try them, the classics list with a command that looks up its Spotify tracks, deck builder with deck files, rules engine, rooms with playback control, HTTP and WebSocket layer, SQLite store.
 - Frontend: home page (join, log in, and once logged in host a game and manage the account), library picker (also opened from the lobby), lobby (players, settings, device picker, start), game board with controls for every phase.
 - Operations: `Dockerfile`, `compose.yaml`, `.env.example`.
-- Tests: 82, covering the engine, year picking, curation, picked library sources, the opening deal and whole games against a fake Spotify.
+- Tests: 104, covering the engine, year picking, the curation strategies and their command, the classics matching, picked library sources, the opening deal and whole games against a fake Spotify.
 
-**Stubbed.** The curation strategy: `majority` in `backend/src/jamster/curation.py` is a placeholder marked with a TODO.
+**Stubbed.** Nothing.
 
 **Verified** (2026-11-11).
 

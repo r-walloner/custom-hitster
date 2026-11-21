@@ -4,7 +4,9 @@ export const NEXT = { '5 s': 5, '10 s': 10, '15 s': 15, Tap: 0 } as const
 
 // What each deck strategy (curation.STRATEGIES) is called here; unknown ones show their key.
 export const STRATEGY_NAMES: Record<string, string> = {
-  majority: 'Songs most know',
+  balanced: 'Balanced',
+  show_and_tell: 'Show & Tell',
+  wildcards: 'Wildcards',
 }
 
 /** The label of `value` among `options`, or none when the value isn't offered. */

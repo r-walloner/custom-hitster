@@ -1,5 +1,6 @@
 """Whole games through the real app, with only the outside world (Spotify, MusicBrainz) faked."""
 
+import json
 import logging
 import random
 import time
@@ -10,7 +11,7 @@ from urllib.parse import parse_qs, urlsplit
 
 import httpx
 import pytest
-from fake_spotify import FakeSpotify, duration_of, year_of
+from fake_spotify import SAVED, FakeSpotify, duration_of, year_of
 from fastapi.testclient import TestClient
 from offline_settings import OfflineSettings
 from starlette.testclient import WebSocketTestSession
@@ -109,7 +110,7 @@ def settings(**changes: Any) -> State:
         "cards_to_win": 10,
         "starting_tokens": 2,
         "deck_size": 20,
-        "strategy": "majority",
+        "strategy": "balanced",
     }
     return {"type": "set_settings", "settings": {**base, **changes}}
 
@@ -405,7 +406,8 @@ def test_remote_game_with_a_hot_seat_player(
         assert {(p.user, p.device_id) for p in fake.plays} == {("alice", None), ("bob", "dev-bob")}
         assert len({p.uri for p in fake.plays}) == 1
         year = year_of(fake.plays[0].uri)
-        assert 1990 <= year <= 2024, "both players know tracks 30 to 64"
+        number = int(fake.plays[0].uri.removeprefix("spotify:track:track"))
+        knowers = [name.title() for name, saved in SAVED.items() if number in saved]
 
         active = game["active"]
         others = [p["id"] for p in game["players"] if p["id"] != active]
@@ -419,7 +421,8 @@ def test_remote_game_with_a_hot_seat_player(
         assert game["outcome"] == {"correct": True, "card_to": active, "bought": False}
         assert game["card"]["year"] == year
         assert game["card"]["year_source"] == ("musicbrainz" if year % 2 == 0 else "spotify")
-        assert game["card"]["known_by"] == ["Alice", "Bob"]
+        assert sorted(game["card"]["known_by"]) == knowers
+        assert "why" not in game["card"], "the reasons stay on the server"
 
         # --- turn 2: a wrong placement, stolen by a challenger ---
         b.send_json({"type": "set_named", "value": True})  # only the host judges the naming
@@ -524,7 +527,15 @@ def test_local_game_plays_only_on_the_host_and_recovers_from_a_playback_failure(
         assert "NO_ACTIVE_DEVICE" in failure.getMessage()
         messages = [r.getMessage() for r in caplog.records]
         assert any(m.startswith(f"[{code}] game started in local mode") for m in messages)
-        assert any(m.startswith(f"[{code}] turn 1, ") and 'playing "Song' in m for m in messages)
+        turn = next(m for m in messages if m.startswith(f"[{code}] turn 1, "))
+        assert 'playing "Song' in turn and "| balanced core, score " in turn and "saved" in turn
+        dealing = next(m for m in messages if m.startswith(f"[{code}] dealing: "))
+        deck_file = Path(dealing.rsplit("why each song is in it: ", 1)[1])
+        lines = [json.loads(line) for line in deck_file.read_text().splitlines()]
+        assert lines[0]["room"] == code and lines[0]["strategy"] == "balanced"
+        assert len(lines) == 11 and {line["reason"] for line in lines[1:]} <= {"core", "wildcard"}
+        # Drawn in this order: a starting card for each of the two players, then the first song.
+        assert f'playing "{lines[3]["title"]}"' in turn
 
         del fake.play_errors["alice"]
         b.send_json({"type": "retry_playback"})

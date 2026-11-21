@@ -9,6 +9,7 @@ import sqlite3
 import time
 from collections.abc import Callable, Coroutine
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any
 
 from pydantic import BaseModel, ValidationError
@@ -17,7 +18,7 @@ from starlette.websockets import WebSocket
 from . import db, engine
 from . import messages as m
 from .curation import STRATEGIES
-from .deck import Entry, cached_first, curate, to_card
+from .deck import Entry, cached_first, curate, to_card, write_deck_file
 from .importer import Importer
 from .models import Card
 from .spotify import Spotify, SpotifyError
@@ -73,6 +74,7 @@ class Services:
     importer: Importer
     resolver: YearResolver
     rng: random.Random
+    decks_dir: Path | None = None  # where each deck is written with why its songs are in it
 
 
 @dataclass(slots=True)
@@ -716,11 +718,13 @@ class Room:
         )
 
     def _log_new_card(self, game: engine.Game) -> None:
+        why = game.card.why if game.card else None
         self.log.info(
-            "turn %d, %s's turn: playing %s | %s",
+            "turn %d, %s's turn: playing %s | %s | %s",
             game.turn_number,
             self._name(game.active),
             describe(game.card),
+            why.short() if why else "no reason recorded",
             self._standings(game),
         )
 
@@ -749,11 +753,21 @@ class Room:
                 self._s.rng,
             )
             entries = cached_first(self._s.conn, entries, needed)
+            written = ""
+            if self._s.decks_dir:
+                try:
+                    path = write_deck_file(
+                        self._s.decks_dir, self.code, self.settings.strategy, entries
+                    )
+                    written = f"; why each song is in it: {path}"
+                except OSError as exc:
+                    self.log.warning("could not write the deck file: %s", exc)
             self.log.info(
-                "dealing: %d songs chosen by %r, looking up the years of the first %d",
+                "dealing: %d songs chosen by %s, looking up the years of the first %d%s",
                 len(entries),
-                self.settings.strategy,
+                STRATEGIES[self.settings.strategy].name,
                 needed,
+                written,
             )
             lands = time.monotonic() + DEAL_SECONDS  # cached years would land all at once
             while entries and len(cards) < needed:

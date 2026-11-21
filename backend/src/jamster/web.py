@@ -15,7 +15,7 @@ from pydantic import BaseModel
 from starlette.middleware.sessions import SessionMiddleware
 from starlette.websockets import WebSocketState
 
-from . import db, years
+from . import classics, db, years
 from .config import Settings
 from .importer import Importer
 from .messages import Name
@@ -50,9 +50,18 @@ def create_app(
             resolver = years.YearResolver(
                 conn, http, settings.musicbrainz_contact, min_interval=year_interval
             )
-            app.state.services = Services(conn, spotify, importer, resolver, rng or random.Random())
+            app.state.services = Services(
+                conn,
+                spotify,
+                importer,
+                resolver,
+                rng or random.Random(),
+                decks_dir=settings.data_dir / "decks",
+            )
             app.state.rooms = Rooms(app.state.services)
             importer.listeners.append(app.state.rooms.on_library_change)
+            if settings.classics_file:
+                classics.sync(conn, settings.classics_file)
             log.info("Jamster started, data in %s", settings.data_dir.resolve())
             yield
         conn.close()

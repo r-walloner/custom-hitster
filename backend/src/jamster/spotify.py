@@ -94,6 +94,8 @@ class Spotify:
         self._http = http
         self._tokens: dict[str, tuple[str, float]] = {}  # player id -> (access token, expiry)
         self._refreshing: dict[str, asyncio.Lock] = {}
+        self._app_token: tuple[str, float] | None = None  # the app's own, for search
+        self._app_lock = asyncio.Lock()
 
     # --- login ---------------------------------------------------------------------------
 
@@ -158,7 +160,28 @@ class Spotify:
         self._tokens[player_id] = (tokens["access_token"], expiry)
         return tokens["access_token"]
 
-    async def _access_token(self, player_id: str) -> str:
+    async def _app_access_token(self) -> str:
+        """A token for the app itself (client credentials), which can search but not more."""
+
+        def cached() -> str | None:
+            entry = self._app_token
+            return entry[0] if entry and entry[1] > time.monotonic() + 60 else None
+
+        if token := cached():
+            return token
+        async with self._app_lock:
+            if token := cached():
+                return token
+            log.debug("getting an app token")
+            tokens = await self._token_request({"grant_type": "client_credentials"})
+            expiry = time.monotonic() + float(tokens.get("expires_in", 3600))
+            self._app_token = (tokens["access_token"], expiry)
+            return tokens["access_token"]
+
+    async def _access_token(self, player_id: str | None) -> str:
+        if player_id is None:
+            return await self._app_access_token()
+
         def cached() -> str | None:
             entry = self._tokens.get(player_id)
             return entry[0] if entry and entry[1] > time.monotonic() + 60 else None
@@ -191,7 +214,7 @@ class Spotify:
 
     async def request(
         self,
-        player_id: str,
+        player_id: str | None,
         method: str,
         path: str,
         *,
@@ -199,7 +222,9 @@ class Spotify:
         json: Any = None,
         patience: float = 0.0,
     ) -> Any:
-        """Call the Web API as a player. Sleeps at most `patience` seconds on 429 and 5xx."""
+        """Call the Web API as a player, or as the app itself when `player_id` is None.
+        Sleeps at most `patience` seconds on 429 and 5xx."""
+        who = player_id or "the app"
         waited, reauthed = 0.0, False
         while True:
             token = await self._access_token(player_id)
@@ -212,12 +237,15 @@ class Spotify:
             )
             if resp.is_error:
                 log.debug(
-                    "%s %s as %s: %s %s", method, path, player_id, resp.status_code, resp.text[:300]
+                    "%s %s as %s: %s %s", method, path, who, resp.status_code, resp.text[:300]
                 )
             else:
-                log.debug("%s %s as %s: %s", method, path, player_id, resp.status_code)
+                log.debug("%s %s as %s: %s", method, path, who, resp.status_code)
             if resp.status_code == 401 and not reauthed:
-                self._tokens.pop(player_id, None)
+                if player_id is None:
+                    self._app_token = None
+                else:
+                    self._tokens.pop(player_id, None)
                 reauthed = True
                 continue
             if resp.status_code == 429 or resp.status_code >= 500:
@@ -258,6 +286,18 @@ class Spotify:
             if not page.get("next") or not page.get("items"):
                 return
             offset += 50
+
+    async def search_tracks(self, query: str, limit: int = 5) -> list[dict[str, Any]]:
+        """Track objects matching a search, as the app. Spotify allows at most 10 per request
+        in Development Mode."""
+        body = await self.request(
+            None,
+            "GET",
+            "/search",
+            params={"q": query, "type": "track", "limit": limit},
+            patience=120,
+        )
+        return ((body or {}).get("tracks") or {}).get("items") or []
 
     # --- playback ------------------------------------------------------------------------
 

@@ -2,9 +2,10 @@
 
 import json
 import sqlite3
-from collections.abc import Iterable
+from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
 from .models import Artist, Signal, Track
 
@@ -71,7 +72,15 @@ CREATE TABLE IF NOT EXISTS artist_signals (
 CREATE TABLE IF NOT EXISTS years (
     track_id TEXT PRIMARY KEY,
     year INTEGER NOT NULL,
-    source TEXT NOT NULL                         -- musicbrainz | spotify | manual
+    source TEXT NOT NULL                         -- musicbrainz | spotify | manual | classic
+);
+
+-- The songs of classics.json that have a Spotify track, copied from the list at startup.
+CREATE TABLE IF NOT EXISTS classics (
+    key TEXT PRIMARY KEY,                        -- see classics.key
+    track_id TEXT REFERENCES tracks(id),
+    year INTEGER NOT NULL,                       -- the list's year
+    checked_at TEXT NOT NULL                     -- UTC ISO time it was copied from the list
 );
 """
 
@@ -355,30 +364,50 @@ def artist_signals(conn: sqlite3.Connection, player_id: str) -> dict[str, tuple[
     return out
 
 
+_TRACK_COLUMNS = (
+    "t.id, t.uri, t.name, t.artists, t.album_name, t.image_url, t.release_date, t.isrc,"
+    " t.duration_ms"
+)
+
+
+def _track(row: Sequence[Any]) -> Track:
+    """A Track from the columns of _TRACK_COLUMNS."""
+    id, uri, name, artists, album_name, image_url, release_date, isrc, duration_ms = row
+    return Track(
+        id=id,
+        uri=uri,
+        name=name,
+        artists=tuple(Artist(a, n) for a, n in json.loads(artists)),
+        album_name=album_name,
+        image_url=image_url,
+        release_date=release_date,
+        isrc=isrc,
+        duration_ms=duration_ms,
+    )
+
+
 def tracks_known_to(conn: sqlite3.Connection, player_ids: list[str]) -> dict[str, Track]:
     """Every track in a picked source of at least one of these players."""
     marks = ",".join("?" * len(player_ids))
     rows = conn.execute(
-        "SELECT DISTINCT t.id, t.uri, t.name, t.artists, t.album_name, t.image_url,"
-        " t.release_date, t.isrc, t.duration_ms"
+        f"SELECT DISTINCT {_TRACK_COLUMNS}"
         f" FROM tracks t JOIN track_signals s ON s.track_id = t.id {_PICKED}"
         f" WHERE s.player_id IN ({marks})",
         player_ids,
     )
-    return {
-        id: Track(
-            id=id,
-            uri=uri,
-            name=name,
-            artists=tuple(Artist(a, n) for a, n in json.loads(artists)),
-            album_name=album_name,
-            image_url=image_url,
-            release_date=release_date,
-            isrc=isrc,
-            duration_ms=duration_ms,
-        )
-        for id, uri, name, artists, album_name, image_url, release_date, isrc, duration_ms in rows
-    }
+    tracks = (_track(row) for row in rows)
+    return {t.id: t for t in tracks}
+
+
+def players_with_tracks(conn: sqlite3.Connection) -> list[Player]:
+    """Every player whose picked sources hold at least one song, by name."""
+    rows = conn.execute(
+        "SELECT id, name, refresh_token, import_status, import_detail, refreshed_at"
+        " FROM players p WHERE EXISTS"
+        f" (SELECT 1 FROM track_signals s {_PICKED} WHERE s.player_id = p.id)"
+        " ORDER BY name"
+    )
+    return [Player(*row) for row in rows]
 
 
 def random_track_uri(conn: sqlite3.Connection, player_id: str) -> str | None:
@@ -398,6 +427,19 @@ def get_year(conn: sqlite3.Connection, track_id: str) -> tuple[int, str] | None:
     return (row[0], row[1]) if row else None
 
 
+def years_of(conn: sqlite3.Connection, track_ids: Iterable[str]) -> dict[str, int]:
+    """The cached years of these tracks, as far as there are any."""
+    ids = list(track_ids)
+    out: dict[str, int] = {}
+    for start in range(0, len(ids), 500):  # SQLite caps the number of parameters
+        chunk = ids[start : start + 500]
+        marks = ",".join("?" * len(chunk))
+        out.update(
+            conn.execute(f"SELECT track_id, year FROM years WHERE track_id IN ({marks})", chunk)
+        )
+    return out
+
+
 def put_year(conn: sqlite3.Connection, track_id: str, year: int, source: str) -> None:
     """Cache a resolved year. A manual entry is never overwritten."""
     with conn:
@@ -407,3 +449,35 @@ def put_year(conn: sqlite3.Connection, track_id: str, year: int, source: str) ->
             " WHERE years.source != 'manual'",
             (track_id, year, source),
         )
+
+
+# --- classics --------------------------------------------------------------------------------
+
+
+def replace_classics(
+    conn: sqlite3.Connection, found: Sequence[tuple[str, Track, int]], stored_at: str
+) -> None:
+    """Make the classics these (key, track, list year); each track gets the list's year,
+    unless that was set by hand."""
+    with conn:
+        conn.execute("DELETE FROM classics")
+        _upsert_tracks(conn, (track for _, track, _ in found))
+        conn.executemany(
+            "INSERT INTO classics (key, track_id, year, checked_at) VALUES (?, ?, ?, ?)",
+            ((key, track.id, year, stored_at) for key, track, year in found),
+        )
+        conn.executemany(
+            "INSERT INTO years (track_id, year, source) VALUES (?, ?, 'classic')"
+            " ON CONFLICT (track_id) DO UPDATE SET year = excluded.year, source = 'classic'"
+            " WHERE years.source != 'manual'",
+            ((track.id, year) for _, track, year in found),
+        )
+
+
+def found_classics(conn: sqlite3.Connection) -> list[tuple[Track, int]]:
+    """The classics found on Spotify, with the list's year."""
+    rows = conn.execute(
+        f"SELECT {_TRACK_COLUMNS}, c.year FROM classics c JOIN tracks t ON t.id = c.track_id"
+        " ORDER BY c.key"
+    )
+    return [(_track(row[:-1]), row[-1]) for row in rows]

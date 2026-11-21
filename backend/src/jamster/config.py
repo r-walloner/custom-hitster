@@ -24,6 +24,8 @@ class Settings(BaseSettings):
     data_dir: Path = Path("data")
     static_dir: Path | None = None  # built frontend; unset in development, where Vite serves it
     musicbrainz_contact: str = ""  # URL or email sent in the MusicBrainz User-Agent
+    # The well-known songs Balanced mixes in; None searches for none.
+    classics_file: Path | None = Path(__file__).with_name("classics.json")
 
     # Logging, see logs.py. INFO tells each game move by move; DEBUG adds every outside call.
     log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR"] = "INFO"

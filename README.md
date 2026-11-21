@@ -36,6 +36,7 @@ Jamster is a private tool and cannot become a public one.
    A signed-in player's name is saved with their account, so it comes back in the next room; the Account pop-up on the home page can change it too.
 4. The host can add local players, who have no phone; the host's screen shows their buttons on their own rows, so one device is enough.
 5. The host picks the playback mode on the speaker screen (Music plays on, in the lobby): one speaker (the host's Spotify, same room) or separate speakers (everyone's own Spotify, remote).
+   In the lobby settings the host also picks how the deck is built: Balanced, Show & Tell or Wildcards (see [Deck strategies](#deck-strategies)).
 6. Each player whose Spotify plays music picks a speaker and can tap Test on it to hear 10 seconds of a song from their library.
 7. The host starts the game.
    The deck is chosen at once, but each song needs its release year, which MusicBrainz gives out at about one song per second.
@@ -82,6 +83,20 @@ Remove an item once the backend provides it and the screen uses it.
 
 Nothing is missing at the moment.
 
+## Planned deck modes
+
+Two more deck strategies are designed but not built yet.
+
+- **Deep Dive: one artist.**
+  The host picks an artist, and the deck is that artist's songs: the players' own, plus songs fetched for the game.
+  It needs an artist picker in the lobby, and suggestions of artists the whole group knows well whose songs span many years.
+  It also needs a fetch step before curation, about 5 to 10 requests per game: `GET /search` for `artist:"…"` (10 tracks per request, with ISRCs), and `GET /artists/{id}/albums` with albums and singles only, for the artist's own release years.
+  It should take 2 or 3 songs per album at most, because songs from the same year are free placements.
+- **Nostalgia: songs liked long ago.**
+  Songs a player liked years ago and no longer plays: an old `added_at`, and in no top list or recent plays.
+  The reveal could say "Robin liked this in 2018".
+  It needs the `added_at` of liked songs and playlist entries, which the importer already receives but does not store, so it means a schema change and a fresh database.
+
 One thing is left out on purpose: the deck can't be fed from the artists a player follows.
 Development Mode has no artist top tracks, and album tracks come without the ISRC the year lookup needs, so an artist's songs would cost many requests and still lack years.
 
@@ -114,6 +129,7 @@ The backend and Docker Compose both read it.
 | `JAMSTER_SESSION_SECRET` | Any long random string, used to sign the session cookie. |
 | `JAMSTER_BASE_URL` | Public address in production, such as `https://jamster.example.com`, and empty locally. |
 | `JAMSTER_MUSICBRAINZ_CONTACT` | A URL or email address sent to MusicBrainz, whose API rules ask for one. |
+| `JAMSTER_CLASSICS_FILE` | The list of well-known songs Balanced mixes in, by default `backend/src/jamster/classics.json`. |
 | `JAMSTER_LOG_LEVEL` | `INFO` (the default), `DEBUG`, `WARNING` or `ERROR`. |
 | `JAMSTER_LOG_TO` | `file` (the default) or `stdout`. The container image defaults to `stdout`. |
 | `JAMSTER_LOG_FILE` | The log file, by default `jamster.log` in the data directory, so `backend/data/jamster.log` in development. |
@@ -126,6 +142,10 @@ Failures the game survives, such as a song Spotify refuses to play, are `WARNING
 Only Jamster's own lines are logged below `WARNING`, so the web server's request lines stay out.
 The log names the song in play, so don't watch it during a game.
 The log file rotates at 10 MB and keeps five old files.
+
+Each turn's log line also says why its song is in the deck, such as `balanced core, score 1.42: Robin 0.82 (saved, top_medium #12), Ben 0.30 (artist: 7 other songs)`.
+The whole deck, with that explanation for every song, is written to `decks/` in the data directory when a game is dealt, as JSON lines in the order the cards are drawn, and the dealing line in the log names the file.
+The newest 100 deck files are kept.
 
 Generate the session secret with:
 
@@ -190,7 +210,8 @@ There are no frontend tests.
 | `backend/src/jamster/rooms.py` | Rooms in memory, the socket messages, playback control. |
 | `backend/src/jamster/spotify.py`, `importer.py` | Spotify login, API client and library import. |
 | `backend/src/jamster/years.py` | Release years from MusicBrainz, with Spotify's date as fallback. |
-| `backend/src/jamster/curation.py`, `deck.py` | Deck strategies and deck building. |
+| `backend/src/jamster/curation/`, `deck.py` | Deck strategies, the command that tries them, and deck building. |
+| `backend/src/jamster/classics.py`, `classics.json` | The list of well-known songs and their matching on Spotify. |
 | `backend/src/jamster/db.py` | The SQLite schema and every query. |
 | `backend/src/jamster/web.py` | Routes, the room WebSocket, static files. |
 | `backend/src/jamster/logs.py` | Where log records go, and from which level. |
@@ -201,14 +222,64 @@ There are no frontend tests.
 There is no migration tool.
 After a change to the schema in `db.py`, delete the database file, and every player signs in again.
 
-### Write the curation strategy
+### Deck strategies
 
-The strategy that picks songs for a deck is the one part left as a placeholder.
-`majority` in `backend/src/jamster/curation.py` takes every track that at least 65 % of the players have any signal for.
+A strategy picks the songs of a deck from the players' libraries.
+The host chooses one in the lobby settings.
 
-A strategy is a function with the signature of the `Strategy` protocol in that file.
-It receives one `TasteProfile` per player, holding their signals per track and per artist: `saved`, `playlist`, `top_short`, `top_medium`, `top_long` and `recent`.
-Add the function to `STRATEGIES`, and it appears in the lobby settings.
+| Strategy | What it picks |
+|---|---|
+| Balanced (the default) | Songs the group knows, preferring those several players know. Each library gets an equal share, the years are spread out, 10 % are wildcards one player knows well and the others don't, and 10 % are well-known classics, aimed at the decades the libraries leave thin. |
+| Show & Tell | Each library brings an equal share of the songs that are most its own: its player knows them well, the others hardly do. |
+| Wildcards | The deep cuts: songs only one library has and its player barely knows, by artists nobody else knows, spread evenly over the years. |
+
+How they work:
+
+- **Familiarity.** Every strategy starts from how well each player knows each song, a score from 0 to 1. The score combines the evidence: top lists, liked, playlists and recent plays, plus the artist's place in the player's top artists and how many of the player's songs are by that artist. A player who doesn't have a song can still know it a little through its artist.
+- **Merging.** Releases of one song merge into one card: the same ISRC, or the same title by the same main artist once tags like "Remastered 2011" or "feat. X" are dropped. Remixes, live versions and covers stay separate songs.
+- **Years.** Years are shaped in spans of five years, each span's share following its number of songs to a power: 0.5 (the square root) for Balanced and Show & Tell, 0 (flat) for Wildcards. The years used are those MusicBrainz already gave, else Spotify's, which is sometimes a remaster's. Curation never looks a year up.
+- **Equal shares.** The libraries take turns. A library that has no song left that fits the year shares or the artist limit (5 % of the deck) takes its best song anyway, so every library gets an equal share as long as it has songs.
+- **Classics.** `backend/src/jamster/classics.json` lists about 380 well-known songs from the 1950s to today, a quarter of them German-language, each with the year it first came out and its Spotify track. At startup the server copies the list into the database, with the list's years, and asks neither Spotify nor MusicBrainz about them. Edit the list freely: a changed year is taken over at the next start and a removed song is forgotten. A song added to it needs its Spotify track looked up once, from `backend/`, with the Spotify app's credentials in `.env`:
+
+  ```sh
+  uv run python -m jamster.classics
+  ```
+
+  That searches Spotify for every song without a `track` yet, one search a second, and writes the tracks into the file. A song Spotify doesn't have gets `"track": null` and is left out of decks; `--again` searches for those again. Correct a wrong match by editing or deleting its `track`.
+
+The code follows the Strategy pattern.
+`CurationStrategy` in `backend/src/jamster/curation/base.py` is the interface, with one method, `curate(pool, size, rng)`.
+`Balanced`, `ShowAndTell` and `Wildcards` are the concrete strategies, each a dataclass whose fields are its parameters.
+`deck.curate` is the context: it loads the pool, runs the strategy the settings name and turns its picks into cards.
+The shared building blocks (merging, familiarity, year shares, the turn-taking) are in `curation/songs.py`.
+To add a strategy, subclass `CurationStrategy`, add an instance to `STRATEGIES` in `curation/__init__.py`, and give it a name in `frontend/src/screens/settings/options.ts`.
+Strategies stay pure: no network, no database, no clock.
+
+Every pick carries a `Why`: the reason (core, wildcard or classic), the library that brought it, the strategy's score, and each player's familiarity with the evidence for it.
+
+#### Try a strategy
+
+From `backend/`, this picks a deck from the database without starting the server and writes two files that explain every song in it, a Markdown report and the same deck as JSON lines, and prints their paths:
+
+```sh
+uv run python -m jamster.curation balanced
+```
+
+It opens `data/jamster.db` read-only, so it is safe while the server runs, and it looks nothing up.
+
+| Option | Meaning |
+|---|---|
+| `balanced`, `show_and_tell`, `wildcards` | The strategy, Balanced by default. |
+| `--players Robin,Ben` | Whose libraries, by name or Spotify id; all with songs by default. |
+| `--size 100`, `--seed 1` | The deck size, and the seed that makes a run repeatable. |
+| `--set year_power=0.3` | Change a parameter for this run; repeat it for several. `--set weights.saved=0.5` changes a familiarity weight. |
+| `--split 3` | Make up 3 players from one library, a fifth of the songs shared by two, to try what several players would get. |
+| `--report familiarity` | Add each player's familiarity percentiles, to tune the weights. |
+| `--out runs/try` | Write `runs/try.md` and `runs/try.jsonl`. By default the files go to `data/curation/`, named after the time, the strategy and the seed. |
+
+The Markdown lists the parameters, the players, every song with its year, reason, owner, score and who knows it, and a summary: songs per decade, per reason and per owner, and the most frequent artists.
+The JSON lines have the format of the deck files: a first line with the strategy, its parameters, the seed and the players, then one line per song.
+The classics come straight from the list; songs not looked up yet stand in without a track.
 
 Spotify's developer policy forbids feeding Spotify data into a machine learning model or an LLM.
 
@@ -261,7 +332,7 @@ A Caddy running in Docker needs a network shared with the `jamster` service inst
 
 To update, run `git pull` and the same `docker compose` command again.
 
-The named volume `jamster-data` holds the SQLite database: Spotify logins, imported libraries and cached release years.
+The named volume `jamster-data` holds the SQLite database (Spotify logins, imported libraries, cached release years and the classics found on Spotify) and the deck files in `decks/`.
 
 ## How the skeletons were generated
 

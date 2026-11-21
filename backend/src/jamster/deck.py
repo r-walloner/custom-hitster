@@ -1,14 +1,24 @@
 """Turns the players' libraries into a deck. Curating is instant; a card's year is looked up only
-when the card is about to be needed, because MusicBrainz allows one lookup per second."""
+when the card is about to be needed, because MusicBrainz allows one lookup per second.
 
+`curate` is the context of the Strategy pattern in `curation`: it gathers the pool, runs the
+strategy the settings name, and turns its picks into entries."""
+
+import datetime
+import json
 import random
 import sqlite3
+from collections.abc import Sequence
 from dataclasses import dataclass
+from pathlib import Path
 
 from . import db
-from .curation import STRATEGIES, TasteProfile
-from .models import Card, Track
+from .curation import STRATEGIES, Classic, CurationStrategy, Pool, TasteProfile
+from .curation.report import deck_lines
+from .models import Card, Track, Why
 from .years import YearResolver
+
+KEEP_DECK_FILES = 100
 
 
 @dataclass(frozen=True, slots=True)
@@ -17,6 +27,7 @@ class Entry:
 
     track: Track
     known_by: tuple[str, ...]  # display names of the players with a signal for it
+    why: Why | None = None
 
 
 def load_profile(conn: sqlite3.Connection, player_id: str) -> TasteProfile | None:
@@ -31,21 +42,60 @@ def load_profile(conn: sqlite3.Connection, player_id: str) -> TasteProfile | Non
     )
 
 
+def load_pool(
+    conn: sqlite3.Connection, player_ids: Sequence[str], *, with_classics: bool = True
+) -> Pool:
+    """Everything a strategy chooses from: the players' libraries, the classics found on
+    Spotify, and the years the database knows already. Nothing is looked up."""
+    profiles = [p for p in (load_profile(conn, pid) for pid in player_ids) if p]
+    catalog = db.tracks_known_to(conn, [p.player_id for p in profiles]) if profiles else {}
+    found = db.found_classics(conn) if with_classics else []
+    classics = [Classic(track, year) for track, year in found]
+    catalog |= {c.track.id: c.track for c in classics}
+    return Pool(
+        profiles=profiles,
+        catalog=catalog,
+        years=db.years_of(conn, catalog),
+        classics=classics,
+        this_year=datetime.date.today().year,
+    )
+
+
+def entries_of(
+    pool: Pool, strategy: CurationStrategy, size: int, rng: random.Random
+) -> list[Entry]:
+    """The strategy's picks as entries, in the order it picked them."""
+    names = {p.player_id: p.name for p in pool.profiles}
+    return [
+        Entry(pool.catalog[c.track_id], tuple(names[pid] for pid in c.known_by), c.why)
+        for c in strategy.curate(pool, size, rng)
+    ]
+
+
 def curate(
     conn: sqlite3.Connection, player_ids: list[str], strategy: str, size: int, rng: random.Random
 ) -> list[Entry]:
     """Up to `size` tracks for these players, in random order."""
-    profiles = [p for p in (load_profile(conn, pid) for pid in player_ids) if p]
-    if not profiles:
+    pool = load_pool(conn, player_ids)
+    if not pool.profiles:
         return []
-    names = {p.player_id: p.name for p in profiles}
-    catalog = db.tracks_known_to(conn, [p.player_id for p in profiles])
-    candidates = STRATEGIES[strategy](profiles, catalog, size, rng)
-    entries = [
-        Entry(catalog[c.track_id], tuple(names[pid] for pid in c.known_by)) for c in candidates
-    ]
+    entries = entries_of(pool, STRATEGIES[strategy], size, rng)
     rng.shuffle(entries)
     return entries
+
+
+def write_deck_file(folder: Path, room: str, strategy: str, entries: Sequence[Entry]) -> Path:
+    """Write a deck, in the order it will be drawn, with why each song is in it; keep only
+    the newest files. `python -m jamster.curation --format jsonl` writes the same lines."""
+    folder.mkdir(parents=True, exist_ok=True)
+    now = datetime.datetime.now(datetime.UTC)
+    path = folder / f"{now:%Y-%m-%dT%H-%M-%S}-{room}.jsonl"
+    meta = {"room": room, "strategy": strategy, "size": len(entries), "at": now.isoformat()}
+    lines = deck_lines(meta, [(e.track, e.known_by, e.why) for e in entries])
+    path.write_text("".join(json.dumps(line, ensure_ascii=False) + "\n" for line in lines))
+    for old in sorted(folder.glob("*.jsonl"))[:-KEEP_DECK_FILES]:
+        old.unlink(missing_ok=True)
+    return path
 
 
 def cached_first(conn: sqlite3.Connection, entries: list[Entry], count: int) -> list[Entry]:
@@ -76,4 +126,5 @@ async def to_card(resolver: YearResolver, entry: Entry) -> Card | None:
         image_url=track.image_url,
         known_by=entry.known_by,
         duration_ms=track.duration_ms,
+        why=entry.why,
     )

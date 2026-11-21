@@ -44,7 +44,9 @@ npm create vite@latest frontend -- --template react-ts --no-interactive
 - `backend/src/jamster/engine.py`: the game rules, a pure state machine.
 - `backend/src/jamster/rooms.py`: in-memory rooms, socket message handling, playback.
 - `backend/src/jamster/spotify.py`, `importer.py`, `years.py`: Spotify client, library import, MusicBrainz years.
-- `backend/src/jamster/curation.py`, `deck.py`: deck strategies and deck building.
+- `backend/src/jamster/curation/`: deck strategies (Strategy pattern). `base.py` the interface and its inputs, `songs.py` the shared building blocks, one module per strategy, `report.py` the Markdown and JSON-lines output, `__main__.py` the command `uv run python -m jamster.curation` that tries a strategy against `data/jamster.db` and writes a Markdown report and JSON lines to `data/curation/` (or `--out`).
+- `backend/src/jamster/deck.py`: the context that loads the pool, runs a strategy and writes the deck file to `data/decks/`.
+- `backend/src/jamster/classics.py`, `classics.json`: the hand-written list of well-known songs with their years and Spotify tracks, copied into the database at startup. After adding songs to the list, run `uv run python -m jamster.classics` to look up their tracks.
 - `backend/src/jamster/db.py`: the schema and every SQL statement.
 - `backend/src/jamster/web.py`: routes, the room WebSocket, static files.
 - `backend/src/jamster/logs.py`: logging setup. Modules log via `logging.getLogger(__name__)`; rooms via `room.log`, which prefixes the room code.
@@ -72,7 +74,7 @@ npm create vite@latest frontend -- --template react-ts --no-interactive
 - `engine.py` stays pure: no I/O, no clock, no randomness. Every rule change gets a test in `tests/test_engine.py`.
 - All SQL goes in `db.py`. There are no migrations: change `SCHEMA`, and say that the database file must be deleted.
 - Run exactly one server process. Rooms live in memory.
-- Curation strategies are pure functions registered in `curation.STRATEGIES`. Never send Spotify data to an ML model or an LLM; Spotify's developer policy forbids it.
+- Curation strategies are `CurationStrategy` subclasses in `curation/`, dataclasses whose fields are their parameters, registered in `curation.STRATEGIES` and named in `frontend/src/screens/settings/options.ts`. They stay pure and make no year lookups: they use cached years, else Spotify's. Every pick carries a `Why`. Never send Spotify data to an ML model or an LLM; Spotify's developer policy forbids it.
 - Before adding a Spotify API call, check that Development Mode still offers it (see Pitfalls in the brief). There is no batch `GET /tracks`, no artist top tracks and no `popularity` field.
 - Call MusicBrainz only through `YearResolver`, which keeps to one request per second.
 - Logging: game and room events at INFO, as one short readable sentence each (names, not ids); outside calls and refused requests at DEBUG; failures the app survives at WARNING. Don't log the same fact twice. Never log tokens or secrets.

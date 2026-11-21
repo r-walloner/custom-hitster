@@ -113,6 +113,7 @@ class FakeSpotify:
         # Requests whose "path?query" starts with one of these wait while it is here.
         self.held: set[str] = set()
         self.playlists = copy.deepcopy(PLAYLISTS)  # a test may change a playlist's snapshot
+        self.searchable: list[dict[str, Any]] = []  # track objects /search can find
 
     async def __call__(self, request: httpx.Request) -> httpx.Response:
         host, path = request.url.host, request.url.path
@@ -133,6 +134,8 @@ class FakeSpotify:
 
     def _token(self, request: httpx.Request) -> httpx.Response:
         form = dict(parse_qsl(request.content.decode()))
+        if form["grant_type"] == "client_credentials":
+            return httpx.Response(200, json={"access_token": "at-app", "expires_in": 3600})
         if form["grant_type"] == "authorization_code":
             user = form["code"]
         else:
@@ -159,6 +162,10 @@ class FakeSpotify:
 
     def _api(self, request: httpx.Request, user: str, path: str) -> httpx.Response:
         params = request.url.params
+        if user == "app":  # the app's own token can only search
+            if path != "/search":
+                return _error(401, "Only valid for user requests")
+            return self._search(params)
         if user not in ALLOWLIST:
             return _error(403, "User not registered in the Developer Dashboard")
         if path == "/me":
@@ -206,6 +213,17 @@ class FakeSpotify:
             self.pauses.append(user)
             return httpx.Response(204)
         return _error(404, f"the fake has no {path}")
+
+    def _search(self, params: httpx.QueryParams) -> httpx.Response:
+        """Tracks whose title and artist contain the query's track:"…" and artist:"…"."""
+        wanted = dict(re.findall(r'(track|artist):"([^"]*)"', params["q"]))
+        title, artist = wanted.get("track", "").lower(), wanted.get("artist", "").lower()
+        items = [
+            t
+            for t in self.searchable
+            if title in t["name"].lower() and any(artist in a["name"].lower() for a in t["artists"])
+        ]
+        return httpx.Response(200, json={"tracks": {"items": items[: int(params["limit"])]}})
 
 
 def _page(items: list[Any], params: httpx.QueryParams) -> httpx.Response:
