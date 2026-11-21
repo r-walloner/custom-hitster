@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&amp;family=Bricolage+Grotesque:opsz,wght@12..96,400..800&amp;family=DM+Mono:wght@500&amp;display=swap">
 <style>
 body{margin:0}
-.dk-win{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:56px}
+.dk-win{flex:0 1 auto;height:740px;max-height:100%;margin-block:auto;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:56px}
 .dk-win .jm-big-moment{font-size:64px;line-height:72px}
 .dk-win__line{margin:0;max-width:560px;font:800 22px/30px var(--font-ui);letter-spacing:-0.015em}
 /* The art sits centred in whatever space is left between the line and the buttons */
@@ -20,7 +20,7 @@ body{margin:0}
 .dk-win .jm-btn--next{flex:0 0 280px;min-height:64px;font-size:21px}
 .dk-win .dk-btn{min-height:56px;padding:0 24px;font-size:17px}
 .dk-win .jm-status{height:56px;padding:0 24px;font-size:17px}
-.dk-final{padding:24px 26px 26px;border-radius:22px;display:flex;flex-direction:column;gap:10px}
+.dk-final{align-self:center;padding:24px 26px 26px;border-radius:22px;display:flex;flex-direction:column;gap:10px}
 .dk-final .jm-label{font-size:13px;line-height:16px}
 .dk-final__row{display:flex;align-items:center;gap:14px;height:64px;padding:0 16px;box-sizing:border-box;border-radius:14px;border:2px solid var(--sand-line);background:var(--paper)}
 .dk-final__row--win{border-color:var(--ink);background:var(--turn-tint);box-shadow:var(--shadow-sticker-sm)}

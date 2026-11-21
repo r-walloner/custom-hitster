@@ -1,5 +1,10 @@
+/* At most a little taller than on a phone (316px there), centred in a taller window (the phone layout
+   in a tall desktop window), so the buttons stay near the headline. */
 .winner {
-  flex: 1;
+  flex: 0 1 auto;
+  height: 340px;
+  max-height: 100%;
+  margin-block: auto;
   min-height: 0;
   display: grid;
   grid-template-columns: minmax(0, 1fr) 280px;
@@ -55,7 +60,12 @@
   font-size: 15px;
 }
 
+/* As tall as its rows, centred beside the winner; a long list scrolls inside the column's height. */
 .winner__final {
+  align-self: center;
+  max-height: 100%;
+  box-sizing: border-box;
+  min-height: 0;
   padding: 12px 14px 14px;
   display: flex;
   flex-direction: column;
@@ -112,6 +122,8 @@
   grid-template-columns: minmax(0, 1fr) clamp(360px, 360px + 60 * var(--dkf), 420px);
   gap: clamp(32px, 32px + 24 * var(--dkf), 56px);
   padding-top: 0;
+  /* At most as tall as in a 1440 × 900 window, centred in a taller one (see .winner). */
+  height: 740px;
 }
 
 .jm-desktop .winner__main {
@@ -173,6 +185,7 @@
 }
 
 .jm-desktop .winner__rows {
+  min-height: 0;
   gap: 10px;
 }
 
