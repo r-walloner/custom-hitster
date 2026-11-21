@@ -125,11 +125,11 @@ class Component extends DCLogic {
     const named = this.state.named ?? (this.props.named === "yes");
     // Named the song pays out when the next turn starts; the scoreboard shows the token already.
     const data = [
-      { name: "Mara", p: 1, cards: 8, tokens: 3 + (named ? 1 : 0), status: host ? "Your turn, leading" : "On turn, leading", turn: true },
+      { name: "Mara", p: 1, cards: 8, tokens: 3 + (named ? 1 : 0), status: "Leading", turn: true },
       { name: "Jonas", p: 2, cards: 6, tokens: 1, status: "" },
-      { name: "Lea", p: 3, cards: 5, tokens: 2, status: host ? "" : "That's you" },
-      { name: "Tobi", p: 4, cards: 3, tokens: 2, status: "Local player" },
-      { name: "Sam", p: 5, cards: 2, tokens: 4, status: "Challenged" }
+      { name: "Lea", p: 3, cards: 5, tokens: 2, status: "" },
+      { name: "Tobi", p: 4, cards: 3, tokens: 2, status: "" },
+      { name: "Sam", p: 5, cards: 2, tokens: 4, status: "Challenged!" }
     ];
     const rows = data.map((r) => ({
       ...r,

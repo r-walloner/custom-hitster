@@ -1,5 +1,7 @@
 // The status line under each name in the game's player list (desktop only; the phone's mini
-// scoreboard has no room for it).
+// scoreboard has no room for it) and in the full scoreboard. Only what matters mid-game and the row doesn't already show: the
+// player on turn has the highlighted row, you know your own name, and who plays on the host's
+// device was settled in the lobby.
 import type { GameView } from '../../api/messages.ts'
 
 interface Seat {
@@ -9,25 +11,27 @@ interface Seat {
 
 interface Facts {
   game: GameView
-  /** The player looking at this screen. */
-  you: string | null
-  /** This device makes the moves of the player on turn. */
-  acting: boolean
-  isLocal: (id: string) => boolean
   isAway: (id: string) => boolean
-  /** The most cards anyone holds. */
-  most: number
 }
 
-/** "Your turn, leading", "That's you", "Local player", "Reconnecting…", "Challenged" or "". */
+/**
+ * Holds the most cards while someone holds fewer. A tie for everyone (as at the start, one card
+ * each) is no lead.
+ */
+export function isLeading(cards: number, game: GameView): boolean {
+  const counts = game.players.map((p) => p.timeline.length)
+  return cards === Math.max(...counts) && cards > Math.min(...counts)
+}
+
+/**
+ * "Reconnecting…" alone while the player is away; otherwise "Leading" and "Challenged!", joined with
+ * a comma, each capitalised ("Leading, Challenged!"), or "".
+ */
 export function scoreStatus({ id, cards }: Seat, facts: Facts): string {
-  const { game, you, acting, isLocal, isAway, most } = facts
+  const { game, isAway } = facts
+  if (isAway(id)) return 'Reconnecting…'
   const notes: string[] = []
-  if (id === game.active) notes.push(acting ? 'Your turn' : 'On turn')
-  if (cards === most && cards > 0) notes.push('Leading')
-  if (id === you && id !== game.active) notes.push("That's you")
-  if (isLocal(id)) notes.push('Local player')
-  if (isAway(id)) notes.push('Reconnecting…')
-  if (game.challenges.some((challenge) => challenge.player_id === id)) notes.push('Challenged')
-  return notes.map((note, i) => (i === 0 ? note : note.charAt(0).toLowerCase() + note.slice(1))).join(', ')
+  if (isLeading(cards, game)) notes.push('Leading')
+  if (game.challenges.some((challenge) => challenge.player_id === id)) notes.push('Challenged!')
+  return notes.join(', ')
 }

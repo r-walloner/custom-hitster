@@ -145,21 +145,18 @@ class Component extends DCLogic {
       if (i < n) items.push(Object.assign({ isCard: true }, cards[i]));
     }
     const rangeText = (i) => i === 0 ? 'before ' + cards[0].year : i === n ? 'after ' + cards[n - 1].year : cards[i - 1].year + ' to ' + cards[i].year;
-    // Seat order, like the phone. Statuses: on turn, leading, local, that's you, away.
+    // Seat order, like the phone. Statuses: leading, away.
     const leader = n > 6 ? "Mara" : "Jonas";
     const data = [
       { name: "Mara", p: 1, cards: n, tokens: 3, turn: true },
       { name: "Jonas", p: 2, cards: 6, tokens: 1 },
-      { name: "Lea", p: 3, cards: 5, tokens: 2, you: !acting },
+      { name: "Lea", p: 3, cards: 5, tokens: 2 },
       { name: "Tobi", p: 4, cards: 3, tokens: 2, local: true },
       { name: "Sam", p: 5, cards: 2, tokens: 5, away: true }
     ];
     const rows = data.map((r) => {
       const notes = [];
-      if (r.turn) notes.push(acting ? "Your turn" : "On turn");
-      if (r.name === leader) notes.push(notes.length ? "leading" : "Leading");
-      if (r.you) notes.push("That's you");
-      if (r.local) notes.push("Local player");
+      if (r.name === leader) notes.push("Leading");
       if (r.away) notes.push("Reconnecting…");
       return {
         name: r.name,

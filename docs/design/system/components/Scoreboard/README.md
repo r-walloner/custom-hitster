@@ -7,7 +7,7 @@ Everyone's standing in one glance: a narrow column of pills, one per player, eac
 ## Rules
 
 - Always visible on the game screen, in every state, at the right end of the top band (76px wide).
-- It's one button: tapping it opens the full scoreboard (a wide Dialog, best first, with progress to the goal, tokens, each timeline in short form as YearChips, and a note per player: *On turn*, *Leading*, *Local player*, *That's you*).
+- It's one button: tapping it opens the full scoreboard (a wide Dialog, best first, with progress to the goal, tokens, each timeline in short form as YearChips, and a note per player, the same as the desktop player list's: *Leading*, *Challenged!*, *Leading, Challenged!*, or *Reconnecting…* alone).
 - No names, no progress bars here: the initial and two numbers are enough, and the game goal ("First to 10") is in the header.
 - Give the button an `aria-label` that says it all in words: "Scoreboard. Mara, on turn: 4 cards, 3 tokens. … Open the full scoreboard."
 - A token given for naming the song shows here as soon as the host gives it.

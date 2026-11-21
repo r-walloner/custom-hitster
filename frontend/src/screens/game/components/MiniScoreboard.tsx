@@ -7,7 +7,7 @@ export interface Score {
   player: Player
   cards: number
   tokens: number
-  /** "Your turn, leading": shown under the name on desktop only. */
+  /** "Leading, challenged": shown under the name on desktop only. */
   status: string
   /** Reconnecting: a dashed avatar on desktop. */
   away: boolean

@@ -22,7 +22,7 @@ interface GameScreenProps {
 
 /** The game screen: header, the top band (tape, moment panel, scoreboard), the board below. */
 export function GameScreen({ turn, panel, board, className }: GameScreenProps) {
-  const { room, you, send, open, player, songStart, canActFor, isLocal, isAway } = useRoomTools()
+  const { room, you, send, open, player, songStart, isAway } = useRoomTools()
   const { game } = turn
   // Only the host: the player on turn could otherwise cut a challenge short.
   const revealNow = you.is_host && (game.phase === 'challenging' || game.phase === 'picking')
@@ -30,11 +30,7 @@ export function GameScreen({ turn, panel, board, className }: GameScreenProps) {
   const bonus = (id: string) => (game.phase === 'revealed' && game.named && id === game.active ? 1 : 0)
   const facts = {
     game,
-    you: you.player_id,
-    acting: canActFor(game.active),
-    isLocal,
     isAway,
-    most: Math.max(...game.players.map((p) => p.timeline.length)),
   }
   const scores = game.players.map((p) => ({
     player: player(p.id),

@@ -5,24 +5,19 @@ import { Progress } from '../../components/Progress.tsx'
 import { YearChips } from '../../components/YearChip.tsx'
 import { useRoomTools } from '../room/context.ts'
 import { byStanding } from './rules.ts'
+import { scoreStatus } from './scores.ts'
 import './Standings.css'
 
-/** The full scoreboard: progress to the goal, tokens, and each timeline in short form. */
+/**
+ * The full scoreboard: progress to the goal, tokens, and each timeline in short form. The notes
+ * under the names are the game screen's player list's (scores.ts).
+ */
 export default function Standings() {
-  const { room, you, player, isLocal, isAway, close } = useRoomTools()
+  const { room, player, isAway, close } = useRoomTools()
   const game = room.game
   if (!game) return null
   const goal = room.settings.cards_to_win
-  const most = Math.max(...game.players.map((p) => p.timeline.length))
   const rows = byStanding(game.players)
-
-  const note = (id: string, cards: number) => {
-    if (id === game.active) return 'On turn'
-    if (cards === most && cards > 0) return 'Leading'
-    if (isLocal(id)) return 'Local player'
-    if (id === you.player_id) return "That's you"
-    return ''
-  }
 
   return (
     <Dialog
@@ -58,7 +53,7 @@ export default function Standings() {
                 <Avatar player={who} size="lg" />
                 <span className="jm-player__name">
                   {who.name}
-                  <small>{note(p.id, cards)}</small>
+                  <small>{scoreStatus({ id: p.id, cards }, { game, isAway })}</small>
                 </span>
               </div>
               <div className="standings__cards">
