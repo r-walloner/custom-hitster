@@ -1,5 +1,6 @@
-/* Jamster desktop layer: dk- classes on top of tokens.css and bundle.css, for windows from about 1024px wide.
-   The phone design (844 × 390, zoomed to fit) stays the primary one; below the breakpoint the app keeps it.
+/* Jamster desktop layer: dk- classes on top of tokens.css and bundle.css, for windows at least 1000 × 640:
+   @media (min-width: 1000px) and (min-height: 640px). The phone design (844 × 390, zoomed to fit) stays the
+   primary one and covers everything smaller; the two layouts switch at that threshold and never blend.
    This file only changes layout, type sizes and spacing. Colours, outlines, shadows and the jm- components
    are the design system's own. See Desktop/README.md. */
 
