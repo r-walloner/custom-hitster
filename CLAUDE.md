@@ -45,7 +45,7 @@ npm create vite@latest frontend -- --template react-ts --no-interactive
 - `backend/src/jamster/rooms.py`: in-memory rooms, socket message handling, playback.
 - `backend/src/jamster/spotify.py`, `importer.py`, `years.py`: Spotify client, library import, MusicBrainz years.
 - `backend/src/jamster/curation/`: deck strategies (Strategy pattern). `base.py` the interface and its inputs, `songs.py` the shared building blocks, one module per strategy, `report.py` the Markdown and JSON-lines output, `__main__.py` the command `uv run python -m jamster.curation` that tries a strategy against `data/jamster.db` and writes a Markdown report and JSON lines to `data/curation/` (or `--out`).
-- `backend/src/jamster/deck.py`: the context that loads the pool, runs a strategy and writes the deck file to `data/decks/`.
+- `backend/src/jamster/deck.py`: the context that loads the pool, runs a strategy and writes the deck to `data/decks/`, as a Markdown report and as JSON lines.
 - `backend/src/jamster/classics.py`, `classics.json`: the hand-written list of well-known songs with their years and Spotify tracks, copied into the database at startup. After adding songs to the list, run `uv run python -m jamster.classics` to look up their tracks.
 - `backend/src/jamster/db.py`: the schema and every SQL statement.
 - `backend/src/jamster/web.py`: routes, the room WebSocket, static files.

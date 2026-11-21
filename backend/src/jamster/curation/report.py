@@ -1,4 +1,5 @@
-"""A deck in two formats: JSON lines for the deck files and tools, Markdown for people.
+"""A deck in two formats: JSON lines for tools, Markdown for people. The deck files and
+`python -m jamster.curation` write both.
 
 Both explain every song with its `Why`, so a playtest can be followed up with "why did this
 song end up in the deck?"
@@ -69,11 +70,15 @@ def markdown(
     items: Sequence[Item],
     *,
     size: int,
-    seed: int | None,
+    seed: int | None = None,
     notes: Sequence[str] = (),
     familiarity_report: bool = False,
+    drawn: bool = False,
 ) -> str:
-    out: list[str] = [f"# {strategy.name} deck: {len(items)} of {size} songs (seed {seed})", ""]
+    """The deck explained for people. `drawn`: `items` are in the order the cards will be
+    drawn, which the deck table shows as Order next to the order they were picked in (#)."""
+    title = f"# {strategy.name} deck: {len(items)} of {size} songs"
+    out: list[str] = [title + (f" (seed {seed})" if seed is not None else ""), ""]
     out += [f"> {note}" for note in notes]
     if notes:
         out.append("")
@@ -97,17 +102,20 @@ def markdown(
         "",
         "## Deck",
         "",
-        "| # | Year | From | Reason | Owner | Score | Song | Knowers |",
-        "|---|---|---|---|---|---|---|---|",
+        ("| Order " if drawn else "")
+        + "| # | Year | From | Reason | Owner | Score | Song | Knowers |",
+        ("|---" if drawn else "") + "|---|---|---|---|---|---|---|---|",
     ]
     whys = [(track, why) for track, _, why in items if why]
+    position = {id(why): n for n, (_, _, why) in enumerate(items, start=1) if why}
     for track, why in sorted(whys, key=lambda x: x[1].pick):
         knowers = "; ".join(
             f"{k.name} {k.familiarity:.2f} ({', '.join(k.evidence)})" for k in why.knowers
         )
         song = f"{', '.join(a.name for a in track.artists)} – {track.name}"
         out.append(
-            f"| {why.pick} | {why.year} | {why.year_source} | {why.reason} | "
+            (f"| {position[id(why)]} " if drawn else "")
+            + f"| {why.pick} | {why.year} | {why.year_source} | {why.reason} | "
             f"{_cell(why.owner or '')} | {why.score:.2f} | {_cell(song)} | {_cell(knowers)} |"
         )
 

@@ -145,8 +145,8 @@ The log names the song in play, so don't watch it during a game.
 The log file rotates at 10 MB and keeps five old files.
 
 Each turn's log line also says why its song is in the deck, such as `balanced core, score 1.42: Robin 0.82 (saved, top_medium #12), Ben 0.30 (artist: 7 other songs)`.
-The whole deck, with that explanation for every song, is written to `decks/` in the data directory when a game is dealt, as JSON lines in the order the cards are drawn, and the dealing line in the log names the file.
-The newest 100 deck files are kept.
+The whole deck, with that explanation for every song, is written to `decks/` in the data directory when a game is dealt, in two files that the dealing line in the log names: a Markdown report, the one `python -m jamster.curation` writes, whose Order column is the order the cards are drawn in, and the same deck as JSON lines in that order.
+The newest 100 decks are kept.
 
 Generate the session secret with:
 

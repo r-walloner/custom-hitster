@@ -523,12 +523,21 @@ def test_local_game_plays_only_on_the_host_and_recovers_from_a_playback_failure(
         turn = next(m for m in messages if m.startswith(f"[{code}] turn 1, "))
         assert 'playing "Song' in turn and "| balanced core, score " in turn and "saved" in turn
         dealing = next(m for m in messages if m.startswith(f"[{code}] dealing: "))
-        deck_file = Path(dealing.rsplit("why each song is in it: ", 1)[1])
-        lines = [json.loads(line) for line in deck_file.read_text().splitlines()]
+        md_file, jsonl_file = map(
+            Path, dealing.rsplit("why each song is in it: ", 1)[1].split(" and ")
+        )
+        assert (md_file.suffix, jsonl_file.with_suffix(".md")) == (".md", md_file)
+        lines = [json.loads(line) for line in jsonl_file.read_text().splitlines()]
         assert lines[0]["room"] == code and lines[0]["strategy"] == "balanced"
         assert len(lines) == 11 and {line["reason"] for line in lines[1:]} <= {"core", "wildcard"}
         # Drawn in this order: a starting card for each of the two players, then the first song.
         assert f'playing "{lines[3]["title"]}"' in turn
+        report = md_file.read_text()
+        assert report.startswith("# Balanced deck: 10 of 10 songs\n\n> Room " + code)
+        rows = [r for r in report.splitlines() if r.startswith("| ") and r[2].isdigit()]
+        assert len(rows) == 10
+        third = next(r for r in rows if r.startswith("| 3 |"))
+        assert lines[3]["title"] in third and f"| {lines[3]['pick']} |" in third
 
         del fake.play_errors["alice"]
         b.send_json({"type": "retry_playback"})

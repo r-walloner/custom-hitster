@@ -18,7 +18,7 @@ from starlette.websockets import WebSocket
 from . import db, engine
 from . import messages as m
 from .curation import STRATEGIES
-from .deck import Entry, cached_first, curate, to_card, write_deck_file
+from .deck import Entry, cached_first, curate, to_card, write_deck_files
 from .importer import Importer
 from .models import Card
 from .spotify import Spotify, SpotifyError
@@ -745,7 +745,7 @@ class Room:
         needed = len(order) + 1
         cards: list[Card] = []
         try:
-            entries = curate(
+            pool, entries = curate(
                 self._s.conn,
                 list(dict.fromkeys(spotify_ids)),
                 self.settings.strategy,
@@ -756,12 +756,17 @@ class Room:
             written = ""
             if self._s.decks_dir:
                 try:
-                    path = write_deck_file(
-                        self._s.decks_dir, self.code, self.settings.strategy, entries
+                    md, jsonl = write_deck_files(
+                        self._s.decks_dir,
+                        self.code,
+                        self.settings.strategy,
+                        self.settings.deck_size,
+                        pool,
+                        entries,
                     )
-                    written = f"; why each song is in it: {path}"
+                    written = f"; why each song is in it: {md} and {jsonl}"
                 except OSError as exc:
-                    self.log.warning("could not write the deck file: %s", exc)
+                    self.log.warning("could not write the deck files: %s", exc)
             self.log.info(
                 "dealing: %d songs chosen by %s, looking up the years of the first %d%s",
                 len(entries),
