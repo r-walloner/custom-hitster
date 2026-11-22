@@ -1,12 +1,14 @@
 import logging
+import re
 from collections.abc import Iterator
 from pathlib import Path
 
 import pytest
 from offline_settings import OfflineSettings
 
-from jamster import logs
+from jamster import logs, rooms
 from jamster.config import Settings
+from jamster.rooms import RoomLog
 
 
 @pytest.fixture(autouse=True)
@@ -66,3 +68,40 @@ def test_debug_shows_our_calls(capsys: pytest.CaptureFixture[str]):
     out = capsys.readouterr().out
     assert "DEBUG   spotify  PUT /me/player/play as bob: 204" in out
     assert "noise" not in out
+
+
+def test_a_room_file_takes_only_its_own_rooms_lines(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+):
+    logs.setup(settings(log_to="stdout"))  # the room file is written whatever the main log does
+    logger = logging.getLogger("jamster.rooms")
+    handler = logs.room_handler(tmp_path / "room.log", "ABCD")
+    logger.addHandler(handler)
+    try:
+        RoomLog(logger, {"room": "ABCD"}).info("turn 2, Bob's turn")
+        RoomLog(logger, {"room": "EFGH"}).info("turn 5, Carol's turn")
+        logger.info("a line of no room")
+    finally:
+        logger.removeHandler(handler)
+        handler.close()
+
+    text = (tmp_path / "room.log").read_text()
+    assert "INFO    [ABCD] turn 2, Bob's turn" in text
+    assert "Carol" not in text
+    assert "no room" not in text
+    assert "[EFGH] turn 5, Carol's turn" in capsys.readouterr().out, "the main log has every room"
+
+
+def test_only_the_newest_room_folders_are_kept(tmp_path: Path):
+    for minute in range(rooms.KEEP_ROOMS):
+        (tmp_path / f"2026-01-01-{minute:04d}-ABCD").mkdir()
+    (tmp_path / "notes.txt").write_text("not a room")
+
+    folder = rooms.open_folder(tmp_path, "WXYZ")
+
+    folders = sorted(path.name for path in tmp_path.iterdir() if path.is_dir())
+    assert len(folders) == rooms.KEEP_ROOMS
+    assert "2026-01-01-0000-ABCD" not in folders, "the oldest goes"
+    assert folders[-1] == folder.name
+    assert re.fullmatch(r"\d{4}-\d{2}-\d{2}-\d{4}-WXYZ", folder.name)
+    assert (tmp_path / "notes.txt").exists(), "only folders are pruned"

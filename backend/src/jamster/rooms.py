@@ -5,17 +5,19 @@ import asyncio
 import logging
 import random
 import secrets
+import shutil
 import sqlite3
 import time
 from collections.abc import Callable, Coroutine
 from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
 from pydantic import BaseModel, ValidationError
 from starlette.websockets import WebSocket
 
-from . import db, engine
+from . import db, engine, logs
 from . import messages as m
 from .curation import STRATEGIES
 from .deck import Entry, curate, to_card, write_deck_files
@@ -38,13 +40,29 @@ MID_GAME = {"play_seconds", "challenge_seconds", "next_turn_seconds"}
 LEFT_ROOM, ROOM_CLOSED = 4200, 4410
 DEAL_SECONDS = 1.5  # the least time between two opening cards landing, so dealing reads as work
 DEALT_SECONDS = 2.5  # how long the full deal shows before the game starts
+KEEP_ROOMS = 100  # room folders kept, each with the room's log and its decks
 
 
 class RoomLog(logging.LoggerAdapter[logging.Logger]):
-    """Prefixes every record with the room code, so one game can be followed in the log."""
+    """Prefixes every record with the room code, so one game can be followed in the log, and
+    tags it with the code as `record.room`, so the room's own log file can pick it out."""
 
     def process(self, msg: Any, kwargs: Any) -> tuple[Any, Any]:
-        return f"[{self.extra['room'] if self.extra else '?'}] {msg}", kwargs
+        room = self.extra["room"] if self.extra else "?"
+        kwargs["extra"] = {**(kwargs.get("extra") or {}), "room": room}
+        return f"[{room}] {msg}", kwargs
+
+
+def open_folder(rooms_dir: Path, code: str) -> Path:
+    """Make a new room's folder, named by the time and the code, since codes repeat. Keeps the
+    newest KEEP_ROOMS folders: the names start with the time, so name order is age order."""
+    rooms_dir.mkdir(parents=True, exist_ok=True)
+    folders = sorted(path for path in rooms_dir.iterdir() if path.is_dir())
+    for old in folders[: max(0, len(folders) - (KEEP_ROOMS - 1))]:
+        shutil.rmtree(old, ignore_errors=True)
+    folder = rooms_dir / f"{datetime.now():%Y-%m-%d-%H%M}-{code}"
+    folder.mkdir(exist_ok=True)  # a code reused within the minute shares the folder
+    return folder
 
 
 def song(card: Card) -> str:
@@ -83,7 +101,8 @@ class Services:
     importer: Importer
     resolver: YearResolver
     rng: random.Random
-    decks_dir: Path | None = None  # where each deck is written with why its songs are in it
+    # Where each room gets a folder for its log and its decks, with why their songs are in them.
+    rooms_dir: Path | None = None
 
 
 @dataclass(slots=True)
@@ -112,6 +131,17 @@ class Room:
         self.code = code
         self._on_close = on_close
         self.log = RoomLog(log, {"room": code})
+        self.folder: Path | None = None  # the room's log and decks; None writes no files
+        self._log_file: logging.Handler | None = None
+        self._decks = 0  # decks written to the folder so far
+        if services.rooms_dir:
+            try:
+                self.folder = open_folder(services.rooms_dir, code)
+                self._log_file = logs.room_handler(self.folder / "room.log", code)
+                log.addHandler(self._log_file)
+            except OSError as exc:
+                self.folder = None
+                self.log.warning("could not open the room's folder: %s", exc)
         self.host_client = host_client
         self.seats = [Seat(secrets.token_hex(4), host_name, host_client, host_spotify)]
         self.settings = m.RoomSettings()
@@ -138,6 +168,13 @@ class Room:
         self._sockets: dict[WebSocket, tuple[str, str | None]] = {}  # -> (client id, spotify id)
         self._sending = asyncio.Lock()
         self._tasks: set[asyncio.Task[Any]] = set()
+
+    def close_log(self) -> None:
+        """The room is gone: stop writing its log file."""
+        if self._log_file is not None:
+            log.removeHandler(self._log_file)
+            self._log_file.close()
+            self._log_file = None
 
     # --- connections ---------------------------------------------------------------------
 
@@ -805,10 +842,11 @@ class Room:
                 self._s.rng,
             )
             written = ""
-            if self._s.decks_dir:
+            if self.folder:
+                self._decks += 1
                 try:
                     md, jsonl = write_deck_files(
-                        self._s.decks_dir,
+                        self.folder / f"deck-{self._decks}",
                         self.code,
                         self.settings.strategy,
                         self.settings.deck_size,
@@ -1113,11 +1151,9 @@ class Rooms:
 
     def create(self, host_client: str, host_spotify: str, host_name: str) -> Room:
         now = time.monotonic()
-        self._rooms = {
-            code: room
-            for code, room in self._rooms.items()
-            if not (room.empty and now - room.last_active > IDLE_SECONDS)
-        }
+        for code, room in list(self._rooms.items()):
+            if room.empty and now - room.last_active > IDLE_SECONDS:
+                self._forget(code)
         while (code := "".join(secrets.choice(CODE_LETTERS) for _ in range(4))) in self._rooms:
             pass
         room = Room(
@@ -1133,7 +1169,13 @@ class Rooms:
         return room
 
     def _forget(self, code: str) -> None:
-        self._rooms.pop(code, None)
+        if (room := self._rooms.pop(code, None)) is not None:
+            room.close_log()
+
+    def close(self) -> None:
+        """The server stops: close every room's log file."""
+        for room in self._rooms.values():
+            room.close_log()
 
     def get(self, code: str) -> Room | None:
         return self._rooms.get(code.upper())

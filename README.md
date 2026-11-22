@@ -136,15 +136,6 @@ Something fun to do on the winner screen before the host takes everyone back to 
   The room socket should send none of it while the song is a mystery.
   `_game_view` in `rooms.py` already leaves `card` empty until then, and `tests/test_e2e.py` checks that, so the leak is somewhere else still to be found.
 
-### Logging
-
-- **One log file per room.**
-  Every room's lines should also go to a file of their own in the data directory, such as `rooms/2026-11-21-1930-ABCD.log`, so a game can be read back without the rest of the server's chatter.
-  The time goes in the name because room codes repeat.
-  `RoomLog` in `rooms.py` already tags each room's records with its code, so a handler can pick them out by that.
-  Keep the last 100 files: when a room opens, delete the oldest beyond that.
-  The main log stays as it is, and this works with `JAMSTER_LOG_TO=stdout` too, so the container keeps the room files.
-
 ### Planned deck modes
 
 Two more deck strategies are designed but not built yet.
@@ -207,9 +198,14 @@ A skipped song is thrown away unrevealed, so its year isn't logged either.
 The song's name still gives it away, so don't watch the log during a game.
 The log file rotates at 10 MB and keeps five old files.
 
+Each room also gets a folder of its own under `rooms/` in the data directory, named by the time it opened and its code, such as `rooms/2026-11-22-1930-ABCD/`, because codes repeat.
+Its `room.log` holds that room's lines only, the same ones the main log has, so a game can be read back without the rest of the server's chatter.
+Room folders are written whatever `JAMSTER_LOG_TO` says, so the container keeps them too.
+The newest 100 room folders are kept; the oldest goes when a room opens.
+
 Each turn's log line also says why its song is in the deck, such as `balanced core, score 1.42: Robin 0.82 (saved, top_medium #12), Ben 0.30 (artist: 7 other songs)`.
-The whole deck, with that explanation for every song, is written to `decks/` in the data directory when a game is dealt, in two files that the dealing line in the log names: a Markdown report, the one `python -m jamster.curation` writes, whose Order column is the order the cards are drawn in, and the same deck as JSON lines in that order.
-The newest 100 decks are kept.
+The whole deck, with that explanation for every song, is written to the room's folder when a game is dealt, in two files that the dealing line in the log names: `deck-1.md`, a Markdown report, the one `python -m jamster.curation` writes, whose Order column is the order the cards are drawn in, and `deck-1.jsonl`, the same deck as JSON lines in that order.
+The room's next game deals `deck-2`, and so on.
 
 Generate the session secret with:
 
@@ -405,7 +401,7 @@ A Caddy running in Docker needs a network shared with the `frontend` service ins
 
 To update, run `git pull` and the same `docker compose` command again.
 
-The named volume `jamster-game-data` holds the SQLite database (Spotify logins, imported libraries, cached release years and the classics found on Spotify) and the deck files in `decks/`.
+The named volume `jamster-game-data` holds the SQLite database (Spotify logins, imported libraries, cached release years and the classics found on Spotify) and the room folders in `rooms/`, each with the room's log and its decks.
 
 ## How the skeletons were generated
 

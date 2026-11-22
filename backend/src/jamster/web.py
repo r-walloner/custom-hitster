@@ -55,7 +55,7 @@ def create_app(
                 importer,
                 resolver,
                 rng or random.Random(),
-                decks_dir=settings.data_dir / "decks",
+                rooms_dir=settings.data_dir / "rooms",
             )
             app.state.rooms = Rooms(app.state.services)
             importer.listeners.append(app.state.rooms.on_library_change)
@@ -63,6 +63,7 @@ def create_app(
                 classics.sync(conn, settings.classics_file)
             log.info("Jamster started, data in %s", settings.data_dir.resolve())
             yield
+            app.state.rooms.close()
         conn.close()
         log.info("Jamster stopped")
 

@@ -12,11 +12,15 @@ Levels as used in Jamster:
 
 Only Jamster's own records are kept below WARNING; the web server's request lines and other
 libraries' chatter are left out.
+
+Each room also writes its own lines to `room.log` in its folder under `rooms/` in the data
+directory, whatever JAMSTER_LOG_TO says, so a game can be read back on its own.
 """
 
 import logging
 import logging.config
 import sys
+from pathlib import Path
 from typing import Any
 
 from .config import Settings
@@ -25,6 +29,7 @@ FORMAT = "%(asctime)s %(levelname)-7s %(short_name)-8s %(message)s"
 DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 MAX_FILE_BYTES = 10 * 1024 * 1024
 FILE_BACKUPS = 5  # jamster.log.1 to .5, so at most 60 MB in all
+ROOM_FORMAT = "%(asctime)s %(levelname)-7s %(message)s"  # all from rooms, so no module column
 
 
 class OnlyOursBelowWarning(logging.Filter):
@@ -69,3 +74,12 @@ def setup(settings: Settings) -> None:
             },
         }
     )
+
+
+def room_handler(path: Path, code: str) -> logging.Handler:
+    """A handler that appends one room's records to `path`: those its `RoomLog` tags with `code`.
+    Attach it to the logger the room logs through, and close it when the room is gone."""
+    handler = logging.FileHandler(path, encoding="utf-8")
+    handler.setFormatter(logging.Formatter(ROOM_FORMAT, DATE_FORMAT))
+    handler.addFilter(lambda record: getattr(record, "room", None) == code)
+    return handler

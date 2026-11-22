@@ -18,8 +18,6 @@ from .curation.report import deck_lines, markdown
 from .models import Card, Track, Why
 from .years import YearResolver
 
-KEEP_DECK_FILES = 100
-
 
 @dataclass(frozen=True, slots=True)
 class Entry:
@@ -85,14 +83,12 @@ def curate(
 
 
 def write_deck_files(
-    folder: Path, room: str, strategy: str, size: int, pool: Pool, entries: Sequence[Entry]
+    base: Path, room: str, strategy: str, size: int, pool: Pool, entries: Sequence[Entry]
 ) -> tuple[Path, Path]:
     """Write a deck, in the order it will be drawn, with why each song is in it: as a Markdown
-    report and as JSON lines, the two files `python -m jamster.curation` writes. Keep only the
-    newest decks. Returns the paths of the Markdown and the JSON lines."""
-    folder.mkdir(parents=True, exist_ok=True)
+    report and as JSON lines, the two files `python -m jamster.curation` writes, at `base` with
+    `.md` and `.jsonl` added. Returns the paths of the Markdown and the JSON lines."""
     now = datetime.datetime.now(datetime.UTC)
-    base = folder / f"{now:%Y-%m-%dT%H-%M-%S}-{room}"
     md_path, jsonl_path = base.with_suffix(".md"), base.with_suffix(".jsonl")
     items = [(e.track, e.known_by, e.why) for e in entries]
     meta = {"room": room, "strategy": strategy, "size": len(entries), "at": now.isoformat()}
@@ -101,9 +97,6 @@ def write_deck_files(
     note = f"Room {room}, dealt {now:%Y-%m-%d %H:%M} UTC."
     report = markdown(STRATEGIES[strategy], pool, items, size=size, notes=[note], drawn=True)
     md_path.write_text(report)
-    for pattern in ("*.jsonl", "*.md"):
-        for old in sorted(folder.glob(pattern))[:-KEEP_DECK_FILES]:
-            old.unlink(missing_ok=True)
     return md_path, jsonl_path
 
 

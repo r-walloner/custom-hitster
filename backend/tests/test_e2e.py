@@ -645,6 +645,48 @@ def test_years_are_looked_up_only_when_a_card_is_drawn(
         assert len(fake.lookups) == 3, "still only the cards that were drawn"
 
 
+def test_each_room_keeps_its_log_and_its_decks_in_a_folder_of_its_own(
+    client: TestClient, tmp_path: Path, caplog: pytest.LogCaptureFixture
+):
+    caplog.set_level(logging.INFO, logger="jamster")
+    alice = Browser(client)
+    alice.login("alice")
+    assert alice.pick(liked=True)["status"] == "done"
+    code = alice.request("POST", "/api/rooms").json()["code"]
+    other = alice.request("POST", "/api/rooms").json()["code"]
+
+    with alice.socket(code) as a:
+        a.send_json(settings(deck_size=10))
+        a.send_json({"type": "start_game"})
+        until(a, state_where(lambda r: r["game"] is not None))
+
+    (folder,) = (tmp_path / "rooms").glob(f"*-{code}")
+    assert sorted(path.name for path in folder.iterdir()) == [
+        "deck-1.jsonl",
+        "deck-1.md",
+        "room.log",
+    ]
+    text = (folder / "room.log").read_text()
+    assert f"[{code}] room created by Alice" in text
+    assert f"{folder.name}/deck-1.md" in text, "the dealing line names the deck files"
+    assert f"[{other}]" not in text, "the other room's lines stay out"
+
+    def writes_to(room: str) -> bool:
+        handlers = logging.getLogger("jamster.rooms").handlers
+        return any(f"-{room}/" in getattr(h, "baseFilename", "") for h in handlers)
+
+    assert writes_to(other)
+    with alice.socket(other) as o:
+        until(o, is_type("state"))
+        o.send_json({"type": "close_room"})
+        assert closed_with(o) == ROOM_CLOSED
+    assert not writes_to(other), "a closed room's file is closed"
+    assert (
+        "the host closed the room"
+        in next((tmp_path / "rooms").glob(f"*-{other}/room.log")).read_text()
+    )
+
+
 def test_the_challenge_window_closes_when_time_is_up(client: TestClient, fake: FakeSpotify):
     alice = Browser(client)
     alice.login("alice")
