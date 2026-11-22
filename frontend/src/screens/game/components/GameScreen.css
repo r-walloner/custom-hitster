@@ -44,9 +44,10 @@
   align-content: safe center;
 }
 
-/* Without the buttons, the bottom row holds only the "named the song" line, so it is only as tall
-   as that line. The song moves down a little from the phase name, the line follows close under
-   it, and the rest of the room stays at the bottom. */
+/* Without the buttons (not the host, and no countdown to keep listening through), the bottom row
+   holds only the "named the song" line, so it is only as tall as that line. The song moves down
+   a little from the phase name, the line follows close under it, and the rest of the room stays
+   at the bottom. */
 .jm-moment.game__result--watch > .jm-result {
   margin-top: 10px;
 }
@@ -204,6 +205,27 @@
 }
 
 .game__outcome-actions .game__keep {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+/* The others' row with Keep listening takes the host's columns: the "named the song" line over
+   an invisible Named the song, an empty middle place, then Keep listening where Next song is. */
+.game__named-slot {
+  flex: 0 0 auto;
+  display: grid;
+  align-items: center;
+}
+
+.game__named-slot > * {
+  grid-area: 1 / 1;
+}
+
+.game__ghost {
+  visibility: hidden;
+}
+
+.game__outcome-actions .game__gap {
   flex: 1 1 0;
   min-width: 0;
 }

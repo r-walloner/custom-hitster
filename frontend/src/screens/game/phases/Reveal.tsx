@@ -25,6 +25,8 @@ export default function Reveal({ turn }: { turn: Turn }) {
   const advance = loading ? null : game.advance_left_ms
   // After the game's last card, the next turn shows the winner instead of a song.
   const ending = lastCard(game, room.settings.cards_to_win)
+  // Keep listening stops that countdown; not there at all when there's no automatic next song.
+  const keep = room.settings.next_turn_seconds > 0
 
   const who = name(game.active)
   const items = revealItems(before, revealed, guesses, winner, kept, at, (right, guess, edge) => (
@@ -43,13 +45,30 @@ export default function Reveal({ turn }: { turn: Turn }) {
     return seat ? player(seat.id) : { id: known, name: known, color: 1 }
   })
 
+  // Greyed out once the countdown is stopped, rather than gone, so the row doesn't jump.
+  const keepListening = keep && (
+    <Button
+      className="game__keep"
+      disabled={advance === null}
+      onClick={() => send({ type: 'hold_turn' })}
+    >
+      Keep listening
+    </Button>
+  )
+
+  const named = (
+    <span className={game.named ? 'game__named' : 'game__named game__named--off'}>
+      {who} named the song <Token>+1</Token>
+    </span>
+  )
+
   return (
     <GameScreen
       turn={turn}
       panel={
         <MomentPanel
           phase="Reveal"
-          className={you.is_host ? 'game__result' : 'game__result game__result--watch'}
+          className={you.is_host || keep ? 'game__result' : 'game__result game__result--watch'}
           ring={
             advance !== null && (
               <Countdown
@@ -65,7 +84,8 @@ export default function Reveal({ turn }: { turn: Turn }) {
         >
           <SongResult song={revealed} cover={card.image_url} from={from} />
           {/* Only the host judges and moves on, so the player on turn can neither award
-              themselves the token nor cut the others' listening short. */}
+              themselves the token nor cut the others' listening short. Anyone may keep
+              listening, since that only stops the countdown. */}
           {you.is_host ? (
             <div className="game__outcome-actions">
               <Button
@@ -76,17 +96,7 @@ export default function Reveal({ turn }: { turn: Turn }) {
               >
                 Named the song <Token>+1</Token>
               </Button>
-              {/* Greyed out once the countdown is stopped, rather than gone, so the row
-                  doesn't jump. Not there at all when there's no automatic next song. */}
-              {room.settings.next_turn_seconds > 0 && (
-                <Button
-                  className="game__keep"
-                  disabled={advance === null}
-                  onClick={() => send({ type: 'hold_turn' })}
-                >
-                  Keep listening
-                </Button>
-              )}
+              {keepListening}
               <Button
                 variant="primary"
                 className="game__next"
@@ -100,11 +110,24 @@ export default function Reveal({ turn }: { turn: Turn }) {
             </div>
           ) : (
             // Everyone else sees it when the host gives the token, as text. Until then it is
-            // hidden but keeps its space, so nothing moves when it appears.
+            // hidden but keeps its space, so nothing moves when it appears. With Keep listening
+            // the row copies the host's: an invisible Named the song under the text and an empty
+            // middle place, so Keep listening sits where Next song does, just as wide.
             <div className="game__outcome-actions">
-              <span className={game.named ? 'game__named' : 'game__named game__named--off'}>
-                {who} named the song <Token>+1</Token>
-              </span>
+              {keep ? (
+                <>
+                  <span className="game__named-slot">
+                    <Button className="game__ghost" pressed={false} checkmark={false} tabIndex={-1}>
+                      Named the song <Token>+1</Token>
+                    </Button>
+                    {named}
+                  </span>
+                  <span className="game__gap" />
+                  {keepListening}
+                </>
+              ) : (
+                named
+              )}
             </div>
           )}
         </MomentPanel>

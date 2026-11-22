@@ -513,10 +513,10 @@ class Room:
                     self._start_playback(only=failed)
 
             case m.HoldTurn():
-                self._host_only(client_id)
+                # Anyone in the room may stop the countdown; only the host moves on.
+                seat = self._own_seat(client_id)
                 if self._advance_left_ms() is not None:
-                    seat = self._seat_of(client_id)
-                    self.log.info("%s keeps listening", seat.name if seat else "the host")
+                    self.log.info("%s keeps listening", seat.name)
                     self._stop_advance()
 
             case m.RestartPlayback():

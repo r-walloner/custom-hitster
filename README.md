@@ -105,10 +105,6 @@ Nothing is missing at the moment.
   Two settings are safe to change mid-game: `next_turn_seconds` (the countdown on the reveal before the next song starts by itself) and `challenge_seconds`.
   Both are read when their countdown starts, so a change applies from the next countdown.
   The rest stay locked, and the server should refuse them rather than trust the screen: `deck_size` and `strategy` rebuild the deck, `mode` moves the playback, and `cards_to_win` and `starting_tokens` are copied into the engine's rules when the game starts.
-- **Anyone can press Keep listening.**
-  Only the host sees Keep listening on the Reveal panel (`phases/Reveal.tsx`), and the server refuses `hold_turn` from anyone else (`_host_only` in `rooms.py`).
-  It only stops the countdown to the next song, so any player in the room should be able to press it; Next song and the token for naming the song stay with the host.
-  The others' row then gets the button next to the "named the song" text, and the log names whoever pressed it.
 - **Where the song came from, in a pop-up.**
   The Reveal panel already shows which players have the song in their library (`known_by`).
   Tapping that line, or a Details button next to it, should open a dialog that tells the whole story in plain words, per player: liked, in which playlists (by name), how high in their top songs and over which time span, and how often played lately, or only that they know other songs by the artist.

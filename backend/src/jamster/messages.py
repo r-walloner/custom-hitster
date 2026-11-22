@@ -105,7 +105,8 @@ class RetryPlayback(_Client):
 
 
 class HoldTurn(_Client):
-    """Stop the countdown to the next turn, to keep listening to the revealed song."""
+    """Stop the countdown to the next turn, to keep listening to the revealed song. Anyone in
+    the room may."""
 
     type: Literal["hold_turn"]
 
