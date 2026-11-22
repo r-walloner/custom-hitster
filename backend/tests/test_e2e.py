@@ -662,7 +662,7 @@ def test_the_challenge_window_closes_when_time_is_up(client: TestClient, fake: F
         a.send_json({"type": "place", "slot": 0, "as_player": active})
         a.send_json({"type": "lock", "as_player": active})
         game = until(a, state_where(lambda r: r["game"]["phase"] == "challenging"))["room"]["game"]
-        assert 0 < game["window_left_ms"] <= 1000
+        assert 0 < game["window_left_ms"] <= 1000 and game["window_total_ms"] == 1000
 
         started = time.monotonic()
         game = until(a, state_where(lambda r: r["game"]["phase"] == "revealed"))["room"]["game"]
@@ -704,6 +704,45 @@ def test_the_next_turn_starts_by_itself_unless_someone_keeps_listening(client: T
         until(a, state_where(lambda r: r["game"]["turn_number"] == 3))
 
 
+def test_the_host_may_change_only_the_timers_during_a_game(client: TestClient):
+    alice = Browser(client)
+    alice.login("alice")
+    assert alice.pick(liked=True)["status"] == "done"
+    code = alice.request("POST", "/api/rooms").json()["code"]
+
+    with alice.socket(code) as a:
+        a.send_json(settings(deck_size=10, next_turn_seconds=1))
+        a.send_json({"type": "start_game"})
+        until(a, state_where(lambda r: r["game"] is not None))
+        a.send_json({"type": "place", "slot": 0})
+        a.send_json({"type": "lock"})
+        game = until(a, state_where(lambda r: r["game"]["phase"] == "revealed"))["room"]["game"]
+        assert game["advance_total_ms"] == 1000
+
+        a.send_json(settings(deck_size=20, next_turn_seconds=1))
+        assert until(a, is_type("error"))["message"] == (
+            "Only the listening time and the countdowns can change during a game"
+        )
+
+        a.send_json(settings(deck_size=10, next_turn_seconds=2))
+        room = until(a, state_where(lambda r: r["settings"]["next_turn_seconds"] == 2))["room"]
+        assert room["settings"]["deck_size"] == 10
+        assert room["game"]["advance_total_ms"] == 1000, "the running countdown keeps its length"
+
+        game = until(a, state_where(lambda r: r["game"]["turn_number"] == 2))["room"]["game"]
+        a.send_json({"type": "place", "slot": 0})
+        a.send_json({"type": "lock"})
+        game = until(a, state_where(lambda r: r["game"]["phase"] == "revealed"))["room"]["game"]
+        assert game["advance_total_ms"] == 2000
+
+        a.send_json({"type": "hold_turn"})
+        held = until(a, state_where(lambda r: r["game"]["advance_left_ms"] is None))["room"]
+        assert held["game"]["advance_total_ms"] == 2000, "a held countdown still had a length"
+        a.send_json(settings(deck_size=10, next_turn_seconds=0))
+        room = until(a, state_where(lambda r: r["settings"]["next_turn_seconds"] == 0))["room"]
+        assert room["game"]["advance_total_ms"] == 2000
+
+
 def test_a_clip_stops_the_song_until_the_reveal(client: TestClient, fake: FakeSpotify):
     alice = Browser(client)
     alice.login("alice")
@@ -720,6 +759,10 @@ def test_a_clip_stops_the_song_until_the_reveal(client: TestClient, fake: FakeSp
         clip = fake.plays[-1]
         assert clip.position_ms == 0
 
+        # Turning the clip off mid-song applies from the next song; this one still plays on.
+        a.send_json(settings(deck_size=10, play_seconds=0, next_turn_seconds=0))
+        until(a, state_where(lambda r: r["settings"]["play_seconds"] == 0))
+
         # Alone in the game, locking in reveals at once, and the song plays on.
         a.send_json({"type": "place", "slot": 0})
         a.send_json({"type": "lock"})
@@ -730,6 +773,10 @@ def test_a_clip_stops_the_song_until_the_reveal(client: TestClient, fake: FakeSp
         assert (fake.plays[-1].uri, fake.plays[-1].position_ms) == (clip.uri, 1000)
         assert room["playback"]["elapsed_ms"] >= 1000
 
+        # Back on, the clip applies from the next song.
+        a.send_json(settings(deck_size=10, play_seconds=1, next_turn_seconds=0))
+        until(a, state_where(lambda r: r["settings"]["play_seconds"] == 1))
+
         # A restart before the reveal plays the clip again from the start.
         a.send_json({"type": "next_turn"})
         until(a, state_where(lambda r: r["game"]["turn_number"] == 2))
@@ -738,6 +785,33 @@ def test_a_clip_stops_the_song_until_the_reveal(client: TestClient, fake: FakeSp
         assert fake.plays[-1].position_ms == 0 and fake.plays[-1].uri == fake.plays[-2].uri
         until(a, state_where(lambda r: r["playback"]["status"] == "stopped"))
         eventually(lambda: fake.pauses == ["alice", "alice"])
+
+
+def test_the_winning_song_can_be_restarted(client: TestClient, fake: FakeSpotify):
+    alice = Browser(client)
+    alice.login("alice")
+    assert alice.pick(liked=True)["status"] == "done"
+    code = alice.request("POST", "/api/rooms").json()["code"]
+
+    with alice.socket(code) as a:
+        a.send_json(settings(cards_to_win=2, deck_size=10, play_seconds=1, next_turn_seconds=0))
+        a.send_json({"type": "start_game"})
+        game = until(a, state_where(lambda r: r["playback"]["status"] == "playing"))["room"]["game"]
+        song = fake.plays[-1].uri
+        me = game["active"]
+        a.send_json({"type": "place", "slot": right_slot(game, me, year_of(song))})
+        a.send_json({"type": "lock"})
+        until(a, state_where(lambda r: r["game"]["phase"] == "revealed"))
+        a.send_json({"type": "next_turn"})
+        until(a, state_where(lambda r: r["game"]["phase"] == "finished"))
+
+        plays = len(fake.plays)
+        a.send_json({"type": "restart_playback"})
+        room = until(a, state_where(lambda r: r["playback"]["status"] == "playing"))["room"]
+        eventually(lambda: len(fake.plays) == plays + 1)
+        assert (fake.plays[-1].uri, fake.plays[-1].position_ms) == (song, 0)
+        number = int(song.removeprefix("spotify:track:track"))
+        assert room["playback"]["duration_ms"] == duration_of(number), "the whole song, no clip"
 
 
 def closed_with(ws: WebSocketTestSession) -> int:

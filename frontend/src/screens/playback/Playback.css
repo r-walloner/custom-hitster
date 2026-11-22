@@ -62,11 +62,6 @@
   color: var(--coral-deep);
 }
 
-.playback__retry {
-  align-self: flex-start;
-  margin-top: 4px;
-}
-
 /* ---------- Desktop (styles/desktop.css): a sub-screen like Your songs ---------- */
 .jm-desktop .playback {
   column-gap: clamp(32px, 32px + 24 * var(--dk), 65px);

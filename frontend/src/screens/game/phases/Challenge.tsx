@@ -73,7 +73,7 @@ export default function Challenge({ turn }: { turn: Turn }) {
               <Countdown
                 key={game.window_left_ms}
                 ms={game.window_left_ms}
-                total={room.settings.challenge_seconds * 1000}
+                total={game.window_total_ms ?? game.window_left_ms}
                 label={(seconds) => `${seconds} seconds left to challenge`}
               />
             )

@@ -7,7 +7,7 @@ import type { Player } from '../../components/types.ts'
 /** Screens that replace the room's screen until closed. */
 export type Subscreen = 'settings' | 'playback' | 'library'
 /** Pop-ups over the room's screen. */
-export type DialogName = 'addPlayer' | 'rename' | 'menu' | 'scoreboard'
+export type DialogName = 'addPlayer' | 'rename' | 'menu' | 'scoreboard' | 'gameSettings' | 'speaker'
 export type ToastTone = 'right' | 'wrong' | 'heads-up'
 
 /** Everything a room screen needs: the state, a way to act, and helpers over both. */

@@ -9,7 +9,7 @@ const VIEWS: Record<ScreenKind, (Subscreen | DialogName)[]> = {
   join: [],
   lobby: ['settings', 'playback', 'library', 'addPlayer', 'rename'],
   dealing: [],
-  game: ['playback', 'menu', 'scoreboard'],
+  game: ['menu', 'scoreboard', 'gameSettings', 'speaker'],
   winner: [],
 }
 

@@ -6,6 +6,7 @@ import { SettingRow } from '../../components/Rows.tsx'
 import { useTapWord } from '../../components/useTapWord.ts'
 import { useRoomTools } from '../room/context.ts'
 import './GameMenu.css'
+import { rulesSummary } from './rulesSummary.ts'
 
 /** The gear menu: only what's needed mid-game. */
 export default function GameMenu() {
@@ -22,7 +23,12 @@ export default function GameMenu() {
           value={mine?.device ?? 'Your active Spotify device'}
           className="dialog__setting"
         >
-          <Button onClick={() => open('playback')}>Change</Button>
+          <Button onClick={() => open('speaker')}>Change</Button>
+        </SettingRow>
+      )}
+      {you.is_host && (
+        <SettingRow label="Rules" value={rulesSummary(room.settings)} className="dialog__setting">
+          <Button onClick={() => open('gameSettings')}>Change</Button>
         </SettingRow>
       )}
       <Button onClick={() => open('scoreboard')} className="dialog__link">

@@ -4,10 +4,11 @@ import { BackHeader } from '../../components/BackHeader.tsx'
 import { DoneButton } from '../../components/DoneButton.tsx'
 import { ControlRow } from '../../components/Rows.tsx'
 import { Screen } from '../../components/Screen.tsx'
-import { Segmented, Stepper } from '../../components/Stepper.tsx'
+import { Stepper } from '../../components/Stepper.tsx'
 import { fmt } from '../../words.ts'
 import { useRoomTools } from '../room/context.ts'
-import { CHALLENGE, labelOf, NEXT, PLAY, STRATEGY_NAMES } from './options.ts'
+import { TimingRows } from './components/TimingRows.tsx'
+import { STRATEGY_NAMES } from './options.ts'
 import './Settings.css'
 
 /**
@@ -122,54 +123,7 @@ export default function Settings() {
               </select>,
             )}
           </ControlRow>
-          <ControlRow
-            name="Listening time"
-            nameId="s-play"
-            caption="How long songs play before guessing."
-          >
-            {control(
-              's-play',
-              labelOf(PLAY, settings.play_seconds),
-              <Segmented
-                labelledBy="s-play"
-                options={Object.keys(PLAY) as (keyof typeof PLAY)[]}
-                value={labelOf(PLAY, settings.play_seconds)}
-                onChange={(label) => change({ play_seconds: PLAY[label] })}
-              />,
-            )}
-          </ControlRow>
-          <ControlRow
-            name="Time to challenge"
-            nameId="s-challenge"
-            caption="After the placement is locked in."
-          >
-            {control(
-              's-challenge',
-              labelOf(CHALLENGE, settings.challenge_seconds),
-              <Segmented
-                labelledBy="s-challenge"
-                options={Object.keys(CHALLENGE) as (keyof typeof CHALLENGE)[]}
-                value={labelOf(CHALLENGE, settings.challenge_seconds)}
-                onChange={(label) => change({ challenge_seconds: CHALLENGE[label] })}
-              />,
-            )}
-          </ControlRow>
-          <ControlRow
-            name="Next song starts"
-            nameId="s-next"
-            caption="After the reveal. Tap: only when someone taps Next song."
-          >
-            {control(
-              's-next',
-              labelOf(NEXT, settings.next_turn_seconds),
-              <Segmented
-                labelledBy="s-next"
-                options={Object.keys(NEXT) as (keyof typeof NEXT)[]}
-                value={labelOf(NEXT, settings.next_turn_seconds)}
-                onChange={(label) => change({ next_turn_seconds: NEXT[label] })}
-              />,
-            )}
-          </ControlRow>
+          <TimingRows settings={settings} onChange={change} idPrefix="s" readOnly={!isHost} />
         </div>
       </div>
     </Screen>

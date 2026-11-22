@@ -1,0 +1,34 @@
+/* Your speaker in the game (PlaybackDialog.tsx): the speaker column of Playback.css in a pop-up. */
+/* As tall as its devices, up to nearly the screen's height; past that the list scrolls. So
+   every box down to the list shrinks instead of stretching. */
+.playback.playback--speaker {
+  display: flex;
+  flex-direction: column;
+  flex: 0 1 auto;
+}
+
+.playback--speaker .playback__column,
+.playback--speaker .playback__devices {
+  flex: 0 1 auto;
+}
+
+.jm-dialog.playback-dialog {
+  width: 640px;
+  max-height: calc(100% - 48px);
+  padding: 12px 18px 16px;
+  gap: 8px;
+}
+
+.playback-dialog .jm-dialog__head > .jm-headline {
+  flex: 1;
+}
+
+/* ---------- Desktop (styles/desktop.css) ---------- */
+/* As wide a share of the window as on the zoomed phone layout just below 1200px (640 of 844),
+   so the pop-up doesn't shrink when the desktop layout takes over. */
+.jm-desktop .jm-dialog.playback-dialog {
+  width: min(76vw, 1000px);
+  max-height: min(640px, calc(100% - 96px));
+  padding: 26px 32px 32px;
+  gap: 16px;
+}

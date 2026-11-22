@@ -63,6 +63,9 @@ Jamster is a private tool and cannot become a public one.
 7. A second countdown, 15 seconds unless the host sets another time or turns it off in the lobby, starts the next turn by itself.
    The host can start it at once with "Next song", or stop the countdown with "Keep listening" and move on by hand.
 
+The host can also change the listening time and both countdowns during the game, under Rules in the menu; changes apply starting from the next song or countdown.
+The other settings stay as they were when the game started.
+
 A player who leaves the lobby gives up their seat; one who leaves a game, or loses their connection, keeps it and gets it back by opening the room link again in the same browser.
 While they are away:
 
@@ -94,12 +97,6 @@ Remove an item once it is done.
 
 ### Game screen
 
-- **Change the timers from the in-game menu.**
-  The host should be able to change some settings during a game, from the menu (`frontend/src/screens/game/GameMenu.tsx`).
-  Today `set_settings` is refused outside the lobby (`_lobby_only` in `rooms.py`).
-  Three settings are safe to change mid-game: `next_turn_seconds` (the countdown on the reveal before the next song starts by itself), `challenge_seconds` and `play_seconds` (how much of each song plays before the reveal).
-  Each is read when its countdown or song starts, so a change applies from the next one.
-  The rest stay locked, and the server should refuse them rather than trust the screen: `deck_size` and `strategy` rebuild the deck, `mode` moves the playback, and `cards_to_win` and `starting_tokens` are copied into the engine's rules when the game starts.
 - **Where the song came from, in a pop-up.**
   The Reveal panel already shows which players have the song in their library (`known_by`).
   Tapping that line, or a Details button next to it, should open a dialog that tells the whole story in plain words, per player: liked, in which playlists (by name), how high in their top songs and over which time span, and how often played lately, or only that they know other songs by the artist.

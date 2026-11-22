@@ -18,6 +18,8 @@ import Library from '../library/Library.tsx'
 import Lobby from '../lobby/Lobby.tsx'
 import Rename from '../lobby/Rename.tsx'
 import Playback from '../playback/Playback.tsx'
+import PlaybackDialog from '../playback/PlaybackDialog.tsx'
+import GameSettings from '../settings/GameSettings.tsx'
 import Settings from '../settings/Settings.tsx'
 import Winner from '../winner/Winner.tsx'
 import { RoomToast } from './components/RoomToast.tsx'
@@ -127,6 +129,8 @@ function Connected({ code, me }: { code: string; me: Me }) {
   if (shown === 'rename') dialog = <Rename />
   if (shown === 'menu') dialog = <GameMenu />
   if (shown === 'scoreboard') dialog = <Standings />
+  if (shown === 'gameSettings') dialog = <GameSettings />
+  if (shown === 'speaker') dialog = <PlaybackDialog />
   if (connection === 'connecting' || connection === 'failed') {
     dialog = <Reconnecting failed={connection === 'failed'} attempt={room.attempt} />
   }

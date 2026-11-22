@@ -1,0 +1,25 @@
+/* The in-game settings pop-up: the settings screen's rows, wide enough for their toggles. */
+.jm-dialog.game-settings {
+  width: 560px;
+  gap: 12px;
+  padding: 16px 20px 18px;
+}
+
+/* Air around each row, so the toggles don't crowd the rules between them. */
+.game-settings .jm-setting {
+  gap: 16px;
+  padding: 10px 0;
+}
+
+/* ---------- Desktop (styles/desktop.css) ---------- */
+/* As wide a share of the window as on the zoomed phone layout just below 1200px (560 of 844),
+   so the pop-up doesn't shrink when the desktop layout takes over. */
+.jm-desktop .jm-dialog.game-settings {
+  width: min(66vw, 880px);
+  padding: 26px 32px 32px;
+  gap: 16px;
+}
+
+.jm-desktop .game-settings .jm-setting {
+  padding: 14px 0;
+}

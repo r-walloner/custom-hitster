@@ -30,6 +30,11 @@ interface DialogProps {
   /** What the close ✕ does. Left out on alerts, which have no ✕. */
   onClose?: () => void
   closeLabel?: string
+  /** A back arrow before the title, drawn like the ✕: for a pop-up opened from another pop-up,
+   * to return to it. */
+  onBack?: () => void
+  /** "Back to the menu". */
+  backLabel?: string
   /** Fills the screen but a margin: for content that needs room (the scoreboard). */
   wide?: boolean
   /** Blocks the game (reconnecting): `alertdialog`, no ✕. */
@@ -46,6 +51,8 @@ export function Dialog({
   title,
   onClose,
   closeLabel = 'Close',
+  onBack,
+  backLabel = 'Back',
   wide,
   alert,
   headExtra,
@@ -66,6 +73,17 @@ export function Dialog({
         head(titleId)
       ) : (
         <div className="jm-dialog__head">
+          {onBack !== undefined && (
+            <Button
+              onClick={onBack}
+              variant="bare"
+              size="icon"
+              aria-label={backLabel}
+              className="app-dialog-back"
+            >
+              <Icon name="back" />
+            </Button>
+          )}
           <h1 id={titleId} className="jm-headline">
             {title}
           </h1>

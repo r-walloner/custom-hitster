@@ -31,6 +31,9 @@ MAX_PLAYERS = 10
 IDLE_SECONDS = 6 * 3600  # an empty room is dropped after this long
 TEST_PLAYBACK_SECONDS = 10
 DROP_GRACE_SECONDS = 10  # a challenger whose connection dropped keeps their guess this long
+# The settings the host may change during a game. Each is read when its countdown or song
+# starts, so a change applies from the next one; the others shape the deck or the rules.
+MID_GAME = {"play_seconds", "challenge_seconds", "next_turn_seconds"}
 # WebSocket close codes the frontend understands, besides those in web.py.
 LEFT_ROOM, ROOM_CLOSED = 4200, 4410
 DEAL_SECONDS = 1.5  # the least time between two opening cards landing, so dealing reads as work
@@ -123,10 +126,13 @@ class Room:
         self._drawing = asyncio.Lock()
         self._window = 0  # bumped whenever a challenge window opens, so stale timers do nothing
         self._window_ends = 0.0  # time.monotonic() when the open window closes
+        self._window_seconds = 0  # how long the open window lasts
         self._advance = 0  # bumped whenever the countdown to the next turn starts or stops
         self._advance_ends: float | None = None  # time.monotonic() when the next turn starts
+        self._advance_seconds: int | None = None  # how long this reveal's countdown lasts
         self._play_started = 0.0  # time.monotonic() when Spotify confirmed the song in play
         self._clip = 0  # bumped whenever a clip starts, ends or is lifted, so stale timers skip
+        self._clip_seconds = 0  # the clip of the song in play, from the settings it started with
         self._spotify_order = asyncio.Lock()  # so a play never overtakes the clip's pause
         self._tests: dict[str, int] = {}  # seat id -> bumped per speaker test, so stale stops skip
         self._sockets: dict[WebSocket, tuple[str, str | None]] = {}  # -> (client id, spotify id)
@@ -265,8 +271,8 @@ class Room:
                 self.game,
                 len(self._pending),
                 self._drawing.locked(),
-                self._window_left_ms(),
-                self._advance_left_ms(),
+                (self._window_left_ms(), self._window_total_ms()),
+                (self._advance_left_ms(), self._advance_total_ms()),
             )
             if self.game
             else None,
@@ -434,7 +440,11 @@ class Room:
 
             case m.SetSettings(settings=settings):
                 self._host_only(client_id)
-                self._lobby_only()
+                locked = settings.model_dump(exclude=MID_GAME)
+                if self.game is not None and locked != self.settings.model_dump(exclude=MID_GAME):
+                    raise RoomError(
+                        "Only the listening time and the countdowns can change during a game"
+                    )
                 if settings.strategy not in STRATEGIES:
                     raise RoomError("There is no such curation strategy")
                 switching = settings.mode == "remote" and self.settings.mode != "remote"
@@ -534,7 +544,7 @@ class Room:
 
             case m.RestartPlayback():
                 self._referee_only(client_id)
-                if self.game is None or self.game.phase == "finished":
+                if self.game is None:  # a finished game's last song may still be restarted
                     raise RoomError("No song is playing")
                 seat = self._seat_of(client_id)
                 self.log.info("%s restarted the song", seat.name if seat else "the host")
@@ -625,7 +635,7 @@ class Room:
     def _open_window(self) -> None:
         """Start the countdown during which the others may challenge."""
         self._window += 1
-        seconds = self.settings.challenge_seconds
+        seconds = self._window_seconds = self.settings.challenge_seconds
         self._window_ends = time.monotonic() + seconds
         self._spawn(self._close_window_later(self._window, seconds))
 
@@ -641,6 +651,7 @@ class Room:
     def _start_advance(self) -> None:
         self._stop_advance()
         seconds = self.settings.next_turn_seconds
+        self._advance_seconds = seconds or None
         if seconds > 0:
             self._advance_ends = time.monotonic() + seconds
             self._spawn(self._advance_later(self._advance, seconds))
@@ -682,10 +693,20 @@ class Room:
         elapsed = int((time.monotonic() - self._play_started) * 1000)
         return min(elapsed, self.playback.duration_ms or elapsed)
 
+    def _advance_total_ms(self) -> int | None:
+        if self.game is None or self.game.phase != "revealed" or self._advance_seconds is None:
+            return None
+        return self._advance_seconds * 1000
+
     def _window_left_ms(self) -> int | None:
         if self.game is None or self.game.phase != "challenging":
             return None
         return max(0, int((self._window_ends - time.monotonic()) * 1000))
+
+    def _window_total_ms(self) -> int | None:
+        if self.game is None or self.game.phase != "challenging":
+            return None
+        return self._window_seconds * 1000
 
     def _name(self, seat_id: str) -> str:
         return next((s.name for s in self.seats if s.id == seat_id), seat_id)
@@ -905,6 +926,8 @@ class Room:
         if only is None:
             kept: list[m.PlaybackFailure] = []
             self._clip += 1  # an earlier clip's timer has nothing left to stop
+            if position_ms == 0:  # a new song or a restart; playing on keeps its clip
+                self._clip_seconds = self.settings.play_seconds
         else:
             position_ms = int((time.monotonic() - self._play_started) * 1000)
             kept = [f for f in self.playback.failures if f.player_id not in only]
@@ -958,7 +981,7 @@ class Room:
         card is revealed, then all of it."""
         assert self.game is not None
         duration = self.game.card.duration_ms
-        seconds = self.settings.play_seconds
+        seconds = self._clip_seconds
         if not seconds or self.game.phase in ("revealed", "finished"):
             return duration
         return min(seconds * 1000, duration)
@@ -968,7 +991,7 @@ class Room:
         if clip != self._clip or self.game is None:
             return  # the song changed, restarted or was revealed meanwhile
         self._clip += 1
-        self.log.info("the %d-second clip is over", self.settings.play_seconds)
+        self.log.info("the %d-second clip is over", self._clip_seconds)
         # Whoever failed to join has missed the clip; a restart plays it again for everyone.
         self.playback = self.playback.model_copy(update={"status": "stopped", "failures": []})
         async with self._spotify_order:
@@ -978,10 +1001,10 @@ class Room:
     def _play_on(self) -> None:
         """At the reveal the song plays on from where the clip stopped, or, still playing,
         to its end."""
-        if self.game is None or not self.settings.play_seconds:
+        if self.game is None or not self._clip_seconds:
             return
         if self.playback.status == "stopped":
-            self._start_playback(position_ms=self.settings.play_seconds * 1000)
+            self._start_playback(position_ms=self._clip_seconds * 1000)
         else:
             self._clip += 1  # its timer has nothing left to stop
             self.playback = self.playback.model_copy(update={"duration_ms": self._clip_ms()})
@@ -1034,11 +1057,12 @@ def _game_view(
     game: engine.Game,
     pending: int,
     drawing: bool,
-    window_left_ms: int | None,
-    advance_left_ms: int | None,
+    window_ms: tuple[int | None, int | None],
+    advance_ms: tuple[int | None, int | None],
 ) -> m.GameView:
     """What clients may see: the card in play stays hidden until it is revealed. `pending`
-    counts the undrawn cards whose years have not been looked up yet."""
+    counts the undrawn cards whose years have not been looked up yet; `window_ms` and
+    `advance_ms` are (left, total) of the two countdowns."""
     revealed = game.phase in ("revealed", "finished")
     card = game.card
     return m.GameView(
@@ -1075,8 +1099,10 @@ def _game_view(
         named=game.named,
         winners=game.winners,
         drawing=drawing,
-        window_left_ms=window_left_ms,
-        advance_left_ms=advance_left_ms,
+        window_left_ms=window_ms[0],
+        window_total_ms=window_ms[1],
+        advance_left_ms=advance_ms[0],
+        advance_total_ms=advance_ms[1],
     )
 
 

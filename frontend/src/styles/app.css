@@ -44,6 +44,22 @@
   height: var(--screen-h);
 }
 
+/* A pop-up's back arrow (Dialog's onBack) mirrors the ✕: it keeps its touch size without making
+   the head row taller, and reaches into the left padding as the ✕ does into the right. */
+.jm-dialog__head > .jm-btn--icon.app-dialog-back {
+  margin: -12px 0 -12px -10px;
+}
+
+.jm-desktop .jm-dialog__head > .jm-btn--icon.app-dialog-back {
+  margin: -8px 0 -8px -10px;
+}
+
+/* Setting rows stacked in a pop-up share one rule between them (the system draws one above and
+   one below each). */
+.jm-dialog .jm-setting + .jm-setting {
+  border-top: 0;
+}
+
 /* The Done at the right of a header (components/DoneButton.tsx). */
 .app-done {
   min-width: 96px;

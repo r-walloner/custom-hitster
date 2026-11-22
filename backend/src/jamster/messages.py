@@ -298,7 +298,11 @@ class GameView(BaseModel):
     winners: list[str]
     drawing: bool  # the next card's year is being looked up; draws wait until it is done
     window_left_ms: int | None  # while challenging: time left until the window closes
+    window_total_ms: int | None  # while challenging: how long the window lasts in all
     advance_left_ms: int | None  # once revealed: time left until the next turn starts by itself
+    # Once revealed: how long this reveal's countdown lasts in all, also once held; None if the
+    # next turn waits for a tap. A settings change mid-game applies from the next countdown.
+    advance_total_ms: int | None
 
 
 class RoomView(BaseModel):

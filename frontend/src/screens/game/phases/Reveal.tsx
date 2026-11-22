@@ -25,8 +25,9 @@ export default function Reveal({ turn }: { turn: Turn }) {
   const advance = loading ? null : game.advance_left_ms
   // After the game's last card, the next turn shows the winner instead of a song.
   const ending = lastCard(game, room.settings.cards_to_win)
-  // Keep listening stops that countdown; not there at all when there's no automatic next song.
-  const keep = room.settings.next_turn_seconds > 0
+  // Keep listening stops that countdown; not there at all when this reveal has none (the
+  // countdown's own length, since the host may change the setting while it runs).
+  const keep = game.advance_total_ms !== null
 
   const who = name(game.active)
   const items = revealItems(before, revealed, guesses, winner, kept, at, (right, guess, edge) => (
@@ -74,7 +75,7 @@ export default function Reveal({ turn }: { turn: Turn }) {
               <Countdown
                 key={advance}
                 ms={advance}
-                total={room.settings.next_turn_seconds * 1000}
+                total={game.advance_total_ms ?? advance}
                 label={(seconds) =>
                   ending ? `Game ends in ${seconds} seconds` : `Next song in ${seconds} seconds`
                 }
