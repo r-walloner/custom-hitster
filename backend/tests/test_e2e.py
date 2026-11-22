@@ -787,33 +787,6 @@ def test_a_clip_stops_the_song_until_the_reveal(client: TestClient, fake: FakeSp
         eventually(lambda: fake.pauses == ["alice", "alice"])
 
 
-def test_the_winning_song_can_be_restarted(client: TestClient, fake: FakeSpotify):
-    alice = Browser(client)
-    alice.login("alice")
-    assert alice.pick(liked=True)["status"] == "done"
-    code = alice.request("POST", "/api/rooms").json()["code"]
-
-    with alice.socket(code) as a:
-        a.send_json(settings(cards_to_win=2, deck_size=10, play_seconds=1, next_turn_seconds=0))
-        a.send_json({"type": "start_game"})
-        game = until(a, state_where(lambda r: r["playback"]["status"] == "playing"))["room"]["game"]
-        song = fake.plays[-1].uri
-        me = game["active"]
-        a.send_json({"type": "place", "slot": right_slot(game, me, year_of(song))})
-        a.send_json({"type": "lock"})
-        until(a, state_where(lambda r: r["game"]["phase"] == "revealed"))
-        a.send_json({"type": "next_turn"})
-        until(a, state_where(lambda r: r["game"]["phase"] == "finished"))
-
-        plays = len(fake.plays)
-        a.send_json({"type": "restart_playback"})
-        room = until(a, state_where(lambda r: r["playback"]["status"] == "playing"))["room"]
-        eventually(lambda: len(fake.plays) == plays + 1)
-        assert (fake.plays[-1].uri, fake.plays[-1].position_ms) == (song, 0)
-        number = int(song.removeprefix("spotify:track:track"))
-        assert room["playback"]["duration_ms"] == duration_of(number), "the whole song, no clip"
-
-
 def closed_with(ws: WebSocketTestSession) -> int:
     """The close code the server ends this socket with, skipping the messages before it."""
     with pytest.raises(WebSocketDisconnect) as closed:

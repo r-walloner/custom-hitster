@@ -544,7 +544,7 @@ class Room:
 
             case m.RestartPlayback():
                 self._referee_only(client_id)
-                if self.game is None:  # a finished game's last song may still be restarted
+                if self.game is None or self.game.phase == "finished":
                     raise RoomError("No song is playing")
                 seat = self._seat_of(client_id)
                 self.log.info("%s restarted the song", seat.name if seat else "the host")
