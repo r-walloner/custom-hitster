@@ -506,3 +506,60 @@
   font-size: 26px;
   line-height: 32px;
 }
+
+/* ---------- Mix cards: the settings screen's deck mix (MixCard) ---------- */
+/* The cards share the column's width (248 × 228px at 1440) and wrap below 204px each (Settings.css). */
+.jm-desktop .jm-mix-card {
+  height: 228px;
+  gap: 10px;
+  padding: 8px 8px 12px;
+  border-radius: 14px;
+}
+
+.jm-desktop .jm-mix-card__pick::after {
+  border-radius: 14px;
+}
+
+.jm-desktop .jm-mix-card__art {
+  flex-basis: 130px;
+  height: 130px;
+  border-radius: 10px;
+}
+
+.jm-desktop .jm-mix-card__art .jm-mix-art {
+  width: 190px;
+  height: 114px;
+}
+
+.jm-desktop .jm-mix-card__tick {
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+}
+
+.jm-desktop .jm-mix-card__tick svg {
+  width: 15px;
+  height: 15px;
+}
+
+.jm-desktop .jm-mix-card__text {
+  gap: 3px;
+  padding: 0 6px;
+}
+
+.jm-desktop .jm-mix-card__name {
+  font-size: 19px;
+  line-height: 24px;
+}
+
+.jm-desktop .jm-mix-card__line {
+  font-size: 15px;
+  line-height: 20px;
+}
+
+.jm-desktop .jm-mix-card__soon {
+  height: 22px;
+  padding: 0 8px;
+  font-size: 11px;
+}

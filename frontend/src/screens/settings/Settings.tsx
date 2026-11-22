@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import type { ReactNode } from 'react'
 import type { RoomSettings } from '../../api/messages.ts'
 import { BackHeader } from '../../components/BackHeader.tsx'
@@ -5,15 +6,17 @@ import { DoneButton } from '../../components/DoneButton.tsx'
 import { ControlRow } from '../../components/Rows.tsx'
 import { Screen } from '../../components/Screen.tsx'
 import { Stepper } from '../../components/Stepper.tsx'
+import { useWheelScrollsSideways } from '../../components/useWheelScrollsSideways.ts'
 import { fmt } from '../../words.ts'
 import { useRoomTools } from '../room/context.ts'
+import { MixCard } from './components/MixCard.tsx'
 import { TimingRows } from './components/TimingRows.tsx'
-import { STRATEGY_NAMES } from './options.ts'
+import { mixChoices } from './options.ts'
 import './Settings.css'
 
 /**
- * Game settings: one line each, steppers and toggles, plain numbers. The host changes them;
- * guests see the values.
+ * Game settings: the deck mix first, as a row of mix cards, then one line each, steppers and
+ * toggles, plain numbers. The host changes them; guests see the values.
  */
 export default function Settings() {
   const { room, you, send, close } = useRoomTools()
@@ -23,7 +26,10 @@ export default function Settings() {
     send({ type: 'set_settings', settings: { ...settings, ...patch } })
   const libraries = room.players.filter((seat) => seat.library?.status === 'done')
   const songs = libraries.reduce((sum, seat) => sum + (seat.library?.tracks ?? 0), 0)
-  const strategy = STRATEGY_NAMES[settings.strategy] ?? settings.strategy
+  const mixes = mixChoices(room.strategies, settings.strategy)
+  // Five cards share the phone's row; more scroll sideways, with the mouse wheel too.
+  const mixRow = useRef<HTMLUListElement>(null)
+  useWheelScrollsSideways(mixRow)
 
   // A guest sees the value where the host has the control.
   const control = (nameId: string, value: string | number, editable: ReactNode) =>
@@ -42,6 +48,30 @@ export default function Settings() {
         <DoneButton onClick={close} />
       </BackHeader>
       <div className="settings">
+        <section className="settings-mix" aria-labelledby="s-mix">
+          <div className="settings-mix__head">
+            <h2 id="s-mix" className="jm-section">
+              Deck mix
+            </h2>
+            <span className="jm-caption">How the songs are picked from your libraries.</span>
+          </div>
+          <ul ref={mixRow} className="settings-mix__row" aria-labelledby="s-mix">
+            {mixes.map((mix) => (
+              <MixCard
+                key={mix.key}
+                mix={mix}
+                onPick={
+                  isHost
+                    ? () => {
+                        if (!mix.picked) change({ strategy: mix.key })
+                      }
+                    : undefined
+                }
+              />
+            ))}
+          </ul>
+        </section>
+        {/* Two columns, filled top to bottom: the game's numbers, then its times. */}
         <div className="settings__grid">
           <ControlRow name="Cards to win" nameId="s-win" caption="First to this many wins.">
             {control(
@@ -98,29 +128,6 @@ export default function Settings() {
                 lessLabel="Smaller deck"
                 moreLabel="Bigger deck"
               />,
-            )}
-          </ControlRow>
-          <ControlRow
-            name="Deck mix"
-            nameId="s-strategy-name"
-            labelFor={isHost ? 's-strategy' : undefined}
-            caption="How songs are picked from each library."
-          >
-            {control(
-              's-strategy-name',
-              strategy,
-              <select
-                id="s-strategy"
-                className="jm-select settings__select"
-                value={settings.strategy}
-                onChange={(event) => change({ strategy: event.target.value })}
-              >
-                {room.strategies.map((key) => (
-                  <option key={key} value={key}>
-                    {STRATEGY_NAMES[key] ?? key}
-                  </option>
-                ))}
-              </select>,
             )}
           </ControlRow>
           <TimingRows settings={settings} onChange={change} idPrefix="s" readOnly={!isHost} />

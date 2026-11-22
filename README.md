@@ -113,14 +113,6 @@ Remove an item once it is done.
   Since both `game/` and `winner/` use it, the confetti goes in `src/components/`.
   Turn the confetti off when the device asks for reduced motion.
 
-### Settings screen
-
-- **A face for every deck mix.**
-  The design is done: the deck mix is the first setting on `docs/design/screens/canvas/Settings.dc.html` and `DesktopSettings.dc.html`, a row of mix cards, and the card is the design system's MixCard (`docs/design/system/components/MixCard/`, with each mix's picture and line).
-  Left to build: the frontend's settings screen (`frontend/src/screens/settings/Settings.tsx`) still shows a drop-down with the names from `STRATEGY_NAMES` in `options.ts`.
-  It should draw the row of cards from `room.strategies`, with each mix's line and picture, and the planned Deep Dive and Nostalgia as *Soon* cards; players who aren't the host see the same row without the choice.
-  On the phone five cards share the row and more scroll sideways without a scroll bar; on desktop every card shows (see the component's README).
-
 ### Winner screen
 
 Something fun to do on the winner screen before the host takes everyone back to the lobby: stay and party.

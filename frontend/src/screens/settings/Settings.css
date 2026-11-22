@@ -3,7 +3,49 @@
   min-height: 0;
   display: flex;
   flex-direction: column;
+  gap: 6px;
 }
+
+/* ---------- The deck mix: a row of mix cards (MixCard), the first and most prominent setting ---------- */
+.settings-mix {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.settings-mix__head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+/* Five share the row (156px each); from a sixth they stop at 152px and the row scrolls sideways,
+   with no scroll bar. The padding leaves room for the picked card's shadow and focus ring. */
+.settings-mix__row {
+  display: flex;
+  gap: 8px;
+  margin: -4px;
+  padding: 4px;
+  list-style: none;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  scroll-snap-type: x proximity;
+  scroll-padding: 4px;
+}
+
+.settings-mix__row::-webkit-scrollbar {
+  display: none;
+}
+
+.settings-mix__row > .jm-mix-card {
+  flex: 1 0 152px;
+  min-width: 152px;
+  scroll-snap-align: start;
+}
+
+/* ---------- The other settings, one line each ---------- */
 
 .settings .jm-setting {
   gap: 12px;
@@ -17,16 +59,19 @@
   flex: 1;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(3, auto);
+  grid-auto-flow: column;
   column-gap: 28px;
 }
 
 .settings__grid .jm-setting {
+  min-height: 44px;
   padding: 0;
   border-bottom: 2px solid var(--sand-line);
 }
 
 /* The last row of each column has no rule under it. */
-.settings__grid .jm-setting:nth-last-child(-n + 2) {
+.settings__grid .jm-setting:nth-child(3n) {
   border-bottom: 0;
 }
 
@@ -37,11 +82,43 @@
   font-variant-numeric: tabular-nums;
 }
 
-.settings__select {
-  width: 172px;
+/* ---------- Desktop (styles/desktop.css): a sub-screen like Your songs ---------- */
+/* A window too short for the mix row and the three rows under it scrolls down. The padding keeps
+   the picked card's shadow and the focus ring clear of the scrolling box's edge. */
+.jm-desktop .settings {
+  gap: 28px;
+  margin: -6px;
+  padding: 6px;
+  overflow-y: auto;
 }
 
-/* ---------- Desktop (styles/desktop.css): a sub-screen like Your songs ---------- */
+.jm-desktop .settings-mix {
+  gap: 12px;
+}
+
+.jm-desktop .settings-mix__head {
+  gap: 12px;
+}
+
+.jm-desktop .settings-mix .jm-section {
+  font-size: 20px;
+  line-height: 24px;
+}
+
+/* Every card at once, sharing the column's width; they wrap below 204px each. */
+.jm-desktop .settings-mix__row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(204px, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+}
+
+.jm-desktop .settings-mix__row > .jm-mix-card {
+  min-width: 0;
+}
+
 /* The rows keep their own height at the top instead of stretching over a tall window. */
 .jm-desktop .settings__grid {
   flex: 0 0 auto;
@@ -49,6 +126,7 @@
 }
 
 .jm-desktop .settings__grid .jm-setting {
+  box-sizing: border-box;
   gap: 16px;
   min-height: 96px;
   padding: 16px 0;
@@ -60,8 +138,4 @@
 
 .jm-desktop .settings__value {
   font-size: 28px;
-}
-
-.jm-desktop .settings__select {
-  width: 220px;
 }

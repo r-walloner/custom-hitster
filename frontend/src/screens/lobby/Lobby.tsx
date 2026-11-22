@@ -9,9 +9,9 @@ import { PlayerRow, SettingRow } from '../../components/Rows.tsx'
 import { Header, RoomMeta, Screen, Spacer } from '../../components/Screen.tsx'
 import { ScrollArea } from '../../components/ScrollArea.tsx'
 import { useTapWord } from '../../components/useTapWord.ts'
-import { plural } from '../../words.ts'
 import { useImport } from '../library/useImport.ts'
 import { useRoomTools } from '../room/context.ts'
+import { mixName } from '../settings/options.ts'
 import { playerStatus, songCount } from './status.ts'
 import './Lobby.css'
 
@@ -164,7 +164,7 @@ export default function Lobby() {
               )}
               <SettingRow
                 label="Rules"
-                value={`First to ${plural(settings.cards_to_win, 'card')}`}
+                value={`${mixName(settings.strategy)}`}
               >
                 <Button onClick={() => open('settings')}>{isHost ? 'Change' : 'View'}</Button>
               </SettingRow>
