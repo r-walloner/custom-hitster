@@ -15,18 +15,21 @@ Frontend, run from `frontend/`:
 - `npm run dev`: Vite on http://127.0.0.1:5173, proxying `/api`, `/auth` and `/ws` to port 8000.
 - `npm run lint && npm run build`: lint, type-check and build.
 
-Container, run from the repo root:
+Containers, run from the repo root:
 
-- `docker compose up --build`: the production image on 127.0.0.1:8000.
-- `docker build -t jamster .`: build the image without needing `.env`.
-- Smoke test of that image with dummy credentials, on port 8765:
+- `docker compose up --build`: both production images, the app on 127.0.0.1:8000.
+- `docker compose build`: build both images (`jamster-game-backend`, `jamster-game-frontend`) without needing `.env`.
+- Smoke test of those images with dummy credentials, on port 8765:
 
   ```sh
-  docker run --rm -d --name jamster-smoke -p 127.0.0.1:8765:8000 \
+  docker network create jamster-smoke
+  docker run --rm -d --name jamster-smoke-backend --network jamster-smoke --network-alias backend \
     -e JAMSTER_SPOTIFY_CLIENT_ID=x -e JAMSTER_SPOTIFY_CLIENT_SECRET=x \
-    -e JAMSTER_SESSION_SECRET=x jamster
+    -e JAMSTER_SESSION_SECRET=x jamster-game-backend
+  docker run --rm -d --name jamster-smoke-frontend --network jamster-smoke \
+    -p 127.0.0.1:8765:8080 jamster-game-frontend
   curl -sf --retry 40 --retry-all-errors --retry-delay 1 http://127.0.0.1:8765/healthz
-  docker stop jamster-smoke
+  docker stop jamster-smoke-frontend jamster-smoke-backend && docker network rm jamster-smoke
   ```
 
 The skeletons were generated once, from the repo root, and need no re-running:
@@ -48,7 +51,7 @@ npm create vite@latest frontend -- --template react-ts --no-interactive
 - `backend/src/jamster/deck.py`: the context that loads the pool, runs a strategy and writes the deck to `data/decks/`, as a Markdown report and as JSON lines.
 - `backend/src/jamster/classics.py`, `classics.json`: the hand-written list of well-known songs with their years and Spotify tracks, copied into the database at startup. After adding songs to the list, run `uv run python -m jamster.classics` to look up their tracks.
 - `backend/src/jamster/db.py`: the schema and every SQL statement.
-- `backend/src/jamster/web.py`: routes, the room WebSocket, static files.
+- `backend/src/jamster/web.py`: routes and the room WebSocket. The backend serves no frontend files.
 - `backend/src/jamster/logs.py`: logging setup. Modules log via `logging.getLogger(__name__)`; rooms via `room.log`, which prefixes the room code.
 - `backend/tests/fake_spotify.py`: stands in for Spotify and MusicBrainz in tests.
 - `frontend/src/`:
@@ -65,6 +68,7 @@ npm create vite@latest frontend -- --template react-ts --no-interactive
   - `src/components/` never imports from `screens/` or `api/` and never reads the room context.
 - `frontend/src/styles/`: `tokens.css` and `jamster.css` are copies of `docs/design/system/tokens.css` and `components/bundle.css`; re-copy them when the system changes. `app.css` holds the app's own additions. `desktop.css` is the app's conversion of the system's `components/desktop.css`: the shared desktop rules, keyed off the `.jm-desktop` root class over the `jm-` markup.
 - Desktop layouts: `components/Fit.tsx` switches to them in a window at least 1200 × 640 (no zoom, `.jm-desktop` on the app; `useDesktop()` for the rare script that needs to know). Each screen's desktop rules go at the end of its own `.css`, under `.jm-desktop`; markup only desktop shows is rendered always and hidden on the phone. See `docs/design/system/components/Desktop/README.md`.
+- `backend/Dockerfile`, `frontend/Dockerfile`, `compose.yaml`: two Alpine images, each built in two stages. `frontend/Caddyfile` makes Caddy serve the built app and proxy `/api`, `/auth`, `/ws` and `/healthz` to the backend, passing the browser's Host through.
 - `docs/design/`: the design system and the screen mock-ups the frontend is built from.
 
 ## Rules

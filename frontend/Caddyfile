@@ -1,0 +1,39 @@
+{
+	# The VM's Caddy in front terminates HTTPS; this one speaks plain HTTP on the compose network.
+	auto_https off
+	admin off
+	servers {
+		# Keep the X-Forwarded-For of the proxy in front instead of replacing it with its address.
+		trusted_proxies static private_ranges
+	}
+}
+
+:8080 {
+	encode zstd gzip
+
+	# Caddy passes the browser's Host through unchanged, port included: the backend builds the
+	# Spotify callback URL from it and checks the WebSocket's Origin against it.
+	@backend path /api/* /auth/* /ws/* /healthz
+	handle @backend {
+		reverse_proxy backend:8000
+	}
+
+	handle {
+		root * /srv
+		# Vite hashes the asset names, so they can be kept; everything else is revalidated,
+		# so a new build is picked up straight away.
+		@assets path /assets/*
+		@other not path /assets/*
+		header @assets Cache-Control "public, max-age=2592000, immutable"
+		header @other Cache-Control "no-cache"
+		# Client-side routes such as /room/ABCD are served the app itself.
+		try_files {path} /index.html
+		file_server
+	}
+}
+
+# Health check for the container, reachable only from inside it.
+:8081 {
+	bind 127.0.0.1
+	respond "ok" 200
+}

@@ -22,7 +22,6 @@ class Settings(BaseSettings):
     # which is what makes both the Vite dev server (:5173) and the local container (:8000) work.
     base_url: str | None = None
     data_dir: Path = Path("data")
-    static_dir: Path | None = None  # built frontend; unset in development, where Vite serves it
     musicbrainz_contact: str = ""  # URL or email sent in the MusicBrainz User-Agent
     # The well-known songs Balanced mixes in; None searches for none.
     classics_file: Path | None = Path(__file__).with_name("classics.json")

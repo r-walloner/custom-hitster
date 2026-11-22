@@ -206,7 +206,7 @@ The account that owns it needs Premium.
    | Redirect URI | Used by |
    |---|---|
    | `http://127.0.0.1:5173/auth/callback` | development through Vite |
-   | `http://127.0.0.1:8000/auth/callback` | the container on your own machine |
+   | `http://127.0.0.1:8000/auth/callback` | the containers on your own machine |
    | `https://<your-domain>/auth/callback` | production |
 
 Spotify rejects `http://localhost`, so always browse to `127.0.0.1`.
@@ -224,7 +224,7 @@ The backend and Docker Compose both read it.
 | `JAMSTER_MUSICBRAINZ_CONTACT` | A URL or email address sent to MusicBrainz, whose API rules ask for one. |
 | `JAMSTER_CLASSICS_FILE` | The list of well-known songs Balanced mixes in, by default `backend/src/jamster/classics.json`. |
 | `JAMSTER_LOG_LEVEL` | `INFO` (the default), `DEBUG`, `WARNING` or `ERROR`. |
-| `JAMSTER_LOG_TO` | `file` (the default) or `stdout`. The container image defaults to `stdout`. |
+| `JAMSTER_LOG_TO` | `file` (the default) or `stdout`. The backend image defaults to `stdout`. |
 | `JAMSTER_LOG_FILE` | The log file, by default `jamster.log` in the data directory, so `backend/data/jamster.log` in development. |
 
 The log variables are optional.
@@ -380,10 +380,15 @@ Spotify's developer policy forbids feeding Spotify data into a machine learning 
 
 ## Deployment
 
-One container serves the API, the WebSocket and the built frontend on port 8000.
-It expects a reverse proxy in front of it for HTTPS.
+Two containers, each built in two stages on Alpine, so the images hold only what runs:
 
-### Try the image locally
+- `backend` (image `jamster-game-backend`, built from `backend/Dockerfile`): FastAPI with the API and the room WebSocket on port 8000. It runs as one process, since rooms live in memory. Its port is not published; only the frontend container reaches it.
+- `frontend` (image `jamster-game-frontend`, built from `frontend/Dockerfile`): Caddy serving the built app on port 8080, published as `127.0.0.1:8000`. It proxies `/api`, `/auth`, `/ws` and `/healthz` to the backend. Its configuration is `frontend/Caddyfile`.
+
+The browser sees one origin, so the session cookie, the Spotify callback URL and the WebSocket origin check work as in development.
+Both expect a reverse proxy in front for HTTPS.
+
+### Try the images locally
 
 From the repository root:
 
@@ -391,30 +396,34 @@ From the repository root:
 docker compose up --build
 ```
 
-This builds the image and serves everything on http://127.0.0.1:8000, using `.env`.
-The container logs to stdout, so `docker compose logs -f` shows the log.
+This builds both images and serves everything on http://127.0.0.1:8000, using `.env`.
+Both containers log to stdout, so `docker compose logs -f` shows the log.
 
-To check an image without real credentials, build it and query its health endpoint:
+To check the images without real credentials, build them, start them on a network of their own and query the health endpoint through the frontend:
 
 ```sh
-docker build -t jamster .
-docker run --rm -d --name jamster-smoke -p 127.0.0.1:8765:8000 \
-  -e JAMSTER_SPOTIFY_CLIENT_ID=x -e JAMSTER_SPOTIFY_CLIENT_SECRET=x \
-  -e JAMSTER_SESSION_SECRET=x jamster
+docker compose build
+docker network create jamster-smoke
+docker run --rm -d --name jamster-smoke-backend --network jamster-smoke --network-alias backend \
+  -e JAMSTER_SPOTIFY_CLIENT_ID=x -e JAMSTER_SPOTIFY_CLIENT_SECRET=x -e JAMSTER_SESSION_SECRET=x \
+  jamster-game-backend
+docker run --rm -d --name jamster-smoke-frontend --network jamster-smoke \
+  -p 127.0.0.1:8765:8080 jamster-game-frontend
 curl -sf --retry 40 --retry-all-errors --retry-delay 1 http://127.0.0.1:8765/healthz
-docker stop jamster-smoke
+docker stop jamster-smoke-frontend jamster-smoke-backend && docker network rm jamster-smoke
 ```
 
 ### On the server
 
 1. Clone the repository and create `.env` with `JAMSTER_BASE_URL` set to the public address.
-2. Start the container from the repository root:
+2. If the old single-container deployment (service `jamster`, image `jamster`) still runs, remove it with its data from the old checkout, once: `docker compose down -v`, then `docker image rm jamster`.
+3. Start the containers from the repository root:
 
    ```sh
    docker compose up -d --build
    ```
 
-3. Point the existing Caddy at it:
+4. Point the existing Caddy at the frontend container:
 
    ```
    jamster.example.com {
@@ -423,11 +432,11 @@ docker stop jamster-smoke
    ```
 
 `compose.yaml` publishes the port on `127.0.0.1` only, which suits a Caddy running on the host itself.
-A Caddy running in Docker needs a network shared with the `jamster` service instead, and that setup is not written yet.
+A Caddy running in Docker needs a network shared with the `frontend` service instead, and that setup is not written yet.
 
 To update, run `git pull` and the same `docker compose` command again.
 
-The named volume `jamster-data` holds the SQLite database (Spotify logins, imported libraries, cached release years and the classics found on Spotify) and the deck files in `decks/`.
+The named volume `jamster-game-data` holds the SQLite database (Spotify logins, imported libraries, cached release years and the classics found on Spotify) and the deck files in `decks/`.
 
 ## How the skeletons were generated
 

@@ -1,4 +1,4 @@
-"""The HTTP and WebSocket surface: login, the few REST endpoints, the room socket, static files."""
+"""The HTTP and WebSocket surface: login, the few REST endpoints, the room socket."""
 
 import logging
 import random
@@ -9,8 +9,7 @@ from urllib.parse import urlsplit
 
 import httpx
 from fastapi import Body, FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect
-from fastapi.responses import FileResponse, RedirectResponse
-from fastapi.staticfiles import StaticFiles
+from fastapi.responses import RedirectResponse
 from pydantic import BaseModel
 from starlette.middleware.sessions import SessionMiddleware
 from starlette.websockets import WebSocketState
@@ -247,21 +246,5 @@ def create_app(
             pass
         finally:
             await room.disconnect(ws)
-
-    # --- built frontend ------------------------------------------------------------------
-
-    if settings.static_dir is not None:
-        static = settings.static_dir.resolve()
-        app.mount("/assets", StaticFiles(directory=static / "assets"), name="assets")
-
-        @app.get("/{path:path}", include_in_schema=False)
-        async def frontend(path: str) -> FileResponse:
-            if path.startswith(("api/", "auth/", "ws/")):
-                raise HTTPException(404)
-            file = (static / path).resolve()
-            if path and file.is_file() and file.is_relative_to(static):
-                return FileResponse(file)
-            # Client-side routes such as /room/ABCD are served the app itself.
-            return FileResponse(static / "index.html")
 
     return app

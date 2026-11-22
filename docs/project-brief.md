@@ -49,7 +49,7 @@ A player signs in with Spotify, and the server lists their library's sources: li
 | Explaining decks | Each pick carries a `Why`; the deck goes to a JSON-lines file, and each turn's log line says why its song came up | Nothing recorded | Tuning a strategy after a playtest needs to know why a song was in the deck | Low |
 | Answers | Said aloud, confirmed by host or active player | Typed and fuzzy-matched | No matching code; fits a party game | Low |
 | Access | Spotify sign-in to host, guests join by link | Site password; no restriction | Spotify's allowlist already limits who can sign in | Low |
-| Hosting | One container on the existing VM, behind its existing Caddy | Laptop plus tunnel; managed host | User's VM and proxy already exist | Low |
+| Hosting | Two Alpine containers on the existing VM, behind its existing Caddy: Caddy serving the built frontend and proxying to FastAPI, which serves only the API and the WebSocket | One container with FastAPI serving the frontend too; laptop plus tunnel; managed host | User's VM and proxy already exist; small images, each doing one job | Low |
 | Local development | Native `fastapi dev` plus Vite; same image via compose to check a build | Dev containers with hot reload | Fast reload, less config | Low |
 | Spotify client | Hand-written on `httpx` | `spotipy` | spotipy is synchronous and would block the server | Low |
 | Callback URL | `JAMSTER_BASE_URL` in production, the request's Host header when unset | Always configured | Zero config locally on both ports | Low |
@@ -83,7 +83,7 @@ Deliberately left out:
 - **Titles are visible in the Spotify app.** Whoever looks at the playing device sees the answer. The Web Playback SDK would hide it; decide after playing a few games.
 - **Wrong years.** There is no screen to correct one; today it takes an SQL update with source `manual`. Decide whether the host needs a button after seeing how often it happens.
 - **`httpx` or `httpx2`.** FastAPI's test client now uses `httpx2`, the successor maintained by the Pydantic team. The app still uses `httpx` 0.28. Migrate when `httpx` stops getting fixes.
-- **How the VM's Caddy reaches the container.** `compose.yaml` publishes `127.0.0.1:8000`, which suits a Caddy running on the host. A Caddy in Docker needs a shared network instead.
+- **How the VM's Caddy reaches the frontend container.** `compose.yaml` publishes `127.0.0.1:8000`, which suits a Caddy running on the host. A Caddy in Docker needs a shared network instead.
 
 ## State of the scaffold
 
@@ -93,7 +93,7 @@ Deliberately left out:
 
 - Backend: Spotify login and token refresh, library listing and copying of picked sources, MusicBrainz year resolver, three curation strategies with a command to try them, the classics list with a command that looks up its Spotify tracks, deck builder with deck files, rules engine, rooms with playback control, HTTP and WebSocket layer, SQLite store.
 - Frontend: home page (join, log in, and once logged in host a game and manage the account), library picker (also opened from the lobby), lobby (players, settings, device picker, start), game board with controls for every phase.
-- Operations: `Dockerfile`, `compose.yaml`, `.env.example`.
+- Operations: `backend/Dockerfile`, `frontend/Dockerfile`, `frontend/Caddyfile`, `compose.yaml`, `.env.example`.
 - Tests: 104, covering the engine, year picking, the curation strategies and their command, the classics matching, picked library sources, the opening deal and whole games against a fake Spotify.
 
 **Stubbed.** Nothing.
@@ -106,4 +106,4 @@ Deliberately left out:
 - `docker build -t jamster .`: builds. The container started with dummy credentials answers `/healthz`, serves the app on `/room/ABCD`, and redirects `/auth/login` to Spotify.
 - Dev servers together: through Vite on port 5173 the login redirect carries the 5173 callback, the room socket connects, and a socket from a foreign origin is refused.
 
-**Not verified.** Nothing has run against the real Spotify or MusicBrainz, and the interface has never been opened in a browser: it is type-checked and built only.
+**Not verified.** Nothing has run against the real Spotify or MusicBrainz, and the interface has never been opened in a browser: it is type-checked and built only. The two-container setup (2026-11-22, replacing the single image above) has not been built or run yet.
