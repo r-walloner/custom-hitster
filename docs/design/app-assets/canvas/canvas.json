@@ -1,0 +1,122 @@
+{
+ "v": 3,
+ "createdOnFiles": {
+  "v": 1,
+  "at": "2026-11-22T19:58:00Z"
+ },
+ "title": "Jamster app icons",
+ "launch": {
+  "view": "canvas"
+ },
+ "pages": [],
+ "boards": {
+  "Main.dc.html": {
+   "x": 0,
+   "y": 0,
+   "w": 1440,
+   "h": 1640,
+   "title": "What we need: favicon and install graphics"
+  },
+  "Icon512.dc.html": {
+   "x": 1520,
+   "y": 0,
+   "w": 512,
+   "h": 512,
+   "title": "icon-512.png · the mark (any)"
+  },
+  "IconMaskable.dc.html": {
+   "x": 2112,
+   "y": 0,
+   "w": 512,
+   "h": 512,
+   "title": "icon-maskable-512.png"
+  },
+  "Icon192.dc.html": {
+   "x": 2704,
+   "y": 0,
+   "w": 192,
+   "h": 192,
+   "title": "icon-192.png"
+  },
+  "AppleTouchIcon.dc.html": {
+   "x": 2976,
+   "y": 0,
+   "w": 180,
+   "h": 180,
+   "title": "apple-touch-icon.png"
+  },
+  "Favicon.dc.html": {
+   "x": 1520,
+   "y": 632,
+   "w": 1200,
+   "h": 600,
+   "title": "favicon.svg and favicon.ico"
+  },
+  "LaunchImage.dc.html": {
+   "x": 2800,
+   "y": 632,
+   "w": 844,
+   "h": 390,
+   "title": "iPhone launch image (template, landscape)"
+  },
+  "ShareImage.dc.html": {
+   "x": 1520,
+   "y": 1352,
+   "w": 1200,
+   "h": 630,
+   "title": "og-image.png · link preview"
+  },
+  "SharePreview.dc.html": {
+   "x": 2800,
+   "y": 1352,
+   "w": 1290,
+   "h": 630,
+   "title": "Link preview in chats, actual size"
+  },
+  "CassetteVariant.dc.html": {
+   "x": 3724,
+   "y": 632,
+   "w": 1200,
+   "h": 640,
+   "title": "The app icon at every size"
+  },
+  "ScreenshotHome.dc.html": {
+   "x": 1520,
+   "y": 2102,
+   "w": 844,
+   "h": 390,
+   "title": "Screenshot 1 · Home (export at 2×)"
+  },
+  "ScreenshotPlacing.dc.html": {
+   "x": 2444,
+   "y": 2102,
+   "w": 844,
+   "h": 390,
+   "title": "Screenshot 2 · Placing (export at 2×)"
+  },
+  "ScreenshotReveal.dc.html": {
+   "x": 3368,
+   "y": 2102,
+   "w": 844,
+   "h": 390,
+   "title": "Screenshot 3 · Reveal (export at 2×)"
+  }
+ },
+ "order": [
+  "Main.dc.html",
+  "Icon512.dc.html",
+  "IconMaskable.dc.html",
+  "Icon192.dc.html",
+  "AppleTouchIcon.dc.html",
+  "Favicon.dc.html",
+  "LaunchImage.dc.html",
+  "ShareImage.dc.html",
+  "SharePreview.dc.html",
+  "CassetteVariant.dc.html",
+  "ScreenshotHome.dc.html",
+  "ScreenshotPlacing.dc.html",
+  "ScreenshotReveal.dc.html"
+ ],
+ "notes": {},
+ "designSystems": []
+}

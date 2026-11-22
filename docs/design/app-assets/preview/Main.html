@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jamster: favicon and install graphics</title>
+<link rel="stylesheet" href="../../system/tokens.css">
+<link rel="stylesheet" href="../../system/components/bundle.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&amp;family=Bricolage+Grotesque:opsz,wght@12..96,400..800&amp;family=DM+Mono:wght@500&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#b83a20}a:hover{color:#2a211c}
+</style>
+</head>
+<body>
+<div id="dc-root"></div>
+<template id="dc-template"><div style="width: 1440px; height: 1640px; box-sizing: border-box; padding: 56px 64px 64px; background: #f6eedf; color: #2a211c; font-family: 'Bricolage Grotesque', system-ui, sans-serif; display: flex; flex-direction: column; gap: 40px">
+
+  <header style="display: flex; justify-content: space-between; align-items: flex-end; gap: 40px">
+    <div style="display: flex; flex-direction: column; gap: 22px">
+      <span style="align-self: flex-start; display: inline-block; transform: rotate(-4deg); background: #ee5a3c; color: #2a211c; border: 3px solid #2a211c; box-shadow: 5px 5px 0 #2a211c; border-radius: 999px; padding: 4px 24px; font: 400 32px/40px 'Rubik Mono One', sans-serif">jamster</span>
+      <h1 style="margin: 0; font-size: 40px; line-height: 44px; font-weight: 800; letter-spacing: -0.02em">Favicon and install graphics</h1>
+      <p style="margin: 0; max-width: 720px; font-size: 17px; line-height: 25px; font-weight: 500; color: #5c4f44">Six files make Jamster a tab icon and an installable app on Android and iPhone. All of them are drawn from one mark: the cover's coral cassette, cut down to a sticker. The wordmark is too wide to read at tab size, so it only appears on the launch screen.</p>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-end; padding-bottom: 4px">
+      <span style="font: 500 12px/16px 'DM Mono', monospace; letter-spacing: 0.06em; text-transform: uppercase; color: #b83a20">Replaces</span>
+      <div style="display: flex; align-items: center; gap: 12px; background: #fffaf0; border: 2px solid #2a211c; border-radius: 12px; box-shadow: 3px 3px 0 #2a211c; padding: 12px 16px">
+        <svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#14161f"></rect><path d="M5 22h22" stroke="#4bd0c0" stroke-width="2" stroke-linecap="round"></path><circle cx="9" cy="22" r="2.5" fill="#4bd0c0"></circle><circle cx="23" cy="22" r="2.5" fill="#4bd0c0"></circle><path d="M13 7v10l8-5z" fill="#f2b84b"></path></svg>
+        <span style="font-size: 14px; line-height: 19px; font-weight: 600; color: #5c4f44; max-width: 210px">Today's <span style="font-family: 'DM Mono', monospace; font-size: 13px">favicon.svg</span>, left from the dark Signal round</span>
+      </div>
+    </div>
+  </header>
+
+  <section style="display: flex; flex-direction: column; gap: 20px">
+    <div style="display: flex; align-items: baseline; gap: 14px">
+      <h2 style="margin: 0; font-size: 24px; line-height: 28px; font-weight: 800">Needed</h2>
+      <span style="font-size: 15px; font-weight: 600; color: #5c4f44">Into frontend/public, linked from index.html and the manifest</span>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px">
+
+      <article style="display: flex; flex-direction: column; background: #fffaf0; border: 2px solid #2a211c; border-radius: 16px; box-shadow: 3px 3px 0 #2a211c; overflow: hidden">
+        <div style="height: 200px; background: #ede2ce; border-bottom: 2px solid #2a211c; display: flex; align-items: flex-end; justify-content: center; gap: 28px; padding-bottom: 36px; box-sizing: border-box">
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 8px"><div style="width: 16px; height: 16px; box-sizing: border-box; border: 2px dashed #b9aa94; border-radius: 4px; background: #f6eedf"></div><span style="font: 500 11px/14px 'DM Mono', monospace; color: #5c4f44">16</span></div>
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 8px"><div style="width: 32px; height: 32px; box-sizing: border-box; border: 2px dashed #b9aa94; border-radius: 7px; background: #f6eedf"></div><span style="font: 500 11px/14px 'DM Mono', monospace; color: #5c4f44">32</span></div>
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 8px"><div style="width: 64px; height: 64px; box-sizing: border-box; border: 2px dashed #b9aa94; border-radius: 12px; background: #f6eedf"></div><span style="font: 500 11px/14px 'DM Mono', monospace; color: #5c4f44">any</span></div>
+        </div>
+        <div style="padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 8px">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px"><span style="font: 500 15px/20px 'DM Mono', monospace">favicon.svg</span><span style="font: 500 12px/16px 'DM Mono', monospace; background: #ee5a3c; border: 2px solid #2a211c; border-radius: 999px; padding: 2px 10px">VECTOR</span></div>
+          <p style="margin: 0; font-size: 17px; line-height: 22px; font-weight: 800">Browser tab icon</p>
+          <p style="margin: 0; font-size: 14px; line-height: 20px; font-weight: 500; color: #5c4f44">What Chrome, Firefox and Safari draw in the tab and bookmarks. Has to read at 16 px, so one bold shape, two or three colours, no text.</p>
+        </div>
+      </article>
+
+      <article style="display: flex; flex-direction: column; background: #fffaf0; border: 2px solid #2a211c; border-radius: 16px; box-shadow: 3px 3px 0 #2a211c; overflow: hidden">
+        <div style="height: 200px; background: #ede2ce; border-bottom: 2px solid #2a211c; display: flex; align-items: flex-end; justify-content: center; gap: 28px; padding-bottom: 36px; box-sizing: border-box">
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 8px"><div style="width: 16px; height: 16px; box-sizing: border-box; border: 2px dashed #b9aa94; background: #f6eedf"></div><span style="font: 500 11px/14px 'DM Mono', monospace; color: #5c4f44">16</span></div>
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 8px"><div style="width: 32px; height: 32px; box-sizing: border-box; border: 2px dashed #b9aa94; background: #f6eedf"></div><span style="font: 500 11px/14px 'DM Mono', monospace; color: #5c4f44">32</span></div>
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 8px"><div style="width: 48px; height: 48px; box-sizing: border-box; border: 2px dashed #b9aa94; background: #f6eedf"></div><span style="font: 500 11px/14px 'DM Mono', monospace; color: #5c4f44">48</span></div>
+        </div>
+        <div style="padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 8px">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px"><span style="font: 500 15px/20px 'DM Mono', monospace">favicon.ico</span><span style="font: 500 12px/16px 'DM Mono', monospace; background: #fffaf0; border: 2px solid #2a211c; border-radius: 999px; padding: 2px 10px">16 · 32 · 48</span></div>
+          <p style="margin: 0; font-size: 17px; line-height: 22px; font-weight: 800">Fallback tab icon</p>
+          <p style="margin: 0; font-size: 14px; line-height: 20px; font-weight: 500; color: #5c4f44">For older browsers and anything that asks for /favicon.ico by name (link previews, some chat apps). Same art as the SVG, hinted by hand at 16 px.</p>
+        </div>
+      </article>
+
+      <article style="display: flex; flex-direction: column; background: #fffaf0; border: 2px solid #2a211c; border-radius: 16px; box-shadow: 3px 3px 0 #2a211c; overflow: hidden">
+        <div style="height: 200px; background: #ede2ce; border-bottom: 2px solid #2a211c; display: flex; align-items: center; justify-content: center">
+          <div style="width: 128px; height: 128px; box-sizing: border-box; border: 2px dashed #b9aa94; border-radius: 29px; background: #f6eedf; display: flex; align-items: center; justify-content: center"><span style="font: 500 11px/14px 'DM Mono', monospace; color: #5c4f44">180 × 180</span></div>
+        </div>
+        <div style="padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 8px">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px"><span style="font: 500 15px/20px 'DM Mono', monospace">apple-touch-icon.png</span><span style="font: 500 12px/16px 'DM Mono', monospace; background: #fffaf0; border: 2px solid #2a211c; border-radius: 999px; padding: 2px 10px">180</span></div>
+          <p style="margin: 0; font-size: 17px; line-height: 22px; font-weight: 800">iPhone home screen</p>
+          <p style="margin: 0; font-size: 14px; line-height: 20px; font-weight: 500; color: #5c4f44">iOS reads this, not the manifest. A full square with a solid background (no transparency); iOS rounds the corners itself, so no corners or shadow of our own.</p>
+        </div>
+      </article>
+
+      <article style="display: flex; flex-direction: column; background: #fffaf0; border: 2px solid #2a211c; border-radius: 16px; box-shadow: 3px 3px 0 #2a211c; overflow: hidden">
+        <div style="height: 200px; background: #ede2ce; border-bottom: 2px solid #2a211c; display: flex; align-items: center; justify-content: center">
+          <div style="width: 96px; height: 96px; box-sizing: border-box; border: 2px dashed #b9aa94; border-radius: 20px; background: #f6eedf; display: flex; align-items: center; justify-content: center"><span style="font: 500 11px/14px 'DM Mono', monospace; color: #5c4f44">192</span></div>
+        </div>
+        <div style="padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 8px">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px"><span style="font: 500 15px/20px 'DM Mono', monospace">icon-192.png</span><span style="font: 500 12px/16px 'DM Mono', monospace; background: #fffaf0; border: 2px solid #2a211c; border-radius: 999px; padding: 2px 10px">192 · any</span></div>
+          <p style="margin: 0; font-size: 17px; line-height: 22px; font-weight: 800">Android launcher icon</p>
+          <p style="margin: 0; font-size: 14px; line-height: 20px; font-weight: 500; color: #5c4f44">One of the two icons Chrome requires before it offers Install. The mark on its own, transparent around it is fine here.</p>
+        </div>
+      </article>
+
+      <article style="display: flex; flex-direction: column; background: #fffaf0; border: 2px solid #2a211c; border-radius: 16px; box-shadow: 3px 3px 0 #2a211c; overflow: hidden">
+        <div style="height: 200px; background: #ede2ce; border-bottom: 2px solid #2a211c; display: flex; align-items: center; justify-content: center">
+          <div style="width: 160px; height: 160px; box-sizing: border-box; border: 2px dashed #b9aa94; border-radius: 32px; background: #f6eedf; display: flex; align-items: center; justify-content: center"><span style="font: 500 11px/14px 'DM Mono', monospace; color: #5c4f44">512</span></div>
+        </div>
+        <div style="padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 8px">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px"><span style="font: 500 15px/20px 'DM Mono', monospace">icon-512.png</span><span style="font: 500 12px/16px 'DM Mono', monospace; background: #fffaf0; border: 2px solid #2a211c; border-radius: 999px; padding: 2px 10px">512 · any</span></div>
+          <p style="margin: 0; font-size: 17px; line-height: 22px; font-weight: 800">Install dialog and splash</p>
+          <p style="margin: 0; font-size: 14px; line-height: 20px; font-weight: 500; color: #5c4f44">The second required size. Android also builds the launch screen from it: this icon centred on the manifest's background colour.</p>
+        </div>
+      </article>
+
+      <article style="display: flex; flex-direction: column; background: #fffaf0; border: 2px solid #2a211c; border-radius: 16px; box-shadow: 3px 3px 0 #2a211c; overflow: hidden">
+        <div style="height: 200px; background: #ede2ce; border-bottom: 2px solid #2a211c; display: flex; align-items: center; justify-content: center">
+          <div style="position: relative; width: 160px; height: 160px; box-sizing: border-box; border: 2px dashed #b9aa94; background: #f6eedf; display: flex; align-items: center; justify-content: center">
+            <div style="width: 128px; height: 128px; box-sizing: border-box; border: 2px dashed #ee5a3c; border-radius: 999px; display: flex; align-items: center; justify-content: center"><span style="font: 500 11px/14px 'DM Mono', monospace; color: #b83a20">safe zone 80%</span></div>
+          </div>
+        </div>
+        <div style="padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 8px">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px"><span style="font: 500 15px/20px 'DM Mono', monospace">icon-maskable-512.png</span><span style="font: 500 12px/16px 'DM Mono', monospace; background: #fffaf0; border: 2px solid #2a211c; border-radius: 999px; padding: 2px 10px">maskable</span></div>
+          <p style="margin: 0; font-size: 17px; line-height: 22px; font-weight: 800">Android adaptive icon</p>
+          <p style="margin: 0; font-size: 14px; line-height: 20px; font-weight: 500; color: #5c4f44">Android crops icons to a circle, squircle or square. Background runs to every edge; the mark stays inside the centre circle (40% radius) so no crop cuts it.</p>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 20px">
+    <div style="display: flex; align-items: baseline; gap: 14px">
+      <h2 style="margin: 0; font-size: 24px; line-height: 28px; font-weight: 800">Worth adding</h2>
+      <span style="font-size: 15px; font-weight: 600; color: #5c4f44">Nice to have, not needed to install</span>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px">
+
+      <article style="display: flex; flex-direction: column; background: #fffaf0; border: 2px solid #2a211c; border-radius: 16px; box-shadow: 3px 3px 0 #2a211c; overflow: hidden">
+        <div style="height: 180px; background: #ede2ce; border-bottom: 2px solid #2a211c; display: flex; align-items: center; justify-content: center">
+          <div style="width: 240px; height: 126px; box-sizing: border-box; border: 2px dashed #b9aa94; border-radius: 6px; background: #f6eedf; display: flex; align-items: center; justify-content: center"><span style="font: 500 11px/14px 'DM Mono', monospace; color: #5c4f44">1200 × 630</span></div>
+        </div>
+        <div style="padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 8px">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px"><span style="font: 500 15px/20px 'DM Mono', monospace">og-image.png</span><span style="font: 500 12px/16px 'DM Mono', monospace; background: #fffaf0; border: 2px solid #2a211c; border-radius: 999px; padding: 2px 10px">1200 × 630</span></div>
+          <p style="margin: 0; font-size: 17px; line-height: 22px; font-weight: 800">Link preview</p>
+          <p style="margin: 0; font-size: 14px; line-height: 20px; font-weight: 500; color: #5c4f44">The card WhatsApp, Signal and iMessage show when a room link goes into the group chat. The cover's tape with song cards around it, no text: the title and slogan go in the preview's own text.</p>
+        </div>
+      </article>
+
+      <article style="display: flex; flex-direction: column; background: #fffaf0; border: 2px solid #2a211c; border-radius: 16px; box-shadow: 3px 3px 0 #2a211c; overflow: hidden">
+        <div style="height: 180px; background: #ede2ce; border-bottom: 2px solid #2a211c; display: flex; align-items: center; justify-content: center; gap: 14px">
+          <div style="width: 130px; height: 60px; box-sizing: border-box; border: 2px dashed #b9aa94; border-radius: 6px; background: #f6eedf; display: flex; align-items: center; justify-content: center"><span style="font: 500 11px/14px 'DM Mono', monospace; color: #5c4f44">Home</span></div>
+          <div style="width: 130px; height: 60px; box-sizing: border-box; border: 2px dashed #b9aa94; border-radius: 6px; background: #f6eedf; display: flex; align-items: center; justify-content: center"><span style="font: 500 11px/14px 'DM Mono', monospace; color: #5c4f44">Game</span></div>
+        </div>
+        <div style="padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 8px">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px"><span style="font: 500 15px/20px 'DM Mono', monospace">screenshot-*.png</span><span style="font: 500 12px/16px 'DM Mono', monospace; background: #fffaf0; border: 2px solid #2a211c; border-radius: 999px; padding: 2px 10px">1688 × 780</span></div>
+          <p style="margin: 0; font-size: 17px; line-height: 22px; font-weight: 800">Richer install sheet</p>
+          <p style="margin: 0; font-size: 14px; line-height: 20px; font-weight: 500; color: #5c4f44">Chrome on Android and desktop turns the small Install prompt into an app-store style sheet. Three screens at 2×: Home, placing a card and the reveal.</p>
+        </div>
+      </article>
+
+      <article style="display: flex; flex-direction: column; background: #fffaf0; border: 2px solid #2a211c; border-radius: 16px; box-shadow: 3px 3px 0 #2a211c; overflow: hidden">
+        <div style="height: 180px; background: #ede2ce; border-bottom: 2px solid #2a211c; display: flex; align-items: center; justify-content: center; gap: 10px">
+          <div style="width: 92px; height: 43px; box-sizing: border-box; border: 2px dashed #b9aa94; border-radius: 6px; background: #f6eedf"></div>
+          <div style="width: 86px; height: 40px; box-sizing: border-box; border: 2px dashed #b9aa94; border-radius: 6px; background: #f6eedf"></div>
+          <div style="width: 78px; height: 36px; box-sizing: border-box; border: 2px dashed #b9aa94; border-radius: 6px; background: #f6eedf"></div>
+          <span style="font: 500 18px/20px 'DM Mono', monospace; color: #5c4f44">…</span>
+        </div>
+        <div style="padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 8px">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px"><span style="font: 500 15px/20px 'DM Mono', monospace">apple-launch-*.png</span><span style="font: 500 12px/16px 'DM Mono', monospace; background: #fffaf0; border: 2px solid #2a211c; border-radius: 999px; padding: 2px 10px">per iPhone</span></div>
+          <p style="margin: 0; font-size: 17px; line-height: 22px; font-weight: 800">iPhone launch screen</p>
+          <p style="margin: 0; font-size: 14px; line-height: 20px; font-weight: 500; color: #5c4f44">Without it iOS flashes white while the app loads. Needs one exact-size image per iPhone model and orientation, so they are generated from one template: the logo on paper.</p>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <section style="display: flex; align-items: center; gap: 36px; background: #fffaf0; border: 2px solid #2a211c; border-radius: 16px; box-shadow: 3px 3px 0 #2a211c; padding: 22px 28px">
+    <div style="display: flex; flex-direction: column; gap: 4px; min-width: 210px">
+      <span style="font: 500 12px/16px 'DM Mono', monospace; letter-spacing: 0.06em; text-transform: uppercase; color: #b83a20">manifest.webmanifest</span>
+      <span style="font-size: 17px; line-height: 22px; font-weight: 800">No graphics, but it sets the look</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px">
+      <div style="width: 40px; height: 40px; box-sizing: border-box; border: 2px solid #2a211c; border-radius: 10px; background: #f6eedf"></div>
+      <div style="display: flex; flex-direction: column"><span style="font: 500 13px/18px 'DM Mono', monospace">#f6eedf</span><span style="font-size: 13px; line-height: 18px; font-weight: 600; color: #5c4f44">background and theme, paper</span></div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 2px"><span style="font: 500 13px/18px 'DM Mono', monospace">"orientation": "landscape"</span><span style="font-size: 13px; line-height: 18px; font-weight: 600; color: #5c4f44">the app is landscape-only</span></div>
+    <div style="display: flex; flex-direction: column; gap: 2px"><span style="font: 500 13px/18px 'DM Mono', monospace">"display": "standalone"</span><span style="font-size: 13px; line-height: 18px; font-weight: 600; color: #5c4f44">the one mode iOS supports</span></div>
+    <div style="display: flex; flex-direction: column; gap: 2px"><span style="font: 500 13px/18px 'DM Mono', monospace">"name": "Jamster"</span><span style="font-size: 13px; line-height: 18px; font-weight: 600; color: #5c4f44">label under the icon</span></div>
+  </section>
+
+</div></template>
+<script src="../../exploration/preview/dc-runtime.js"></script>
+<script>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+DCRuntime.mount(Component, document.getElementById('dc-root'), document.getElementById('dc-template').content, Object.assign({}, Object.fromEntries(new URLSearchParams(location.search))));
+</script>
+</body>
+</html>

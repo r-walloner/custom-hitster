@@ -5,7 +5,7 @@ The Jamster wordmark: "jamster" in Rubik Mono One (which draws it in capitals) i
 ## Use
 
 - `.jm-logo` in the phone header (17px), `.jm-logo jm-logo--xl` (48px) on join, landing and TV idle screens.
-- It's type, not an image: render it as text so it stays crisp at every size. If an image is needed (favicon, share card), export it from this component; there's no separate file yet.
+- It's type, not an image: render it as text so it stays crisp at every size. Where a picture is needed (the iPhone launch screen), use [`../../assets/logo.svg`](../../assets/logo.svg), the same pill with the letters as outlines. The favicon and the home screen icons are the cassette, not the logo (see *AppIcon*).
 - Write it lowercase in markup (the font renders capitals, screen readers read a word). Always coral fill (`coral`), ink text and outline. On a dark ground swap the fill to `mustard` and the outline to `paper`.
 - Give it room: at least `space-10` on every side; it is the only thing besides the tape and the mystery card that is tilted.
 
