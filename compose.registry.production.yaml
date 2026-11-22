@@ -1,0 +1,5 @@
+services:
+  backend:
+    image: registry.erdkern.walloner.net/jamster-game-backend:production
+  frontend:
+    image: registry.erdkern.walloner.net/jamster-game-frontend:production

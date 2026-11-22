@@ -370,6 +370,18 @@ curl -sf --retry 40 --retry-all-errors --retry-delay 1 http://127.0.0.1:8765/hea
 docker stop jamster-smoke-frontend jamster-smoke-backend && docker network rm jamster-smoke
 ```
 
+### Push to the registry
+
+`compose.registry.production.yaml` renames both images to their names in the registry, `registry.erdkern.walloner.net/jamster-game-backend:production` and `…/jamster-game-frontend:production`.
+After a one-time `docker login registry.erdkern.walloner.net`, this builds both images locally and pushes them, from the repository root:
+
+```sh
+docker compose -f compose.yaml -f compose.registry.production.yaml build --push
+```
+
+`compose.yaml` alone keeps the local names, so the commands above are unaffected.
+The tag `production` is overwritten on every push, so a server running these images picks them up with `docker compose pull && docker compose up -d`.
+
 ### On the server
 
 1. Clone the repository and create `.env` with `JAMSTER_BASE_URL` set to the public address.
