@@ -1,4 +1,4 @@
-import type { Device, RoomSettings } from '../../api/messages.ts'
+import type { Device, PlayerView, RoomSettings } from '../../api/messages.ts'
 import type { IconName } from '../../components/Icon.tsx'
 
 interface Mode {
@@ -23,6 +23,14 @@ export const MODES: Mode[] = [
     detail: "You're in different locations. Music plays on everyone's device at the same time.",
   },
 ]
+
+/**
+ * The players who joined on their own device without Spotify. Separate speakers play on every
+ * player's own Spotify, so they would hear nothing; local players listen with the host.
+ */
+export function withoutSpotify(players: PlayerView[]): string[] {
+  return players.filter((p) => !p.local && !p.spotify).map((p) => p.name)
+}
 
 // Spotify's device types (lower-cased), as an icon and in words.
 const ICONS: Record<string, IconName> = {

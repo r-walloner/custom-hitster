@@ -37,6 +37,7 @@ Jamster is a private tool and cannot become a public one.
    A signed-in player's name is saved with their account, so it comes back in the next room; the Account pop-up on the home page can change it too.
 4. The host can add local players, who have no phone; the host's screen shows their buttons on their own rows, so one device is enough.
 5. The host picks the playback mode on the speaker screen (Music plays on, in the lobby): one speaker (the host's Spotify, same room) or separate speakers (everyone's own Spotify, remote).
+   Separate speakers need every player on their own device logged in with Spotify; a guest without it who joins switches the room back to one speaker.
    In the lobby settings the host also picks how the deck is built: Balanced, Show & Tell or Wildcards (see [Deck strategies](#deck-strategies)).
 6. Each player whose Spotify plays music picks a speaker and can tap Test on it to hear 10 seconds of a song from their library.
 7. The host starts the game.

@@ -7,6 +7,7 @@ import { useRoom } from '../../api/useRoom.ts'
 import { Button } from '../../components/Button.tsx'
 import { Overlay } from '../../components/Dialog.tsx'
 import { Waiting } from '../../components/Waiting.tsx'
+import { names } from '../../words.ts'
 import Dealing from '../dealing/Dealing.tsx'
 import Game from '../game/Game.tsx'
 import GameMenu from '../game/GameMenu.tsx'
@@ -27,6 +28,7 @@ import Reconnecting from './Reconnecting.tsx'
 import RoomClosed from './RoomClosed.tsx'
 import RoomNotFound from './RoomNotFound.tsx'
 import { allowedView, pickScreen } from './screen.ts'
+import { useSpeakerFallback } from './useSpeakerFallback.ts'
 import type { ScreenKind } from './screen.ts'
 import { seatHelpers } from './seats.ts'
 import { usePresence } from './usePresence.ts'
@@ -62,6 +64,13 @@ function Connected({ code, me }: { code: string; me: Me }) {
       tone: 'heads-up',
       text: `${seat.name} is away. The seat is kept for them.`,
       id: `drop-${key}`,
+    }),
+  )
+  useSpeakerFallback(state, (guests) =>
+    setFlash({
+      tone: 'heads-up',
+      text: `${names(guests)} ${guests.length === 1 ? "isn't" : "aren't"} logged in with Spotify, so the music now plays on one speaker.`,
+      id: `speaker-${guests.join(',')}`,
     }),
   )
 

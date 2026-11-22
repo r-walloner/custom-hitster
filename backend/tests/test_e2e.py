@@ -331,6 +331,26 @@ def test_socket_rejects_other_sites_and_unknown_rooms(client: TestClient):
     assert closed.value.code == NO_SUCH_ROOM
 
 
+def test_a_guest_without_spotify_switches_the_room_to_one_speaker(client: TestClient):
+    alice, bob = Browser(client), Browser(client)
+    alice.login("alice")
+    bob.get("/api/me")  # a guest, not signed in with Spotify
+    code = alice.request("POST", "/api/rooms").json()["code"]
+
+    with alice.socket(code) as a, bob.socket(code) as b:
+        a.send_json({"type": "add_player", "name": "Carol"})  # local: listens with the host
+        a.send_json(settings(mode="remote"))
+        until(a, state_where(lambda r: r["settings"]["mode"] == "remote"))
+
+        b.send_json({"type": "join", "name": "Bob"})
+        room = until(a, state_where(lambda r: len(r["players"]) == 3))["room"]
+        assert room["settings"]["mode"] == "local"
+
+        a.send_json(settings(mode="remote"))
+        error = until(a, is_type("error"))["message"]
+        assert error == "Separate speakers need everyone logged in with Spotify"
+
+
 def test_remote_game_with_a_hot_seat_player(
     client: TestClient, fake: FakeSpotify, monkeypatch: pytest.MonkeyPatch
 ):

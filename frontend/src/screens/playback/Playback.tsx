@@ -8,7 +8,8 @@ import { OptionRow } from '../../components/Rows.tsx'
 import { Screen } from '../../components/Screen.tsx'
 import { ScrollArea } from '../../components/ScrollArea.tsx'
 import { useRoomTools } from '../room/context.ts'
-import { deviceDetail, deviceIcon, MODES } from './devices.ts'
+import { names } from '../../words.ts'
+import { deviceDetail, deviceIcon, MODES, withoutSpotify } from './devices.ts'
 import { TEST_SECONDS, useSpeakerTest } from './useSpeakerTest.ts'
 import './Playback.css'
 
@@ -31,6 +32,9 @@ export default function Playback() {
   const noLibrary = !mine?.library || mine.library.tracks === 0
   const myFailure = room.playback.failures.find((f) => f.player_id === you.player_id)
   const mode = MODES.find((m) => m.mode === room.settings.mode) ?? MODES[0]
+  // Separate speakers need everyone on Spotify; a guest without it would hear nothing.
+  const guests = withoutSpotify(room.players)
+  const blocked = (m: (typeof MODES)[number]) => m.mode === 'remote' && guests.length > 0
 
   // The test plays a song, so it is only offered before the game, on the picked speaker.
   const testLine = inGame ? null : (
@@ -101,8 +105,13 @@ export default function Playback() {
                   key={m.mode}
                   icon={m.icon}
                   name={m.name}
-                  detail={m.detail}
+                  detail={
+                    blocked(m)
+                      ? `Needs everyone logged in with Spotify, and ${names(guests)} ${guests.length === 1 ? "isn't" : "aren't"}.`
+                      : m.detail
+                  }
                   pressed={m.mode === room.settings.mode}
+                  disabled={blocked(m)}
                   onClick={() =>
                     send({ type: 'set_settings', settings: { ...room.settings, mode: m.mode } })
                   }

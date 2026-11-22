@@ -303,6 +303,10 @@ class Room:
             raise RoomError("Sign in with Spotify first")
         return seat, seat.spotify_id
 
+    def _guests(self) -> list[Seat]:
+        """Players on their own device without Spotify. Local players listen with the host."""
+        return [s for s in self.seats if s.client_id is not None and s.spotify_id is None]
+
     def _host_only(self, client_id: str) -> None:
         if client_id != self.host_client:
             raise RoomError("Only the host can do that")
@@ -360,6 +364,10 @@ class Room:
                 if spotify_id and self.has_spotify_player(spotify_id):
                     spotify_id = None  # the same account in a second browser plays as a guest
                 self._add_seat(name, client_id, spotify_id)
+                if spotify_id is None and self.settings.mode == "remote":
+                    # Separate speakers play on everyone's own Spotify; a guest would hear nothing.
+                    self.settings = self.settings.model_copy(update={"mode": "local"})
+                    self.log.info("%s has no Spotify, so the music plays on one speaker", name)
                 if spotify_id:
                     db.set_player_name(self._s.conn, spotify_id, name)  # their name from now on
 
@@ -429,6 +437,9 @@ class Room:
                 self._lobby_only()
                 if settings.strategy not in STRATEGIES:
                     raise RoomError("There is no such curation strategy")
+                switching = settings.mode == "remote" and self.settings.mode != "remote"
+                if switching and self._guests():
+                    raise RoomError("Separate speakers need everyone logged in with Spotify")
                 old, self.settings = self.settings, settings
                 changes = [
                     f"{key} {value} -> {getattr(settings, key)}"
