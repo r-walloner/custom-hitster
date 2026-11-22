@@ -51,6 +51,10 @@ The phone layout is landscape only, so a window taller than it is wide needs a r
 - `.dk-frame` › the content, one centred column at most 1440px wide, rows 28px apart. A screen with one list narrows it (*Your songs*: 920px); a roomier screen widens the gap (lobby, winner: 32px).
 - `.dk-header`: the 56px header row, with the same contents as `.jm-header` and bigger lettering (logo 22px, room code 15px, the line 16px, 52px icon buttons).
 
+### The settings screen
+
+- The deck mix's cards (*MixCard*) share the column's width in a grid of columns at least 204px wide, so every mix shows at once and more wrap; the cards grow to 228px tall with a 130px picture box (`.dk-frame .jm-mix-card`). The setting rows below get the 96px rows of the other desktop lists.
+
 ### The game
 
 - `.dk-top`: the top band, in three columns: tape (232px), moment panel, players (340px).

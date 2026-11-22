@@ -116,12 +116,10 @@ Remove an item once it is done.
 ### Settings screen
 
 - **A face for every deck mix.**
-  The deck mix (the curation strategy) is a plain drop-down on the settings screen (`frontend/src/screens/settings/Settings.tsx`), with only the names from `STRATEGY_NAMES` in `options.ts`.
-  It should be the most prominent setting, at the top, picked from a row of cards: one card per mix with its own icon or picture, its name and a short line on what to expect, or a small fanned deck instead of a single card.
-  The picture should give an impression of the mix, for example scales or an evenly fanned deck for Balanced, a spotlight for Show & Tell, a joker for Wildcards; the planned Deep Dive and Nostalgia need one too.
-  The short lines can come from each strategy's docstring in `curation/`.
-  Players who aren't the host see the chosen card, without the choice.
-  It needs a design first, a board in `docs/design/screens/` and the card as a design-system component, since the frontend is built from those.
+  The design is done: the deck mix is the first setting on `docs/design/screens/canvas/Settings.dc.html` and `DesktopSettings.dc.html`, a row of mix cards, and the card is the design system's MixCard (`docs/design/system/components/MixCard/`, with each mix's picture and line).
+  Left to build: the frontend's settings screen (`frontend/src/screens/settings/Settings.tsx`) still shows a drop-down with the names from `STRATEGY_NAMES` in `options.ts`.
+  It should draw the row of cards from `room.strategies`, with each mix's line and picture, and the planned Deep Dive and Nostalgia as *Soon* cards; players who aren't the host see the same row without the choice.
+  On the phone five cards share the row and more scroll sideways without a scroll bar; on desktop every card shows (see the component's README).
 
 ### Winner screen
 

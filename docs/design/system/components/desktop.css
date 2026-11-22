@@ -111,3 +111,16 @@
 .dk-board .jm-mark svg { width: 15px; height: 15px; }
 .dk-board .jm-mark--right { right: -10px; }
 .dk-board .jm-mark--wrong { right: -23px; } /* centred on the slot between the two cards */
+
+/* ---------- Mix cards on desktop: the settings screen's deck mix ---------- */
+/* The cards share the column's width (248 × 228px at 1440) and wrap below 204px each. */
+.dk-frame .jm-mix-card { height: 228px; gap: 10px; padding: 8px 8px 12px; border-radius: 14px; }
+.dk-frame .jm-mix-card__pick::after { border-radius: 14px; }
+.dk-frame .jm-mix-card__art { flex-basis: 130px; height: 130px; border-radius: 10px; }
+.dk-frame .jm-mix-card__art .jm-mix-art { width: 190px; height: 114px; }
+.dk-frame .jm-mix-card__tick { top: 8px; right: 8px; width: 28px; height: 28px; }
+.dk-frame .jm-mix-card__tick svg { width: 15px; height: 15px; }
+.dk-frame .jm-mix-card__text { gap: 3px; padding: 0 6px; }
+.dk-frame .jm-mix-card__name { font-size: 19px; line-height: 24px; }
+.dk-frame .jm-mix-card__line { font-size: 15px; line-height: 20px; }
+.dk-frame .jm-mix-card__soon { height: 22px; padding: 0 8px; font-size: 11px; }

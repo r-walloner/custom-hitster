@@ -21,7 +21,7 @@ Pill buttons with a 2px ink outline: coral for the one thing to do now, label-cr
 | `.jm-pair` | Two equal buttons side by side: *Back* / *Take a seat*, *Cancel* / *Add Ilse*. |
 | `.jm-chip` | The room code. Not a button. |
 | `.jm-status` / `--quiet` | Read-only state where a button would be: *Waiting for Mara*, *Reconnecting…* (ink pill); `--quiet` for a muted one. |
-| `.jm-select` | A choice from a list too long for toggles: *Deck mix* on the settings screen. |
+| `.jm-select` | A choice from a list too long for toggles. None on the current screens: the deck mix is a row of mix cards (*MixCard*). |
 
 A link that looks like a button is `a.jm-btn` (no underline, ink text).
 

@@ -55,7 +55,7 @@ A warm paper ground with one loud colour for action, one for mystery, and a righ
 
 - Every raised thing has a **2px ink outline** (`stroke-control`) and a **hard offset shadow with no blur** (`shadow-sticker-sm` / `shadow-sticker` / `-lg`). That's the whole look; don't add soft shadows or gradients.
 - Radii: `radius-pill` for buttons, chips, marks and the logo, `radius-card` for cards, gaps and cells, `radius-panel` (18px for the moment panel) for panels.
-- **Tilt** marks what's special. One angle, the `tilt` token (−4°), used by exactly three things: the logo, the playing tape and the yellow pick cards on the board. Nothing else rotates, except on a cover (*Hero*): there the floating cards lean freely and the Home slogan sits at `tilt`.
+- **Tilt** marks what's special. One angle, the `tilt` token (−4°), used by exactly three things: the logo, the playing tape and the yellow pick cards on the board. Nothing else rotates, except on a cover (*Hero*), where the floating cards lean freely and the Home slogan sits at `tilt`, and inside a mix card's picture (*MixCard*), which is a drawing.
 - Pop-ups are `label` panels with `shadow-sticker-lg` over the screen dimmed with ink at 55% (*Dialog*).
 - Pressing a primary button sinks it 2px into its shadow.
 
@@ -100,6 +100,7 @@ Inline SVG on a 24px grid: stroke 2.4, round caps and joins, `currentColor`. For
 | Toast | One line of feedback, with at most one button. |
 | Input | Room code, name, search, and the QR tile. |
 | Rows | Setting rows, option rows (playback mode, speakers), checkbox rows (library sources), players in the lobby, and the avatar sizes. |
+| MixCard | One deck mix: its picture, name and one line on what to expect. A row of them is the Deck mix setting. |
 | Stepper | − / number / +, and segmented toggles. |
 | Progress | A bar for amounts, never for time, and an import's progress. |
 | ScrollArea | A list that scrolls inside the screen, with the timeline's bar standing up. |
