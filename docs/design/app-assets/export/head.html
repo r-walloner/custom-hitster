@@ -1,0 +1,28 @@
+<!-- Into frontend/index.html <head>, replacing the old favicon link. Keep the theme-color meta. -->
+
+<!-- Tab icon: the SVG for current browsers (with its dark-tab colours), the ICO for the rest. -->
+<link rel="icon" href="/favicon.ico" sizes="32x32" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+<!-- Installing: Android and desktop read the manifest; iOS reads the touch icon and the meta tags. -->
+<link rel="manifest" href="/manifest.webmanifest" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<meta name="apple-mobile-web-app-title" content="Jamster" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="description" content="The music game built from your own playlists." />
+
+<!-- Link preview in chats (WhatsApp, Signal, iMessage, Slack). og:image must be an absolute URL:
+     replace the host with the one the app is served from. -->
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Jamster" />
+<meta property="og:title" content="Play Jamster" />
+<meta property="og:description" content="The music game built from your own playlists." />
+<meta property="og:image" content="https://jamster.example.com/og-image.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="A coral cassette with song cards floating around it" />
+<meta name="twitter:card" content="summary_large_image" />
+
+<!-- iPhone launch screens: paste the contents of launch/links.html here. -->

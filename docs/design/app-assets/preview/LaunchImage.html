@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jamster iPhone launch image</title>
+<link rel="stylesheet" href="../../system/tokens.css">
+<link rel="stylesheet" href="../../system/components/bundle.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</head>
+<body>
+<div id="dc-root"></div>
+<template id="dc-template"><div role="img" aria-label="Jamster" style="width: 844px; height: 390px; background: #f6eedf; display: flex; align-items: center; justify-content: center">
+  <span aria-hidden="true" style="display: inline-block; transform: rotate(-4deg); background: #ee5a3c; color: #2a211c; border: 3px solid #2a211c; box-shadow: 5px 5px 0 #2a211c; border-radius: 999px; padding: 6px 30px; font: 400 48px/58px 'Rubik Mono One', sans-serif; white-space: nowrap">jamster</span>
+</div></template>
+<script src="../../exploration/preview/dc-runtime.js"></script>
+<script>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+DCRuntime.mount(Component, document.getElementById('dc-root'), document.getElementById('dc-template').content, Object.assign({}, Object.fromEntries(new URLSearchParams(location.search))));
+</script>
+</body>
+</html>

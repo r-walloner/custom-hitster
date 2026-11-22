@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Jamster app icon, 512</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&amp;family=Bricolage+Grotesque:opsz,wght@12..96,800&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div role="img" aria-label="Jamster" style="{{rootStyle}}">
+  <sc-if value="{{isJ}}" hint-placeholder-val="{{false}}">
+    <div aria-hidden="true" style="{{stickerStyle}}"><span style="{{letterStyle}}">J</span></div>
+  </sc-if>
+  <sc-if value="{{isCassette}}" hint-placeholder-val="{{true}}">
+    <div aria-hidden="true" style="{{tapeStyle}}">
+      <svg viewBox="0 0 300 190" width="{{tapeW}}" height="{{tapeH}}" style="display: block; overflow: visible">
+        <rect x="4" y="4" width="292" height="182" rx="18" fill="#ee5a3c" stroke="#2a211c" stroke-width="7"></rect>
+        <circle cx="17" cy="17" r="4.5" fill="#2a211c"></circle><circle cx="283" cy="17" r="4.5" fill="#2a211c"></circle><circle cx="17" cy="173" r="4.5" fill="#2a211c"></circle><circle cx="283" cy="173" r="4.5" fill="#2a211c"></circle>
+        <rect x="92" y="70" width="116" height="40" rx="20" fill="#3a2e26"></rect>
+        <circle cx="105" cy="90" r="28" fill="#6b4228"></circle>
+        <circle cx="195" cy="90" r="22" fill="#6b4228"></circle>
+        <circle cx="105" cy="90" r="13" fill="#fffaf0" stroke="#2a211c" stroke-width="4"></circle><path d="M105 80v20M96.3 85l17.4 10M96.3 95l17.4-10" fill="none" stroke="#2a211c" stroke-width="4" stroke-linecap="round"></path>
+        <circle cx="195" cy="90" r="13" fill="#fffaf0" stroke="#2a211c" stroke-width="4"></circle><path d="M195 80v20M186.3 85l17.4 10M186.3 95l17.4-10" fill="none" stroke="#2a211c" stroke-width="4" stroke-linecap="round"></path>
+        <path fill="#fffaf0" stroke="#2a211c" fill-rule="evenodd" stroke-width="5" d="M30 18H270A8 8 0 0 1 278 26V138A8 8 0 0 1 270 146H30A8 8 0 0 1 22 138V26A8 8 0 0 1 30 18Z M92 70H208A20 20 0 0 1 208 110H92A20 20 0 0 1 92 70Z"></path>
+        <text x="150" y="60" text-anchor="middle" fill="#2a211c" style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 40px; letter-spacing: -1px">????</text>
+        <rect x="40" y="122" width="220" height="11" rx="5.5" fill="#ede2ce"></rect>
+        <rect x="40" y="122" width="84" height="11" rx="5.5" fill="#ee5a3c"></rect>
+        <path d="M78 186L90 156H210L222 186" fill="#d44a2e" stroke="#2a211c" stroke-width="5" stroke-linejoin="round"></path>
+        <circle cx="112" cy="174" r="6" fill="#2a211c"></circle><circle cx="188" cy="174" r="6" fill="#2a211c"></circle>
+      </svg>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"mark":{"editor":"enum","options":["cassette","j"],"default":"cassette","section":"Mark"},"size":{"editor":"int","default":512,"min":16,"max":1024,"section":"Mark"},"ground":{"editor":"enum","options":["transparent","paper"],"default":"transparent","section":"Mark"},"fill":{"editor":"range","default":0.9,"min":0.4,"max":0.95,"step":0.01,"section":"Mark"},"tilt":{"editor":"range","default":-4,"min":-10,"max":0,"step":1,"unit":"°","section":"Mark"},"nudge":{"editor":"range","default":0.03,"min":-0.1,"max":0.1,"step":0.005,"unit":"em","section":"Letter"},"$preview":{"width":512,"height":512}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const mark = this.props.mark ?? 'cassette';
+    const S = Number(this.props.size ?? 512);
+    const ground = this.props.ground ?? 'transparent';
+    const k = Number(this.props.fill ?? 0.9);
+    const tilt = Number(this.props.tilt ?? -4);
+    const nudge = Number(this.props.nudge ?? 0.03);
+    const s = S * k;
+    const b = Math.max(1, s * 0.042);
+    const d = s * 0.06;
+    const r = s * 0.27;
+    const f = s * 0.6;
+    const bg = ground === 'paper' ? '#f6eedf' : 'transparent';
+    const tapeW = Math.round(S * k);
+    const tapeH = Math.round(tapeW * 190 / 300);
+    const td = Math.max(1, tapeW * 0.024);
+    return {
+      isJ: mark !== 'cassette',
+      isCassette: mark === 'cassette',
+      tapeW,
+      tapeH,
+      rootStyle: `width: ${S}px; height: ${S}px; box-sizing: border-box; background: ${bg}; display: flex; align-items: center; justify-content: center; overflow: hidden`,
+      stickerStyle: `width: ${s}px; height: ${s}px; box-sizing: border-box; flex: 0 0 auto; background: #ee5a3c; border: ${b}px solid #2a211c; border-radius: ${r}px; box-shadow: ${d}px ${d}px 0 #2a211c; transform: translate(${-d / 2}px, ${-d / 2}px) rotate(${tilt}deg); display: flex; align-items: center; justify-content: center`,
+      letterStyle: `display: block; font-family: 'Rubik Mono One', sans-serif; font-weight: 400; font-size: ${f}px; line-height: 1; color: #2a211c; transform: translate(-0.02em, ${nudge}em)`,
+      tapeStyle: `flex: 0 0 auto; filter: drop-shadow(${td}px ${td}px 0 #2a211c); transform: translate(${-td / 2}px, ${-td / 2}px) rotate(${tilt}deg)`,
+    };
+  }
+}
+</script>
+</body>
+</html>

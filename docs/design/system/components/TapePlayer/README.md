@@ -30,4 +30,4 @@ It is the only place the game shows that music is playing, so it must always be 
 - On covers (*Hero*) the tape is decoration: no foot, a slower bob (`jm-tape--slow`), and no `role="progressbar"`.
 - Respect `prefers-reduced-motion`: no spin, no bob, no transitions (bundle.css does this).
 - Use the SVG's `role="progressbar"` with `aria-valuenow` (0–100) so the progress is announced.
-- Don't use the tape as a decorative icon elsewhere; the covers are the one exception.
+- Don't use the tape as a decorative icon elsewhere; the covers and the app's own icon (*AppIcon*) are the exceptions.

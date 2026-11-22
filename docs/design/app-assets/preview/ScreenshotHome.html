@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jamster – home</title>
+<link rel="stylesheet" href="../../system/tokens.css">
+<link rel="stylesheet" href="../../system/components/bundle.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&amp;family=Bricolage+Grotesque:opsz,wght@12..96,400..800&amp;family=DM+Mono:wght@500&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</head>
+<body>
+<div id="dc-root"></div>
+<template id="dc-template"><main class="jm-screen jm-cover-screen">
+  <div class="jm-hero jm-cover-screen__art">
+    <span class="jm-logo jm-logo--xl jm-cover-screen__logo">jamster</span>
+    <p class="jm-cover-screen__slogan">The music game built from your own playlists.</p>
+    <div class="jm-float jm-hero__float" style="left: 266px; top: 40px; animation-delay: -1.2s" aria-hidden="true"><div class="jm-card" style="transform: rotate(7deg) scale(0.74)"><span class="jm-card__year">1994</span><span class="jm-card__title">Zombie</span><span class="jm-card__artist">The Cranberries</span></div></div>
+    <div class="jm-float jm-hero__float" style="left: 4px; top: 262px; animation-delay: -2.4s" aria-hidden="true"><div class="jm-card" style="transform: rotate(-11deg) scale(0.62)"><span class="jm-card__year">2010</span><span class="jm-card__title">Dancing On My Own</span><span class="jm-card__artist">Robyn</span></div></div>
+    <div class="jm-float jm-hero__float" style="left: 270px; top: 208px; z-index: 3; animation-delay: -0.4s" aria-hidden="true"><div class="jm-card jm-card--mystery" style="transform: rotate(-4deg) scale(0.78)"><span class="jm-card__year">????</span></div></div>
+    <div class="jm-tape jm-tape--bounce jm-tape--slow is-playing jm-hero__tape" style="left: 44px; top: 142px" aria-hidden="true"><div class="jm-tape__bob"><div class="jm-tape__shell">
+        <svg viewBox="0 0 300 190" width="200" height="127">
+          <rect class="t-shell" x="4" y="4" width="292" height="182" rx="18" stroke-width="7"></rect>
+          <circle class="t-ink" cx="17" cy="17" r="4.5"></circle><circle class="t-ink" cx="283" cy="17" r="4.5"></circle><circle class="t-ink" cx="17" cy="173" r="4.5"></circle><circle class="t-ink" cx="283" cy="173" r="4.5"></circle>
+          <rect class="t-window" x="92" y="70" width="116" height="40" rx="20"></rect>
+          <circle class="t-pack" cx="105" cy="90" r="36" style="transform: scale(0.77)"></circle>
+          <circle class="t-pack" cx="195" cy="90" r="36" style="transform: scale(0.63)"></circle>
+          <g class="t-reel"><circle class="t-hub" cx="105" cy="90" r="13" stroke-width="4"></circle><path class="t-spoke" d="M105 80v20M96.3 85l17.4 10M96.3 95l17.4-10" stroke-width="4"></path></g>
+          <g class="t-reel"><circle class="t-hub" cx="195" cy="90" r="13" stroke-width="4"></circle><path class="t-spoke" d="M195 80v20M186.3 85l17.4 10M186.3 95l17.4-10" stroke-width="4"></path></g>
+          <path class="t-label" fill-rule="evenodd" stroke-width="5" d="M30 18H270A8 8 0 0 1 278 26V138A8 8 0 0 1 270 146H30A8 8 0 0 1 22 138V26A8 8 0 0 1 30 18Z M92 70H208A20 20 0 0 1 208 110H92A20 20 0 0 1 92 70Z"></path>
+          <text class="t-year" x="150" y="60" text-anchor="middle">????</text>
+          <rect class="t-track" x="40" y="122" width="220" height="11" rx="5.5"></rect>
+          <rect class="t-bar" x="40" y="122" width="84" height="11" rx="5.5"></rect>
+          <path class="t-foot" stroke-width="5" d="M78 186L90 156H210L222 186"></path>
+          <circle class="t-ink" cx="112" cy="174" r="6"></circle><circle class="t-ink" cx="188" cy="174" r="6"></circle>
+        </svg>
+      </div></div></div>
+  </div>
+
+  <form class="jm-panel jm-cover-screen__panel" style="{{panelStyle}}" onSubmit="{{noop}}">
+    <sc-if value="{{in}}" hint-placeholder-val="{{false}}">
+      <div style="display: flex; align-items: center; gap: 10px; padding-bottom: 8px; border-bottom: 2px solid var(--sand-line)">
+        <span class="jm-avatar jm-avatar--lg jm-p1" aria-hidden="true">R</span>
+        <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; font-size: 15px"><b>Robin</b><span class="jm-caption">via Spotify</span></span>
+        <a href="Account.dc.html" class="jm-btn">Account</a>
+      </div>
+    </sc-if>
+    <label class="jm-label" for="room-code">Room code</label>
+    <div style="display: flex; gap: 8px">
+      <input id="room-code" type="text" class="jm-input jm-input--code" style="flex: 1; min-width: 0" value="LUMA" placeholder="ABCD" maxlength="4" autocomplete="off" autocapitalize="characters" spellcheck="false">
+      <button type="submit" class="jm-btn jm-btn--primary" style="min-height: 56px; padding: 0 18px; font-size: 16px; font-weight: 800">Join</button>
+    </div>
+    <sc-if value="{{out}}" hint-placeholder-val="{{true}}">
+      <p class="jm-caption">No account needed. Ask the host for the four letters.</p>
+    </sc-if>
+    <div style="display: flex; align-items: center; gap: {{orGap}}; margin: {{orMargin}}">
+      <span style="flex: 1; height: 2px; background: var(--sand-line)"></span>
+      <span class="jm-caption">or</span>
+      <span style="flex: 1; height: 2px; background: var(--sand-line)"></span>
+    </div>
+    <sc-if value="{{out}}" hint-placeholder-val="{{true}}">
+      <button type="button" class="jm-btn jm-cover-screen__btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V6l10-2v12"></path><circle cx="6.5" cy="18" r="2.5"></circle><circle cx="16.5" cy="16" r="2.5"></circle></svg>Log in with Spotify</button>
+      <p class="jm-caption">Hosting needs Spotify Premium. Private, for one group of friends.</p>
+    </sc-if>
+    <sc-if value="{{in}}" hint-placeholder-val="{{false}}">
+      <a href="Lobby.dc.html" class="jm-btn jm-btn--primary jm-cover-screen__btn">Host a game</a>
+      <a href="Library.dc.html" class="jm-btn jm-cover-screen__btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V6l10-2v12"></path><circle cx="6.5" cy="18" r="2.5"></circle><circle cx="16.5" cy="16" r="2.5"></circle></svg>
+        {{songsLabel}}
+        <sc-if value="{{importing}}" hint-placeholder-val="{{false}}">
+          <span class="jm-importing" style="margin-left: auto"><span class="jm-caption">Importing…</span><span class="jm-progress jm-progress--sm" role="progressbar" aria-valuenow="42" aria-valuemin="0" aria-valuemax="100" aria-label="Importing your songs"><span style="width: 42%"></span></span></span>
+        </sc-if>
+        <sc-if value="{{counted}}" hint-placeholder-val="{{false}}">
+          <span style="margin-left: auto; color: var(--ink-muted); font-variant-numeric: tabular-nums">1,940</span>
+        </sc-if>
+      </a>
+    </sc-if>
+  </form>
+</main></template>
+<script src="../../exploration/preview/dc-runtime.js"></script>
+<script>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.props.state ?? "loggedIn";
+    const signedIn = s !== "loggedOut";
+    return {
+      in: signedIn,
+      out: !signedIn,
+      importing: s === "importing",
+      counted: s === "loggedIn",
+      songsLabel: s === "noLibrary" ? "Import my library" : "Your songs",
+      // Logged in, the panel holds a little more, so its rows sit a little closer.
+      panelStyle: signedIn ? "gap: 8px" : "",
+      orGap: "10px",
+      orMargin: signedIn ? "0" : "4px 0",
+      noop: (e) => e.preventDefault()
+    };
+  }
+}
+DCRuntime.mount(Component, document.getElementById('dc-root'), document.getElementById('dc-template').content, Object.assign({"state": "loggedIn"}, Object.fromEntries(new URLSearchParams(location.search))));
+</script>
+</body>
+</html>

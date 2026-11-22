@@ -83,11 +83,14 @@ Only with a mouse or trackpad (`@media (hover: hover) and (pointer: fine)`); tou
 
 Inline SVG on a 24px grid: stroke 2.4, round caps and joins, `currentColor`. For ✕ and ✓ use stroke 3–3.4. The current set: restart, refresh, plus (gaps, steppers), minus, skip (next song), edit (rename), close, pass ✕, right ✓, the gear (game menu), back and forward arrows, music, speaker and speaker off, info, search, link, trash, sign out, offline, and the device shapes (TV, laptop, phone, speaker). Icon-only buttons are round (`jm-btn--icon`) and always carry an `aria-label`; a pop-up's close ✕ and the lobby's ✕ and pencil are borderless (`jm-btn--bare`). No emoji, no filled icon packs (the skip triangle is the one filled shape).
 
+The app's own icon (the browser tab, the home screen) is a different thing: the tilted cassette from the covers, in full colour (*AppIcon*).
+
 ## Components
 
 | Component | What it is |
 | --- | --- |
 | Logo | L2: lowercase wordmark in a tilted coral pill. |
+| AppIcon | The cover's cassette as the app's icon: favicon, home screen icons, Android's adaptive icon. Font-free SVG sources in `assets/`. |
 | Button | Primary (coral), secondary, dark, danger, XL, toggle, next, leads-somewhere, icon, chip, status pills, pair. |
 | TapePlayer | The song in play: sticker cassette, label progress bar, time and a small restart icon. |
 | SongCard | Revealed card, yellow pick card (now / locked), card just won, a card that went elsewhere, dashed + gap, ✓ / ✕ marks. |

@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Jamster maskable icon, 512</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="position: relative; width: 512px; height: 512px; background: #f6eedf">
+  <dc-import name="Icon512" mark="cassette" size="512" ground="paper" fill="0.62" hint-size="512px,512px"></dc-import>
+  <sc-if value="{{showSafeZone}}" hint-placeholder-val="{{false}}">
+    <div aria-hidden="true" style="position: absolute; left: 51px; top: 51px; width: 410px; height: 410px; box-sizing: border-box; border: 3px dashed #b83a20; border-radius: 999px; pointer-events: none"></div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"showSafeZone":{"editor":"boolean","default":false},"$preview":{"width":512,"height":512}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { showSafeZone: this.props.showSafeZone ?? false };
+  }
+}
+</script>
+</body>
+</html>
