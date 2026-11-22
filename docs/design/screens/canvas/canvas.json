@@ -132,7 +132,7 @@
     },
     "Settings.dc.html": {
       "h": 390,
-      "title": "Game settings",
+      "title": "Game settings (host and guest)",
       "w": 844,
       "x": 924,
       "y": 1500,
@@ -232,6 +232,16 @@
       "title": "Scoreboard pop-up · desktop",
       "page": "desktop",
       "expand": "fill"
+    },
+    "DesktopSettings.dc.html": {
+      "x": 6080,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "title": "Game settings (host and guest) · desktop",
+      "page": "desktop",
+      "expand": "fill",
+      "is_interactive": true
     }
   },
   "createdOnFiles": {
@@ -338,7 +348,7 @@
     },
     "why_lobby": {
       "fill": "orange",
-      "text": "• One lobby for everyone, in three columns: getting people in (code, QR, copy link), who's in, and setup. The host gets Close room and Start game; a guest gets Leave room and Waiting for Mara.\n• Each player renames their own seat (pencil); the host removes the others (✕). The Music badge marks whose Spotify plays.\n• Local players have no phone. The host adds them here and plays their turns on this device.\n• Music plays on, Your songs and Rules are matching rows with the same button: Change (View for a guest's rules, Sign in without Spotify). The details live on their own screens.\n• The speaker screen picks how the room hears the music (one speaker or everyone's own) and your device; the picked device has Test, which plays 10 seconds of one of your songs.\n• Settings are one line each: steppers and toggles, plain numbers, no coins. A guest sees the values.\n• Dealing shows each opening card face up as it lands, so the wait reads as work.\n• Closing the room takes a second tap. Middle dots only in the header; everywhere else commas and full stops.",
+      "text": "• One lobby for everyone, in three columns: getting people in (code, QR, copy link), who's in, and setup. The host gets Close room and Start game; a guest gets Leave room and Waiting for Mara.\n• Each player renames their own seat (pencil); the host removes the others (✕). The Music badge marks whose Spotify plays.\n• Local players have no phone. The host adds them here and plays their turns on this device.\n• Music plays on, Your songs and Rules are matching rows with the same button: Change (View for a guest's rules, Sign in without Spotify). The details live on their own screens.\n• The speaker screen picks how the room hears the music (one speaker or everyone's own) and your device; the picked device has Test, which plays 10 seconds of one of your songs.\n• The deck mix comes first, the most prominent setting: a row of mix cards, each with its own picture, its name and one line on what to expect (MixCard in the system). The host taps one; everyone else sees the same row with the host's pick ticked. Five share the phone's width; from a sixth the row scrolls sideways, with no scroll bar. Mixes that are planned but not built (Deep Dive, Nostalgia) show dashed, marked Soon. The other settings are one line each: steppers and toggles, plain numbers, no coins. A guest sees the values.\n• Dealing shows each opening card face up as it lands, so the wait reads as work.\n• Closing the room takes a second tap. Middle dots only in the header; everywhere else commas and full stops.",
       "w": 560,
       "x": -640,
       "y": 1500
@@ -355,7 +365,7 @@
       "text": "Outside the game",
       "x": 0,
       "y": -260,
-      "maxW": 6000,
+      "maxW": 7520,
       "page": "desktop"
     },
     "dk_t_game": {
@@ -409,6 +419,7 @@
     "DesktopHome.dc.html",
     "DesktopLobby.dc.html",
     "DesktopLibrary.dc.html",
+    "DesktopSettings.dc.html",
     "DesktopWinner.dc.html",
     "DesktopGamePlacing.dc.html",
     "DesktopGameReveal.dc.html",

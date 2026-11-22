@@ -287,6 +287,48 @@ button.jm-scoreboard { padding: 0; border: 0; background: none; font: inherit; c
 .jm-segmented { display: inline-flex; gap: 4px; }
 .jm-segmented .jm-btn--toggle { padding: 0 9px; }
 
+/* ---------- Mix card: one deck mix on the settings screen ---------- */
+/* A picture, the name and one line on what to expect. The picked one has the ink outline, turn-tint and the
+   small sticker shadow, like a picked option row, plus a ✓; a planned one is dashed and can't be picked.
+   For the host the name is a button whose hit area covers the whole card; for everyone else it's plain text. */
+.jm-mix-card { position: relative; display: flex; flex-direction: column; gap: 6px; height: 132px; box-sizing: border-box; margin: 0; padding: 6px 6px 8px; border: var(--stroke-control) solid var(--sand-line); border-radius: var(--radius-card); background: var(--label); color: var(--ink); font-family: var(--font-ui); }
+.jm-mix-card__art { position: relative; flex: 0 0 62px; height: 62px; display: flex; align-items: center; justify-content: center; border-radius: 8px; background: var(--sand); }
+.jm-mix-card__tick { position: absolute; top: 5px; right: 5px; width: 22px; height: 22px; box-sizing: border-box; border-radius: 50%; background: var(--ink); color: var(--paper); display: none; align-items: center; justify-content: center; }
+.jm-mix-card__tick svg { width: 12px; height: 12px; }
+.jm-mix-card__text { display: flex; flex-direction: column; gap: 1px; padding: 0 2px; }
+.jm-mix-card__name { display: flex; align-items: center; justify-content: space-between; gap: 6px; font: 800 14px/18px var(--font-ui); }
+/* Two lines at most, so every card is as tall as the next and the pictures line up. Keep the lines short:
+   the longest, Balanced's, just fits at 152px wide. */
+.jm-mix-card__line { font: 500 11px/14px var(--font-ui); color: var(--ink-muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.jm-mix-card__soon { display: inline-flex; align-items: center; flex: 0 0 auto; height: 18px; box-sizing: border-box; padding: 0 6px; border: 1.5px dashed var(--slot-dash); border-radius: var(--radius-pill); font: 500 10px/1 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-muted); }
+.jm-mix-card__pick { margin: 0; padding: 0; border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.jm-mix-card__pick::after { content: ""; position: absolute; inset: -2px; border-radius: var(--radius-card); } /* the whole card is the button */
+.jm-mix-card__pick:disabled { cursor: not-allowed; }
+.jm-mix-card__pick:focus-visible { outline: none; }
+.jm-mix-card__pick:focus-visible::after { outline: 2px solid var(--ink); outline-offset: 2px; }
+.jm-mix-card--picked { border-color: var(--ink); background: var(--turn-tint); box-shadow: var(--shadow-sticker-sm); }
+.jm-mix-card--picked .jm-mix-card__art { background: var(--label); }
+.jm-mix-card--picked .jm-mix-card__tick { display: flex; }
+.jm-mix-card--planned { border-style: dashed; border-color: var(--slot-dash); background: none; }
+.jm-mix-card--planned .jm-mix-card__art { background: none; }
+.jm-mix-card--planned .jm-mix-art { opacity: 0.5; }
+@media (hover: hover) and (pointer: fine) {
+  .jm-mix-card:not(.jm-mix-card--picked):has(.jm-mix-card__pick:not(:disabled)):hover { border-color: var(--ink-subtle); }
+}
+/* The pictures: drawn on a 120 × 72 grid, outlined in ink with the strokes' own widths, filled from the palette.
+   They're drawings, so shapes inside may lean (the joker); the card itself never tilts. */
+.jm-mix-art { display: block; width: 104px; height: 62px; fill: none; stroke: var(--ink); stroke-width: 0; stroke-linecap: round; stroke-linejoin: round; }
+.jm-mix-art .a-ink { fill: var(--ink); }
+.jm-mix-art .a-coral { fill: var(--coral); }
+.jm-mix-art .a-mustard { fill: var(--mustard); }
+.jm-mix-art .a-label { fill: var(--label); }
+.jm-mix-art .a-sand { fill: var(--sand); }
+.jm-mix-art .a-window { fill: var(--tape-window); }
+.jm-mix-art .a-muted { fill: var(--ink-muted); }
+.jm-mix-art .a-subtle { fill: var(--ink-subtle); }
+.jm-mix-art .a-line-subtle { stroke: var(--ink-subtle); }
+.jm-mix-art text { stroke: none; font-family: var(--font-ui); font-weight: 800; text-anchor: middle; }
+
 /* ---------- Progress bar (amounts, never time) ---------- */
 .jm-progress { height: 14px; box-sizing: border-box; border: var(--stroke-control) solid var(--ink); border-radius: var(--radius-pill); background: var(--sand); overflow: hidden; }
 .jm-progress > span { display: block; height: 100%; background: var(--coral); }
