@@ -13,9 +13,10 @@
 
 	# Caddy passes the browser's Host through unchanged, port included: the backend builds the
 	# Spotify callback URL from it and checks the WebSocket's Origin against it.
+	# JAMSTER_BACKEND names the backend where its service isn't called "backend".
 	@backend path /api/* /auth/* /ws/* /healthz
 	handle @backend {
-		reverse_proxy backend:8000
+		reverse_proxy {$JAMSTER_BACKEND:backend:8000}
 	}
 
 	handle {
