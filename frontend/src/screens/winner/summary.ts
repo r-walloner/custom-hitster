@@ -64,9 +64,3 @@ export function winnerSummary(
     sentence: sentences.join(' '),
   }
 }
-
-/** Up to `n` songs spread evenly over a timeline, oldest first. */
-export function spread(songs: Song[], n: number): Song[] {
-  if (songs.length <= n) return songs
-  return Array.from({ length: n }, (_, i) => songs[Math.round((i * (songs.length - 1)) / (n - 1))])
-}

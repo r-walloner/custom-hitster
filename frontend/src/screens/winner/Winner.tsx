@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import { Avatar } from '../../components/Avatar.tsx'
 import { Button, Status, Token } from '../../components/Button.tsx'
 import { CoverArt } from '../../components/Hero.tsx'
@@ -5,46 +6,21 @@ import type { FloatingCard } from '../../components/Hero.tsx'
 import { InfoHeader } from '../../components/InfoHeader.tsx'
 import { Screen } from '../../components/Screen.tsx'
 import { useDesktop } from '../../components/useDesktop.ts'
+import { useSize } from '../../components/useSize.ts'
+import { useSongClock } from '../game/songClock.ts'
 import { useRoomTools } from '../room/context.ts'
-import { spread, winnerSummary } from './summary.ts'
+import { burst } from './places.ts'
+import { winnerSummary } from './summary.ts'
 import './Winner.css'
-
-// Where the winner's cards float around the tape. The last place, in front, is the card that won it.
-const PLACES: Omit<FloatingCard, 'song'>[] = [
-  { left: 192, top: 2, rotate: -14, scale: 0.62, delay: -1.2, duration: 3.1 },
-  { left: 298, top: -26, rotate: 11, scale: 0.72, delay: -2.6, duration: 4.2 },
-  { left: 396, top: 20, rotate: -3, scale: 0.58, delay: -0.6, duration: 3.7 },
-  { left: 316, top: 54, rotate: 17, scale: 0.64, delay: -1.9, duration: 4.8 },
-]
-const FRONT: Omit<FloatingCard, 'song'> = {
-  isNew: true,
-  left: 218,
-  top: 44,
-  rotate: -4,
-  scale: 0.72,
-  delay: -0.2,
-  duration: 3.4,
-  front: true,
-}
-
-// The same places in the desktop's bigger art box.
-const DESKTOP_PLACES: Omit<FloatingCard, 'song'>[] = [
-  { left: 330, top: 20, rotate: -14, scale: 0.95, delay: -1.2, duration: 3.1 },
-  { left: 500, top: 6, rotate: 11, scale: 1.05, delay: -2.6, duration: 4.2 },
-  { left: 650, top: 80, rotate: -3, scale: 0.9, delay: -0.6, duration: 3.7 },
-  { left: 530, top: 176, rotate: 17, scale: 0.95, delay: -1.9, duration: 4.8 },
-]
-const DESKTOP_FRONT: Omit<FloatingCard, 'song'> = {
-  ...FRONT,
-  left: 370,
-  top: 170,
-  scale: 1.12,
-}
 
 /** The winner: the one big line, the near misses, the final scoreboard. */
 export default function Winner() {
-  const { room, you, host, name, player, send } = useRoomTools()
+  const { room, you, host, name, player, send, songStart } = useRoomTools()
   const desktop = useDesktop()
+  const art = useRef<HTMLDivElement>(null)
+  const box = useSize(art)
+  // The last song plays on after the game; the tape follows it.
+  const { progress, playing } = useSongClock(songStart, room.playback)
   const game = room.game
   if (!game) return null
 
@@ -53,12 +29,13 @@ export default function Winner() {
     room.settings.cards_to_win,
     name,
   )
-  const places = desktop ? DESKTOP_PLACES : PLACES
-  const front = desktop ? DESKTOP_FRONT : FRONT
-  const cards: FloatingCard[] = [
-    ...spread(rest, places.length).map((song, i) => ({ ...places[i], song })),
-    ...(deciding ? [{ ...front, song: deciding }] : []),
-  ]
+  const layout = box && burst(rest.length, box, desktop)
+  const cards: FloatingCard[] = layout
+    ? [
+        ...rest.map((song, i) => ({ ...layout.places[i], song })),
+        ...(deciding ? [{ ...layout.front, song: deciding }] : []),
+      ]
+    : []
 
   return (
     <Screen className="winner__screen">
@@ -78,15 +55,21 @@ export default function Winner() {
             </h1>
             <p className="winner__sentence">{sentence}</p>
           </div>
-          <CoverArt
-            className="winner__art"
-            tape={
-              desktop
-                ? { left: 24, top: 48, width: 260, progress: 0.9, year: deciding?.year }
-                : { left: 22, top: 14, width: 170, progress: 0.9, year: deciding?.year }
-            }
-            cards={cards}
-          />
+          {/* The art fills the room between the line and the buttons, measured to place the cards. */}
+          <div ref={art} className="winner__art">
+            {layout && (
+              <CoverArt
+                tape={{
+                  ...layout.tape,
+                  progress,
+                  playing,
+                  // The song playing: the winning card, or the last one revealed if the deck ran out.
+                  year: game.card?.year,
+                }}
+                cards={cards}
+              />
+            )}
+          </div>
           <div className="winner__actions">
             {you.is_host ? (
               <>

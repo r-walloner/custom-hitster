@@ -21,7 +21,15 @@ export interface FloatingCard {
 }
 
 interface CoverArtProps {
-  tape: { left: number; top: number; width: number; progress: number; year?: number }
+  tape: {
+    left: number
+    top: number
+    width: number
+    progress: number
+    year?: number
+    /** Spins the reels; they spin unless told otherwise. */
+    playing?: boolean
+  }
   cards: FloatingCard[]
   className?: string
   /** Text placed in the art box (the Home logo and slogan). */
@@ -62,6 +70,7 @@ export function CoverArt({ tape, cards, className, children }: CoverArtProps) {
         slow
         progress={tape.progress}
         year={tape.year}
+        playing={tape.playing}
         width={tape.width}
         className="app-hero__tape"
         style={{ left: tape.left, top: tape.top }}

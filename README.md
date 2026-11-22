@@ -127,11 +127,6 @@ Remove an item once it is done.
 
 Something fun to do on the winner screen before the host takes everyone back to the lobby: stay and party.
 
-- **The tape plays the winning song.**
-  The cassette on the winner screen is drawn at a fixed 90 % (`progress: 0.9` in `frontend/src/screens/winner/Winner.tsx`), though the song that won the game keeps playing.
-  It should show that song's real progress and spin its reels while it plays, as the game's tape does.
-  `TapePlayer` is already in `src/components/`; the winner screen can feed it from `useSongClock` in `screens/game/songClock.ts`.
-  Restarting the song could be allowed there too; the server refuses `restart_playback` once the game is finished.
 - **Tap for confetti.**
   With the confetti from the reveal celebration (see Game screen), a tap or click anywhere on the winner screen bursts confetti at that spot, in the tapper's player color.
   It could stay on each device, or be sent to the room so every screen shows everyone's bursts, which needs a new socket message in `messages.py` and `messages.ts`.

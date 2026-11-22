@@ -40,9 +40,16 @@
   letter-spacing: -0.01em;
 }
 
+/* Takes the room between the line and the buttons; the cover art fills it, the tape in the middle. */
 .winner__art {
+  position: relative;
   flex: 1;
   min-height: 0;
+}
+
+.winner__art > .jm-hero {
+  position: absolute;
+  inset: 0;
 }
 
 .winner__actions {
@@ -145,12 +152,6 @@
   font-size: 22px;
   line-height: 30px;
   letter-spacing: -0.015em;
-}
-
-/* The art sits centred in whatever room is left between the line and the buttons. */
-.jm-desktop .winner__art {
-  flex: 0 0 330px;
-  margin-block: auto;
 }
 
 .jm-desktop .winner__actions {
