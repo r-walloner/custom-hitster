@@ -160,6 +160,13 @@ Something fun to do on the winner screen before the host takes everyone back to 
   With the confetti from the reveal celebration (see Game screen), a tap or click anywhere on the winner screen bursts confetti at that spot, in the tapper's player color.
   It could stay on each device, or be sent to the room so every screen shows everyone's bursts, which needs a new socket message in `messages.py` and `messages.ts`.
 
+### Cheating
+
+- **Keep the song in play out of the browser until the reveal.**
+  A song's title, artists and year show up in the browser's developer tools before the reveal, so a player can cheat.
+  The room socket should send none of it while the song is a mystery.
+  `_game_view` in `rooms.py` already leaves `card` empty until then, and `tests/test_e2e.py` checks that, so the leak is somewhere else still to be found.
+
 ### Logging
 
 - **One log file per room.**
