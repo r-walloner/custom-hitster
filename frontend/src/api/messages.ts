@@ -9,6 +9,7 @@ export interface RoomSettings {
   strategy: string
   challenge_seconds: number
   next_turn_seconds: number // 0: no automatic next turn
+  play_seconds: number // how much of each song plays before the reveal; 0: all of it
 }
 
 export interface Library {
@@ -38,10 +39,10 @@ export interface DeckView {
 }
 
 export interface PlaybackView {
-  status: 'idle' | 'starting' | 'playing' | 'failed'
+  status: 'idle' | 'starting' | 'playing' | 'failed' | 'stopped' // stopped: the clip is over
   failures: { player_id: string; message: string }[]
-  elapsed_ms: number | null // once playing or failed: how far the song is
-  duration_ms: number | null // the length of the song in play
+  elapsed_ms: number | null // once playing, failed or stopped: how far the song is
+  duration_ms: number | null // how much of the song may be heard: the clip until the reveal
 }
 
 export interface CardView {

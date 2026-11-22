@@ -17,6 +17,8 @@ class RoomSettings(BaseModel):
     challenge_seconds: int = Field(default=10, ge=1, le=60)
     # How long the revealed card stays before the next turn starts by itself; 0 turns it off.
     next_turn_seconds: int = Field(default=15, ge=0, le=300)
+    # How much of each song plays before the reveal; 0 plays all of it. The rest plays after.
+    play_seconds: int = Field(default=0, ge=0, le=60)
 
 
 # --- client -> server ------------------------------------------------------------------------
@@ -232,10 +234,11 @@ class PlaybackFailure(BaseModel):
 
 
 class PlaybackView(BaseModel):
-    status: Literal["idle", "starting", "playing", "failed"] = "idle"
+    # stopped: the clip is over, and the music is paused until the reveal.
+    status: Literal["idle", "starting", "playing", "failed", "stopped"] = "idle"
     failures: list[PlaybackFailure] = []
-    elapsed_ms: int | None = None  # once playing or failed: how far the song is
-    duration_ms: int | None = None  # the length of the song in play
+    elapsed_ms: int | None = None  # once playing, failed or stopped: how far the song is
+    duration_ms: int | None = None  # how much of the song may be heard: the clip until the reveal
 
 
 class CardView(BaseModel):

@@ -46,6 +46,7 @@ Jamster is a private tool and cannot become a public one.
 ### A turn
 
 1. The song plays, and the card stays hidden.
+   The host can make it harder in the lobby by letting only the first 5, 10 or 20 seconds play; the rest plays after the reveal, and restarting the song plays the clip again.
 2. The player on turn taps a `+` on their timeline to place the card, then locks it in.
    Skipping to another song costs 1 token.
    Instead of locking it in, they can buy the card for 3 tokens: it goes into their timeline without guessing, nobody can challenge it, and it is revealed at once.
@@ -81,13 +82,6 @@ The Spotify app on the playing device shows the title, so nobody should look at 
 What is planned but not built yet, by topic.
 Remove an item once it is done.
 
-### Backend TODOs for the designed screens
-
-The frontend follows the screens in `docs/design/screens/`, but some of what they show has no data behind it yet.
-Each item below says what the screen does meanwhile.
-Remove an item once the backend provides it and the screen uses it.
-
-Nothing is missing at the moment.
 
 ### Home screen
 
@@ -102,8 +96,8 @@ Nothing is missing at the moment.
 - **Change the timers from the in-game menu.**
   The host should be able to change some settings during a game, from the menu (`frontend/src/screens/game/GameMenu.tsx`).
   Today `set_settings` is refused outside the lobby (`_lobby_only` in `rooms.py`).
-  Two settings are safe to change mid-game: `next_turn_seconds` (the countdown on the reveal before the next song starts by itself) and `challenge_seconds`.
-  Both are read when their countdown starts, so a change applies from the next countdown.
+  Three settings are safe to change mid-game: `next_turn_seconds` (the countdown on the reveal before the next song starts by itself), `challenge_seconds` and `play_seconds` (how much of each song plays before the reveal).
+  Each is read when its countdown or song starts, so a change applies from the next one.
   The rest stay locked, and the server should refuse them rather than trust the screen: `deck_size` and `strategy` rebuild the deck, `mode` moves the playback, and `cards_to_win` and `starting_tokens` are copied into the engine's rules when the game starts.
 - **Where the song came from, in a pop-up.**
   The Reveal panel already shows which players have the song in their library (`known_by`).
@@ -130,12 +124,6 @@ Nothing is missing at the moment.
   The short lines can come from each strategy's docstring in `curation/`.
   Players who aren't the host see the chosen card, without the choice.
   It needs a design first, a board in `docs/design/screens/` and the card as a design-system component, since the frontend is built from those.
-- **A limit on how long a song plays.**
-  A new setting, such as `play_seconds` in `RoomSettings` (`messages.py` and `messages.ts`), to make the game harder: the whole song by default, or only the first 10, 20 or 30 seconds.
-  The server would pause every listener that long after `_play_started` in `rooms.py`, with the `_pause` it already has; a restart plays the clip again, and a player who joins late on a retry stops at the same moment as the others.
-  The tape should count down the clip, not the whole song, so `duration_ms` in the playback view would be the clip's length.
-  The song could play on from where it stopped once it is revealed, so everyone gets to hear it.
-  Like the timers, it doesn't touch the deck, so it could be one of the settings the in-game menu may change (see Game screen).
 
 ### Winner screen
 

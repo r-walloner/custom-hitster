@@ -1,6 +1,7 @@
 // What the settings screen offers, as label → value. The limits follow messages.py (RoomSettings).
 export const CHALLENGE = { '5 s': 5, '10 s': 10, '15 s': 15, '20 s': 20 } as const
 export const NEXT = { '5 s': 5, '10 s': 10, '15 s': 15, Tap: 0 } as const
+export const PLAY = { '5 s': 5, '10 s': 10, '20 s': 20, 'No limit': 0 } as const
 
 // What each deck strategy (curation.STRATEGIES) is called here; unknown ones show their key.
 export const STRATEGY_NAMES: Record<string, string> = {

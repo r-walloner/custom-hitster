@@ -684,6 +684,42 @@ def test_the_next_turn_starts_by_itself_unless_someone_keeps_listening(client: T
         until(a, state_where(lambda r: r["game"]["turn_number"] == 3))
 
 
+def test_a_clip_stops_the_song_until_the_reveal(client: TestClient, fake: FakeSpotify):
+    alice = Browser(client)
+    alice.login("alice")
+    assert alice.pick(liked=True)["status"] == "done"
+    code = alice.request("POST", "/api/rooms").json()["code"]
+
+    with alice.socket(code) as a:
+        a.send_json(settings(deck_size=10, play_seconds=1, next_turn_seconds=0))
+        a.send_json({"type": "start_game"})
+        room = until(a, state_where(lambda r: r["playback"]["status"] == "playing"))["room"]
+        assert room["playback"]["duration_ms"] == 1000, "the tape counts down the clip"
+        room = until(a, state_where(lambda r: r["playback"]["status"] == "stopped"))["room"]
+        assert room["playback"]["elapsed_ms"] == 1000 and fake.pauses == ["alice"]
+        clip = fake.plays[-1]
+        assert clip.position_ms == 0
+
+        # Alone in the game, locking in reveals at once, and the song plays on.
+        a.send_json({"type": "place", "slot": 0})
+        a.send_json({"type": "lock"})
+        room = until(a, state_where(lambda r: r["playback"]["status"] == "playing"))["room"]
+        assert room["game"]["phase"] == "revealed"
+        number = int(clip.uri.removeprefix("spotify:track:track"))
+        assert room["playback"]["duration_ms"] == duration_of(number)
+        assert (fake.plays[-1].uri, fake.plays[-1].position_ms) == (clip.uri, 1000)
+        assert room["playback"]["elapsed_ms"] >= 1000
+
+        # A restart before the reveal plays the clip again from the start.
+        a.send_json({"type": "next_turn"})
+        until(a, state_where(lambda r: r["game"]["turn_number"] == 2))
+        a.send_json({"type": "restart_playback"})
+        eventually(lambda: len(fake.plays) == 4)
+        assert fake.plays[-1].position_ms == 0 and fake.plays[-1].uri == fake.plays[-2].uri
+        until(a, state_where(lambda r: r["playback"]["status"] == "stopped"))
+        eventually(lambda: fake.pauses == ["alice", "alice"])
+
+
 def closed_with(ws: WebSocketTestSession) -> int:
     """The close code the server ends this socket with, skipping the messages before it."""
     with pytest.raises(WebSocketDisconnect) as closed:

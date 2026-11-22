@@ -126,6 +126,8 @@ class Room:
         self._advance = 0  # bumped whenever the countdown to the next turn starts or stops
         self._advance_ends: float | None = None  # time.monotonic() when the next turn starts
         self._play_started = 0.0  # time.monotonic() when Spotify confirmed the song in play
+        self._clip = 0  # bumped whenever a clip starts, ends or is lifted, so stale timers skip
+        self._spotify_order = asyncio.Lock()  # so a play never overtakes the clip's pause
         self._tests: dict[str, int] = {}  # seat id -> bumped per speaker test, so stale stops skip
         self._sockets: dict[WebSocket, tuple[str, str | None]] = {}  # -> (client id, spotify id)
         self._sending = asyncio.Lock()
@@ -588,6 +590,7 @@ class Room:
             self._open_window()
         if game.phase == "revealed" and before.phase != "revealed":
             self._start_advance()
+            self._play_on()
 
     # --- away challengers -----------------------------------------------------------------
 
@@ -663,7 +666,7 @@ class Room:
 
     def _elapsed_ms(self) -> int | None:
         """How far the song in play is, counted from when Spotify confirmed it."""
-        if self.game is None or self.playback.status not in ("playing", "failed"):
+        if self.game is None or self.playback.status not in ("playing", "failed", "stopped"):
             return None
         elapsed = int((time.monotonic() - self._play_started) * 1000)
         return min(elapsed, self.playback.duration_ms or elapsed)
@@ -884,12 +887,13 @@ class Room:
             return [s for s in self.seats if s.client_id == self.host_client]
         return [s for s in self.seats if s.spotify_id and not s.left]
 
-    def _start_playback(self, only: set[str] | None = None) -> None:
-        """Play the card in play for everyone, or (on a retry) for the seats in `only`,
-        who then join at the position the others have reached."""
+    def _start_playback(self, only: set[str] | None = None, position_ms: int = 0) -> None:
+        """Play the card in play for everyone from `position_ms`, or (on a retry) for the seats
+        in `only`, who then join at the position the others have reached."""
         assert self.game is not None
         if only is None:
-            position_ms, kept = 0, []
+            kept: list[m.PlaybackFailure] = []
+            self._clip += 1  # an earlier clip's timer has nothing left to stop
         else:
             position_ms = int((time.monotonic() - self._play_started) * 1000)
             kept = [f for f in self.playback.failures if f.player_id not in only]
@@ -898,7 +902,7 @@ class Room:
             self.log.warning("nobody in the room can play music: no seat has Spotify")
         card = self.game.card
         self.playback = m.PlaybackView(
-            status="starting", failures=kept, duration_ms=card.duration_ms
+            status="starting", failures=kept, duration_ms=self._clip_ms()
         )
         self._spawn(self._play(self.game.draws, card, targets, position_ms, kept, only is None))
 
@@ -909,13 +913,23 @@ class Room:
         targets: list[Seat],
         position_ms: int,
         kept: list[m.PlaybackFailure],
-        from_start: bool,
+        for_all: bool,
     ) -> None:
-        errors = await asyncio.gather(*(self._play_one(s, card.uri, position_ms) for s in targets))
+        async with self._spotify_order:
+            errors = await asyncio.gather(
+                *(self._play_one(s, card.uri, position_ms) for s in targets)
+            )
         if self.game is None or self.game.draws != draw:
             return  # the song changed while Spotify was answering
-        if from_start:
-            self._play_started = time.monotonic()  # the song starts once Spotify confirms it
+        if not for_all and self.playback.status == "stopped":
+            await self._pause(targets)  # the clip ended while they were joining
+            return
+        clip_ms = self._clip_ms()
+        if for_all:
+            # The song starts once Spotify confirms it; a song played on keeps its clock.
+            self._play_started = time.monotonic() - position_ms / 1000
+            if clip_ms < card.duration_ms:
+                self._spawn(self._end_clip_later(self._clip, (clip_ms - position_ms) / 1000))
         failures = kept + [
             m.PlaybackFailure(player_id=seat.id, message=error)
             for seat, error in zip(targets, errors, strict=True)
@@ -924,9 +938,42 @@ class Room:
         self.playback = m.PlaybackView(
             status="failed" if failures else "playing",
             failures=failures,
-            duration_ms=card.duration_ms,
+            duration_ms=clip_ms,
         )
         await self.broadcast()
+
+    def _clip_ms(self) -> int:
+        """How much of the song in play may be heard: the clip from the settings until the
+        card is revealed, then all of it."""
+        assert self.game is not None
+        duration = self.game.card.duration_ms
+        seconds = self.settings.play_seconds
+        if not seconds or self.game.phase in ("revealed", "finished"):
+            return duration
+        return min(seconds * 1000, duration)
+
+    async def _end_clip_later(self, clip: int, seconds: float) -> None:
+        await asyncio.sleep(seconds)
+        if clip != self._clip or self.game is None:
+            return  # the song changed, restarted or was revealed meanwhile
+        self._clip += 1
+        self.log.info("the %d-second clip is over", self.settings.play_seconds)
+        # Whoever failed to join has missed the clip; a restart plays it again for everyone.
+        self.playback = self.playback.model_copy(update={"status": "stopped", "failures": []})
+        async with self._spotify_order:
+            await self._pause(self._listeners())
+        await self.broadcast()
+
+    def _play_on(self) -> None:
+        """At the reveal the song plays on from where the clip stopped, or, still playing,
+        to its end."""
+        if self.game is None or not self.settings.play_seconds:
+            return
+        if self.playback.status == "stopped":
+            self._start_playback(position_ms=self.settings.play_seconds * 1000)
+        else:
+            self._clip += 1  # its timer has nothing left to stop
+            self.playback = self.playback.model_copy(update={"duration_ms": self._clip_ms()})
 
     async def _play_one(self, seat: Seat, uri: str, position_ms: int) -> str | None:
         """Start a track on one seat's Spotify. Returns what to tell the player if it failed."""

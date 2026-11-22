@@ -15,7 +15,7 @@ export function useSongClock(start: number, playback: PlaybackView) {
     return () => window.clearInterval(timer)
   }, [])
   const { status, duration_ms: duration } = playback
-  const running = status === 'playing' || status === 'failed'
+  const running = status === 'playing' || status === 'failed' || status === 'stopped'
   const elapsed = running ? Math.min(Math.max(0, now - start), duration ?? Infinity) : 0
   let time = clock(elapsed)
   if (duration !== null) time += ` / ${clock(duration)}`

@@ -7,7 +7,7 @@ import { Screen } from '../../components/Screen.tsx'
 import { Segmented, Stepper } from '../../components/Stepper.tsx'
 import { fmt } from '../../words.ts'
 import { useRoomTools } from '../room/context.ts'
-import { CHALLENGE, labelOf, NEXT, STRATEGY_NAMES } from './options.ts'
+import { CHALLENGE, labelOf, NEXT, PLAY, STRATEGY_NAMES } from './options.ts'
 import './Settings.css'
 
 /**
@@ -122,6 +122,22 @@ export default function Settings() {
                   </option>
                 ))}
               </select>,
+            )}
+          </ControlRow>
+          <ControlRow
+            name="Listening time"
+            nameId="s-play"
+            caption="How long songs play before guessing."
+          >
+            {control(
+              's-play',
+              labelOf(PLAY, settings.play_seconds),
+              <Segmented
+                labelledBy="s-play"
+                options={Object.keys(PLAY) as (keyof typeof PLAY)[]}
+                value={labelOf(PLAY, settings.play_seconds)}
+                onChange={(label) => change({ play_seconds: PLAY[label] })}
+              />,
             )}
           </ControlRow>
           <ControlRow
