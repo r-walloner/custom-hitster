@@ -276,17 +276,30 @@ def test_only_the_player_on_turn_can_buy_and_only_before_the_lock_in():
         play(game(1980, 1990, 2000, 2010), e.Buy("a"))
 
 
-def test_buying_the_winning_card_ends_the_game():
-    g = play(game(1980, 1990, 2000, starting_tokens=3, cards_to_win=2), e.Buy("a"))
+def test_buying_the_winning_card_ends_the_game_on_the_next_turn():
+    g = play(game(1980, 1990, 2000, 2010, starting_tokens=3, cards_to_win=2), e.Buy("a"))
+    assert (g.phase, g.winners, e.reached_target(g)) == ("revealed", [], ["a"])
+    g = play(g, e.NextTurn())
     assert g.phase == "finished" and g.winners == ["a"]
 
 
-def test_reaching_the_target_wins():
+def test_reaching_the_target_shows_the_reveal_then_wins():
     g = play(game(1980, 1990, 2000, 2010, cards_to_win=2), e.Place("a", 1), e.Lock("a"))
     g = play(g, e.Pass("b"))
+    assert g.phase == "revealed" and g.winners == [], "everyone still sees the winning card"
+    g = play(g, e.SetNamed(True), e.NextTurn())
     assert g.phase == "finished" and g.winners == ["a"]
+    assert tokens(g, "a") == 3 and g.active == "a", "the token counts, and no new turn starts"
     with pytest.raises(e.RuleError, match="over"):
         play(g, e.NextTurn())
+
+
+def test_a_challenger_who_takes_the_winning_card_wins():
+    g = play(game(1980, 1990, 1985, 2010, cards_to_win=2), e.Place("a", 0), e.Lock("a"))
+    g = challenge(play(g, e.Buzz("b")), "b", 1)
+    assert (g.phase, g.outcome, e.reached_target(g)) == ("revealed", e.Outcome(False, "b"), ["b"])
+    g = play(g, e.NextTurn())
+    assert g.phase == "finished" and g.winners == ["b"]
 
 
 def test_an_empty_deck_ends_the_game_on_cards_then_tokens():

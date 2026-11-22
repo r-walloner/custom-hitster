@@ -557,7 +557,8 @@ class Room:
                 self._host_only(client_id)  # the player on turn could cut the listening short
                 if self.game and self.game.phase != "revealed":
                     raise engine.RuleError("The card is not revealed yet")  # before any lookup
-                await self._prepare_draw()
+                if not self._game_ending():
+                    await self._prepare_draw()
                 self._act(engine.NextTurn())
 
     def _act(self, action: engine.Action) -> None:
@@ -639,14 +640,21 @@ class Room:
         if advance != self._advance or self.game is None or self.game.phase != "revealed":
             return  # held, or someone moved on already
         self._advance_ends = None
-        self.log.info("time is up, on to the next turn")
+        ending = self._game_ending()
+        self.log.info("time is up" if ending else "time is up, on to the next turn")
         try:
-            await self._prepare_draw()
+            if not ending:
+                await self._prepare_draw()
             if advance == self._advance and self.game is not None:
                 self._act(engine.NextTurn())
         except (RoomError, engine.RuleError) as exc:
             self.log.debug("the automatic next turn did not happen: %s", exc)
         await self.broadcast()
+
+    def _game_ending(self) -> bool:
+        """Whether the next turn ends the game because someone has reached the target, so the
+        next card needs no year."""
+        return self.game is not None and bool(engine.reached_target(self.game))
 
     def _advance_left_ms(self) -> int | None:
         if self.game is None or self.game.phase != "revealed" or self._advance_ends is None:

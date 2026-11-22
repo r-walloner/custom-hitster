@@ -14,7 +14,9 @@ A turn runs placing -> challenging -> picking -> revealed, then the next player'
                timeline and locks it in, paying a token. Then the card is revealed. A challenger
                who is away may be withdrawn (Withdraw) before locking in, paying nothing.
   revealed     A correct placement keeps the card. Otherwise the first challenger with a correct
-               slot takes it. Naming title and artist earns the active player a token.
+               slot takes it. Naming title and artist earns the active player a token. Once
+               someone has reached the target, or the deck is out, the next turn ends the game
+               instead, so everyone still sees the last card revealed.
 
 While placing, the turn of a player who is away may be skipped (SkipTurn): the card is thrown
 away and the next player's turn starts. Who is away is the caller's knowledge, not the engine's.
@@ -281,7 +283,11 @@ def apply(game: Game, action: Action) -> Game:
             if g.named:
                 active = _player(g, g.active)
                 active.tokens = min(g.rules.max_tokens, active.tokens + 1)
-            _next_turn(g)
+            if winners := reached_target(g):
+                g.winners = winners
+                g.phase = "finished"
+            else:
+                _next_turn(g)
 
         case SkipTurn():
             _require(g.phase == "placing", "The card is already locked in")
@@ -306,7 +312,6 @@ def apply(game: Game, action: Action) -> Game:
             timeline.insert(g.slot, g.card)
             g.outcome = Outcome(True, player, bought=True)
             g.phase = "revealed"
-            _check_win(g)
     return g
 
 
@@ -399,14 +404,11 @@ def _reveal(g: Game) -> None:
                 break
     g.outcome = Outcome(correct, card_to)
     g.phase = "revealed"
-    _check_win(g)
 
 
-def _check_win(g: Game) -> None:
-    winners = [p.id for p in g.players if len(p.timeline) >= g.rules.cards_to_win]
-    if winners:
-        g.winners = winners
-        g.phase = "finished"
+def reached_target(game: Game) -> list[str]:
+    """The players who hold enough cards to win. The game ends on the next turn if any do."""
+    return [p.id for p in game.players if len(p.timeline) >= game.rules.cards_to_win]
 
 
 def _next_turn(g: Game) -> None:

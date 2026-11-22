@@ -8,6 +8,7 @@ import { revealItems, slotRangeShort } from '../board.ts'
 import { Board } from '../components/Board.tsx'
 import { GameScreen } from '../components/GameScreen.tsx'
 import { MomentPanel, SongResult } from '../components/MomentPanel.tsx'
+import { lastCard } from '../rules.ts'
 import type { Turn } from '../turn.ts'
 import { revealOutcome } from './reveal.ts'
 
@@ -22,6 +23,8 @@ export default function Reveal({ turn }: { turn: Turn }) {
   const { revealed, kept, winner, before, guesses, at } = result
   // Time left before the automatic next song; null when it isn't counting down.
   const advance = loading ? null : game.advance_left_ms
+  // After the game's last card, the next turn shows the winner instead of a song.
+  const ending = lastCard(game, room.settings.cards_to_win)
 
   const who = name(game.active)
   const items = revealItems(before, revealed, guesses, winner, kept, at, (right, guess, edge) => (
@@ -53,7 +56,9 @@ export default function Reveal({ turn }: { turn: Turn }) {
                 key={advance}
                 ms={advance}
                 total={room.settings.next_turn_seconds * 1000}
-                label={(seconds) => `Next song in ${seconds} seconds`}
+                label={(seconds) =>
+                  ending ? `Game ends in ${seconds} seconds` : `Next song in ${seconds} seconds`
+                }
               />
             )
           }
@@ -90,7 +95,7 @@ export default function Reveal({ turn }: { turn: Turn }) {
                 onClick={() => turn.draw({ type: 'next_turn' })}
               >
                 <Icon name="skip" />
-                {loading ? 'Loading…' : 'Next song'}
+                {loading ? 'Loading…' : ending ? 'Finish game' : 'Next song'}
               </Button>
             </div>
           ) : (

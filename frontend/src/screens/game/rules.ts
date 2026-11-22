@@ -30,3 +30,8 @@ export function fits(cards: Song[], slot: number, year: number): boolean {
 export function byStanding(players: GamePlayerView[]): GamePlayerView[] {
   return [...players].sort((a, b) => b.timeline.length - a.timeline.length || b.tokens - a.tokens)
 }
+
+/** Does the next turn end the game? Someone has reached `cardsToWin`, or no card is left. */
+export function lastCard(game: GameView, cardsToWin: number): boolean {
+  return game.deck_remaining === 0 || game.players.some((p) => p.timeline.length >= cardsToWin)
+}

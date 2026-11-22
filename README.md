@@ -99,12 +99,6 @@ Nothing is missing at the moment.
 
 ### Game screen
 
-- **Show the winning card's reveal before the winner screen.**
-  When a reveal gives a player the last card they need, `_check_win` in `engine.py` sets the phase to `finished` straight away, so nobody sees the song's details on the Reveal panel.
-  The host can't give the token for naming the song then either.
-  Instead the game should stay `revealed` and finish when the countdown runs out or the host taps the button, as it already does when the deck runs out.
-  That button and the countdown's label say "Next song", which is wrong after the last card in both cases; they should say something like "See the winner".
-  This changes a game rule, so it needs a test in `tests/test_engine.py`.
 - **Change the timers from the in-game menu.**
   The host should be able to change some settings during a game, from the menu (`frontend/src/screens/game/GameMenu.tsx`).
   Today `set_settings` is refused outside the lobby (`_lobby_only` in `rooms.py`).
