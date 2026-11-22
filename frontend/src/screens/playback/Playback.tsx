@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import type { Device } from '../../api/messages.ts'
 import { BackHeader } from '../../components/BackHeader.tsx'
 import { Button } from '../../components/Button.tsx'
+import { DoneButton } from '../../components/DoneButton.tsx'
 import { Icon } from '../../components/Icon.tsx'
 import { OptionRow } from '../../components/Rows.tsx'
 import { Screen } from '../../components/Screen.tsx'
@@ -62,9 +63,7 @@ export default function Playback() {
           <Icon name="refresh" />
           Refresh devices
         </Button>
-        <Button onClick={close} variant="primary" className="playback__done">
-          Done
-        </Button>
+        <DoneButton onClick={close} />
       </BackHeader>
       <div className="playback">
         {inGame ? (

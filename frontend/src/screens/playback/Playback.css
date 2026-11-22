@@ -1,8 +1,3 @@
-.playback__done {
-  min-width: 96px;
-  font-size: 15px;
-}
-
 /* Two columns, as on the settings screen: how the room plays, then your speaker. */
 .playback {
   flex: 1;
@@ -73,10 +68,6 @@
 }
 
 /* ---------- Desktop (styles/desktop.css): a sub-screen like Your songs ---------- */
-.jm-desktop .playback__done {
-  min-width: 120px;
-}
-
 .jm-desktop .playback {
   column-gap: clamp(32px, 32px + 24 * var(--dk), 65px);
   padding-top: 0;

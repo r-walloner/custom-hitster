@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { startImport } from '../../api/http.ts'
 import { BackHeader } from '../../components/BackHeader.tsx'
 import { Button } from '../../components/Button.tsx'
+import { DoneButton } from '../../components/DoneButton.tsx'
 import { Icon } from '../../components/Icon.tsx'
 import { Screen } from '../../components/Screen.tsx'
 import { Waiting } from '../../components/Waiting.tsx'
@@ -47,9 +48,7 @@ export default function Library({ onBack, backLabel }: LibraryProps) {
             Refresh library
           </Button>
         ) : null}
-        <Button onClick={onBack} variant="primary" className="library__done">
-          Done
-        </Button>
+        <DoneButton onClick={onBack} />
       </BackHeader>
       <div className="library">
         {library?.sources.length ? (

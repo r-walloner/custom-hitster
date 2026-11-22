@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import type { RoomSettings } from '../../api/messages.ts'
 import { BackHeader } from '../../components/BackHeader.tsx'
-import { Button } from '../../components/Button.tsx'
+import { DoneButton } from '../../components/DoneButton.tsx'
 import { ControlRow } from '../../components/Rows.tsx'
 import { Screen } from '../../components/Screen.tsx'
 import { Segmented, Stepper } from '../../components/Stepper.tsx'
@@ -38,9 +38,7 @@ export default function Settings() {
     <Screen>
       <BackHeader onBack={close} backLabel="Back to the lobby" title="Game settings">
         {!isHost && <span className="jm-caption">The host sets these.</span>}
-        <Button onClick={close} variant="primary" className="settings__done">
-          Done
-        </Button>
+        <DoneButton onClick={close} />
       </BackHeader>
       <div className="settings">
         <div className="settings__grid">

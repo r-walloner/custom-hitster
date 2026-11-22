@@ -44,6 +44,16 @@
   height: var(--screen-h);
 }
 
+/* The Done at the right of a header (components/DoneButton.tsx). */
+.app-done {
+  min-width: 96px;
+  font-size: 15px;
+}
+
+.jm-desktop .app-done {
+  min-width: 120px;
+}
+
 /* Paragraphs in a pop-up sit in the dialog's own gap. */
 .jm-dialog p {
   margin: 0;

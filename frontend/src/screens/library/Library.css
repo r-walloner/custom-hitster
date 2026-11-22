@@ -11,11 +11,6 @@
   margin: 0;
 }
 
-.library__done {
-  min-width: 96px;
-  font-size: 15px;
-}
-
 .library__panel {
   flex: 1;
   min-height: 0;
@@ -123,10 +118,6 @@
 .jm-desktop .library {
   gap: 12px;
   padding: 0;
-}
-
-.jm-desktop .library__done {
-  min-width: 120px;
 }
 
 .jm-desktop .library__panel {
