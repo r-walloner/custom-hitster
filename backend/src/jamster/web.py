@@ -145,6 +145,7 @@ def create_app(
             "spotify": {
                 "id": player.id,
                 "name": player.name,
+                "image_url": player.image_url,
                 "library": {
                     "status": library.status,
                     "detail": library.detail,

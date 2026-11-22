@@ -169,7 +169,12 @@ class FakeSpotify:
         if user not in ALLOWLIST:
             return _error(403, "User not registered in the Developer Dashboard")
         if path == "/me":
-            return httpx.Response(200, json={"id": user, "display_name": f"{user.title()} Example"})
+            images = [
+                {"url": f"https://img.test/u/{user}/300", "width": 300, "height": 300},
+                {"url": f"https://img.test/u/{user}/64", "width": 64, "height": 64},
+            ]
+            me = {"id": user, "display_name": f"{user.title()} Example", "images": images}
+            return httpx.Response(200, json=me)
         if path == "/me/tracks":
             # Newest first, as Spotify lists them.
             saved = [

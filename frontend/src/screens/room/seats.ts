@@ -21,7 +21,12 @@ export function seatHelpers(state: StateMessage): SeatHelpers {
   return {
     player: (id) => {
       const i = index(id)
-      return { id, name: name(id), color: (((i < 0 ? 0 : i) % 5) + 1) as Player['color'] }
+      return {
+        id,
+        name: name(id),
+        color: (((i < 0 ? 0 : i) % 5) + 1) as Player['color'],
+        image: seat(id)?.image_url ?? null,
+      }
     },
     name,
     host: room.players.find((player) => player.is_host),

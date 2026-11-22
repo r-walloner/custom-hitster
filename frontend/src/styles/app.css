@@ -145,6 +145,20 @@ a.jm-btn--dark {
   font-size: 17px;
 }
 
+/* A Spotify profile picture fills the circle inside the ink outline, in place of colour and initial. */
+.app-avatar--photo {
+  overflow: hidden;
+  background: var(--paper);
+}
+
+.app-avatar__photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
 /* A player who is reconnecting: dashed outline, never a colour change. */
 .app-avatar--away {
   border-style: dashed;

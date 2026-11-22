@@ -226,6 +226,7 @@ class PlayerView(BaseModel):
     spotify: bool
     library: LibraryView | None
     device: str | None
+    image_url: str | None  # their Spotify profile picture
 
 
 class PlaybackFailure(BaseModel):

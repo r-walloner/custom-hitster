@@ -18,7 +18,8 @@ CREATE TABLE IF NOT EXISTS players (
     refresh_token TEXT,                          -- NULL once Spotify rejects it
     import_status TEXT NOT NULL DEFAULT 'none',  -- none | running | done | error
     import_detail TEXT NOT NULL DEFAULT '',
-    refreshed_at TEXT                            -- UTC ISO time the sources were last listed
+    refreshed_at TEXT,                           -- UTC ISO time the sources were last listed
+    image_url TEXT                               -- Spotify profile picture, as of the last login
 );
 
 CREATE TABLE IF NOT EXISTS tracks (
@@ -93,6 +94,7 @@ class Player:
     import_status: str
     import_detail: str
     refreshed_at: str | None
+    image_url: str | None
 
 
 @dataclass(frozen=True, slots=True)
@@ -139,13 +141,16 @@ def connect(path: Path | str) -> sqlite3.Connection:
 # --- players ---------------------------------------------------------------------------------
 
 
-def upsert_player(conn: sqlite3.Connection, id: str, name: str, refresh_token: str) -> None:
+def upsert_player(
+    conn: sqlite3.Connection, id: str, name: str, refresh_token: str, image_url: str | None = None
+) -> None:
     """Store a login. `name` is only the first name; after that the player picks their own."""
     with conn:
         conn.execute(
-            "INSERT INTO players (id, name, refresh_token) VALUES (?, ?, ?)"
-            " ON CONFLICT (id) DO UPDATE SET refresh_token = excluded.refresh_token",
-            (id, name, refresh_token),
+            "INSERT INTO players (id, name, refresh_token, image_url) VALUES (?, ?, ?, ?)"
+            " ON CONFLICT (id) DO UPDATE SET refresh_token = excluded.refresh_token,"
+            " image_url = excluded.image_url",
+            (id, name, refresh_token, image_url),
         )
 
 
@@ -156,7 +161,7 @@ def set_player_name(conn: sqlite3.Connection, id: str, name: str) -> None:
 
 def get_player(conn: sqlite3.Connection, id: str) -> Player | None:
     row = conn.execute(
-        "SELECT id, name, refresh_token, import_status, import_detail, refreshed_at"
+        "SELECT id, name, refresh_token, import_status, import_detail, refreshed_at, image_url"
         " FROM players WHERE id = ?",
         (id,),
     ).fetchone()
@@ -394,7 +399,7 @@ def tracks_known_to(conn: sqlite3.Connection, player_ids: list[str]) -> dict[str
 def players_with_tracks(conn: sqlite3.Connection) -> list[Player]:
     """Every player whose picked sources hold at least one song, by name."""
     rows = conn.execute(
-        "SELECT id, name, refresh_token, import_status, import_detail, refreshed_at"
+        "SELECT id, name, refresh_token, import_status, import_detail, refreshed_at, image_url"
         " FROM players p WHERE EXISTS"
         f" (SELECT 1 FROM track_signals s {_PICKED} WHERE s.player_id = p.id)"
         " ORDER BY name"

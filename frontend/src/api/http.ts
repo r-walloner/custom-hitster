@@ -1,7 +1,7 @@
 import type { Library } from './messages.ts'
 
 export interface Me {
-  spotify: { id: string; name: string; library: Library } | null
+  spotify: { id: string; name: string; image_url: string | null; library: Library } | null
 }
 
 /** Somewhere the deck can take songs from: liked songs, top songs, recent plays, a playlist. */

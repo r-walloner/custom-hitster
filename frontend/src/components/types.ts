@@ -5,6 +5,8 @@ export interface Player {
   name: string
   /** Avatar colour, player-1 … player-5. */
   color: 1 | 2 | 3 | 4 | 5
+  /** Their Spotify profile picture, shown in place of the colour and initial. */
+  image?: string | null
 }
 
 export interface Song {

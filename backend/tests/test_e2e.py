@@ -157,6 +157,7 @@ def test_login_lists_the_library_and_copies_every_source(client: TestClient, fak
     # Everything is picked at first: 60 liked songs, which hold her top and recent ones, plus 5
     # from her playlist; episodes and local files dropped.
     assert alice.library() == {"status": "done", "detail": "", "tracks": 65}
+    assert alice.get("/api/me").json()["spotify"]["image_url"] == "https://img.test/u/alice/300"
     library = alice.get("/api/me/library").json()
     assert library["refreshed_at"] is not None
     assert [
@@ -370,10 +371,12 @@ def test_remote_game_with_a_hot_seat_player(
         a.send_json({"type": "add_player", "name": "Carol"})
         a.send_json(settings(mode="remote", cards_to_win=5))
         room = until(a, state_where(lambda r: r["settings"]["mode"] == "remote"))["room"]
-        assert [(p["name"], p["spotify"], p["connected"]) for p in room["players"]] == [
-            ("Alice", True, True),
-            ("Bob", True, True),
-            ("Carol", False, False),
+        assert [
+            (p["name"], p["spotify"], p["connected"], p["image_url"]) for p in room["players"]
+        ] == [
+            ("Alice", True, True, "https://img.test/u/alice/300"),
+            ("Bob", True, True, "https://img.test/u/bob/300"),
+            ("Carol", False, False, None),
         ]
 
         b.send_json(settings(cards_to_win=7))

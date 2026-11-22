@@ -164,7 +164,7 @@ function You({
 }) {
   return (
     <div className="home__you">
-      <Avatar player={{ name: spotify.name, color: 1 }} size="lg" />
+      <Avatar player={{ name: spotify.name, color: 1, image: spotify.image_url }} size="lg" />
       <span className="home__name">
         <b>{spotify.name}</b>
         <span className="jm-caption">via Spotify</span>

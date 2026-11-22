@@ -1,22 +1,43 @@
-import type { CSSProperties } from 'react'
+import { useState, type CSSProperties } from 'react'
 import type { Player } from './types.ts'
 
 const SIZES = { sm: 'jm-avatar--sm', md: '', lg: 'app-avatar--lg', xl: 'app-avatar--xl' }
 
 interface AvatarProps {
-  player: Pick<Player, 'name' | 'color'>
+  player: Pick<Player, 'name' | 'color' | 'image'>
   /** sm 22px, md 24px (the default), lg 28px, xl 44px. In player cells and rows the class sizes it. */
   size?: keyof typeof SIZES
   /** Reconnecting: a dashed outline, never a colour change. */
   away?: boolean
 }
 
-/** A player's colour with their initial. Player colours never appear without a name or initial. */
+/**
+ * A player's Spotify picture, or else their colour with their initial. Player colours never
+ * appear without a name or initial.
+ */
 export function Avatar({ player, size = 'md', away }: AvatarProps) {
-  const classes = ['jm-avatar', `jm-p${player.color}`, SIZES[size], away && 'app-avatar--away']
+  // A picture that failed to load (expired, removed) falls back to the initial.
+  const [broken, setBroken] = useState<string | null>(null)
+  const photo = player.image && player.image !== broken ? player.image : null
+  const classes = [
+    'jm-avatar',
+    photo ? 'app-avatar--photo' : `jm-p${player.color}`,
+    SIZES[size],
+    away && 'app-avatar--away',
+  ]
   return (
     <span className={classes.filter(Boolean).join(' ')} aria-hidden="true">
-      {player.name.charAt(0).toUpperCase()}
+      {photo ? (
+        <img
+          className="app-avatar__photo"
+          src={photo}
+          alt=""
+          referrerPolicy="no-referrer"
+          onError={() => setBroken(photo)}
+        />
+      ) : (
+        player.name.charAt(0).toUpperCase()
+      )}
     </span>
   )
 }

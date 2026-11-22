@@ -27,6 +27,7 @@ export interface PlayerView {
   spotify: boolean
   library: Library | null
   device: string | null
+  image_url: string | null // their Spotify profile picture
 }
 
 export interface DeckView {

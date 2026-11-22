@@ -105,6 +105,11 @@ class Services:
     rooms_dir: Path | None = None
 
 
+def _image_url(conn: sqlite3.Connection, spotify_id: str | None) -> str | None:
+    player = db.get_player(conn, spotify_id) if spotify_id else None
+    return player.image_url if player else None
+
+
 @dataclass(slots=True)
 class Seat:
     """A player in a room. Seat ids are the player ids the game engine sees."""
@@ -116,6 +121,7 @@ class Seat:
     device_id: str | None = None
     device_name: str | None = None
     left: bool = False  # left the game on purpose; their Spotify gets no songs until they return
+    image_url: str | None = None  # their Spotify profile picture
 
 
 class Room:
@@ -143,7 +149,15 @@ class Room:
                 self.folder = None
                 self.log.warning("could not open the room's folder: %s", exc)
         self.host_client = host_client
-        self.seats = [Seat(secrets.token_hex(4), host_name, host_client, host_spotify)]
+        self.seats = [
+            Seat(
+                secrets.token_hex(4),
+                host_name,
+                host_client,
+                host_spotify,
+                image_url=_image_url(services.conn, host_spotify),
+            )
+        ]
         self.settings = m.RoomSettings()
         self.deck_view = m.DeckView()
         self.game: engine.Game | None = None
@@ -299,6 +313,7 @@ class Room:
                     spotify=s.spotify_id is not None,
                     library=self._library(s.spotify_id),
                     device=s.device_name,
+                    image_url=s.image_url,
                 )
                 for s in self.seats
             ],
@@ -381,7 +396,13 @@ class Room:
     def _add_seat(self, name: str, client_id: str | None, spotify_id: str | None) -> None:
         if len(self.seats) >= MAX_PLAYERS:
             raise RoomError("The room is full")
-        seat = Seat(secrets.token_hex(4), name, client_id, spotify_id)
+        seat = Seat(
+            secrets.token_hex(4),
+            name,
+            client_id,
+            spotify_id,
+            image_url=_image_url(self._s.conn, spotify_id),
+        )
         self.seats.append(seat)
         how = "with Spotify" if spotify_id else "without Spotify"
         self.log.info("%s joined, %s", name, how if client_id else "played by the host")

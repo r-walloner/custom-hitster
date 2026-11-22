@@ -20,6 +20,8 @@ API_URL = "https://api.spotify.com/v1"
 
 log = logging.getLogger(__name__)
 
+AVATAR_PX = 88  # the largest avatar, 44px, on a 2x screen
+
 SCOPES = " ".join(
     [
         "user-library-read",
@@ -129,6 +131,7 @@ class Spotify:
             player_id,
             first_name[0] if first_name else player_id,
             tokens["refresh_token"],
+            _profile_image(me.get("images") or []),
         )
         stored = db.get_player(self._conn, player_id)
         name = stored.name if stored else player_id  # the name they chose, if they chose one
@@ -329,3 +332,13 @@ class Spotify:
             "/me/player/pause",
             params={"device_id": device_id} if device_id else None,
         )
+
+
+def _profile_image(images: list[dict[str, Any]]) -> str | None:
+    """The smallest profile picture that is still sharp in the largest avatar, else the largest."""
+    sized = [i for i in images if i.get("url") and i.get("width")]
+    if not sized:
+        return next((i["url"] for i in images if i.get("url")), None)
+    sharp = [i for i in sized if i["width"] >= AVATAR_PX]
+    pick = min(sharp, key=lambda i: i["width"]) if sharp else max(sized, key=lambda i: i["width"])
+    return pick["url"]
