@@ -1,0 +1,23 @@
+{
+  "id": "/",
+  "name": "Jamster",
+  "short_name": "Jamster",
+  "description": "The music game built from your own playlists.",
+  "lang": "en",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#f6eedf",
+  "theme_color": "#f6eedf",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "screenshots": [
+    { "src": "/screenshots/home.png", "sizes": "1688x780", "type": "image/png", "label": "Home: join a room with its code, or host a game" },
+    { "src": "/screenshots/placing.png", "sizes": "1688x780", "type": "image/png", "label": "A song plays: the players place it on the timeline" },
+    { "src": "/screenshots/reveal.png", "sizes": "1688x780", "type": "image/png", "label": "The reveal: the year, the cover and who got it right" }
+  ]
+}

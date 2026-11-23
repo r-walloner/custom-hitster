@@ -29,6 +29,9 @@
 		header @other Cache-Control "no-cache"
 		# Client-side routes such as /room/ABCD are served the app itself.
 		try_files {path} /index.html
+		# og:image needs to be at an absolute URL, so index.html names its own host, the one the
+		# proxy in front passed through. Templates only touch HTML, and index.html is the only page.
+		templates
 		file_server
 	}
 }

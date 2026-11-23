@@ -68,7 +68,8 @@ npm create vite@latest frontend -- --template react-ts --no-interactive
   - `src/components/` never imports from `screens/` or `api/` and never reads the room context.
 - `frontend/src/styles/`: `tokens.css` and `jamster.css` are copies of `docs/design/system/tokens.css` and `components/bundle.css`; re-copy them when the system changes. `app.css` holds the app's own additions. `desktop.css` is the app's conversion of the system's `components/desktop.css`: the shared desktop rules, keyed off the `.jm-desktop` root class over the `jm-` markup.
 - Desktop layouts: `components/Fit.tsx` switches to them in a window at least 1200 × 640 (no zoom, `.jm-desktop` on the app; `useDesktop()` for the rare script that needs to know). Each screen's desktop rules go at the end of its own `.css`, under `.jm-desktop`; markup only desktop shows is rendered always and hidden on the phone. See `docs/design/system/components/Desktop/README.md`.
-- `backend/Dockerfile`, `frontend/Dockerfile`, `compose.yaml`: two Alpine images, each built in two stages. `frontend/Caddyfile` makes Caddy serve the built app and proxy `/api`, `/auth`, `/ws` and `/healthz` to the backend, passing the browser's Host through.
+- `backend/Dockerfile`, `frontend/Dockerfile`, `compose.yaml`: two Alpine images, each built in two stages. `frontend/Caddyfile` makes Caddy serve the built app and proxy `/api`, `/auth`, `/ws` and `/healthz` to the backend, passing the browser's Host through. It renders `index.html` as a template, so the link preview's `og:image` names the host it was requested from.
+- `frontend/public/`: copies of `docs/design/app-assets/export/` (icons, manifest, screenshots, launch images, link preview), minus the two files for pasting. Re-copy them when the assets are regenerated; their `<head>` tags are in `frontend/index.html`.
 - `docs/design/`: the design system and the screen mock-ups the frontend is built from.
 
 ## Rules

@@ -1,7 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="7" fill="#14161f"/>
-  <path d="M5 22h22" stroke="#4bd0c0" stroke-width="2" stroke-linecap="round"/>
-  <circle cx="9" cy="22" r="2.5" fill="#4bd0c0"/>
-  <circle cx="23" cy="22" r="2.5" fill="#4bd0c0"/>
-  <path d="M13 7v10l8-5z" fill="#f2b84b"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <title>Jamster</title>
+  <style>
+    .edge { fill: #2a211c; }
+    .line { stroke: #2a211c; }
+    @media (prefers-color-scheme: dark) {
+      .edge { fill: #f6eedf; }
+      .line { stroke: #f6eedf; }
+    }
+  </style>
+  <rect class="edge" x="4.25" y="8" width="26" height="17.5" rx="3.5"/>
+  <rect class="line" x="1.75" y="5.5" width="26" height="17.5" rx="3.5" fill="#ee5a3c" stroke-width="2.25"/>
+  <rect x="5" y="8.5" width="19.5" height="9" rx="2" fill="#fffaf0" stroke="#2a211c" stroke-width="1.5"/>
+  <rect x="8" y="11" width="13.5" height="4.5" rx="2.25" fill="#3a2e26"/>
+  <circle cx="10.5" cy="13.25" r="1.6" fill="#fffaf0"/>
+  <circle cx="19" cy="13.25" r="1.6" fill="#fffaf0"/>
+  <path class="line" d="M9 23L10.5 20H19L20.5 23" fill="#d44a2e" stroke-width="1.5" stroke-linejoin="round"/>
 </svg>
