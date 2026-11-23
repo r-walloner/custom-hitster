@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 import type { CSSProperties } from 'react'
 import { Outlet } from 'react-router'
+import { FullScreenPrompt } from './FullScreenPrompt.tsx'
 import { Logo } from './Logo.tsx'
 import { DESKTOP_QUERY, DesktopContext } from './useDesktop.ts'
+import { useFullScreen } from './useFullScreen.ts'
 
 // The design size: a landscape phone.
 const DESIGN_W = 844
@@ -24,16 +26,28 @@ function measure() {
 
 /**
  * Fits every screen to the viewport: the phone design zoomed to fit, or the desktop layouts in a
- * large window (`.jm-desktop`). Asks portrait phones to rotate.
+ * large window (`.jm-desktop`). Asks portrait phones to rotate, and every phone to play full
+ * screen.
  */
 export function Fit() {
   const [size, setSize] = useState(measure)
+  const fullScreen = useFullScreen()
 
   useEffect(() => {
     const update = () => setSize(measure())
     window.addEventListener('resize', update)
     return () => window.removeEventListener('resize', update)
   }, [])
+
+  // Over every screen, sideways and upright (only one of the two shows), until the app is full
+  // screen or installed.
+  const prompt = fullScreen.offer && (
+    <FullScreenPrompt
+      offer={fullScreen.offer}
+      onFullScreen={fullScreen.enter}
+      onClose={fullScreen.dismiss}
+    />
+  )
 
   const style = {
     zoom: size.desktop ? undefined : size.zoom,
@@ -46,10 +60,12 @@ export function Fit() {
       <div className={size.desktop ? 'app-fit jm-desktop' : 'app-fit'}>
         <div className="app-fit__stage" style={style}>
           <Outlet />
+          {prompt}
         </div>
         <div className="app-rotate">
           <Logo size="xl" />
           <p className="jm-headline app-rotate__line">Turn your phone sideways.</p>
+          {prompt}
         </div>
       </div>
     </DesktopContext>

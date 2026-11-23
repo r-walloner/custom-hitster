@@ -40,7 +40,7 @@ The icon is the cassette from the covers (see [`../system/components/AppIcon/`](
 
 ## Decisions
 
-- **Manifest**: `display: standalone` (the one mode iOS supports), `orientation: landscape` (the game is landscape-only; on Android the installed app opens turned), `background_color` and `theme_color` both `paper`. The screenshots carry no `form_factor`, so they're offered on phones and computers alike.
+- **Manifest**: `display: standalone` (the one mode iOS supports), with `display_override: ["fullscreen"]` so the installed Android app hides the status bar too (iOS and desktop Chrome stay standalone), `orientation: landscape` (the game is landscape-only; on Android the installed app opens turned), `background_color` and `theme_color` both `paper`. The screenshots carry no `form_factor`, so they're offered on phones and computers alike.
 - **Favicon**: straight, not tilted, simplified to the shell, label, window and reels. On dark tabs the outline and shadow turn paper; the coral stays.
 - **Launch images**: iOS only shows one whose size matches the screen exactly, so there's one per iPhone screen size on iOS 26 and per orientation (22 files). They're plain: the logo at its `xl` size, centred on paper, so the jump to Home is calm. A new iPhone size needs a row in `IPHONES` in the export script; until then that iPhone shows a white screen while the app loads, as every iPhone does today.
 - **Screenshots** are the mock-ups from [`../screens/`](../screens/) with Robin as the player (Home signed in, placing, the reveal), not captures of the running app. Replace them with real captures at 1688 × 780 any time; keep the size and the three labels in the manifest in step.

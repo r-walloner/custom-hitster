@@ -13,6 +13,43 @@
   display: none;
 }
 
+/* The full-screen ask (components/FullScreenPrompt.tsx): covers the screen, toasts and pop-ups
+   too, with the words and the button in the middle. */
+.app-fit__stage {
+  position: relative;
+}
+
+.app-full-screen {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: var(--space-16);
+  box-sizing: border-box;
+  background: var(--paper);
+  color: var(--ink);
+  text-align: center;
+}
+
+.app-full-screen__text {
+  max-width: 420px;
+}
+
+.app-full-screen__icon svg {
+  display: inline-block;
+  vertical-align: -3px;
+}
+
+.app-full-screen__close {
+  position: absolute;
+  top: 10px;
+  right: max(var(--space-16), env(safe-area-inset-right));
+}
+
 /* Only touch screens are asked to turn; a narrow window on a computer shows the phone layout. */
 @media (orientation: portrait) and (pointer: coarse) {
   .app-fit__stage {
@@ -20,6 +57,7 @@
   }
 
   .app-rotate {
+    position: relative;
     height: 100%;
     display: flex;
     flex-direction: column;

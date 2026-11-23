@@ -102,6 +102,16 @@ const ICONS = {
       </>
     ),
   },
+  // Safari's Share: a box with an arrow up out of it.
+  share: {
+    stroke: 2.4,
+    shape: (
+      <>
+        <path d="M12 3v12M8 7l4-4 4 4" />
+        <path d="M8.5 10H6v11h12V10h-2.5" />
+      </>
+    ),
+  },
   trash: { stroke: 2.4, shape: <path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3" /> },
   signOut: { stroke: 2.4, shape: <path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h10" /> },
   offline: {

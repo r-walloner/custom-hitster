@@ -6,6 +6,7 @@
   "lang": "en",
   "start_url": "/",
   "scope": "/",
+  "display_override": ["fullscreen"],
   "display": "standalone",
   "orientation": "landscape",
   "background_color": "#f6eedf",
