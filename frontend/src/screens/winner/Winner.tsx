@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { Avatar } from '../../components/Avatar.tsx'
 import { Button, Status, Token } from '../../components/Button.tsx'
+import { FADE_IN, fadeDelay } from '../../components/fade.ts'
 import { CoverArt } from '../../components/Hero.tsx'
 import type { FloatingCard } from '../../components/Hero.tsx'
 import { InfoHeader } from '../../components/InfoHeader.tsx'
@@ -9,6 +10,7 @@ import { useDesktop } from '../../components/useDesktop.ts'
 import { useSize } from '../../components/useSize.ts'
 import { useSongClock } from '../game/songClock.ts'
 import { useRoomTools } from '../room/context.ts'
+import { entrance, ROW_FADE_MS } from './entrance.ts'
 import { burst } from './places.ts'
 import { winnerSummary } from './summary.ts'
 import './Winner.css'
@@ -30,10 +32,14 @@ export default function Winner() {
     name,
   )
   const layout = box && burst(rest.length, box, desktop)
+  // Everything fades in: the scoreboard, a pause, then the deciding card and the rest of the
+  // winning timeline.
+  const fade = entrance(rest.length + (deciding ? 1 : 0), rows.length)
+  const first = deciding ? 1 : 0
   const cards: FloatingCard[] = layout
     ? [
-        ...rest.map((song, i) => ({ ...layout.places[i], song })),
-        ...(deciding ? [{ ...layout.front, song: deciding }] : []),
+        ...rest.map((song, i) => ({ ...layout.places[i], song, fadeIn: fade.cards[first + i] })),
+        ...(deciding ? [{ ...layout.front, song: deciding, fadeIn: fade.cards[0] }] : []),
       ]
     : []
 
@@ -103,14 +109,19 @@ export default function Winner() {
             Final scoreboard
           </h2>
           <ol className="winner__rows app-scroll">
-            {rows.map((p) => (
+            {rows.map((p, index) => (
               <li
                 key={p.id}
-                className={
-                  winners.includes(p.id) ? 'winner__row winner__row--first' : 'winner__row'
-                }
+                className={[
+                  'winner__row',
+                  winners.includes(p.id) && 'winner__row--first',
+                  FADE_IN,
+                ]
+                  .filter(Boolean)
+                  .join(' ')}
+                style={fadeDelay(fade.rows[index], ROW_FADE_MS)}
               >
-                <span className="winner__place">{rows.indexOf(p) + 1}</span>
+                <span className="winner__place">{index + 1}</span>
                 <Avatar player={player(p.id)} size="lg" />
                 <span className="jm-player__name">{name(p.id)}</span>
                 <span className="winner__cards" aria-label={`${p.timeline.length} cards`}>
