@@ -109,9 +109,21 @@ Remove an item once it is done.
 
 Something fun to do on the winner screen before the host takes everyone back to the lobby: stay and party.
 
-- **Tap for confetti.**
-  With the confetti from the reveal celebration (see Game screen), a tap or click anywhere on the winner screen bursts confetti at that spot, in the tapper's player color.
-  It could stay on each device, or be sent to the room so every screen shows everyone's bursts, which needs a new socket message in `messages.py` and `messages.ts`.
+- **Party with confetti.**
+  The confetti and every control below are built and can be tried on the preview page, `/confetti` (`frontend/src/screens/confetti/ConfettiLab.tsx`); they still need to move to the winner screen (`frontend/src/screens/winner/Winner.tsx`).
+  The engine is `frontend/src/components/confetti.ts` with its presets, drawn by `ConfettiProvider` in `Confetti.tsx` and used through `useConfetti()`.
+  The screen opens with a burst, and then the whole screen reacts to a finger or the mouse, in the player's own color:
+  - Tap or click: a burst at that spot (`tap`).
+  - Press and drag (once the press has moved more than 10 pixels): a sparkler trail behind the finger (`trail`).
+  - Press and hold without moving: after 250 ms a sticker circle in the player's color grows under the finger for 1.25 seconds and follows it; letting go fires a burst that is bigger the longer the hold, full at 1.5 seconds (`charged`).
+  - Tap a floating cover card (`CoverArt`): it pops into card paper, gold and the player's color (`pop`) and floats back in after 2 seconds; that tap fires no other burst.
+
+  Dragging must not scroll, select text or open the long-press menu.
+  The pointer logic goes in a `.ts` hook in `screens/winner/`, lifted from the preview page.
+  Every burst is sent to the room, so every screen shows everyone's confetti, each player's in their own color: a new `confetti` client message and its broadcast in `messages.py` and `messages.ts`, with the spot as a share of the screen, the kind, the power of a hold and the player.
+  `rooms.py` sends it on to the room and limits how often one player may send; that needs tests in the backend.
+  When the device asks for reduced motion, there is no confetti and no growing circle.
+  Once this is done, decide whether `/confetti` stays as a preview page or goes.
 
 ### Cheating
 

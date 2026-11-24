@@ -308,6 +308,17 @@ a.app-btn--danger {
   z-index: 2;
 }
 
+/* Confetti (components/Confetti.tsx): one canvas over everything, outside the zoom, that never
+   catches a tap. */
+.app-confetti {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+}
+
 /* A timeline in short form: the year chips in a row that wraps. */
 .app-year-chips {
   display: flex;

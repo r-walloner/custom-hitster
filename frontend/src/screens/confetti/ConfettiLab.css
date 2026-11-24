@@ -1,0 +1,150 @@
+/* The confetti preview (/confetti): a header, a row of buttons, and the play area. */
+.lab {
+  position: relative;
+}
+
+.lab__count {
+  font: 500 12px/16px var(--font-mono);
+  color: var(--ink-muted);
+  white-space: nowrap;
+}
+
+.lab__bar {
+  flex: 0 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+/* Between the colours, the reveal's effects and the room's. */
+.lab__divider {
+  width: 2px;
+  height: 24px;
+  border-radius: 1px;
+  background: var(--sand-line);
+}
+
+.lab__colours {
+  display: flex;
+  gap: 4px;
+}
+
+/* A colour to pick: the avatar, ringed when it's yours. */
+.lab__colour {
+  display: inline-flex;
+  padding: 3px;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
+}
+
+.lab__colour--on {
+  border-color: var(--ink);
+}
+
+/* Everything that reacts to the pointer. Dragging must not scroll or select. */
+.lab__area {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  border: 2px dashed var(--slot-dash);
+  border-radius: var(--radius-card);
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  overflow: hidden;
+  cursor: crosshair;
+}
+
+.lab__hint {
+  position: absolute;
+  left: var(--space-16);
+  top: var(--space-10);
+  margin: 0;
+  font: 600 13px/18px var(--font-ui);
+  color: var(--ink-muted);
+}
+
+/* A pretend board: two revealed cards with right marks, the origins of the reveal bursts. */
+.lab__board {
+  position: absolute;
+  left: var(--space-16);
+  bottom: var(--space-16);
+  display: flex;
+  gap: 18px;
+}
+
+.lab__float {
+  position: absolute;
+  zoom: 0.62;
+  cursor: pointer;
+}
+
+/* Charging: a sticker circle in your colour that grows under the finger. */
+.lab__ring {
+  position: absolute;
+  width: 96px;
+  height: 96px;
+  margin: -48px 0 0 -48px;
+  box-sizing: border-box;
+  border-radius: 50%;
+  border: var(--stroke-control) solid var(--ink);
+  background: var(--pc);
+  box-shadow: var(--shadow-sticker);
+  pointer-events: none;
+  animation: lab-charge linear forwards;
+}
+
+@keyframes lab-charge {
+  from {
+    transform: scale(0.25);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+/* The reveal's pop-up: top centre, popping in, gone after 1.5 s (the script removes it). */
+.lab__popup {
+  position: absolute;
+  left: 50%;
+  top: 112px;
+  z-index: 10;
+  transform: translateX(-50%);
+  pointer-events: none;
+  animation: lab-popup 1500ms ease-out forwards;
+}
+
+@keyframes lab-popup {
+  0% {
+    transform: translateX(-50%) scale(0.7);
+    opacity: 0;
+  }
+  10% {
+    transform: translateX(-50%) scale(1.06);
+    opacity: 1;
+  }
+  16% {
+    transform: translateX(-50%) scale(1);
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-50%) scale(1);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lab__ring {
+    animation: none;
+  }
+
+  .lab__popup {
+    animation: none;
+  }
+}
