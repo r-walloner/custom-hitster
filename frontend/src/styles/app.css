@@ -1,8 +1,8 @@
 /* App-level styles on top of tokens.css and jamster.css: the viewport frame, plus the few small
    extensions the screens share. Screen layouts live next to their screen (the .css files in screens/). */
 
-/* ---------- Fitting the 844 × 390 design to the viewport (components/Fit.tsx) ---------- */
-.app-fit {
+/* ---------- Fitting the 844 × 390 design to the viewport (components/AppFrame.tsx) ---------- */
+.app-frame {
   position: fixed;
   inset: 0;
   overflow: hidden;
@@ -15,7 +15,7 @@
 
 /* The full-screen ask (components/FullScreenPrompt.tsx): covers the screen, toasts and pop-ups
    too, with the words and the button in the middle. */
-.app-fit__stage {
+.app-frame__stage {
   position: relative;
 }
 
@@ -59,7 +59,7 @@
 
 /* Only touch screens are asked to turn; a narrow window on a computer shows the phone layout. */
 @media (orientation: portrait) and (pointer: coarse) {
-  .app-fit__stage {
+  .app-frame__stage {
     display: none;
   }
 

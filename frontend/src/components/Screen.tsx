@@ -1,7 +1,7 @@
 import { Children, Fragment } from 'react'
 import type { ReactNode } from 'react'
 
-/** The frame every screen sits in: the 844 × 390 design, fitted to the viewport by `Fit`. */
+/** The frame every screen sits in: the 844 × 390 design, fitted to the viewport by `AppFrame`. */
 export function Screen({ className, children }: { className?: string; children: ReactNode }) {
   return <main className={['jm-screen', className].filter(Boolean).join(' ')}>{children}</main>
 }

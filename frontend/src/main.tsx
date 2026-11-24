@@ -5,7 +5,7 @@ import './styles/tokens.css'
 import './styles/jamster.css'
 import './styles/app.css'
 import './styles/desktop.css'
-import { Fit } from './components/Fit.tsx'
+import { AppFrame } from './components/AppFrame.tsx'
 import Home from './screens/home/Home.tsx'
 import LibraryPage from './screens/library/LibraryPage.tsx'
 import Room from './screens/room/Room.tsx'
@@ -14,7 +14,7 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route element={<Fit />}>
+        <Route element={<AppFrame />}>
           {/* `/?error=` stays: the backend redirects failed sign-ins there. */}
           <Route path="/" element={<Home />} />
           <Route path="/library" element={<LibraryPage />} />

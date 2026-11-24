@@ -28,7 +28,7 @@ function measure() {
  * large window (`.jm-desktop`). Asks portrait phones to rotate, and every phone to play full
  * screen.
  */
-export function Fit() {
+export function AppFrame() {
   const [size, setSize] = useState(measure)
   const fullScreen = useFullScreen()
 
@@ -56,8 +56,8 @@ export function Fit() {
 
   return (
     <DesktopContext value={size.desktop}>
-      <div className={size.desktop ? 'app-fit jm-desktop' : 'app-fit'}>
-        <div className="app-fit__stage" style={style}>
+      <div className={size.desktop ? 'app-frame jm-desktop' : 'app-frame'}>
+        <div className="app-frame__stage" style={style}>
           <Outlet />
           {prompt}
         </div>

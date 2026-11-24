@@ -6,7 +6,7 @@ import { createContext, useContext } from 'react'
  */
 export const DESKTOP_QUERY = '(min-width: 1200px) and (min-height: 640px)'
 
-/** Is the desktop layout showing? Provided by `Fit`. */
+/** Is the desktop layout showing? Provided by `AppFrame`. */
 export const DesktopContext = createContext(false)
 
 /**

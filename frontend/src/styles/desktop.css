@@ -1,4 +1,4 @@
-/* The desktop layer, for windows at least 1200 × 640 (components/Fit.tsx puts .jm-desktop on the app
+/* The desktop layer, for windows at least 1200 × 640 (components/AppFrame.tsx puts .jm-desktop on the app
    there and stops zooming). It is the frontend's conversion of docs/design/system/components/desktop.css:
    the same values, keyed off the root class over the jm- markup instead of separate dk- markup.
    Re-convert it when the system changes. This file holds what several screens share; each screen's

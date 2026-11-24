@@ -40,7 +40,7 @@ The phone layout is landscape only, so a window taller than it is wide needs a r
 
 ### Building it in the app
 
-- The switch is in `frontend/src/components/Fit.tsx`, which also decides the zoom: with the media query true, it sets no zoom and puts a root class (`.jm-desktop`) on the app; otherwise it zooms the phone layout. `useDesktop()` tells the few things placed in script (the cover art's cards and tape) which layout is showing.
+- The switch is in `frontend/src/components/AppFrame.tsx`, which also decides the zoom: with the media query true, it sets no zoom and puts a root class (`.jm-desktop`) on the app; otherwise it zooms the phone layout. `useDesktop()` tells the few things placed in script (the cover art's cards and tape) which layout is showing.
 - Screens render the same components in both layouts, and only the styles change: the desktop rules are keyed off the root class (`.jm-desktop .jm-screen`, `.jm-desktop .jm-scoreboard` …) instead of separate `dk-` markup. The `dk-` classes here are what the mock-ups use; the frontend's conversion is `frontend/src/styles/desktop.css` (what several screens share) plus a desktop part in each screen's own `.css`. The parts only desktop shows (the player list's head row, names and status line, the empty slots in the timeline) are rendered always and hidden on the phone.
 - In a window too short for the full 334px top band and a row of the timeline below it, the app shrinks the band (down to 260px, the player list then scrolls) and lets the timeline scroll down.
 - One threshold, no hysteresis needed: resizing across it simply swaps layouts, and the room state picks the screen either way.
