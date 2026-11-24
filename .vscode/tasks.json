@@ -31,6 +31,19 @@
       "dependsOrder": "parallel",
       "group": { "kind": "build", "isDefault": true },
       "problemMatcher": []
+    },
+    {
+      "label": "Deploy: erdkern",
+      "detail": "Build and push both images, then have the server pull and restart them",
+      "type": "shell",
+      "command": "docker compose -f compose.yaml -f compose.registry.production.yaml build --push && ssh -t core@erdkern.walloner.net 'sudo cpodman auto-update --authfile /var/mnt/data/registry-auth/containers-auth.json'",
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      }
     }
   ]
 }
