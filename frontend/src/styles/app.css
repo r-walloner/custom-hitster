@@ -39,6 +39,13 @@
   max-width: 420px;
 }
 
+.app-full-screen__button.jm-btn--xl {
+  width: auto;
+  min-height: 80px;
+  padding: 0 48px;
+  font-size: 28px;
+}
+
 .app-full-screen__icon svg {
   display: inline-block;
   vertical-align: -3px;
@@ -63,16 +70,9 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 32px;
     padding: var(--space-16);
     box-sizing: border-box;
     text-align: center;
-  }
-
-  /* The line leans with the logo above it. */
-  .app-rotate__line {
-    margin: 0;
-    transform: rotate(var(--tilt));
   }
 }
 

@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import type { CSSProperties } from 'react'
 import { Outlet } from 'react-router'
 import { FullScreenPrompt } from './FullScreenPrompt.tsx'
-import { Logo } from './Logo.tsx'
 import { DESKTOP_QUERY, DesktopContext } from './useDesktop.ts'
 import { useFullScreen } from './useFullScreen.ts'
 
@@ -63,8 +62,7 @@ export function Fit() {
           {prompt}
         </div>
         <div className="app-rotate">
-          <Logo size="xl" />
-          <p className="jm-headline app-rotate__line">Turn your phone sideways.</p>
+          <p className="jm-headline app-full-screen__text">Turn your phone sideways.</p>
           {prompt}
         </div>
       </div>

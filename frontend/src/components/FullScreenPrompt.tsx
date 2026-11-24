@@ -30,7 +30,12 @@ export function FullScreenPrompt({ offer, onFullScreen, onClose }: FullScreenPro
           <p className="jm-headline app-full-screen__text">
             Use full screen for the best experience.
           </p>
-          <Button variant="primary" onClick={onFullScreen}>
+          <Button
+            variant="primary"
+            size="xl"
+            className="app-full-screen__button"
+            onClick={onFullScreen}
+          >
             Go full screen
           </Button>
         </>
