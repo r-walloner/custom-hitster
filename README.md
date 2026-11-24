@@ -97,13 +97,12 @@ Remove an item once it is done.
   Only the playlist names are missing; the signals keep just the number of playlists, so the names need a lookup in `db.py`, from `track_signals` and `sources`.
   `RevealedCard` in `messages.py` and `messages.ts` would carry the details, and only after the reveal, since a playlist's name can give the year away.
   Never show the strategy's raw score; it means nothing to the players.
-- **A small celebration at the reveal.**
-  When the Reveal phase starts (`frontend/src/screens/game/phases/Reveal.tsx`), confetti could fly across the screen, with a small pop-up that says the outcome of the round, such as who was right, the player on turn or the challenger, and goes away after about 1.5 seconds.
+- **The reveal's pop-up.**
+  The confetti at the reveal is built (`useRevealConfetti` in `frontend/src/screens/game/phases/revealConfetti.ts`); the pop-up that should come with it is not.
+  When the Reveal phase starts (`frontend/src/screens/game/phases/Reveal.tsx`), a small pop-up should say the outcome of the round, such as who was right, the player on turn or the challenger, and go away after about 1.5 seconds; when nobody was right, it is the only thing that shows.
   No sound, because the song is still playing.
   `revealOutcome` in `phases/reveal.ts` already works out who was right, so this is frontend only.
-  The winner screen (`frontend/src/screens/winner/Winner.tsx`) should get the same confetti when it opens.
-  Since both `game/` and `winner/` use it, the confetti goes in `src/components/`.
-  Turn the confetti off when the device asks for reduced motion.
+  The preview page, `/confetti`, already shows the pop-ups with their texts.
 
 ### Winner screen
 

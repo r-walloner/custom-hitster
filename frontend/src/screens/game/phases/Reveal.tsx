@@ -11,6 +11,7 @@ import { MomentPanel, SongResult } from '../components/MomentPanel.tsx'
 import { lastCard } from '../rules.ts'
 import type { Turn } from '../turn.ts'
 import { revealOutcome } from './reveal.ts'
+import { useRevealConfetti } from './revealConfetti.ts'
 
 /** 4 · Reveal and result: the song and its cover, and the next song on its way. The board's
     marks say who was right. */
@@ -18,6 +19,7 @@ export default function Reveal({ turn }: { turn: Turn }) {
   const { room, you, name, player, send } = useRoomTools()
   const { game, active, cards, loading } = turn
   const result = revealOutcome(game, cards, name)
+  useRevealConfetti(game, player)
   if (!game.card || !result) return null
   const card = game.card
   const { revealed, kept, winner, before, guesses, at } = result

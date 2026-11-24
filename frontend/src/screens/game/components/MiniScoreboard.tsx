@@ -54,7 +54,11 @@ export function MiniScoreboard({ scores, turn, onOpen }: MiniScoreboardProps) {
           score.away && 'app-scoreboard__row--away',
         ]
         return (
-          <span key={score.player.id} className={classes.filter(Boolean).join(' ')}>
+          <span
+            key={score.player.id}
+            className={classes.filter(Boolean).join(' ')}
+            data-player={score.player.id}
+          >
             <Avatar player={score.player} />
             <span className="app-scoreboard__name">
               <span>{score.player.name}</span>
