@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { FADE_IN, fadeDelay } from './fade.ts'
 import { PickCard, SongCard } from './SongCard.tsx'
 import { Tape } from './TapePlayer.tsx'
 import type { Song } from './types.ts'
@@ -8,6 +9,8 @@ export interface FloatingCard {
   song?: Song
   /** The card that won it (winner screen). */
   isNew?: boolean
+  /** Fades in when it appears, after this many milliseconds; left out, it is just there. */
+  fadeIn?: number
   left: number
   top: number
   /** Degrees. Covers are the one place tilt is free: −15° to +17°. */
@@ -36,6 +39,13 @@ interface CoverArtProps {
   children?: ReactNode
 }
 
+const cardStyle = (card: FloatingCard) => ({
+  transform: `rotate(${card.rotate}deg) scale(${card.scale})`,
+  ...(card.fadeIn !== undefined && fadeDelay(card.fadeIn)),
+})
+
+const cardClass = (card: FloatingCard) => (card.fadeIn !== undefined ? FADE_IN : undefined)
+
 /** The cover art on Home, the sign-in error and the winner: a slow-bobbing tape with drifting cards. */
 export function CoverArt({ tape, cards, className, children }: CoverArtProps) {
   return (
@@ -58,10 +68,11 @@ export function CoverArt({ tape, cards, className, children }: CoverArtProps) {
             <SongCard
               song={card.song}
               isNew={card.isNew}
-              style={{ transform: `rotate(${card.rotate}deg) scale(${card.scale})` }}
+              className={cardClass(card)}
+              style={cardStyle(card)}
             />
           ) : (
-            <PickCard style={{ transform: `rotate(${card.rotate}deg) scale(${card.scale})` }} />
+            <PickCard className={cardClass(card)} style={cardStyle(card)} />
           )}
         </div>
       ))}

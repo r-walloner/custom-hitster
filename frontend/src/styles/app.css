@@ -285,6 +285,24 @@ a.app-btn--danger {
   position: absolute;
 }
 
+/* Fading in as it appears, after the animation-delay its component sets (components/fade.ts).
+   `both` keeps it invisible while it waits. */
+.app-fade-in {
+  animation: app-fade-in 400ms ease-out both;
+}
+
+@keyframes app-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-fade-in {
+    animation: none;
+  }
+}
+
 .app-hero__tape {
   position: absolute;
   z-index: 2;
