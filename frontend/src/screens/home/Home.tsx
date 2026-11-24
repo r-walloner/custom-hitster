@@ -17,6 +17,7 @@ import AccountDialog from './AccountDialog.tsx'
 import DeleteAccount from './DeleteAccount.tsx'
 import { SignInError } from './SignInError.tsx'
 import { songsLabel, songsNote } from './songs.ts'
+import { useRecentSongs } from './useRecentSongs.ts'
 import './Home.css'
 
 /**
@@ -41,6 +42,8 @@ function JoinOrHost() {
   // The sources too, polled while they import, for the bar on Your songs.
   const { library: details, progress } = useImport(!!spotify)
   const library = details ?? spotify?.library
+  // The player's own songs on the cover cards; the cards wait for them rather than switch.
+  const songs = useRecentSongs(me ? !!spotify : null)
   const [pop, setPop] = useState<Pop | null>(null)
   const [problem, setProblem] = useState<string | null>(null)
 
@@ -70,7 +73,7 @@ function JoinOrHost() {
   }
 
   const screen = (
-    <CoverScreen>
+    <CoverScreen songs={songs}>
       <form className={`jm-panel app-cover__panel${spotify ? ' home--in' : ''}`} onSubmit={join}>
         {spotify && <You spotify={spotify} onAccount={() => setPop('account')} />}
         <label className="jm-label" htmlFor="room-code">

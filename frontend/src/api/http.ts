@@ -42,6 +42,19 @@ export async function getMe(): Promise<Me> {
   return (await call('GET', '/api/me')).json()
 }
 
+/** A song for the cover cards on Home: the shape the cards draw. */
+export interface CoverSong {
+  id: string
+  title: string
+  artist: string
+  year: number
+}
+
+/** A few of the player's recently played songs, most played first; none before an import. */
+export async function getRecentSongs(): Promise<CoverSong[]> {
+  return (await (await call('GET', '/api/me/recent')).json()).songs
+}
+
 export async function createRoom(): Promise<string> {
   const { code } = await (await call('POST', '/api/rooms')).json()
   return code

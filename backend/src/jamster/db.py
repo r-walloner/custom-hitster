@@ -407,6 +407,21 @@ def players_with_tracks(conn: sqlite3.Connection) -> list[Player]:
     return [Player(*row) for row in rows]
 
 
+def recent_songs(
+    conn: sqlite3.Connection, player_id: str, count: int
+) -> list[tuple[Track, int | None]]:
+    """The player's recently played songs, most played first, each with its cached year if any.
+    Picked or not: the Home screen's cover cards only need songs the player knows."""
+    rows = conn.execute(
+        f"SELECT {_TRACK_COLUMNS}, y.year FROM track_signals s"
+        " JOIN tracks t ON t.id = s.track_id LEFT JOIN years y ON y.track_id = t.id"
+        " WHERE s.player_id = ? AND s.source_id = 'recent' AND s.kind = 'recent'"
+        " ORDER BY s.value DESC, t.id LIMIT ?",
+        (player_id, count),
+    )
+    return [(_track(row[:-1]), row[-1]) for row in rows]
+
+
 def random_track_uri(conn: sqlite3.Connection, player_id: str) -> str | None:
     row = conn.execute(
         f"SELECT t.uri FROM tracks t JOIN track_signals s ON s.track_id = t.id {_PICKED}"

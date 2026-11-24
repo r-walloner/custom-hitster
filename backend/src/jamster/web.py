@@ -22,6 +22,7 @@ from .rooms import Rooms, Services
 from .spotify import Spotify, SpotifyError
 
 SESSION_DAYS = 90
+COVER_SONGS = 3  # the song cards floating around the logo on Home
 # WebSocket close codes the frontend understands; the room has its own (LEFT_ROOM, ROOM_CLOSED).
 NO_SESSION, NO_SUCH_ROOM = 4401, 4404
 
@@ -182,6 +183,21 @@ def create_app(
                 for source in db.list_sources(services(request).conn, player.id)
             ],
         }
+
+    @app.get("/api/me/recent")
+    async def my_recent_songs(request: Request) -> dict[str, Any]:
+        """A few of the player's recently played songs, for the cover cards on Home."""
+        player = require_player(request)
+        songs: list[dict[str, Any]] = []
+        for track, cached in db.recent_songs(services(request).conn, player.id, COVER_SONGS * 3):
+            year = cached or years.year_of(track.release_date)
+            if year is None:
+                continue
+            artist = ", ".join(a.name for a in track.artists)
+            songs.append({"id": track.id, "title": track.name, "artist": artist, "year": year})
+            if len(songs) == COVER_SONGS:
+                break
+        return {"songs": songs}
 
     @app.patch("/api/me/sources", status_code=204)
     async def pick_sources(request: Request, changes: Annotated[dict[str, bool], Body()]) -> None:

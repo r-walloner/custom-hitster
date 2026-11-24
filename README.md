@@ -87,14 +87,6 @@ What is planned but not built yet, by topic.
 Remove an item once it is done.
 
 
-### Home screen
-
-- **Cover cards from your own songs.**
-  The song cards floating around the Jamster logo are three fixed songs (`CARDS` and `DESKTOP_CARDS` in `frontend/src/components/CoverScreen.tsx`).
-  Once a player is logged in, they could be songs from that player's library, taken from the import while it runs, so the menu already shows songs the player knows.
-  No REST call returns a player's songs yet, so it needs one that returns a few, with title, artist and year (the cached year, else Spotify's).
-  `CoverScreen` would take the songs as a prop, since `src/components/` doesn't call the API, and keep the fixed songs when logged out or before the first import.
-
 ### Game screen
 
 - **Where the song came from, in a pop-up.**

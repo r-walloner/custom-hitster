@@ -17,7 +17,7 @@ from offline_settings import OfflineSettings
 from starlette.testclient import WebSocketTestSession
 from starlette.websockets import WebSocketDisconnect
 
-from jamster import rooms
+from jamster import db, rooms
 from jamster.rooms import LEFT_ROOM, ROOM_CLOSED
 from jamster.web import NO_SUCH_ROOM, create_app
 
@@ -183,6 +183,23 @@ def test_login_lists_the_library_and_copies_every_source(client: TestClient, fak
 
     assert alice.request("DELETE", "/api/me").status_code == 204
     assert alice.get("/api/me").json() == {"spotify": None}
+
+
+def test_home_shows_the_most_played_recent_songs(client: TestClient):
+    alice = Browser(client)
+    assert alice.get("/api/me/recent").status_code == 401
+
+    alice.login("alice")
+    alice.library()
+    # Her three recent plays, once each, so in track order; a cached year beats Spotify's.
+    db.put_year(client.app.state.services.conn, "track1", 1955, "manual")  # type: ignore[attr-defined]
+    assert alice.get("/api/me/recent").json() == {
+        "songs": [
+            {"id": "track0", "title": "Song 0", "artist": "Artist 0", "year": 1960},
+            {"id": "track1", "title": "Song 1", "artist": "Artist 1", "year": 1955},
+            {"id": "track2", "title": "Song 2", "artist": "Artist 2", "year": 1962},
+        ]
+    }
 
 
 def test_unpicked_sources_leave_the_deck_and_come_back_for_free(
